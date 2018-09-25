@@ -1,0 +1,11 @@
+[comment encoding = UTF-8 /]
+[module generate('http://www.eclipse.org/emf/2002/Ecore')/]
+
+[import soft::generator::cpp::generateClass/]
+
+[template public generateModel(aPackage : ecore::EPackage)]
+[comment @main/]
+[for (aClass : EClass | aPackage.eAllContents(EClass))]
+	[aClass.generateClass()/]
+[/for]
+[/template]

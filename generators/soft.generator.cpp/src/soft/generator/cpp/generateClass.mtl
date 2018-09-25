@@ -1,0 +1,11 @@
+[comment encoding = UTF-8 /]
+[module generateClass('http://www.eclipse.org/emf/2002/Ecore')]
+
+
+[template public generateClass(aClass : EClass)]
+[file (aClass.ePackage.name.concat('/').concat(aClass.name.toUpperFirst()).concat('.hpp'), false, 'UTF-8')]
+
+	virtual std::shared_ptr<> create[aClass.name/]();
+
+[/file]
+[/template]
