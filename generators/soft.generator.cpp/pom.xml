@@ -10,6 +10,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+
     <repositories>
         <repository>
             <id>Eclipse - Releases</id>
@@ -109,7 +110,7 @@
 
     <build>
         <sourceDirectory>src</sourceDirectory>
-        <directory>../../out/${project.artifactId}</directory>
+        <directory>.target</directory>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -139,7 +140,7 @@
                         <entries>
                             <entry>
                                 <input>src</input>
-                                <output>../../out/${project.artifactId}/classes</output>
+                                <output>.target/classes</output>
                             </entry>
                         </entries>
                     </acceleoProject>
