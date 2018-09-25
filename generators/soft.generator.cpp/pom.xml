@@ -20,7 +20,7 @@
             <url>https://repo.eclipse.org/content/groups/releases</url>
         </pluginRepository>
     </pluginRepositories>
-
+    
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -106,6 +106,7 @@
 
     <build>
         <sourceDirectory>src</sourceDirectory>
+        <directory>../../out/${project.artifactId}</directory>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -115,6 +116,67 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.eclipse.acceleo</groupId>
+                <artifactId>org.eclipse.acceleo.maven</artifactId>
+                <version>3.6.4</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>acceleo-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <useBinaryResources>false</useBinaryResources>
+                    <usePlatformResourcePath>true</usePlatformResourcePath>
+                    <acceleoProject>
+                        <root>${project.basedir}</root>
+                        <entries>
+                            <entry>
+                                <input>src</input>
+                                <output>../../out/${project.artifactId}/classes</output>
+                            </entry>
+                        </entries>
+                    </acceleoProject>
+                    <packagesToRegister>
+                        <packageToRegister>org.eclipse.emf.ecore.EcorePackage</packageToRegister>
+                    </packagesToRegister>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.build.finalName}.lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>${project.build.finalName}.lib/</classpathPrefix>
+                            <mainClass>soft.generator.cpp.Generate</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+    
 </project>
