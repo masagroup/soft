@@ -24,7 +24,7 @@
             <url>https://repo.eclipse.org/content/groups/releases</url>
         </pluginRepository>
     </pluginRepositories>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -161,7 +161,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/${project.build.finalName}.lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
                             <excludeTransitive>true</excludeTransitive>
                         </configuration>
                     </execution>
@@ -175,13 +175,39 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>${project.build.finalName}.lib/</classpathPrefix>
+                            <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>soft.generator.cpp.Generate</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>antrun-archive</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <property name="final.name"
+                                    value="${project.build.directory}/${project.build.finalName}" />
+                                <property
+                                    name="archive.includes"
+                                    value="${project.build.finalName}.${project.packaging} lib/*" />
+                                <zip
+                                    basedir="${project.build.directory}"
+                                    destfile="${final.name}.zip"
+                                    includes="${archive.includes}" />
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-    
+
 </project>
