@@ -1,0 +1,66 @@
+[comment encoding = UTF-8 /]
+[module generateModel('http://www.eclipse.org/emf/2002/Ecore')/]
+
+[import soft::generator::cpp::generateType/]
+[import soft::generator::cpp::utils/]
+
+[query public includes(aClass : EClass) : Set(EClassifier) =OrderedSet{aClass.eSuperTypes,aClass.eAllStructuralFeatures.eType,aClass.eOperations.eType,aClass.eOperations.eParameters.eType}->flatten() /]
+
+[template public generateModel(aClass : EClass)]
+[file (aClass.ePackage.name.concat('/').concat(aClass.name.toUpperFirst()).concat('.hpp'), false, 'UTF-8')]
+[startGuard(aClass)/]
+
+[if (aClass.eOperations.eParameters.eType->select(name = 'EMap')->size() > 0 or aClass.eAttributes.eType->select(name = 'EMap')->size() > 0)]
+#include <map>
+[/if]
+#include <list>
+#include <memory>
+#include <string>
+
+[if (aClass.eAttributes.eType->select(requiresAny())->size() > 0)]
+#include <any>
+[/if]
+
+//Forward Declaration for used types
+[for (element : EClassifier| aClass.includes()->selectByKind(EClass)->asOrderedSet()->sortedBy(name)) separator ('\n')]
+namespace [element.ePackage.name/] 
+{
+	class [element.name/];
+}
+[/for]
+
+// base class includes
+[for (elements : EClassifier| aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator ('\n')]
+#include "[elements.ePackage.name/]/[elements.name.toUpperFirst().concat('.hpp')/]"
+[/for]
+
+// enum includes
+[for (elements : EEnum| aClass.includes()->selectByKind(EEnum)->asOrderedSet()->sortedBy(name)) separator ('\n')]
+#include "[elements.ePackage.name/]/[elements.name.toUpperFirst().concat('.hpp')/]"
+[/for]
+
+[if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
+#include "ecore/EObject.hpp"
+[/if]
+
+//*********************************
+namespace [aClass.ePackage.name/] 
+{
+	class [aClass.name.toUpperFirst()/] [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))] : virtual public ecore::EObject 
+[else]
+[for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) before (':') separator (',')]
+virtual public [getClassWithNamespace(aClass,sClass)/][/for]
+[/if]
+	{
+		public:
+ 			[aClass.name.toUpperFirst()/](const [aClass.name.toUpperFirst()/] &) {}
+			[aClass.name.toUpperFirst()/]& operator=([aClass.name.toUpperFirst()/] const&) = delete;
+
+		protected:
+			[aClass.name.toUpperFirst()/](){}
+	};
+}
+[endGuard(aClass)/]
+[/file]
+[/template]
+
