@@ -1,0 +1,50 @@
+[comment encoding = UTF-8 /]
+[module generateAttribute('http://www.eclipse.org/emf/2002/Ecore')/]
+
+[import soft::generator::cpp::generateType/]
+[import soft::generator::cpp::utils/]
+
+[query public hasSetter(anEAttribute : EAttribute) : Boolean = anEAttribute.changeable and (anEAttribute.upperBound = 1)/]
+[query public hasGetter(anEAttribute : EAttribute) : EBoolean = not hasKey('getterbody') /]
+
+[template public generateAttributeDeclaration(anEAttribute : EAttribute, impl : Boolean)]
+[anEAttribute.generateAttributeGetterDeclaration(impl)/]
+[anEAttribute.generateAttributeSetterDeclaration(impl)/]
+[/template]
+
+[template public generateAttributeGetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? (hasGetter())]
+virtual [if (anEAttribute.eType.oclIsKindOf(EDataType))]
+[anEAttribute.generateAttributeType()/] [else]
+std::shared_ptr<[anEAttribute.generateAttributeType()/]> [/if]
+ [anEAttribute.getGetterName()/]() const [abstractSufix(impl)/];
+
+[/template]
+
+[template public generateAttributeSetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? ((hasSetter() or(impl and hasImplSetterOnly())) )]
+virtual void [anEAttribute.getSetterName()/] ([anEAttribute.generateAttributeType()/] _[anEAttribute.name/])[abstractSufix(impl)/]; 
+
+
+[/template]
+
+[template public generateAttributeProtected(anEAttribute : EAttribute)]
+[if (not(anEAttribute.upperBound = 1))]
+[anEAttribute.generateAttributeType()/] [anEAttribute.name/]_; [else]
+[anEAttribute.generateAttributeType()/] [anEAttribute.name/]_ [generateDefaultValue()/];
+[/if]
+[/template]
+
+[query public getDefaultValue(anEAttribute : EAttribute) : String = if (defaultValueLiteral->notEmpty()) then defaultValueLiteral else eType.getDefaultValue() endif/]
+
+[template public generateDefaultValue(anEAttribute : EAttribute) post (trim())]
+[if (anEAttribute.eType.oclIsTypeOf(EEnum))]
+	[if (anEAttribute.defaultValueLiteral->notEmpty())]
+		= [anEAttribute.eType.name/]::[anEAttribute.defaultValueLiteral.toUpperCase()/]
+	[else]
+		= [anEAttribute.eType.name/]::[anEAttribute.eType.oclAsType(EEnum).eLiterals->first().name.toUpperCase()/] 
+	[/if]
+[else]
+	= [anEAttribute.getDefaultValue()/]
+[/if]
+[/template]
+
+

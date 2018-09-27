@@ -1,6 +1,10 @@
 [comment encoding = UTF-8 /]
 [module generateModel('http://www.eclipse.org/emf/2002/Ecore')/]
 
+[import soft::generator::cpp::generateAttribute/]
+[import soft::generator::cpp::generateClass/]
+[import soft::generator::cpp::generateOperation/]
+[import soft::generator::cpp::generateReference/]
 [import soft::generator::cpp::generateType/]
 [import soft::generator::cpp::utils/]
 
@@ -58,6 +62,56 @@ virtual public [getClassWithNamespace(aClass,sClass)/][/for]
 
 		protected:
 			[aClass.name.toUpperFirst()/](){}
+
+			[if(aClass.hasContainerAttribute())]
+				[let ref:OrderedSet(EReference) = aClass.getAllContainers()]
+					[for(aReference:EReference | ref->sortedBy(name)) separator('\n')]
+			//Additional constructors for the containments back reference
+						[if(ref->select(eType.name = aReference.eType.name)->size()>1 )]
+							[if(ref->select(eType.name = aReference.eType.name)->asOrderedSet()->sortedBy(name)->first() = aReference)]
+			[aClass.name.toUpperFirst()/]([aReference.generateReferenceType(true)/] par_[aReference.eType.name/], const int reference_id);
+							[/if]
+						[else]
+			[aClass.name.toUpperFirst()/]([aReference.generateReferenceType(true)/] par_[aReference.name/]);
+						[/if]
+					[/for]
+				[/let]
+			[/if]
+
+		public:
+			virtual std::shared_ptr<ecore::EObject> copy() const = 0;
+
+			//destructor
+			virtual ~[aClass.name.toUpperFirst()/]() {}
+
+			//*********************************
+			// Operations
+			//*********************************
+			[aClass.eOperations->sortedBy(name).generateOperationDeclaration(false)/]
+			//*********************************
+			// Attributes Getter Setter
+			//*********************************
+			[aClass.eAttributes->sortedBy(name).generateAttributeDeclaration(false)/]
+			//*********************************
+			// Reference
+			//*********************************
+			[aClass.eReferences->sortedBy(name).generateReferenceDeclaration(false)/]
+
+		protected:
+			//*********************************
+			// Attribute Members
+			//*********************************
+			[aClass.eAttributes->sortedBy(name).generateAttributeProtected()/]
+			
+			//*********************************
+			// Reference Members
+			//*********************************
+			[aClass.eReferences->sortedBy(name).generateReferenceProtected()/]
+
+		public:
+		
+			[aClass.generateEContainerOperation(false)/] 
+			
 	};
 }
 [endGuard(aClass)/]

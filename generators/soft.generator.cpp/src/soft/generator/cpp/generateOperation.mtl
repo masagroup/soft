@@ -1,0 +1,23 @@
+[comment encoding = UTF-8 /]
+[module generateOperation('http://www.eclipse.org/emf/2002/Ecore')]
+
+[import soft::generator::cpp::generateType/]
+[import soft::generator::cpp::utils/]
+
+[template public generateOperationDeclaration(anEOperation : EOperation, impl: Boolean)]
+[if (((impl or (not hasImplOnly())) and (not (doNotGenerate() or ignore()))))]
+
+virtual [anEOperation.generateOperationType()/] [anEOperation.name/]([anEOperation.generateParameterList()/])[if (hasKey('const'))] const[/if] [abstractSufix(impl)/];[/if]
+
+[/template]
+
+[template public generateOperationType(eOperation : EOperation) post(trim())]
+[if (not (eOperation.upperBound = 1))]
+[if (not eOperation.eGenericType.oclIsKindOf(EDataType))]
+std::shared_ptr<Bag<[eOperation.eGenericType.generateCppType()/]> >[/if]
+[elseif ((not eOperation.eType.oclIsUndefined()) and (not eOperation.eType.oclIsKindOf(EDataType)))]
+std::shared_ptr<[eOperation.eGenericType.generateCppType()/]> [else]
+[eOperation.eGenericType.generateCppType()/] [/if]
+
+[/template]
+

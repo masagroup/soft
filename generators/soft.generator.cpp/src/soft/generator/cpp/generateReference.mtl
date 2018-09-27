@@ -1,0 +1,40 @@
+[comment encoding = UTF-8 /]
+[module generateReference('http://www.eclipse.org/emf/2002/Ecore')]
+
+[import soft::generator::cpp::generateType /]
+[import soft::generator::cpp::utils /]
+
+
+
+[query public hasSetter(anEReference : EReference) : EBoolean = (anEReference.changeable and anEReference.upperBound=1) or hasKey('setterbody') /]
+[query public hasGetter(anEReference : EReference) : EBoolean = not hasKey('noGetter') or hasKey('getterbody') /]
+
+
+[template public generateReferenceDeclaration(anEReference : EReference, impl : EBoolean) ]
+[anEReference.generateReferenceGetterDeclaration(impl)/]
+[anEReference.generateReferenceSetterDeclaration(impl)/]
+[/template]
+
+[template public generateReferenceGetterDeclaration(anEReference : EReference, impl : EBoolean)? (hasGetter() and (not isUnion()) )]
+virtual [anEReference.generateReferenceType()/] [anEReference.getGetterName()/]() const [abstractSufix(impl)/];
+
+[/template]
+
+[template public generateReferenceSetterDeclaration(anEReference : EReference, impl : EBoolean) ? ( hasSetter() )]
+virtual void [anEReference.getSetterName()/]([if (not anEReference.eGenericType.oclIsKindOf(EDataType))]
+[generateReferenceParameter(anEReference)/][else]
+[anEReference.eGenericType.generateCppType()/][/if]
+_[anEReference.name/]) [abstractSufix(impl)/];
+
+[/template]
+
+[template public generateReferenceParameter(anEReference : EReference)]
+[if(anEReference.upperBound = 1)]
+std::shared_ptr<[anEReference.eGenericType.generateCppType()/]> _[anEReference.name/][else]
+std::shared_ptr<std::vector<[anEReference.eGenericType.generateCppType()/]> > _[anEReference.name/][/if]
+[/template]
+
+[template public generateReferenceProtected(anEReference : EReference) ]
+[anEReference.generateReferenceType()/] [anEReference.name/]_;
+
+[/template]

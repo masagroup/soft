@@ -1,11 +1,8 @@
 [comment encoding = UTF-8 /]
 [module generateClass('http://www.eclipse.org/emf/2002/Ecore')]
 
+[import soft::generator::cpp::utils/]
 
-[template public generateClass(aClass : EClass)]
-[file (aClass.ePackage.name.concat('/').concat(aClass.name.toUpperFirst()).concat('.hpp'), false, 'UTF-8')]
-
-	virtual std::shared_ptr<> create[aClass.name/]();
-
-[/file]
+[template public generateEContainerOperation(aClass : EClass, impl : EBoolean)]
+virtual std::shared_ptr<ecore::EObject> eContainer() const [abstractSufix(impl)/];
 [/template]
