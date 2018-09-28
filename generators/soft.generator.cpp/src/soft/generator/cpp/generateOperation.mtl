@@ -14,7 +14,7 @@ virtual [anEOperation.generateOperationType()/] [anEOperation.name/]([anEOperati
 [template public generateOperationType(eOperation : EOperation) post(trim())]
 [if (not (eOperation.upperBound = 1))]
 [if (not eOperation.eGenericType.oclIsKindOf(EDataType))]
-std::shared_ptr<Bag<[eOperation.eGenericType.generateCppType()/]> >[/if]
+std::shared_ptr<EList<[eOperation.eGenericType.generateCppType()/]> >[/if]
 [elseif ((not eOperation.eType.oclIsUndefined()) and (not eOperation.eType.oclIsKindOf(EDataType)))]
 std::shared_ptr<[eOperation.eGenericType.generateCppType()/]> [else]
 [eOperation.eGenericType.generateCppType()/] [/if]
