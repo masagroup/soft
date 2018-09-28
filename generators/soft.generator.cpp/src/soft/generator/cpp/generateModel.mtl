@@ -25,6 +25,8 @@
 #include <any>
 [/if]
 
+[generateTypesForwardDeclaration()/]
+
 //Forward Declaration for used types
 [for (element : EClassifier| aClass.includes()->selectByKind(EClass)->asOrderedSet()->sortedBy(name)) separator ('\n')]
 namespace [element.ePackage.name/] 

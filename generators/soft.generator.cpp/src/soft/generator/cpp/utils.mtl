@@ -73,3 +73,12 @@
 [query public hasImplOnly(aModelElement : EModelElement) : Boolean =  if aModelElement.hasKey('implOnly') then aModelElement.valueKey('implOnly')='true' else false endif /]
 [query public doNotGenerate(aModelElement : EModelElement) : Boolean =  if aModelElement.hasKey('doNotGenerate') then aModelElement.valueKey('doNotGenerate')='true' else false endif /]
 [query public hasImplSetterOnly(aModelElement : EModelElement) : Boolean = if aModelElement.hasKey('implSetterOnly') then aModelElement.valueKey('implSetterOnly')='true' else false endif/]
+
+[template public generateTypesForwardDeclaration(anEClass : EClass)]
+[if (anEClass.eReferences->select(upperBound <> 1)->size() > 0 or anEClass.eOperations.eParameters->select((eType.requiresList()  or upperBound <> 1) and not doNotGenerate())->size() > 0)]
+template<typename T> class EList;
+[/if]
+[/template]
+
+[query public requiresList(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else (name = 'ETreeIterator' or name = 'EEList') endif/]
+

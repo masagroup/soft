@@ -31,7 +31,7 @@ _[anEReference.name/]) [abstractSufix(impl)/];
 [template public generateReferenceParameter(anEReference : EReference)]
 [if(anEReference.upperBound = 1)]
 std::shared_ptr<[anEReference.eGenericType.generateCppType()/]> _[anEReference.name/][else]
-std::shared_ptr<std::vector<[anEReference.eGenericType.generateCppType()/]> > _[anEReference.name/][/if]
+std::shared_ptr<EList<[anEReference.eGenericType.generateCppType()/]> > _[anEReference.name/][/if]
 [/template]
 
 [template public generateReferenceProtected(anEReference : EReference) ]

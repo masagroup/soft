@@ -7,7 +7,7 @@
 
 [template public generateAttributeType(eAttribute : EAttribute)]
 [if (not(eAttribute.upperBound = 1))]
-std::shared_ptr<std::vector<[eAttribute.eGenericType.generateCppType()/]> >[elseif ((not eAttribute.eType.oclIsUndefined()) and (not eAttribute.eType.oclIsKindOf(EDataType)))]
+std::shared_ptr<EList<[eAttribute.eGenericType.generateCppType()/]> >[elseif ((not eAttribute.eType.oclIsUndefined()) and (not eAttribute.eType.oclIsKindOf(EDataType)))]
 std::shared_ptr<[eAttribute.eGenericType.generateCppType()/]> [else]
 [eAttribute.eGenericType.generateCppType()/] [/if]
 [/template]
@@ -20,7 +20,7 @@ std::shared_ptr<[eAttribute.eGenericType.generateCppType()/]> [else]
 [if (eReference.upperBound = 1)]
 	[if(pointer)][eReference.pointerType()/]<[/if][eReference.eGenericType.generateCppType()/] [if(pointer)]>[/if]
 [else]
-	[if(pointer)]std::shared_ptr<[/if]std::vector<[eReference.eGenericType.generateCppType()/]>[if(pointer)]>[/if]
+	[if(pointer)]std::shared_ptr<[/if]EList<[eReference.eGenericType.generateCppType()/]>[if(pointer)]>[/if]
 [/if]
 [/template]
 
@@ -63,7 +63,7 @@ std::shared_ptr<std::any>[else]
 
 [template public generateParameterType(eParameter : EParameter)]
 [if (not(eParameter.upperBound = 1))]
-std::shared_ptr<std::vector<[eParameter.eGenericType.generateCppType()/]> > [elseif (not eParameter.eType.oclIsKindOf(EDataType))]
+std::shared_ptr<EList<[eParameter.eGenericType.generateCppType()/]> > [elseif (not eParameter.eType.oclIsKindOf(EDataType))]
 std::shared_ptr<[eParameter.eGenericType.generateCppType()/]> [else]
 [eParameter.eGenericType.generateCppType()/] [/if]
 [/template]
@@ -116,7 +116,7 @@ float
 [/template]
 
 [template public transformType(anEClassifier : EClassifier) ? (name = 'EEList')]
-std::vector
+EList
 [/template]
 
 [template public transformType(anEClassifier : EClassifier) ? (name = 'EDate')]
@@ -132,7 +132,7 @@ std::shared_ptr<std::any>
 [/template]
 
 [template public transformType(anEClassifier : EClassifier) ? (name = 'ETreeIterator')]
-std::vector
+EList
 [/template]
 
 [template public transformType(anEClassifier : EClassifier) ? (name = 'EJavaClass')]
