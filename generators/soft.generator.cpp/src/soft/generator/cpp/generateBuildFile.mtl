@@ -17,7 +17,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
 
 project([packageName/] CXX)
 
-if(not CMAKE_BUILD_TYPE) 
+if(NOT CMAKE_BUILD_TYPE) 
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 set(CMAKE_DEBUG_POSTFIX d)
@@ -25,26 +25,26 @@ set(CMAKE_DEBUG_POSTFIX d)
 set(CMAKE_CXX_STANDARD 14)
 
 # Boost
-set(BoostComponents any)
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.68.0 REQUIRED ${BoostComponents})
-include_directories(${Boost_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+find_package(Boost 1.68.0 REQUIRED)
 
 # Generated sources
-set(GENERATED_SOURCE_FILES )
-include_directories(src-gen)
+set(GENERATED_SOURCE_FILES 
+[for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
+    src-gen/[packageName/]/impl/[aClass.name.toUpperFirst()/]Impl.cpp
+[/for] 
+)
 
 # Sources
 set(SOURCE_FILES
-[for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
-    impl/[aClass.name.toUpperFirst()/]Impl.cpp
-[/for] 
 )
-include_directories(src)
 
 
 add_library(${PROJECT_NAME} STATIC  ${SOURCE_FILES} ${GENERATED_SOURCE_FILES})
+target_include_directories(${PROJECT_NAME} PUBLIC src)
+target_include_directories(${PROJECT_NAME} PUBLIC src-gen)
+target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 
 
