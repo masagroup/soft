@@ -47,4 +47,25 @@ virtual void [anEAttribute.getSetterName()/] ([anEAttribute.generateAttributeTyp
 [/if]
 [/template]
 
+[template public generateAttributeInit(anEAttribute : EAttribute) ? (not(anEAttribute.upperBound = 1))]
+[anEAttribute.name/]_.reset(new EList<[anEAttribute.eGenericType.generateCppType()/]>());
+[/template]
+
+[***
+ * Section for the Attribute cpp implementation
+*/]
+[template public generateAttributeGetterImplementationCpp(anEAttribute : EAttribute)? (hasGetter())]
+[anEAttribute.generateAttributeType()/] [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getGetterName()/]() const 
+{
+    return [anEAttribute.name/]_;
+}
+[/template]
+
+[template public generateAttributeSetterImplementationCpp(anEAttribute : EAttribute, impl : Boolean) ? (( hasSetter() or(impl and hasImplSetterOnly())) )]
+void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getSetterName()/]([anEAttribute.generateAttributeType()/] [anEAttribute.name/])
+{
+    [anEAttribute.name/]_ = [anEAttribute.name/];
+} 
+[/template]
+
 

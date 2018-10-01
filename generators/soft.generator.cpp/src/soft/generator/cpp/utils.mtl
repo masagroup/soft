@@ -52,6 +52,7 @@
 #endif /* [getGuardName(sufix)/] */
 [/template]
 
+[query public needNamespace(anPackage : EPackage,str :String) : String = if not( anPackage.name = 'ecore') then 'ecore::'.concat(str) else str endif /]
 [query public getClassWithNamespace(aClass : EClass, base : EClass) : String = if aClass.ePackage.name = base.ePackage.name then base.name else base.ePackage.name.concat('::').concat(base.name) endif /]
 
 [query public hasContainerAttribute(aClass : EClass) : Boolean =  getContainerAttribute()->notEmpty() /]
@@ -80,5 +81,34 @@ template<typename T> class EList;
 [/if]
 [/template]
 
+[template public generateAbstractDataTypesIncludes(anEClass : EClass)]
+[if (anEClass.eReferences->select(upperBound <> 1)->size() > 0 or anEClass.eOperations.eParameters->select((eType.requiresList()  or upperBound <> 1) and not doNotGenerate())->size() > 0)]
+#include "ecore/EList.hpp"
+[/if]
+[/template]
+
 [query public requiresList(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else (name = 'ETreeIterator' or name = 'EEList') endif/]
 
+[query public getMetaModelPackageNameForEstructuralFeture(aStructural : EStructuralFeature,aClass: EClass) : String = if( aStructural.eContainingClass.ePackage = aClass.ePackage  ) then aStructural.eContainingClass.ePackage.name.concat('Package').toUpperFirst() else aStructural.eContainingClass.ePackage.name.concat('::').concat(aStructural.eContainingClass.ePackage.name.concat('Package').toUpperFirst()) endif/]
+
+[**
+ * generate member names for package generation
+ *
+ *
+ */]
+[query public getClassMemberName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName().concat('_') /]
+[query public getStaticAttributeIDName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName().toUpperCase() /]
+[query public getMemberNameUpperFirst(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName().toUpperFirst() /]
+
+[query public getMemberName(anENamedElement : ENamedElement) : String = if (anENamedElement.oclIsKindOf(EClassifier)) then anENamedElement.oclAsType(EClassifier).getMemberName() else anENamedElement.getMemberNameStructFeat() endif/]
+[query private getMemberNameStructFeat(anENamedElement : ENamedElement) : String = if (anENamedElement.oclIsKindOf(EStructuralFeature)) then anENamedElement.oclAsType(EStructuralFeature).getMemberName() else anENamedElement.getMemberNameOperation() endif/]
+[query private getMemberNameOperation(anENamedElement : ENamedElement) : String = if (anENamedElement.oclIsKindOf(EOperation)) then anENamedElement.oclAsType(EOperation).getMemberName() else anENamedElement.getMemberNameGeneral() endif/]
+[query private getMemberNameGeneral(anENamedElement : ENamedElement) : String = anENamedElement.name.toLowerFirst().concat('_').concat(anENamedElement.eClass().name) /]
+
+[query public getMemberName(anEClassifier : EClassifier) : String = anEClassifier.name.toLowerFirst().concat('_').concat(anEClassifier.eClass().name) /]
+[query public getMemberName(aStructural : EStructuralFeature) : String = eContainingClass.name.toLowerFirst().concat('_').concat(aStructural.eClass().name).concat('_').concat(aStructural.name.toLowerFirst()) /]
+[query public getMemberName(aOperation : EOperation) : String = aOperation.eContainingClass.name.toLowerFirst().concat('_').concat(aOperation.eClass().name).concat('_'.concat(aOperation.name.toLowerFirst()).concat(aOperation.parameterListName())) /]
+
+[query public parameterListName( aOperation : EOperation) : String = if aOperation.eParameters->notEmpty() then '_'.concat(aOperation.singlemultipleParameter()) else '' endif /]
+[query public singlemultipleParameter(aOperation : EOperation) : String = if aOperation.eParameters->size()>1 then aOperation.eParameters->first().eType.name.concat('_').concat(aOperation.eParameters->last().eType.name) else aOperation.eParameters->first().eType.name endif /]
+[query public getMyClassifierID(anEClassifier : EClassifier) : EInt = if (anEClassifier.getClassifierID() = 0) then anEClassifier.ePackage.eClassifiers->selectByKind(EClassifier)->size() else anEClassifier.getClassifierID() endif/]

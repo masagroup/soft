@@ -24,17 +24,53 @@ virtual [anEReference.generateReferenceType()/] [anEReference.getGetterName()/](
 virtual void [anEReference.getSetterName()/]([if (not anEReference.eGenericType.oclIsKindOf(EDataType))]
 [generateReferenceParameter(anEReference)/][else]
 [anEReference.eGenericType.generateCppType()/][/if]
-_[anEReference.name/]) [abstractSufix(impl)/];
+[anEReference.name/]) [abstractSufix(impl)/];
 
 [/template]
 
 [template public generateReferenceParameter(anEReference : EReference)]
 [if(anEReference.upperBound = 1)]
-std::shared_ptr<[anEReference.eGenericType.generateCppType()/]> _[anEReference.name/][else]
-std::shared_ptr<EList<[anEReference.eGenericType.generateCppType()/]> > _[anEReference.name/][/if]
+std::shared_ptr<[anEReference.eGenericType.generateCppType()/]> [anEReference.name/][else]
+std::shared_ptr<EList<[anEReference.eGenericType.generateCppType()/]> > [anEReference.name/][/if]
 [/template]
 
 [template public generateReferenceProtected(anEReference : EReference) ]
 [anEReference.generateReferenceType()/] [anEReference.name/]_;
 
+[/template]
+
+[template public generateReferenceInit(eReference : EReference)? (not(eReference.upperBound=1))]
+    [eReference.name/]_.reset(new EList<[eReference.eGenericType.generateCppType()/]>());
+[/template]
+
+[template public generateReferenceCpp(anEReference : EReference)]
+[anEReference.generateReferenceGetterCpp()/]
+[anEReference.generateReferenceSetterCpp()/]
+[/template]
+
+[template public generateReferenceSetterCpp(anEReference : EReference) ? (hasSetter())]
+void [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getSetterName()/]([generateReferenceParameter(anEReference)/])
+{
+[if (hasKey('setterbody'))]
+//generated from setterbody annotation
+[valueKey('setterbody')/] 
+//end of body
+[else]
+    [anEReference.name/]_ = [anEReference.name/];
+[/if]
+}
+[/template]
+
+[template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter()and (not isUnion()))]
+[anEReference.generateReferenceType()/] [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getGetterName()/]() const
+{
+[if (hasKey('getterbody'))]
+//generated from getterbody annotation
+[valueKey('getterbody')/]
+//end of body
+[else]
+[if(anEReference.lowerBound>0)]//assert([anEReference.name/]_);[/if]
+    return [anEReference.name/]_;
+[/if]
+}
 [/template]

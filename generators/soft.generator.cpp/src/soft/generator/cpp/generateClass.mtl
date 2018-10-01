@@ -6,3 +6,54 @@
 [template public generateEContainerOperation(aClass : EClass, impl : EBoolean)]
 virtual std::shared_ptr<ecore::EObject> eContainer() const [abstractSufix(impl)/];
 [/template]
+
+[template public generateEContainerOperationCPP(aClass: EClass)]
+std::shared_ptr<ecore::EObject> [aClass.name.toUpperFirst()/]Impl::eContainer() const
+{
+[let ref:OrderedSet(EReference) = aClass.getAllContainers()]
+[for(aReference:EReference | ref->sortedBy(name)) separator('\n')]
+[if(ref->select(eType.name = aReference.eType.name)->size()>1 )]
+    [if(ref->select(eType.name = aReference.eType.name)->asOrderedSet()->sortedBy(name)->first() = aReference)]
+        [for(multipleRef : EReference | ref->select(eType.name = aReference.eType.name)->sortedBy(name))]
+    if(auto wp = [multipleRef.name/]_.lock())
+    {
+        return wp;
+    }
+        [/for]
+    [/if]
+    [else]
+    if(auto wp = [aReference.name/]_.lock())
+    {
+        return wp;
+    }
+    [/if]
+[/for]
+[/let]
+    return nullptr;
+}
+[/template]
+
+
+[template public generateGetThisPtr(aClass : EClass)]
+virtual std::shared_ptr<[aClass.name/]> [generateGetThisPtrPropertyGetterName()/]() const;
+virtual void [generateGetThisPtrPropertySetterName()/](std::weak_ptr<[aClass.name.toUpperFirst()/]> [generateGetThisPtrPropertyName()/]);
+[/template]
+
+[template public generateGetThisPtrCPP(aClass: EClass)]
+std::shared_ptr<[aClass.name.toUpperFirst()/]> [aClass.name.toUpperFirst()/]Impl::[generateGetThisPtrPropertyGetterName()/]() const
+{
+    return [generateGetThisPtrPropertyName()/]_.lock();
+}
+void [aClass.name.toUpperFirst()/]Impl::[generateGetThisPtrPropertySetterName()/](std::weak_ptr<[aClass.name.toUpperFirst()/]> [generateGetThisPtrPropertyName()/])
+{
+    [generateGetThisPtrPropertyName()/]_ = [generateGetThisPtrPropertyName()/];
+    [for (superClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name))]
+    [superClass.generateGetThisPtrPropertySetterName()/]([aClass.generateGetThisPtrPropertyName()/]);
+    [/for]  
+}
+[/template]
+
+[query public generateGetThisPtrPropertyName(anEClass : EClass) : String = 'this'.concat(anEClass.name.toUpperFirst()).concat('Ptr')/]
+[query public generateGetThisPtrPropertySetterName(anEClass : EClass) : String = 'set'.concat(generateGetThisPtrPropertyName().toUpperFirst())/]
+[query public generateGetThisPtrPropertyGetterName(anEClass : EClass) : String = 'get'.concat(generateGetThisPtrPropertyName().toUpperFirst())/]
+

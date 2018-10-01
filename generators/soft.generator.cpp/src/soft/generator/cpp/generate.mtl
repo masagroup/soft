@@ -3,12 +3,14 @@
 
 [import soft::generator::cpp::generateBuildFile/]
 [import soft::generator::cpp::generateModel/]
+[import soft::generator::cpp::impl::generateImplementation/]
 [import soft::generator::cpp::utils/]
 
 [template public generateModel(aPackage : ecore::EPackage)]
 [comment @main/]
 [for (aClass : EClass | aPackage.eAllContents(EClass))]
 	[aClass.generateModel()/]
+    [aClass.generateImplementation()/]
 [/for]
 
 
