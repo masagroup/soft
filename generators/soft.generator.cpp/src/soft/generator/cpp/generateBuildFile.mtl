@@ -36,7 +36,11 @@ set(GENERATED_SOURCE_FILES )
 include_directories(src-gen)
 
 # Sources
-set(SOURCE_FILES )
+set(SOURCE_FILES
+[for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
+    impl/[aClass.name.toUpperFirst()/]Impl.cpp
+[/for] 
+)
 include_directories(src)
 
 
