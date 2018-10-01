@@ -20,7 +20,7 @@
 [import soft::generator::cpp::generateReference/]
 [import soft::generator::cpp::generateStructuralFeature/]
 [import soft::generator::cpp::generateType/]
-[import soft::generator::cpp::generateModel /]
+[import soft::generator::cpp::generateInterface /]
 [import soft::generator::cpp::utils /]
 
 [template public generateImplementationSource(aClass : EClass) { className : String = aClass.name.toUpperFirst().concat('Impl'); }]

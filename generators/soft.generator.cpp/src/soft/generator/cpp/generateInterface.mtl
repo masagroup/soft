@@ -1,5 +1,5 @@
 [comment encoding = UTF-8 /]
-[module generateModel('http://www.eclipse.org/emf/2002/Ecore')/]
+[module generateInterface('http://www.eclipse.org/emf/2002/Ecore')/]
 
 [import soft::generator::cpp::generateAttribute/]
 [import soft::generator::cpp::generateClass/]
@@ -10,7 +10,7 @@
 
 [query public includes(aClass : EClass) : Set(EClassifier) =OrderedSet{aClass.eSuperTypes,aClass.eAllStructuralFeatures.eType,aClass.eOperations.eType,aClass.eOperations.eParameters.eType}->flatten() /]
 
-[template public generateModel(aClass : EClass)]
+[template public generateInterface(aClass : EClass)]
 [file ('src-gen/'.concat(aClass.ePackage.name).concat('/').concat(aClass.name.toUpperFirst()).concat('.hpp'), false, 'UTF-8')]
 [startGuard(aClass)/]
 

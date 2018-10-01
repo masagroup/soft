@@ -2,14 +2,14 @@
 [module generate('http://www.eclipse.org/emf/2002/Ecore')/]
 
 [import soft::generator::cpp::generateBuildFile/]
-[import soft::generator::cpp::generateModel/]
+[import soft::generator::cpp::generateInterface/]
 [import soft::generator::cpp::impl::generateImplementation/]
 [import soft::generator::cpp::utils/]
 
 [template public generateModel(aPackage : ecore::EPackage)]
 [comment @main/]
 [for (aClass : EClass | aPackage.eAllContents(EClass))]
-	[aClass.generateModel()/]
+	[aClass.generateInterface()/]
     [aClass.generateImplementation()/]
 [/for]
 
