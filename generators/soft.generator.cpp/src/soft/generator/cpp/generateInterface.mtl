@@ -31,7 +31,7 @@
 [for (element : EClassifier| aClass.includes()->selectByKind(EClass)->asOrderedSet()->sortedBy(name)) separator ('\n')]
 namespace [element.ePackage.name/] 
 {
-	class [element.name/];
+    class [element.name/];
 }
 [/for]
 
@@ -52,69 +52,62 @@ namespace [element.ePackage.name/]
 //*********************************
 namespace [aClass.ePackage.name/] 
 {
-	class [aClass.name.toUpperFirst()/] [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))] : virtual public ecore::EObject 
+    class [aClass.name.toUpperFirst()/] [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))] : virtual public ecore::EObject 
 [else]
 [for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) before (':') separator (',')]
 virtual public [getClassWithNamespace(aClass,sClass)/][/for]
 [/if]
-	{
-		public:
- 			[aClass.name.toUpperFirst()/](const [aClass.name.toUpperFirst()/] &) {}
-			[aClass.name.toUpperFirst()/]& operator=([aClass.name.toUpperFirst()/] const&) = delete;
+    {
+        public:
+            [aClass.name.toUpperFirst()/](const [aClass.name.toUpperFirst()/] &) {}
+            [aClass.name.toUpperFirst()/]& operator=([aClass.name.toUpperFirst()/] const&) = delete;
 
-		protected:
-			[aClass.name.toUpperFirst()/](){}
+        protected:
+            [aClass.name.toUpperFirst()/](){}
 
-			[if(aClass.hasContainerAttribute())]
-				[let ref:OrderedSet(EReference) = aClass.getAllContainers()]
-					[for(aReference:EReference | ref->sortedBy(name)) separator('\n')]
-			//Additional constructors for the containments back reference
-						[if(ref->select(eType.name = aReference.eType.name)->size()>1 )]
-							[if(ref->select(eType.name = aReference.eType.name)->asOrderedSet()->sortedBy(name)->first() = aReference)]
-			[aClass.name.toUpperFirst()/]([aReference.generateReferenceType(true)/] par_[aReference.eType.name/], const int reference_id);
-							[/if]
-						[else]
-			[aClass.name.toUpperFirst()/]([aReference.generateReferenceType(true)/] par_[aReference.name/]);
-						[/if]
-					[/for]
-				[/let]
-			[/if]
+            [if(aClass.hasContainerAttribute())]
+                [let ref:OrderedSet(EReference) = aClass.getAllContainers()]
+                    [for(aReference:EReference | ref->sortedBy(name)) separator('\n')]
+            //Additional constructors for the containments back reference
+                        [if(ref->select(eType.name = aReference.eType.name)->size()>1 )]
+                            [if(ref->select(eType.name = aReference.eType.name)->asOrderedSet()->sortedBy(name)->first() = aReference)]
+            [aClass.name.toUpperFirst()/]([aReference.generateReferenceType(true)/] par_[aReference.eType.name/], const int reference_id);
+                            [/if]
+                        [else]
+            [aClass.name.toUpperFirst()/]([aReference.generateReferenceType(true)/] par_[aReference.name/]);
+                        [/if]
+                    [/for]
+                [/let]
+            [/if]
 
-		public:
-			virtual std::shared_ptr<ecore::EObject> copy() const = 0;
+        public:
+            virtual std::shared_ptr<ecore::EObject> copy() const = 0;
 
-			//destructor
-			virtual ~[aClass.name.toUpperFirst()/]() {}
-
-			//*********************************
-			// Operations
-			//*********************************
-			[aClass.eOperations->sortedBy(name).generateOperationDeclaration(false)/]
-			//*********************************
-			// Attributes Getter Setter
-			//*********************************
-			[aClass.eAttributes->sortedBy(name).generateAttributeDeclaration(false)/]
-			//*********************************
-			// Reference
-			//*********************************
-			[aClass.eReferences->sortedBy(name).generateReferenceDeclaration(false)/]
-
-		protected:
-			//*********************************
-			// Attribute Members
-			//*********************************
-			[aClass.eAttributes->sortedBy(name).generateAttributeProtected()/]
-			
-			//*********************************
-			// Reference Members
-			//*********************************
-			[aClass.eReferences->sortedBy(name).generateReferenceProtected()/]
-
-		public:
-		
-			[aClass.generateEContainerOperation(false)/] 
-			
-	};
+            //destructor
+            virtual ~[aClass.name.toUpperFirst()/]() {}
+            [if(aClass.eOperations->notEmpty())]
+            //*********************************
+            // Operations
+            //*********************************
+            [/if]
+            [aClass.eOperations->sortedBy(name).generateOperationDeclaration(false)/]
+            [if(aClass.eAttributes->notEmpty())]
+            //*********************************
+            // Attributes Getter Setter
+            //*********************************
+            [/if]
+            [aClass.eAttributes->sortedBy(name).generateAttributeDeclaration(false)/]
+            [if(aClass.eReferences->notEmpty())]
+            //*********************************
+            // Reference
+            //*********************************
+            [aClass.eReferences->sortedBy(name).generateReferenceDeclaration(false)/]
+            [/if]
+        public:
+        
+            [aClass.generateEContainerOperation(false)/] 
+            
+    };
 }
 [endGuard(aClass)/]
 [/file]

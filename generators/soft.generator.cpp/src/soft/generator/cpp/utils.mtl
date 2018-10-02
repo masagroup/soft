@@ -14,10 +14,10 @@
  * Guards
 */]
 [query private getGuardName(namedelement : ENamedElement, sufix: String) : String = 
-		if (namedelement.eContainer().oclIsUndefined()) 
-		then namedelement.name.concat(sufix).concat('_hpp').toUpperCase() 
-		else namedelement.eContainer().oclAsType(EPackage).name.concat('_').concat(namedelement.name).concat(sufix).concat('_hpp').toUpperCase()
-		endif/]
+        if (namedelement.eContainer().oclIsUndefined()) 
+        then namedelement.name.concat(sufix).concat('_hpp').toUpperCase() 
+        else namedelement.eContainer().oclAsType(EPackage).name.concat('_').concat(namedelement.name).concat(sufix).concat('_hpp').toUpperCase()
+        endif/]
 
 [template public startGuard(namedelement : ENamedElement)]
 [startGuard(namedelement,'')/]

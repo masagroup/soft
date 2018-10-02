@@ -26,6 +26,7 @@ virtual void [anEReference.getSetterName()/]([if (not anEReference.eGenericType.
 [anEReference.eGenericType.generateCppType()/][/if]
 [anEReference.name/]) [abstractSufix(impl)/];
 
+
 [/template]
 
 [template public generateReferenceParameter(anEReference : EReference)]

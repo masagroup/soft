@@ -9,7 +9,7 @@
 [template public generateModel(aPackage : ecore::EPackage)]
 [comment @main/]
 [for (aClass : EClass | aPackage.eAllContents(EClass))]
-	[aClass.generateInterface()/]
+    [aClass.generateInterface()/]
     [aClass.generateImplementation()/]
 [/for]
 

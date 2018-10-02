@@ -43,75 +43,84 @@
 [comment namespace /]
 namespace [aClass.ePackage.name/] 
 {
-	class [className/] :[for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator (', ') after (', ')]
+    class [className/] :[for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator (', ') after (', ')]
 virtual public [getClassWithNamespace(aClass, sClass)/]Impl[/for][if (aClass.eSuperTypes->isEmpty())]
 [if (not(aClass.name='EObject'))]virtual public ecore::EObjectImpl,[/if]
 [/if]virtual public [aClass.name.toUpperFirst()/] 
-	{
-		public: 
-			[className/](const [className/] & obj);
-			virtual std::shared_ptr<ecore::EObject> copy() const;
+    {
+        public: 
+            [className/](const [className/] & obj);
+            virtual std::shared_ptr<ecore::EObject> copy() const;
 
-		private:    
-			[className/]& operator=([className/] const&) = delete;
+        private:    
+            [className/]& operator=([className/] const&) = delete;
 
-		protected:
-			friend class [aClass.ePackage.name.concat('FactoryImpl').toUpperFirst()/];
-			[className/]();
-			[aClass.generateGetThisPtr()/]
+        protected:
+            friend class [aClass.ePackage.name.concat('FactoryImpl').toUpperFirst()/];
+            [className/]();
+            [aClass.generateGetThisPtr()/]
 
-			[let ref:OrderedSet(EReference) = aClass.getAllContainers()]
-			[for(aReference:EReference | ref->sortedBy(name)) ]
-			//Additional constructors for the containments back reference
-	[if(ref->select(eType.name = aReference.eType.name)->size()>1 )]
-			[if(ref->select(eType.name = aReference.eType.name)->asOrderedSet()->sortedBy(name)->first() = aReference)]
-			[className/]([aReference.generateReferenceType(true)/] par_[aReference.eType.name/], const int reference_id);
-			[/if]
-	[else]
-			[className/]([aReference.generateReferenceType(true)/] par_[aReference.name/]);
-	[/if]
-
-
-			[/for]
-			[/let]
+            [let ref:OrderedSet(EReference) = aClass.getAllContainers()]
+            [for(aReference:EReference | ref->sortedBy(name)) ]
+            //Additional constructors for the containments back reference
+    [if(ref->select(eType.name = aReference.eType.name)->size()>1 )]
+            [if(ref->select(eType.name = aReference.eType.name)->asOrderedSet()->sortedBy(name)->first() = aReference)]
+            [className/]([aReference.generateReferenceType(true)/] par_[aReference.eType.name/], const int reference_id);
+            [/if]
+    [else]
+            [className/]([aReference.generateReferenceType(true)/] par_[aReference.name/]);
+    [/if]
 
 
-		public:
-			//destructor
-			virtual ~[className/]();
-			
-			//*********************************
-			// Operations
-			//*********************************
-			[aClass.eOperations->sortedBy(name).generateOperationDeclaration(true)/]
-			
-			//*********************************
-			// Attributes Getter Setter
-			//*********************************
-			[aClass.eAttributes->sortedBy(name).generateAttributeDeclaration(true)/]
-			
-			//*********************************
-			// Reference
-			//*********************************
-			[aClass.eReferences->sortedBy(name).generateReferenceDeclaration(true)/]				
-			
-			 
-			//*********************************
-			// Structural Feature Getter/Setter
-			//*********************************
+            [/for]
+            [/let]
 
-			[aClass.generateEContainerOperation(true)/] 
-			
-			
-		protected:
-			virtual std::shared_ptr<[needNamespace(aClass.ePackage, 'EClass')/]> eStaticClass() const;
-			[aClass.generateGetDel(true)/]
-			[aClass.generateIsSetDel(true)/]
-			[aClass.generateSetDel(true)/]
 
-		private:
-			std::weak_ptr<[aClass.name.toUpperFirst()/]> [generateGetThisPtrPropertyName()/]_;
-	};
+        public:
+            //destructor
+            virtual ~[className/]();
+            
+            //*********************************
+            // Operations
+            //*********************************
+            [aClass.eOperations->sortedBy(name).generateOperationDeclaration(true)/]
+            
+            //*********************************
+            // Attributes Getter Setter
+            //*********************************
+            [aClass.eAttributes->sortedBy(name).generateAttributeDeclaration(true)/]
+            
+            //*********************************
+            // Reference
+            //*********************************
+            [aClass.eReferences->sortedBy(name).generateReferenceDeclaration(true)/]
+            
+            //*********************************
+            // Structural Feature Getter/Setter
+            //*********************************
+            [aClass.generateEContainerOperation(true)/] 
+            
+            
+        protected:
+            virtual std::shared_ptr<[needNamespace(aClass.ePackage, 'EClass')/]> eStaticClass() const;
+            [aClass.generateGetDel(true)/]
+            [aClass.generateIsSetDel(true)/]
+            [aClass.generateSetDel(true)/]
+
+        protected:
+            //*********************************
+            // Attribute Members
+            //*********************************
+            [aClass.eAttributes->sortedBy(name).generateAttributeProtected()/]
+            
+            //*********************************
+            // Reference Members
+            //*********************************
+            [aClass.eReferences->sortedBy(name).generateReferenceProtected()/]
+
+        private:
+            std::weak_ptr<[aClass.name.toUpperFirst()/]> [generateGetThisPtrPropertyName()/]_;
+    };
 }
 [endGuard(guardName)/]
 [/file]

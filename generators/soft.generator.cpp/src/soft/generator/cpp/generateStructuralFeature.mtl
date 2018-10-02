@@ -37,31 +37,31 @@ virtual bool eSet(int featureID, std::shared_ptr<boost::any> newValue) [abstract
 [template public generateGetImpl(aClass : EClass)]
 std::shared_ptr<boost::any> [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, bool resolve, bool coreType) const
 {
-	switch(featureID)
-	{
-	[for (struct : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
-		case [struct.getMetaModelPackageNameForEstructuralFeture(aClass)/]::[struct.getStaticAttributeIDName()/]:
-			return eAny([struct.getGetterName()/]()); //[aClass.getMyClassifierID()/][struct.getFeatureID()/]
-	[/for]
-	}
+    switch(featureID)
+    {
+    [for (struct : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
+        case [struct.getMetaModelPackageNameForEstructuralFeture(aClass)/]::[struct.getStaticAttributeIDName()/]:
+            return eAny([struct.getGetterName()/]()); //[aClass.getMyClassifierID()/][struct.getFeatureID()/]
+    [/for]
+    }
 [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
-	return ecore::EObjectImpl::eGet(featureID, resolve, coreType);
+    return ecore::EObjectImpl::eGet(featureID, resolve, coreType);
 [elseif (aClass.eSuperTypes->size() = 1)]
-	return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::eGet(featureID, resolve, coreType);
+    return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::eGet(featureID, resolve, coreType);
 [else]
-	std::shared_ptr<boost::any> result;
-	[let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]		
-	[for (sClass : EClass | eClasses)]
-	result = [getClassWithNamespace(aClass,sClass)/]Impl::eGet(featureID, resolve, coreType);
-	[if (sClass <> eClasses->last())]
-	if (!result->isEmpty())
-	{
-		return result;
-	}
-	[/if]
-	[/for]
-	return result;
-	[/let]
+    std::shared_ptr<boost::any> result;
+    [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]        
+    [for (sClass : EClass | eClasses)]
+    result = [getClassWithNamespace(aClass,sClass)/]Impl::eGet(featureID, resolve, coreType);
+    [if (sClass <> eClasses->last())]
+    if (!result->isEmpty())
+    {
+        return result;
+    }
+    [/if]
+    [/for]
+    return result;
+    [/let]
 [/if]
 }
 [/template]
@@ -69,31 +69,31 @@ std::shared_ptr<boost::any> [aClass.name.toUpperFirst().concat('Impl')/]::eGet(i
 [template public generateIsSetImpl(aClass : EClass)]
 bool [aClass.name.toUpperFirst().concat('Impl')/]::internalEIsSet(int featureID) const
 {
-	switch(featureID)
-	{
-	[for (struct : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
-		case [struct.getMetaModelPackageNameForEstructuralFeture(aClass)/]::[struct.getStaticAttributeIDName()/]:
-			return [struct.generateComparison()/]; //[aClass.getMyClassifierID()/][struct.getFeatureID()/]
-	[/for]
-	}
+    switch(featureID)
+    {
+    [for (struct : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
+        case [struct.getMetaModelPackageNameForEstructuralFeture(aClass)/]::[struct.getStaticAttributeIDName()/]:
+            return [struct.generateComparison()/]; //[aClass.getMyClassifierID()/][struct.getFeatureID()/]
+    [/for]
+    }
 [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
-	return ecore::EObjectImpl::internalEIsSet(featureID);
+    return ecore::EObjectImpl::internalEIsSet(featureID);
 [elseif (aClass.eSuperTypes->size() = 1)]
-	return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::internalEIsSet(featureID);
+    return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::internalEIsSet(featureID);
 [else]
-	bool result = false;
-	[let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]		
-	[for (sClass : EClass | eClasses)]
-	result = [getClassWithNamespace(aClass,sClass)/]Impl::internalEIsSet(featureID);
-	[if (sClass <> eClasses->last())]
-	if (result)
-	{
-		return result;
-	}
-	[/if]
-	[/for]
-	return result;
-	[/let]
+    bool result = false;
+    [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]        
+    [for (sClass : EClass | eClasses)]
+    result = [getClassWithNamespace(aClass,sClass)/]Impl::internalEIsSet(featureID);
+    [if (sClass <> eClasses->last())]
+    if (result)
+    {
+        return result;
+    }
+    [/if]
+    [/for]
+    return result;
+    [/let]
 [/if]
 }
 [/template]
@@ -101,41 +101,41 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::internalEIsSet(int featureID)
 [template public generateSetImpl(aClass : EClass)]
 bool [aClass.name.toUpperFirst().concat('Impl')/]::eSet(int featureID, std::shared_ptr<boost::any> newValue)
 {
-	switch(featureID)
-	{
+    switch(featureID)
+    {
 [for (struct : EStructuralFeature | aClass.eStructuralFeatures->select(upperBound = 1 and changeable)->asOrderedSet()->sortedBy(name))]
-		case [struct.getMetaModelPackageNameForEstructuralFeture(aClass)/]::[struct.getStaticAttributeIDName()/]:
-		{
-			// BOOST CAST
+        case [struct.getMetaModelPackageNameForEstructuralFeture(aClass)/]::[struct.getStaticAttributeIDName()/]:
+        {
+            // BOOST CAST
 [if (not struct.eType.oclIsKindOf(EDataType))]
-			std::shared_ptr<[struct.eGenericType.generateCppType()/]> _[struct.name/] = newValue->get<std::shared_ptr<[struct.eGenericType.generateCppType()/]>>();
+            std::shared_ptr<[struct.eGenericType.generateCppType()/]> _[struct.name/] = newValue->get<std::shared_ptr<[struct.eGenericType.generateCppType()/]>>();
 [else]
-			[struct.eGenericType.generateCppType()/] _[struct.name/] = newValue->get<[struct.eGenericType.generateCppType()/]>();
+            [struct.eGenericType.generateCppType()/] _[struct.name/] = newValue->get<[struct.eGenericType.generateCppType()/]>();
 [/if]
-			[struct.getSetterName()/](_[struct.name/]); //[aClass.getMyClassifierID()/][struct.getFeatureID()/]
-			return true;
-		}
+            [struct.getSetterName()/](_[struct.name/]); //[aClass.getMyClassifierID()/][struct.getFeatureID()/]
+            return true;
+        }
 [/for]
-	}
+    }
 
 [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
-	return ecore::EObjectImpl::eSet(featureID, newValue);
+    return ecore::EObjectImpl::eSet(featureID, newValue);
 [elseif (aClass.eSuperTypes->size() = 1)]
-	return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::eSet(featureID, newValue);
+    return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::eSet(featureID, newValue);
 [else]
-	bool result = false;
-	[let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]		
-	[for (sClass : EClass | eClasses)]
-	result = [getClassWithNamespace(aClass,sClass)/]Impl::eSet(featureID, newValue);
-	[if (sClass <> eClasses->last())]
-	if (result)
-	{
-		return result;
-	}
-	[/if]
-	[/for]
-	return result;
-	[/let]
+    bool result = false;
+    [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]        
+    [for (sClass : EClass | eClasses)]
+    result = [getClassWithNamespace(aClass,sClass)/]Impl::eSet(featureID, newValue);
+    [if (sClass <> eClasses->last())]
+    if (result)
+    {
+        return result;
+    }
+    [/if]
+    [/for]
+    return result;
+    [/let]
 [/if]
 }
 [/template]
