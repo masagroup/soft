@@ -86,23 +86,27 @@ virtual public [getClassWithNamespace(aClass,sClass)/][/for]
             //destructor
             virtual ~[aClass.name.toUpperFirst()/]() {}
             [if(aClass.eOperations->notEmpty())]
+
             //*********************************
             // Operations
             //*********************************
-            [/if]
             [aClass.eOperations->sortedBy(name).generateOperationDeclaration(false)/]
+            [/if]
             [if(aClass.eAttributes->notEmpty())]
+
             //*********************************
             // Attributes Getter Setter
             //*********************************
-            [/if]
             [aClass.eAttributes->sortedBy(name).generateAttributeDeclaration(false)/]
+            [/if]
             [if(aClass.eReferences->notEmpty())]
+
             //*********************************
-            // Reference
+            // References
             //*********************************
             [aClass.eReferences->sortedBy(name).generateReferenceDeclaration(false)/]
             [/if]
+
         public:
         
             [aClass.generateEContainerOperation(false)/] 

@@ -63,13 +63,13 @@ virtual public [getClassWithNamespace(aClass, sClass)/]Impl[/for][if (aClass.eSu
             [let ref:OrderedSet(EReference) = aClass.getAllContainers()]
             [for(aReference:EReference | ref->sortedBy(name)) ]
             //Additional constructors for the containments back reference
-    [if(ref->select(eType.name = aReference.eType.name)->size()>1 )]
-            [if(ref->select(eType.name = aReference.eType.name)->asOrderedSet()->sortedBy(name)->first() = aReference)]
+                [if(ref->select(eType.name = aReference.eType.name)->size()>1 )]
+                    [if(ref->select(eType.name = aReference.eType.name)->asOrderedSet()->sortedBy(name)->first() = aReference)]
             [className/]([aReference.generateReferenceType(true)/] par_[aReference.eType.name/], const int reference_id);
-            [/if]
-    [else]
+                    [/if]
+                [else]
             [className/]([aReference.generateReferenceType(true)/] par_[aReference.name/]);
-    [/if]
+                [/if]
 
 
             [/for]
@@ -80,20 +80,27 @@ virtual public [getClassWithNamespace(aClass, sClass)/]Impl[/for][if (aClass.eSu
             //destructor
             virtual ~[className/]();
             
+            [if(aClass.eOperations->notEmpty())]
+
             //*********************************
             // Operations
             //*********************************
             [aClass.eOperations->sortedBy(name).generateOperationDeclaration(true)/]
-            
+            [/if]
+            [if(aClass.eAttributes->notEmpty())]
+
             //*********************************
             // Attributes Getter Setter
             //*********************************
             [aClass.eAttributes->sortedBy(name).generateAttributeDeclaration(true)/]
-            
+            [/if]
+            [if(aClass.eReferences->notEmpty())]
+
             //*********************************
-            // Reference
+            // References
             //*********************************
             [aClass.eReferences->sortedBy(name).generateReferenceDeclaration(true)/]
+            [/if]
             
             //*********************************
             // Structural Feature Getter/Setter
@@ -108,15 +115,18 @@ virtual public [getClassWithNamespace(aClass, sClass)/]Impl[/for][if (aClass.eSu
             [aClass.generateSetDel(true)/]
 
         protected:
+            [if(aClass.eAttributes->notEmpty())]
             //*********************************
             // Attribute Members
             //*********************************
             [aClass.eAttributes->sortedBy(name).generateAttributeProtected()/]
-            
+            [/if]
+            [if(aClass.eReferences->notEmpty())]
             //*********************************
             // Reference Members
             //*********************************
             [aClass.eReferences->sortedBy(name).generateReferenceProtected()/]
+            [/if]
 
         private:
             std::weak_ptr<[aClass.name.toUpperFirst()/]> [generateGetThisPtrPropertyName()/]_;
