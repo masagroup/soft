@@ -62,10 +62,11 @@ boost::any[else]
 [/template]
 
 [template public generateParameterType(eParameter : EParameter)]
-[if (not(eParameter.upperBound = 1))]
-std::shared_ptr<EList<[eParameter.eGenericType.generateCppType()/]> > 
-[elseif ((not eOperation.eType.oclIsUndefined()) and ((not eOperation.eType.oclIsKindOf(EDataType)) or (eOperation.eType.name = 'EEList') or (eOperation.eType.name = 'ETreeIterator') ))]
-std::shared_ptr<[eParameter.eGenericType.generateCppType()/]> [else]
+[if (not (eParameter.upperBound = 1))]
+[if (not eParameter.eGenericType.oclIsKindOf(EDataType))]
+std::shared_ptr<EList<[eParameter.eGenericType.generateCppType()/]> >[/if]
+[elseif ((not eParameter.eType.oclIsUndefined()) and ((not eParameter.eType.oclIsKindOf(EDataType)) or (eParameter.eType.name = 'EEList') or (eParameter.eType.name = 'ETreeIterator') ))]
+std::shared_ptr<[eParameter.eGenericType.generateCppType()/]> [else] 
 [eParameter.eGenericType.generateCppType()/] [/if]
 [/template]
 
