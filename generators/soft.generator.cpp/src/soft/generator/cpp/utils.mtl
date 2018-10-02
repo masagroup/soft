@@ -109,6 +109,6 @@ template<typename T> class EList;
 [query public getMemberName(aStructural : EStructuralFeature) : String = eContainingClass.name.toLowerFirst().concat('_').concat(aStructural.eClass().name).concat('_').concat(aStructural.name.toLowerFirst()) /]
 [query public getMemberName(aOperation : EOperation) : String = aOperation.eContainingClass.name.toLowerFirst().concat('_').concat(aOperation.eClass().name).concat('_'.concat(aOperation.name.toLowerFirst()).concat(aOperation.parameterListName())) /]
 
-[query public parameterListName( aOperation : EOperation) : String = if aOperation.eParameters->notEmpty() then '_'.concat(aOperation.singlemultipleParameter()) else '' endif /]
-[query public singlemultipleParameter(aOperation : EOperation) : String = if aOperation.eParameters->size()>1 then aOperation.eParameters->first().eType.name.concat('_').concat(aOperation.eParameters->last().eType.name) else aOperation.eParameters->first().eType.name endif /]
+[query public parameterListName( aOperation : EOperation) : String = if aOperation.eParameters->notEmpty() then '_'.concat(aOperation.singleMultipleParameter()) else '' endif /]
+[query public singleMultipleParameter(aOperation : EOperation) : String = if aOperation.eParameters->size()>1 then aOperation.eParameters->first().eType.name.concat('_').concat(aOperation.eParameters->last().eType.name) else aOperation.eParameters->first().eType.name endif /]
 [query public getMyClassifierID(anEClassifier : EClassifier) : EInt = if (anEClassifier.getClassifierID() = 0) then anEClassifier.ePackage.eClassifiers->selectByKind(EClassifier)->size() else anEClassifier.getClassifierID() endif/]

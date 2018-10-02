@@ -11,15 +11,6 @@ virtual [anEOperation.generateOperationType()/] [anEOperation.name/]([anEOperati
 
 [/template]
 
-[template public generateOperationType(eOperation : EOperation) post(trim())]
-[if (not (eOperation.upperBound = 1))]
-[if (not eOperation.eGenericType.oclIsKindOf(EDataType))]
-std::shared_ptr<EList<[eOperation.eGenericType.generateCppType()/]> >[/if]
-[elseif ((not eOperation.eType.oclIsUndefined()) and (not eOperation.eType.oclIsKindOf(EDataType)))]
-std::shared_ptr<[eOperation.eGenericType.generateCppType()/]> [else]
-[eOperation.eGenericType.generateCppType()/] [/if]
-
-[/template]
 
 [template public generateOperationImplementation(anEOperation : EOperation) ? (not (ignore() or doNotGenerate()))]
 [anEOperation.generateOperationType()/] [anEOperation.eContainingClass.name.toUpperFirst()/]Impl::[anEOperation.name/]([anEOperation.generateParameterList()/])[if (hasKey('const'))] const[/if]
