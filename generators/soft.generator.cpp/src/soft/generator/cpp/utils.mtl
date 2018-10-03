@@ -89,7 +89,7 @@ template<typename T> class EList;
 
 [query public requiresList(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else (name = 'ETreeIterator' or name = 'EEList') endif/]
 
-[query public getMetaModelPackageNameForEstructuralFeture(aStructural : EStructuralFeature,aClass: EClass) : String = if( aStructural.eContainingClass.ePackage = aClass.ePackage  ) then aStructural.eContainingClass.ePackage.name.concat('Package').toUpperFirst() else aStructural.eContainingClass.ePackage.name.concat('::').concat(aStructural.eContainingClass.ePackage.name.concat('Package').toUpperFirst()) endif/]
+[query public getMetaModelPackageNameForEStructuralFeature(aStructural : EStructuralFeature,aClass: EClass) : String = if( aStructural.eContainingClass.ePackage = aClass.ePackage  ) then aStructural.eContainingClass.ePackage.name.concat('Package').toUpperFirst() else aStructural.eContainingClass.ePackage.name.concat('::').concat(aStructural.eContainingClass.ePackage.name.concat('Package').toUpperFirst()) endif/]
 
 [**
  * generate member names for package generation
@@ -112,3 +112,26 @@ template<typename T> class EList;
 [query public parameterListName( aOperation : EOperation) : String = if aOperation.eParameters->notEmpty() then '_'.concat(aOperation.singleMultipleParameter()) else '' endif /]
 [query public singleMultipleParameter(aOperation : EOperation) : String = if aOperation.eParameters->size()>1 then aOperation.eParameters->first().eType.name.concat('_').concat(aOperation.eParameters->last().eType.name) else aOperation.eParameters->first().eType.name endif /]
 [query public getMyClassifierID(anEClassifier : EClassifier) : EInt = if (anEClassifier.getClassifierID() = 0) then anEClassifier.ePackage.eClassifiers->selectByKind(EClassifier)->size() else anEClassifier.getClassifierID() endif/]
+
+[template public generateTypeClass(anEDataType : EClass)]
+[anEDataType.name/]
+[/template]
+
+[query public getMetaModelTypedElementString(aStructuralFeature : EStructuralFeature) : String = if aStructuralFeature.eContainingClass.ePackage = aStructuralFeature.eClass().ePackage then aStructuralFeature.eClass().generateTypeClass() else aStructuralFeature.eClass().ePackage.name.concat('::').concat(aStructuralFeature.eClass().generateTypeClass()) endif /]
+[query public getMetaModelTypedElementString(aOperation : EOperation) : String = if aOperation.eContainingClass.ePackage = aOperation.eClass().ePackage then aOperation.eClass().generateTypeClass() else aOperation.eClass().ePackage.name.concat('::').concat(aOperation.eClass().generateTypeClass()) endif /]
+
+[query public getMetaModelTypeString(aClass : EClassifier) : String = getMetaModelTypeString(aClass, aClass.ePackage) /]
+[query public getMetaModelTypeString(anENamedElement : ENamedElement, anEPackage : EPackage) : String = if anEPackage = anENamedElement.eClass().ePackage then anENamedElement.eClass().generateTypeClass() else anENamedElement.eClass().ePackage.name.concat('::').concat(anENamedElement.eClass().generateTypeClass()) endif /]
+
+[query public getPackageGetter(aReference : EReference) : String = if oclIsUndefined() then 'nullptr' else getterPrefix().concat(getMemberNameUpperFirst()).concat('()') endif/]
+[query public getPackageGetter(aAttribute : EAttribute) : String = 'get'.concat(getMemberNameUpperFirst()).concat('()') /]
+
+
+[**
+ * Get a string of the getterfunction for the element in the corresponding metamodel package 
+*/] 
+[query public packageGetter(aEClassifier : EClassifier, aStruct : EStructuralFeature) : String = packageGetter(aEClassifier,aStruct.eContainingClass) /]
+[query public packageGetter(aEClass : EClass, supertype : EClass) : String = packageGetter(supertype.oclAsType(EClassifier),aEClass.oclAsType(EClassifier)) /]
+[query public packageGetter(aEClassifier1 : EClassifier, aEClassifier2 : EClassifier) : String = needMetaModelPackageGetter(aEClassifier1, aEClassifier2).concat('get').concat(aEClassifier1.getMemberNameUpperFirst()).concat('()') /]
+[query public needMetaModelPackageGetter(aClassifier1 : EClassifier ,aClassifier2 : EClassifier ) : String = if(aClassifier1.ePackage.name = aClassifier2.ePackage.name )then '' else  aClassifier1.ePackage.nsPrefix.concat('::').concat(aClassifier1.ePackage.name.toUpperFirst()).concat('Package').concat('::eInstance()->')  endif /]
+

@@ -1,0 +1,78 @@
+[comment encoding = UTF-8 /]
+[module generatePackageInterface('http://www.eclipse.org/emf/2002/Ecore')]
+ 
+[import soft::generator::cpp::generateAttribute /]
+[import soft::generator::cpp::generateClass /]
+[import soft::generator::cpp::generateDataType /]
+[import soft::generator::cpp::generateOperation /]
+[import soft::generator::cpp::generateReference /]
+[import soft::generator::cpp::generateSingleton /]
+[import soft::generator::cpp::utils /]
+[import soft::generator::cpp::pack::generatePackageHelper /]
+
+[template public generatePackageInterface(anEPackage : EPackage) { packageName : String = anEPackage.name.toUpperFirst().concat('Package'); }]
+[file ('src-gen/'.concat(anEPackage.name).concat('/').concat(packageName).concat('.hpp'), false, 'UTF-8')]
+[startGuard(anEPackage,'Package')/]
+
+#include "ecore/EPackage.hpp"
+
+namespace [anEPackage.eClass().ePackage.name/] 
+{
+[for (elements : EClassifier| anEPackage.getMetaMetaModelClasses())]
+    class [elements.name/];
+[/for]
+}
+
+[comment namespace /]
+namespace [anEPackage.name/] 
+{
+    /*!
+    The Metamodel Package for the [anEPackage.name/] metamodel. This package is used to enable the reflection of model elements. It contains all model elements
+    which were described in an ecore file.
+    */
+    class [packageName/] : virtual public [needNamespace(anEPackage, 'EPackage')/] 
+    {
+        private:    
+            [packageName/]([packageName/] const&) = delete;
+            [packageName/]& operator=([packageName/] const&) = delete;
+
+        protected:
+            [packageName/](){}
+
+        public:
+            //static variables
+            static const std::string eNAME;
+            static const std::string eNS_URI;
+            static const std::string eNS_PREFIX;
+
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
+            // Begin Class [aClass.name.toUpperFirst()/]
+            //Class and Feature IDs 
+            [aClass.generateStaticClassID()/]
+            [aClass.eAttributes->sortedBy(name).generateStaticAttributeID()/]
+            [aClass.eReferences->sortedBy(name).generateStaticReferenceID()/]
+            [aClass.eOperations->sortedBy(name).generateStaticOperationID()/]
+            //Class and Feature Getter
+            [aClass.generateModelElementGetter(anEPackage, false)/]
+            [aClass.eAttributes->sortedBy(name).generateModelElementGetter(anEPackage, false)/]
+            [aClass.eReferences->sortedBy(name).generateModelElementGetter(anEPackage, false)/]
+            [aClass.eOperations->sortedBy(name).generateModelElementGetter(anEPackage, false)/]
+            // End Class [aClass.name.toUpperFirst()/]
+
+[/for]
+            [anEPackage.eAllContents(EDataType)->sortedBy(name).generateStaticDatatypeID()/]
+            [anEPackage.eAllContents(EDataType)->sortedBy(name).generateModelElementGetter(anEPackage, false)/]
+
+            //Singleton Instance and Getter
+            [generateSingletonDecl(packageName)/]
+[if anEPackage.name.equalsIgnoreCase('ecore')]
+
+            //prevent from hiding functions
+            using EPackage::getEAnnotation;
+            using EPackage::getEClassifier;
+[/if]
+    };
+}
+[endGuard(anEPackage,'Package')/]
+[/file]
+[/template]

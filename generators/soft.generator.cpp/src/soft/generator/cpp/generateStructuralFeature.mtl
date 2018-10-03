@@ -40,7 +40,7 @@ std::shared_ptr<boost::any> [aClass.name.toUpperFirst().concat('Impl')/]::eGet(i
     switch(featureID)
     {
     [for (struct : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
-        case [struct.getMetaModelPackageNameForEstructuralFeture(aClass)/]::[struct.getStaticAttributeIDName()/]:
+        case [struct.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[struct.getStaticAttributeIDName()/]:
             return eAny([struct.getGetterName()/]()); //[aClass.getMyClassifierID()/][struct.getFeatureID()/]
     [/for]
     }
@@ -72,7 +72,7 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::internalEIsSet(int featureID)
     switch(featureID)
     {
     [for (struct : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
-        case [struct.getMetaModelPackageNameForEstructuralFeture(aClass)/]::[struct.getStaticAttributeIDName()/]:
+        case [struct.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[struct.getStaticAttributeIDName()/]:
             return [struct.generateComparison()/]; //[aClass.getMyClassifierID()/][struct.getFeatureID()/]
     [/for]
     }
@@ -104,7 +104,7 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::eSet(int featureID, std::shar
     switch(featureID)
     {
 [for (struct : EStructuralFeature | aClass.eStructuralFeatures->select(upperBound = 1 and changeable)->asOrderedSet()->sortedBy(name))]
-        case [struct.getMetaModelPackageNameForEstructuralFeture(aClass)/]::[struct.getStaticAttributeIDName()/]:
+        case [struct.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[struct.getStaticAttributeIDName()/]:
         {
             // BOOST CAST
 [if (not struct.eType.oclIsKindOf(EDataType))]

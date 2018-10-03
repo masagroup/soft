@@ -57,3 +57,25 @@ void [aClass.name.toUpperFirst()/]Impl::[generateGetThisPtrPropertySetterName()/
 [query public generateGetThisPtrPropertySetterName(anEClass : EClass) : String = 'set'.concat(generateGetThisPtrPropertyName().toUpperFirst())/]
 [query public generateGetThisPtrPropertyGetterName(anEClass : EClass) : String = 'get'.concat(generateGetThisPtrPropertyName().toUpperFirst())/]
 
+[template public generateStaticClassID(aEClass : EClass)]
+static const unsigned int [aEClass.getStaticAttributeIDName()/] = [aEClass.getMyClassifierID()/];
+static const unsigned int [aEClass.getStaticAttributeIDName()/]_FEATURE_COUNT = [aEClass.getFeatureCount()/];
+static const unsigned int [aEClass.getStaticAttributeIDName()/]_OPERATION_COUNT = [aEClass.getOperationCount()/];
+[/template]
+
+[template public generateClassCreation(aEClass : EClass)]
+[aEClass.getClassMemberName()/] = factory->createEClass_in_EPackage(package, [aEClass.getStaticAttributeIDName()/]);
+[/template]
+
+[template public generateClassInit(aEClass : EClass)]
+[aEClass.getClassMemberName()/]->setName("[aEClass.name/]");
+[aEClass.getClassMemberName()/]->setAbstract([aEClass.abstract.toString()/]);
+[aEClass.getClassMemberName()/]->setInterface([aEClass.interface.toString()/]);
+
+[/template]
+
+[template public initSuperTypes(aEClass : EClass)]
+[for (superClass : EClass | aEClass.eSuperTypes->asOrderedSet()->sortedBy(name))]
+[aEClass.getClassMemberName()/]->getESuperTypes()->push_back([aEClass.packageGetter(superClass)/]);
+[/for]
+[/template]

@@ -29,17 +29,25 @@ set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.68.0 REQUIRED)
 
 # Generated sources
-set(GENERATED_SOURCE_IMPLEMENTATION_FILES 
+set(GENERATED_SOURCE_FILES
+	src-gen/[packageName/]/[packageName.toUpperFirst()/]Package.cpp 
+)
+set(GENERATED_SOURCE_IMPLEMENTATION_FILES
+	src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]PackageImpl.cpp
+	src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]PackageImpl_Creation.cpp
+	src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]PackageImpl_Initialization.cpp
 [for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
     src-gen/[packageName/]/impl/[aClass.name.toUpperFirst()/]Impl.cpp
 [/for] 
 )
 set(GENERATED_HEADER_INTERFACE_FILES
+	src-gen/[packageName/]/[packageName.toUpperFirst()/]Package.hpp 
 [for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
     src-gen/[packageName/]/[aClass.name.toUpperFirst()/].hpp
 [/for]
 )
 set(GENERATED_HEADER_IMPLEMENTATION_FILES
+	src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]PackageImpl.hpp
 [for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
     src-gen/[packageName/]/impl/[aClass.name.toUpperFirst()/]Impl.hpp
 [/for] 
@@ -52,7 +60,7 @@ set(HEADER_FILES
 )
 
 
-add_library(${PROJECT_NAME} STATIC  ${HEADER_FILES} ${SOURCE_FILES} ${GENERATED_HEADER_INTERFACE_FILES} ${GENERATED_HEADER_IMPLEMENTATION_FILES} ${GENERATED_SOURCE_IMPLEMENTATION_FILES})
+add_library(${PROJECT_NAME} STATIC  ${HEADER_FILES} ${SOURCE_FILES} ${GENERATED_HEADER_INTERFACE_FILES} ${GENERATED_HEADER_IMPLEMENTATION_FILES} ${GENERATED_SOURCE_FILES} ${GENERATED_SOURCE_IMPLEMENTATION_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC src)
 target_include_directories(${PROJECT_NAME} PUBLIC src-gen)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
@@ -60,7 +68,7 @@ target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 
 # Visual studio specific project layout
-source_group(source FILES ${GENERATED_HEADER_INTERFACE_FILES})
+source_group(source FILES ${GENERATED_HEADER_INTERFACE_FILES} ${GENERATED_SOURCE_FILES})
 source_group(source\\impl FILES ${GENERATED_HEADER_IMPLEMENTATION_FILES} ${GENERATED_SOURCE_IMPLEMENTATION_FILES})
 
 

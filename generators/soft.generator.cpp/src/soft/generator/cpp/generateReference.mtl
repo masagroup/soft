@@ -75,3 +75,42 @@ void [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.get
 [/if]
 }
 [/template]
+
+[template public generateStaticReferenceID(anEReference : EReference)]
+static const int [anEReference.getStaticAttributeIDName()/] = [anEReference.eContainingClass.getMyClassifierID() * 100 + anEReference.getFeatureID()/];
+
+[/template]
+
+[template public generateReferenceCreation(anEReference : EReference)]
+[anEReference.getClassMemberName()/] = factory->createEReference_in_EContainingClass([anEReference.eContainingClass.getClassMemberName()/], [anEReference.getStaticAttributeIDName()/]);
+
+[/template] 
+ 
+[template public generateReferenceInitialization(anEReference : EReference)]
+[anEReference.getClassMemberName()/]->setName("[anEReference.name/]");
+[anEReference.getClassMemberName()/]->setEType([anEReference.eGenericType.eClassifier.packageGetter(anEReference)/]);
+[anEReference.getClassMemberName()/]->setLowerBound([anEReference.lowerBound/]);
+[anEReference.getClassMemberName()/]->setUpperBound([anEReference.upperBound/]);
+[anEReference.getClassMemberName()/]->setTransient([anEReference.transient.toString()/]);
+[anEReference.getClassMemberName()/]->setVolatile([anEReference.volatile.toString()/]);
+[anEReference.getClassMemberName()/]->setChangeable([anEReference.changeable.toString()/]);
+[anEReference.getClassMemberName()/]->setUnsettable([anEReference.unsettable.toString()/]);
+[anEReference.getClassMemberName()/]->setUnique([anEReference.unique.toString()/]);
+[anEReference.getClassMemberName()/]->setDerived([anEReference.derived.toString()/]);
+[anEReference.getClassMemberName()/]->setOrdered([anEReference.ordered.toString()/]);
+[anEReference.getClassMemberName()/]->setContainment([anEReference.containment.toString()/]);
+[anEReference.getClassMemberName()/]->setResolveProxies([anEReference.resolveProxies.toString()/]);
+{
+	std::string defaultValue = "[anEReference.defaultValueLiteral/]";
+	if (!defaultValue.empty())
+	{
+		[anEReference.getClassMemberName()/]->setDefaultValueLiteral(defaultValue);
+	}
+	std::shared_ptr<ecore::EReference>  otherEnd = [anEReference.eOpposite.getPackageGetter()/];
+	if (otherEnd != nullptr)
+    {
+   		[anEReference.getClassMemberName()/]->setEOpposite(otherEnd);
+    }
+}
+
+[/template]

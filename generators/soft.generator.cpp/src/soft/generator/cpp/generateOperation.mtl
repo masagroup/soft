@@ -27,3 +27,36 @@ virtual [anEOperation.generateOperationType()/] [anEOperation.name/]([anEOperati
 }
 [/template]
 
+[template public generateStaticOperationID(aOperation : EOperation) ? ( not hasImplOnly())]
+static const int [aOperation.getStaticAttributeIDName()/] = [aOperation.eContainingClass.getMyClassifierID() * 100 + aOperation.eContainingClass.getFeatureCount() + aOperation.getOperationID()/];
+
+[/template]
+
+[query public simpleDatatypeGetter(anEClassifier : EClassifier, anOperation: EOperation) : String = if anOperation.eType.oclIsUndefined() or anOperation.eTypeParameters->notEmpty() then 'nullptr' else needMetaModelPackageGetter(anEClassifier, anOperation.eContainingClass).concat('get').concat(anEClassifier.getMemberNameUpperFirst()).concat('()') endif/]
+
+[template public generateOperationCreation(anEOperation : EOperation) ? ( not hasImplOnly()) ]
+[anEOperation.getClassMemberName()/] = factory->createEOperation_in_EContainingClass([anEOperation.eContainingClass.getClassMemberName()/], [anEOperation.getStaticAttributeIDName()/]);
+
+[/template]
+
+[template public generateOperationInitialization(anEOperation : EOperation)? ( not hasImplOnly() )]
+[anEOperation.getClassMemberName()/]->setEType([anEOperation.eType.simpleDatatypeGetter(anEOperation)/]);
+[anEOperation.getClassMemberName()/]->setName("[anEOperation.name.toString()/]");
+[anEOperation.getClassMemberName()/]->setLowerBound([anEOperation.lowerBound/]);
+[anEOperation.getClassMemberName()/]->setUpperBound([anEOperation.upperBound/]);
+[anEOperation.getClassMemberName()/]->setUnique([anEOperation.unique.toString()/]);
+[anEOperation.getClassMemberName()/]->setOrdered([anEOperation.ordered.toString()/]);
+
+[for (anEParameter : EParameter | anEOperation.eParameters) separator ('\r\n')]
+{
+	std::shared_ptr<ecore::EParameter> parameter = ecore::EcoreFactory::eInstance()->createEParameter_in_EOperation([anEOperation.getClassMemberName()/]);
+	parameter->setName("[anEParameter.name/]");
+	parameter->setEType([anEParameter.eType.simpleDatatypeGetter(anEParameter.eOperation)/]);
+	parameter->setLowerBound(0);
+	parameter->setUpperBound(1);
+	parameter->setUnique(true);
+	parameter->setOrdered(true);
+}
+[/for]
+
+[/template]

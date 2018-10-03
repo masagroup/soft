@@ -68,4 +68,37 @@ void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.get
 } 
 [/template]
 
+[template public generateStaticAttributeID(anEAttribute : EAttribute)]
+static const int [anEAttribute.getStaticAttributeIDName()/] = [anEAttribute.eContainingClass.getMyClassifierID() * 100 + anEAttribute.getFeatureID()/];
+
+[/template]
+
+[template public generateAttributeCreation(anEAttribute : EAttribute)]
+[anEAttribute.getClassMemberName()/] = factory->createEAttribute_in_EContainingClass([anEAttribute.eContainingClass.getClassMemberName()/], [anEAttribute.getStaticAttributeIDName()/]);
+
+[/template]
+
+[template public generateAttributeInitialization(anEAttribute : EAttribute)]
+[anEAttribute.getClassMemberName()/] = [anEAttribute.getPackageGetter()/];
+[anEAttribute.getClassMemberName()/]->setName("[anEAttribute.name/]");
+[anEAttribute.getClassMemberName()/]->setEType([anEAttribute.eType.oclAsType(EDataType).packageGetter(anEAttribute)/]);
+[anEAttribute.getClassMemberName()/]->setLowerBound([anEAttribute.lowerBound/]);
+[anEAttribute.getClassMemberName()/]->setUpperBound([anEAttribute.upperBound/]);
+[anEAttribute.getClassMemberName()/]->setTransient([anEAttribute.transient.toString()/]);
+[anEAttribute.getClassMemberName()/]->setVolatile([anEAttribute.volatile.toString()/]);
+[anEAttribute.getClassMemberName()/]->setChangeable([anEAttribute.changeable.toString()/]);
+[anEAttribute.getClassMemberName()/]->setUnsettable([anEAttribute.unsettable.toString()/]);
+[anEAttribute.getClassMemberName()/]->setUnique([anEAttribute.unique.toString()/]);
+[anEAttribute.getClassMemberName()/]->setDerived([anEAttribute.derived.toString()/]);
+[anEAttribute.getClassMemberName()/]->setOrdered([anEAttribute.ordered.toString()/]);
+[anEAttribute.getClassMemberName()/]->setID([anEAttribute.iD.toString()/]);
+{
+	std::string defaultValue = "[anEAttribute.defaultValueLiteral/]";
+	if (!defaultValue.empty())
+	{
+	   [anEAttribute.getClassMemberName()/]->setDefaultValueLiteral(defaultValue);
+	}
+}
+
+[/template]
 

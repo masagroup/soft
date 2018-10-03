@@ -1,0 +1,22 @@
+[comment encoding = UTF-8 /]
+[module generateDataType('http://www.eclipse.org/emf/2002/Ecore')]
+
+[import soft::generator::cpp::utils /]
+
+
+[template public generateEDatatypeCreation(anEDatatype : EDataType)]
+[anEDatatype.getClassMemberName()/] = factory->create[if (anEDatatype.oclIsKindOf(EEnum))]EEnum[else]EDataType[/if]_in_EPackage(package, [anEDatatype.getStaticAttributeIDName()/]);
+
+[/template]
+
+[template public generateEDatatypeInitialization(adatatype : EDataType)]
+[adatatype.getClassMemberName()/]->setName("[adatatype.name/]");
+[if (not adatatype.oclIsKindOf(EEnum))]
+[adatatype.getClassMemberName()/]->setSerializable([adatatype.serializable.toString()/]);
+[/if]
+[/template]
+
+[template public generateStaticDatatypeID(aEDatatype : EDataType)]
+static const int [aEDatatype.getStaticAttributeIDName()/] = [aEDatatype.getMyClassifierID()/];
+
+[/template]

@@ -4,6 +4,7 @@
 [import soft::generator::cpp::generateBuildFile/]
 [import soft::generator::cpp::generateInterface/]
 [import soft::generator::cpp::impl::generateImplementation/]
+[import soft::generator::cpp::pack::generatePackage/]
 [import soft::generator::cpp::utils/]
 
 [template public generateModel(aPackage : ecore::EPackage)]
@@ -15,5 +16,6 @@
 
 
 [aPackage.generateBuildFile()/]
+[aPackage.generatePackage()/]
 
 [/template]

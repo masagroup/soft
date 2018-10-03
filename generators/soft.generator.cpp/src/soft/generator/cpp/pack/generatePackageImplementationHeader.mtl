@@ -1,0 +1,106 @@
+[comment encoding = UTF-8 /]
+[module generatePackageImplementationHeader('http://www.eclipse.org/emf/2002/Ecore')]
+
+[import soft::generator::cpp::generateAttribute /]
+[import soft::generator::cpp::generateClass /]
+[import soft::generator::cpp::generateType /]
+[import soft::generator::cpp::generateOperation /]
+[import soft::generator::cpp::generateReference /]
+[import soft::generator::cpp::utils /]
+[import soft::generator::cpp::pack::generatePackageHelper /]
+
+[template public generatePackageImplHeader(anEPackage : EPackage)]
+[file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(anEPackage.name.toUpperFirst()).concat('PackageImpl.hpp'), false, 'UTF-8')]
+[startGuard(anEPackage,'PackageImpl')/]
+
+[comment  Generate Includes for the Factory/]
+#include "ecore/EcorePackage.hpp"
+#include "ecore/impl/EPackageImpl.hpp"
+
+[if (not(anEPackage.name = 'ecore') )]
+#include "[anEPackage.name/]/[anEPackage.name.toUpperFirst().concat('Package')/].hpp"
+[/if]
+
+namespace [anEPackage.name/] 
+{
+[for (elements : EClassifier| OrderedSet{anEPackage.eClassifiers}->flatten()->selectByKind(EClass)->sortedBy(name)) separator ('\r\n')]
+    class [elements.name/];[/for]
+
+}
+
+namespace ecore
+{
+    class EcoreFactory;
+}
+
+
+namespace [anEPackage.name/]
+{
+    class [anEPackage.name.toUpperFirst().concat('PackageImpl')/] : public [anEPackage.needNamespace('EPackageImpl')/] ,virtual public [anEPackage.name.toUpperFirst().concat('Package')/]
+    {
+        private:    
+            [anEPackage.name.toUpperFirst().concat('PackageImpl')/]([anEPackage.name.toUpperFirst().concat('PackageImpl')/] const&) = delete;
+            [anEPackage.name.toUpperFirst().concat('PackageImpl')/]& operator=([anEPackage.name.toUpperFirst().concat('PackageImpl')/] const&) = delete;
+
+        protected:
+            [anEPackage.name.toUpperFirst().concat('PackageImpl')/]();
+
+        public:
+            virtual ~[anEPackage.name.toUpperFirst().concat('PackageImpl')/]();
+
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
+            // Begin Class [aClass.name.toUpperFirst()/]
+            // Class and Feature Getter
+            [aClass.generateModelElementGetter(anEPackage, true)/]
+            [aClass.eAttributes->sortedBy(name).generateModelElementGetter(anEPackage, true)/]
+            [aClass.eReferences->sortedBy(name).generateModelElementGetter(anEPackage, true)/]
+            [aClass.eOperations->sortedBy(name).generateModelElementGetter(anEPackage, true)/]
+            // End Class [aClass.name.toUpperFirst()/]
+[/for]
+
+            [anEPackage.eAllContents(EDataType).generateModelElementGetter(anEPackage, true)/]
+
+        private:
+            [anEPackage.eAllContents(EClass)->sortedBy(name).generatePrivatePackageMember(anEPackage)/]
+            [anEPackage.eAllContents(EDataType)->sortedBy(name).generatePrivatePackageMember(anEPackage)/]
+            [anEPackage.eAllContents(EClass).eAttributes->sortedBy(name).generatePrivatePackageMember(anEPackage)/]
+            [anEPackage.eAllContents(EClass).eReferences->sortedBy(name).generatePrivatePackageMember(anEPackage)/]
+            [anEPackage.eAllContents(EClass).eOperations->sortedBy(name).generatePrivatePackageMember(anEPackage)/]
+
+            friend class [anEPackage.name.concat('Package').toUpperFirst()/];
+
+            static bool isInited;
+            static [anEPackage.name.concat('Package').toUpperFirst()/]* create();
+            bool isInitialized = false;
+            bool isCreated = false;
+
+            virtual void init(std::shared_ptr<ecore::EPackage> package);
+
+        public:
+            void createPackageContents(std::shared_ptr<ecore::EPackage> package);
+            void initializePackageContents();
+
+        private:
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
+            void create[aClass.name.toUpperFirst()/]Content(std::shared_ptr<ecore::EPackage> package, std::shared_ptr<ecore::EcoreFactory> factory);
+[/for]
+            void createPackageEDataTypes(std::shared_ptr<ecore::EPackage> package, std::shared_ptr<ecore::EcoreFactory> factory);
+
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
+            void initialize[aClass.name.toUpperFirst()/]Content();
+[/for]
+            void initializePackageEDataTypes();
+
+
+
+[if anEPackage.name.equalsIgnoreCase('ecore')]
+    
+    //prevent from hiding functions
+    using EPackageImpl::getEAnnotation;
+    using EPackageImpl::getEClassifier;
+[/if]
+    };
+}
+[endGuard(anEPackage,'PackageImpl')/]
+[/file]
+[/template]
