@@ -64,6 +64,7 @@ add_library(${PROJECT_NAME} STATIC  ${HEADER_FILES} ${SOURCE_FILES} ${GENERATED_
 target_include_directories(${PROJECT_NAME} PUBLIC src)
 target_include_directories(${PROJECT_NAME} PUBLIC src-gen)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
+target_compile_options(${PROJECT_NAME} PRIVATE /wd4250) 
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 
