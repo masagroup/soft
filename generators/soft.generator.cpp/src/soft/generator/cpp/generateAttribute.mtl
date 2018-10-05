@@ -5,7 +5,7 @@
 [import soft::generator::cpp::utils/]
 
 [query public hasSetter(anEAttribute : EAttribute) : Boolean = anEAttribute.changeable and (anEAttribute.upperBound = 1)/]
-[query public hasGetter(anEAttribute : EAttribute) : EBoolean = not hasKey('getterbody') /]
+[query public hasGetter(anEAttribute : EAttribute) : EBoolean = not hasKey('getterBody') /]
 
 [template public generateAttributeDeclaration(anEAttribute : EAttribute, impl : Boolean)]
 [anEAttribute.generateAttributeGetterDeclaration(impl)/]

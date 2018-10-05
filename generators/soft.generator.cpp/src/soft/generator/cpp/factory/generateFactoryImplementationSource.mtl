@@ -14,13 +14,11 @@
 
 #include "[anEPackage.name/]/[anEPackage.name.toUpperFirst().concat('Package')/].hpp"
 
+#include "ecore/EList.hpp"
 [if (not(anEPackage.name = 'ecore'))]
 #include "ecore/EClass.hpp"
 [/if]
 
-[if(anEPackage.name = 'uml')]
-#include "uml/impl/ElementImpl.hpp"
-[/if]
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
 #include "[anEPackage.name/]/impl/[aClass.name.toUpperFirst().concat('Impl.hpp')/]"
