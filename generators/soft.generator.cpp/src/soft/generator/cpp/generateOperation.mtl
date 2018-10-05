@@ -49,7 +49,7 @@ static const int [aOperation.getStaticAttributeIDName()/] = [aOperation.eContain
 
 [for (anEParameter : EParameter | anEOperation.eParameters) separator ('\r\n')]
 {
-	std::shared_ptr<ecore::EParameter> parameter = ecore::EcoreFactory::eInstance()->createEParameter_in_EOperation([anEOperation.getClassMemberName()/]);
+	std::shared_ptr<ecore::EParameter> parameter = ecore::EcoreFactory::eInstance()->createEParameter([anEOperation.getClassMemberName()/]);
 	parameter->setName("[anEParameter.name/]");
 	parameter->setEType([anEParameter.eType.simpleDatatypeGetter(anEParameter.eOperation)/]);
 	parameter->setLowerBound(0);

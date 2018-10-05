@@ -15,7 +15,7 @@
 [file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(packageName).concat('.cpp'), false, 'UTF-8')]
 #include "[anEPackage.name/]/impl/[packageName/].hpp"
 
-#include <cassert>
+#include "ecore/EList.hpp"
 
 [if (anEPackage.getMetaMetaModelClasses()->notEmpty())]
 //metamodel classes
@@ -139,7 +139,7 @@ void [packageName/]::createPackageEDataTypes(const std::shared_ptr<[needNamespac
 [file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(packageName).concat('_Initialization.cpp'), false, 'UTF-8')]
 #include "[anEPackage.name/]/impl/[packageName/].hpp"
 
-#include <cassert>
+#include "ecore/EList.hpp"
 
 //metametamodel classes
 [for (elements : EClassifier| anEPackage.getMetaMetaModelClasses())]
