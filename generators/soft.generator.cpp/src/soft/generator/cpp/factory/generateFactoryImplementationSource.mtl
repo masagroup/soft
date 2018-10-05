@@ -1,0 +1,117 @@
+[comment encoding = UTF-8 /]
+[module generateFactoryImplementationSource('http://www.eclipse.org/emf/2002/Ecore')]
+
+[import soft::generator::cpp::generateClass /]
+[import soft::generator::cpp::generateType /]
+[import soft::generator::cpp::utils /]
+
+[template public generateFactoryImplSource(anEPackage : EPackage) {className : String = anEPackage.name.toUpperFirst().concat('FactoryImpl');}]
+[file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(className).concat('.cpp'), false, 'UTF-8')]
+#include "[anEPackage.name/]/impl/[className/].hpp"
+
+#include <cassert>
+
+#include "[anEPackage.name/]/[anEPackage.name.toUpperFirst().concat('Package')/].hpp"
+
+[if (not(anEPackage.name = 'ecore'))]
+#include "ecore/EClass.hpp"
+[/if]
+
+[if(anEPackage.name = 'uml')]
+#include "uml/impl/ElementImpl.hpp"
+[/if]
+
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
+#include "[anEPackage.name/]/impl/[aClass.name.toUpperFirst().concat('Impl.hpp')/]"
+[/for]
+
+[comment namespace /]
+using namespace [anEPackage.name/];
+
+//*********************************
+// Constructor / Destructor
+//*********************************
+
+[className/]::[className/]()
+{
+}
+
+[className/]::~[className/]()
+{
+}
+
+[anEPackage.name.toUpperFirst().concat('Factory')/]* [className/]::create()
+{
+	return new [className/]();
+}
+
+//*********************************
+// creators
+//*********************************
+
+virtual std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> [className/]::create(const std::shared_ptr<[needNamespace(anEPackage, 'EClass')/]>&  eClass)
+{
+    int classID = eClass->getClassifierID();
+	switch(classID)
+	{
+	[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
+		case [anEPackage.name.toUpperFirst()/]Package::[aClass.getStaticAttributeIDName()/]:
+            return this->create[aClass.name/]();
+	[/for]
+	default:
+	   	    std::cerr << __PRETTY_FUNCTION__ << " ID " << classID <<" not found" << std::endl;
+	}
+	return nullptr;
+}
+
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
+std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]() const
+{
+    std::shared_ptr<[aClass.name.toUpperFirst()/]Impl> element(new [aClass.name.toUpperFirst()/]Impl());
+    element->[generateGetThisPtrPropertySetterName()/](element);
+    return element;
+}
+[let ref : OrderedSet(EReference) = aClass.getAllContainers()]
+[for(aReference:EReference | ref->sortedBy(name))]
+std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]([aReference.generateReferenceType(true)/] eContainer) const
+{
+    [generateCreateFunctionContent(aClass, ref, aReference, anEPackage, false)/]
+}
+[if(aClass.getClassifierIDName().size() > 0)]
+std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]([aReference.generateReferenceType(true)/] eContainer, const unsigned int classID) const
+{
+    [generateCreateFunctionContent(aClass, ref, aReference, anEPackage, true)/]
+}[/if]
+
+[/for]
+[/let]
+[/for]
+
+std::shared_ptr<[anEPackage.name.toUpperFirst().concat('Package')/]> [className/]::get[anEPackage.name.toUpperFirst().concat('Package')/]() const
+{
+	return [anEPackage.name.toUpperFirst().concat('Package')/]::eInstance();
+}
+[/file]
+[/template]
+
+[template public generateCreateFunctionContent(anEClass : EClass, ref : OrderedSet(EReference), aReference : EReference, anEPackage : EPackage, addID : Boolean)]
+std::shared_ptr<[anEClass.name.toUpperFirst()/]Impl> element(new [anEClass.name.toUpperFirst()/]Impl());
+[if(addID)]
+element->set[anEClass.getClassifierIDName()/]ID(classID);
+[/if]
+[if(not aReference.eOpposite.name.oclIsUndefined())]
+[if(aReference.isBackReference())]
+if(auto wp = eContainer.lock())
+[else]
+if(nullptr != eContainer)
+[/if]
+[if(aReference.eOpposite.upperBound <> 1)]
+    [if(aReference.isBackReference())]wp[else]eContainer[/if]->get[aReference.eOpposite.name.toUpperFirst()/]()->add(element);
+[else]
+    [if(aReference.isBackReference())]wp[else]eContainer[/if]->set[aReference.eOpposite.name.toUpperFirst()/](element);
+[/if]
+[/if]
+element->[generateGetThisPtrPropertySetterName()/](element);
+return element;
+
+[/template]

@@ -82,7 +82,7 @@ static const int [anEReference.getStaticAttributeIDName()/] = [anEReference.eCon
 [/template]
 
 [template public generateReferenceCreation(anEReference : EReference)]
-[anEReference.getClassMemberName()/] = factory->createEReference_in_EContainingClass([anEReference.eContainingClass.getClassMemberName()/], [anEReference.getStaticAttributeIDName()/]);
+[anEReference.getClassMemberName()/] = factory->createEReference([anEReference.eContainingClass.getClassMemberName()/], [anEReference.getStaticAttributeIDName()/]);
 
 [/template] 
  

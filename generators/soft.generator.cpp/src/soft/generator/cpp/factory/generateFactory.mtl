@@ -1,0 +1,14 @@
+[comment encoding = UTF-8 /]
+[module generateFactory('http://www.eclipse.org/emf/2002/Ecore')]
+
+[import soft::generator::cpp::factory::generateFactoryImplementationHeader /]
+[import soft::generator::cpp::factory::generateFactoryImplementationSource /]
+[import soft::generator::cpp::factory::generateFactoryInterface /]
+[import soft::generator::cpp::factory::generateFactoryInterfaceSource /]
+
+[template public generateFactory(anEPackage : EPackage)]
+[anEPackage.generateFactoryInterface()/]
+[anEPackage.generateFactoryCpp()/]
+[anEPackage.generateFactoryImplHeader()/]
+[anEPackage.generateFactoryImplSource()/]
+[/template]

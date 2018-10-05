@@ -74,17 +74,17 @@ namespace [anEPackage.name/]
             bool isInitialized = false;
             bool isCreated = false;
 
-            virtual void init(std::shared_ptr<ecore::EPackage> package);
+            virtual void init(const std::shared_ptr<ecore::EPackage>& package);
 
         public:
-            void createPackageContents(std::shared_ptr<ecore::EPackage> package);
+            void createPackageContents(const std::shared_ptr<ecore::EPackage>& package);
             void initializePackageContents();
 
         private:
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
-            void create[aClass.name.toUpperFirst()/]Content(std::shared_ptr<ecore::EPackage> package, std::shared_ptr<ecore::EcoreFactory> factory);
+            void create[aClass.name.toUpperFirst()/]Content(const std::shared_ptr<[needNamespace(anEPackage,'EPackage')/]>& package, const std::shared_ptr<[needNamespace(anEPackage,'EcoreFactory')/]>& factory);
 [/for]
-            void createPackageEDataTypes(std::shared_ptr<ecore::EPackage> package, std::shared_ptr<ecore::EcoreFactory> factory);
+            void createPackageEDataTypes(const std::shared_ptr<[needNamespace(anEPackage,'EPackage')/]>& package, const std::shared_ptr<[needNamespace(anEPackage,'EcoreFactory')/]>& factory);
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
             void initialize[aClass.name.toUpperFirst()/]Content();

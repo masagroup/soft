@@ -35,7 +35,7 @@ static const int [aOperation.getStaticAttributeIDName()/] = [aOperation.eContain
 [query public simpleDatatypeGetter(anEClassifier : EClassifier, anOperation: EOperation) : String = if anOperation.eType.oclIsUndefined() or anOperation.eTypeParameters->notEmpty() then 'nullptr' else needMetaModelPackageGetter(anEClassifier, anOperation.eContainingClass).concat('get').concat(anEClassifier.getMemberNameUpperFirst()).concat('()') endif/]
 
 [template public generateOperationCreation(anEOperation : EOperation) ? ( not hasImplOnly()) ]
-[anEOperation.getClassMemberName()/] = factory->createEOperation_in_EContainingClass([anEOperation.eContainingClass.getClassMemberName()/], [anEOperation.getStaticAttributeIDName()/]);
+[anEOperation.getClassMemberName()/] = factory->createEOperation([anEOperation.eContainingClass.getClassMemberName()/], [anEOperation.getStaticAttributeIDName()/]);
 
 [/template]
 

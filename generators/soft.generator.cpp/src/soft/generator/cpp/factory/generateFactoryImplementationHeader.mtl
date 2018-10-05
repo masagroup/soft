@@ -1,0 +1,53 @@
+[comment encoding = UTF-8 /]
+[module generateFactoryImplementationHeader('http://www.eclipse.org/emf/2002/Ecore')]
+
+[import soft::generator::cpp::generateClass /]
+[import soft::generator::cpp::utils /]
+
+[template public generateFactoryImplHeader(anEPackage : EPackage)]
+[file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(anEPackage.name.toUpperFirst()).concat('FactoryImpl.hpp'), false, 'UTF-8')]
+[startGuard(anEPackage,'FactoryImpl')/]
+
+#include "ecore/impl/EFactoryImpl.hpp"
+
+[comment  Generate Includes for the Factory/]
+#include "[anEPackage.name/]/[anEPackage.name.toUpperFirst().concat('Factory')/].hpp"
+
+namespace [anEPackage.name/] 
+{[for (elements : EClassifier| OrderedSet{anEPackage.eClassifiers}->flatten()->selectByKind(EClass)->sortedBy(name)) separator ('\n')]
+	class [elements.name/];[/for]
+
+}
+
+[comment namespace /]
+namespace [anEPackage.name/] 
+{
+	class [anEPackage.name.toUpperFirst().concat('FactoryImpl')/] : virtual public [needNamespace(anEPackage, 'EFactoryImpl')/] , virtual public [anEPackage.name.toUpperFirst().concat('Factory')/] 
+	{
+		private:    
+			[anEPackage.name.toUpperFirst().concat('FactoryImpl')/]([anEPackage.name.toUpperFirst().concat('FactoryImpl')/] const&) = delete;
+			[anEPackage.name.toUpperFirst().concat('FactoryImpl')/]& operator=([anEPackage.name.toUpperFirst().concat('FactoryImpl')/] const&) = delete;
+
+		protected:
+			friend class [anEPackage.name.toUpperFirst().concat('Factory')/];
+			// Constructor
+			[anEPackage.name.toUpperFirst().concat('FactoryImpl')/]();
+
+		public:
+			virtual ~[anEPackage.name.toUpperFirst().concat('FactoryImpl')/]();
+
+            virtual std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> create(const std::shared_ptr<[needNamespace(anEPackage, 'EClass')/]>&  eClass) = 0;
+            
+			//Creator functions
+			[anEPackage.eAllContents(EClass)->sortedBy(name).generateClassCreate(true)/]
+
+			//Package
+			virtual std::shared_ptr<[anEPackage.name.toUpperFirst()/]Package> get[anEPackage.name.toUpperFirst()/]Package() const;
+
+		private:
+			static [anEPackage.name.toUpperFirst().concat('Factory')/]* create();
+	};
+}
+[endGuard(anEPackage,'FactoryImpl')/]
+[/file]
+[/template]

@@ -74,7 +74,7 @@ static const int [anEAttribute.getStaticAttributeIDName()/] = [anEAttribute.eCon
 [/template]
 
 [template public generateAttributeCreation(anEAttribute : EAttribute)]
-[anEAttribute.getClassMemberName()/] = factory->createEAttribute_in_EContainingClass([anEAttribute.eContainingClass.getClassMemberName()/], [anEAttribute.getStaticAttributeIDName()/]);
+[anEAttribute.getClassMemberName()/] = factory->createEAttribute([anEAttribute.eContainingClass.getClassMemberName()/], [anEAttribute.getStaticAttributeIDName()/]);
 
 [/template]
 
