@@ -36,7 +36,7 @@ namespace [anEPackage.name/]
 		public:
 			virtual ~[anEPackage.name.toUpperFirst().concat('FactoryImpl')/]();
 
-            virtual std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> create(const std::shared_ptr<[needNamespace(anEPackage, 'EClass')/]>&  eClass) = 0;
+            virtual std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> create(const std::shared_ptr<[needNamespace(anEPackage, 'EClass')/]>&  eClass) const;
             
 			//Creator functions
 			[anEPackage.eAllContents(EClass)->sortedBy(name).generateClassCreate(true)/]

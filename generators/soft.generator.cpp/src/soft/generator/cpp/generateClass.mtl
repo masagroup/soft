@@ -8,7 +8,7 @@
 virtual std::shared_ptr<[aEClass.generateTypeClass()/]> create[aEClass.name/]() const [abstractSufix(impl)/];
 [let ref:OrderedSet(EReference) = aEClass.getAllContainers()]
 [for(aReference:EReference | ref->sortedBy(name))]
-virtual std::shared_ptr<[aEClass.generateTypeClass()/]> create[aEClass.name/]([aReference.generateReferenceType(true)/] eContainer) [abstractSufix(impl)/];
+virtual std::shared_ptr<[aEClass.generateTypeClass()/]> create[aEClass.name/]([aReference.generateReferenceType(true)/] eContainer) const [abstractSufix(impl)/];
 [if(aEClass.getClassifierIDName().size() > 0)]virtual std::shared_ptr<[aEClass.generateTypeClass()/]> create[aEClass.name/]([aReference.generateReferenceType(true)/] eContainer, const unsigned int classID) const [abstractSufix(impl)/];[/if]
 [/for]
 

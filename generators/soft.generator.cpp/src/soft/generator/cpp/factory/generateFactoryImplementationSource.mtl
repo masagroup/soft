@@ -9,7 +9,8 @@
 [file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(className).concat('.cpp'), false, 'UTF-8')]
 #include "[anEPackage.name/]/impl/[className/].hpp"
 
-#include <cassert>
+#include <iostream>
+#include <boost/current_function.hpp>
 
 #include "[anEPackage.name/]/[anEPackage.name.toUpperFirst().concat('Package')/].hpp"
 
@@ -49,7 +50,7 @@ using namespace [anEPackage.name/];
 // creators
 //*********************************
 
-virtual std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> [className/]::create(const std::shared_ptr<[needNamespace(anEPackage, 'EClass')/]>&  eClass)
+std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> [className/]::create(const std::shared_ptr<[needNamespace(anEPackage, 'EClass')/]>&  eClass) const
 {
     int classID = eClass->getClassifierID();
 	switch(classID)
@@ -59,7 +60,7 @@ virtual std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> [className/]::c
             return this->create[aClass.name/]();
 	[/for]
 	default:
-	   	    std::cerr << __PRETTY_FUNCTION__ << " ID " << classID <<" not found" << std::endl;
+	   	    std::cerr << BOOST_CURRENT_FUNCTION << " ID " << classID <<" not found" << std::endl;
 	}
 	return nullptr;
 }
@@ -71,6 +72,7 @@ std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/
     element->[generateGetThisPtrPropertySetterName()/](element);
     return element;
 }
+
 [let ref : OrderedSet(EReference) = aClass.getAllContainers()]
 [for(aReference:EReference | ref->sortedBy(name))]
 std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]([aReference.generateReferenceType(true)/] eContainer) const
