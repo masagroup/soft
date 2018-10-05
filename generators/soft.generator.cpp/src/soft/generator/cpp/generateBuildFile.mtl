@@ -30,9 +30,11 @@ find_package(Boost 1.68.0 REQUIRED)
 
 # Generated sources
 set(GENERATED_SOURCE_FILES
-	src-gen/[packageName/]/[packageName.toUpperFirst()/]Package.cpp 
+    src-gen/[packageName/]/[packageName.toUpperFirst()/]Factory.cpp	
+    src-gen/[packageName/]/[packageName.toUpperFirst()/]Package.cpp
 )
 set(GENERATED_SOURCE_IMPLEMENTATION_FILES
+    src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]FactoryImpl.cpp
 	src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]PackageImpl.cpp
 	src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]PackageImpl_Creation.cpp
 	src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]PackageImpl_Initialization.cpp
@@ -41,12 +43,14 @@ set(GENERATED_SOURCE_IMPLEMENTATION_FILES
 [/for] 
 )
 set(GENERATED_HEADER_INTERFACE_FILES
+    src-gen/[packageName/]/[packageName.toUpperFirst()/]Factory.hpp
 	src-gen/[packageName/]/[packageName.toUpperFirst()/]Package.hpp 
 [for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
     src-gen/[packageName/]/[aClass.name.toUpperFirst()/].hpp
 [/for]
 )
 set(GENERATED_HEADER_IMPLEMENTATION_FILES
+    src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]FactoryImpl.hpp
 	src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]PackageImpl.hpp
 [for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
     src-gen/[packageName/]/impl/[aClass.name.toUpperFirst()/]Impl.hpp
