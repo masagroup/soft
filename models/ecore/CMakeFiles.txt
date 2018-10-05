@@ -1,0 +1,7 @@
+
+# Sources
+set(SOURCE_FILES
+    src/ecore/EList.hpp
+)
+set(HEADER_FILES 
+)
