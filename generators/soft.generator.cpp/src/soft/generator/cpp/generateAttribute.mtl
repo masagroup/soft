@@ -48,7 +48,7 @@ virtual void [anEAttribute.getSetterName()/] ([anEAttribute.generateAttributeTyp
 [/template]
 
 [template public generateAttributeInit(anEAttribute : EAttribute) ? (not(anEAttribute.upperBound = 1))]
-[anEAttribute.name/]_.reset(new EList<[anEAttribute.eGenericType.generateCppType()/]>());
+[anEAttribute.name/]_.reset(new BasicEList<[anEAttribute.eGenericType.generateCppType()/]>());
 [/template]
 
 [***

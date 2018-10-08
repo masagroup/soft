@@ -40,6 +40,7 @@
 #include "[aClass.ePackage.name/]/[aClass.ePackage.name.toUpperFirst()/]Factory.hpp"
 #include "ecore/EAttribute.hpp"
 #include "ecore/EStructuralFeature.hpp"
+#include "ecore/BasicEList.hpp"
 
 [comment namespace /]
 using namespace [aClass.ePackage.name/];
@@ -125,7 +126,7 @@ using namespace [aClass.ePackage.name/];
     [if (ref.hasSetter() or ref.upperBound = 1)]
     [ref.name/]_  = obj.[ref.getGetterName()/]();
     [else]
-    [ref.name/]_.reset(new [ref.generateReferenceType(false)/](*(obj.[ref.getGetterName()/]().get())));
+    // [ref.name/]_.reset(new [ref.generateReferenceType(false)/](*(obj.[ref.getGetterName()/]().get())));
     [/if]
 
     [/for]
