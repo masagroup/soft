@@ -21,7 +21,7 @@ std::shared_ptr<[anEAttribute.generateAttributeType()/]> [/if]
 [/template]
 
 [template public generateAttributeSetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? ((hasSetter() or(impl and hasImplSetterOnly())) )]
-virtual void [anEAttribute.getSetterName()/] ([anEAttribute.generateAttributeType()/] [anEAttribute.name/])[abstractSufix(impl)/]; 
+virtual void [anEAttribute.getSetterName()/] ([anEAttribute.generateAttributeType()/] _[anEAttribute.name/])[abstractSufix(impl)/]; 
 
 
 [/template]
@@ -62,9 +62,9 @@ virtual void [anEAttribute.getSetterName()/] ([anEAttribute.generateAttributeTyp
 [/template]
 
 [template public generateAttributeSetterImplementationCpp(anEAttribute : EAttribute, impl : Boolean) ? (( hasSetter() or(impl and hasImplSetterOnly())) )]
-void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getSetterName()/]([anEAttribute.generateAttributeType()/] [anEAttribute.name/])
+void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getSetterName()/]([anEAttribute.generateAttributeType()/] _[anEAttribute.name/])
 {
-    [anEAttribute.name/]_ = [anEAttribute.name/];
+    [anEAttribute.name/]_ = _[anEAttribute.name/];
 } 
 [/template]
 
