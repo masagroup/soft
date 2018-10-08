@@ -60,11 +60,12 @@ namespace ecore
             setUnique(pos, e);
         }
 
-        virtual vois setUnique(std::size_t pos, const T_Element& e) = 0;
+        virtual void setUnique(std::size_t pos, const T_Element& e) = 0;
+
 
         virtual bool remove(const T_Element& e)
         {
-            int index = indexOf(object);
+            std::size_t index = indexOf(e);
             if (index >= 0)
             {
                 remove(index);
@@ -77,12 +78,7 @@ namespace ecore
         }
 
     protected:
-        virtual T_Element basicGet(std::size_t pos) const
-        {
-            _SCL_SECURE_ALWAYS_VALIDATE_RANGE(pos <= size());
-            return primitiveGet(pos);
-        }
-
+        
         virtual T_Element primitiveGet(std::size_t pos) const = 0;
 
         virtual void didSet(std::size_t pos, const T_Element& newObject, const T_Element& oldObject)
@@ -100,7 +96,7 @@ namespace ecore
             // Do nothing.
         }
 
-        virtual void didClear( int size , const T_Element& oldObjects[] ) {
+        virtual void didClear( int size , T_Element oldObjects[] ) {
             for ( int i = 0 ; i <size ; ++i )
                 didRemove( i , oldObjects[i] );
         }

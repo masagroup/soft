@@ -42,14 +42,17 @@ namespace ecore {
             v_[ pos ] = element;
         }
 
-        virtual const T_Element& get( std::size_t pos ) const = 0
-        {
+        virtual const T_Element& get( std::size_t pos ) const {
             return v_.at( pos );
         }
 
-        virtual T_Element get( std::size_t pos )
-        {
+        virtual T_Element get( std::size_t pos ) {
             return v_.at( pos );
+        }
+
+        virtual T_Element primitiveGet( std::size_t pos ) const
+        {
+            return v_[ pos ];
         }
 
         virtual T_Element remove( std::size_t pos )
@@ -77,14 +80,35 @@ namespace ecore {
             didClear( size , oldObjects);
         }
 
-        virtual bool contains(const T &value) const
+        virtual bool contains(const T_Element& value) const
         {
             return std::find(v_.begin(), v_.end(), value) != v_.end();
         }
 
-        virtual std::size_t indexOf(const T &value, int from = 0) const {
+        virtual std::size_t indexOf(const T_Element& value, std::size_t from = 0) const {
             return std::distance(v_.begin(), std::find(v_.begin(), v_.end(), value));
         }
+
+        virtual iterator begin()
+        {
+            return v_.begin();
+        }
+
+        virtual const_iterator begin() const
+        {
+            return v_.begin();
+        }
+
+        virtual iterator end()
+        {
+            return v_.end();
+        }
+
+        virtual const_iterator end() const
+        {
+            return v_.end();
+        }
+
 
     private:
         std::vector<T_Element> v_;
