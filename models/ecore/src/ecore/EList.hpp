@@ -11,7 +11,6 @@
 #define ECORE_ELIST_HPP_
 
 #include <memory>
-#include <vector>
 
 namespace ecore {
 
@@ -23,9 +22,13 @@ namespace ecore {
 
 		virtual ~EList() {}
 
-		virtual void add( const T_Element& e ) = 0;
+		virtual bool add( const T_Element& e ) = 0;
 
-		virtual void add( std::size_t pos, const T_Element& e) = 0;
+		virtual bool add( std::size_t pos, const T_Element& e) = 0;
+
+		// virtual bool addAll( const EList<T>& o ) = 0;
+
+		// virtual bool addAll( std::size_t pos, const EList<T>& o) = 0;
 
 		virtual const T_Element& get( std::size_t pos ) const = 0;
 
@@ -41,6 +44,9 @@ namespace ecore {
 
 		virtual void clear() = 0;
 
+		virtual bool contains(const T &value) const = 0;
+
+		virtual int indexOf(std::size_t T &value, int from = 0) const = 0;
 
 	};
 

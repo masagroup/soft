@@ -2,6 +2,8 @@
 # Sources
 set(SOURCE_FILES
     src/ecore/EList.hpp
+    src/ecore/AbstractEList.hpp
+    src/ecore/BasicEList.hpp
 )
 set(HEADER_FILES 
 )
