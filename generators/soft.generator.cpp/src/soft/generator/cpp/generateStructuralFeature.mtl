@@ -1,17 +1,4 @@
 [comment encoding = UTF-8 /]
-[**
- * Copyright (c) 2017 TU Ilmenau, Systems and Software Engineering Group
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
- * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
- * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */]
 [module generateStructuralFeature('http://www.eclipse.org/emf/2002/Ecore')]
 
 [import soft::generator::cpp::utils /]
@@ -37,6 +24,7 @@ virtual bool eSet(int featureID, const boost::any& newValue) [abstractSufix(impl
 [template public generateGetImpl(aClass : EClass)]
 boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, bool resolve, bool coreType) const
 {
+[if  aClass.eStructuralFeatures->notEmpty()]
     switch(featureID)
     {
     [for (struct : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
@@ -44,6 +32,7 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, boo
             return [struct.getGetterName()/](); //[aClass.getMyClassifierID()/][struct.getFeatureID()/]
     [/for]
     }
+[/if]
 [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
     return ecore::EObjectImpl::eGet(featureID, resolve, coreType);
 [elseif (aClass.eSuperTypes->size() = 1)]
@@ -69,6 +58,7 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, boo
 [template public generateIsSetImpl(aClass : EClass)]
 bool [aClass.name.toUpperFirst().concat('Impl')/]::internalEIsSet(int featureID) const
 {
+[if  aClass.eStructuralFeatures->notEmpty()]
     switch(featureID)
     {
     [for (struct : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
@@ -76,6 +66,7 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::internalEIsSet(int featureID)
             return [struct.generateComparison()/]; //[aClass.getMyClassifierID()/][struct.getFeatureID()/]
     [/for]
     }
+[/if]
 [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
     return ecore::EObjectImpl::internalEIsSet(featureID);
 [elseif (aClass.eSuperTypes->size() = 1)]
@@ -101,6 +92,7 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::internalEIsSet(int featureID)
 [template public generateSetImpl(aClass : EClass)]
 bool [aClass.name.toUpperFirst().concat('Impl')/]::eSet(int featureID, const boost::any& newValue)
 {
+[if  aClass.eStructuralFeatures->select(upperBound = 1 and changeable)->notEmpty()]
     switch(featureID)
     {
 [for (struct : EStructuralFeature | aClass.eStructuralFeatures->select(upperBound = 1 and changeable)->asOrderedSet()->sortedBy(name))]
@@ -117,7 +109,7 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::eSet(int featureID, const boo
         }
 [/for]
     }
-
+[/if]
 [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
     return ecore::EObjectImpl::eSet(featureID, newValue);
 [elseif (aClass.eSuperTypes->size() = 1)]
@@ -155,5 +147,5 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::eSet(int featureID, const boo
 [/template]
 
 [template public generateComparison(anStructFeature : EStructuralFeature) ? (eType.requiresAny())]
-![anStructFeature.getGetterName()/]()->isEmpty()
+![anStructFeature.getGetterName()/]().empty()
 [/template]
