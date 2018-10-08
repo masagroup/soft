@@ -89,7 +89,7 @@ using namespace [aClass.ePackage.name/];
                     return;
                 [/for]
                 default:
-                std::cerr << __PRETTY_FUNCTION__ <<" Reference not found in class with the given ID" << std::endl;
+                std::cerr << BOOST_CURRENT_FUNCTION <<" Reference not found in class with the given ID" << std::endl;
                 }
                
             }
@@ -191,13 +191,16 @@ std::shared_ptr<[needNamespace(aClass.ePackage, 'EClass')/]> [className/]::eStat
 
 
 [aClass.generateGetThisPtrCPP()/]
+
 [aClass.generateEContainerOperationCPP()/]
 
 //*********************************
 // Structural Feature Getter/Setter
 //*********************************
 [aClass.generateGetImpl()/]
+
 [aClass.generateIsSetImpl()/]
+
 [aClass.generateSetImpl()/]
 
 
