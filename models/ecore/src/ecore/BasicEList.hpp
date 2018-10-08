@@ -26,9 +26,9 @@ namespace ecore {
 
         virtual void addUnique(const T_Element& e)
         {
-            int size = size();
+            std::size_t pos = size();
             v_.push_back(e);
-            didAdd(size, object);
+            didAdd( pos, e);
             didChange();
         }
 
@@ -39,7 +39,7 @@ namespace ecore {
         }
 
         virtual void setUnique(std::size_t pos, const T_Element& e) {
-            v_[ pos ] = element;
+            v_[ pos ] = e;
         }
 
         virtual const T_Element& get( std::size_t pos ) const {
@@ -62,7 +62,7 @@ namespace ecore {
             v_.erase( it );
             didRemove(pos, oldObject);
             didChange();
-            return e;
+            return oldObject;
         }
 
 
@@ -73,11 +73,9 @@ namespace ecore {
 
         virtual void clear()
         {
-            int size = v_.size();
-            T_Element oldObjects[ size ];
-            std::copy(v_.begin(), v_.end(), oldObjects);
+            std::vector<T_Element> oldObjects = v_;
             v_.clear();
-            didClear( size , oldObjects);
+            didClear( oldObjects);
         }
 
         virtual bool contains(const T_Element& value) const

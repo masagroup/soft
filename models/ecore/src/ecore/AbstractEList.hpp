@@ -41,7 +41,7 @@ namespace ecore
 
         virtual void add(std::size_t pos, const T_Element& e)
         {
-            _SCL_SECURE_ALWAYS_VALIDATE_RANGE(index <= size());
+            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size());
             _SCL_SECURE_ALWAYS_VALIDATE(!isUnique() || (isUnique() && !contains(e)));
             addUnique(pos, e);
         }
@@ -50,10 +50,10 @@ namespace ecore
 
         virtual void set(std::size_t pos, const T_Element& e)
         {
-            _SCL_SECURE_ALWAYS_VALIDATE_RANGE(index <= size());
+            _SCL_SECURE_ALWAYS_VALIDATE_RANGE(pos <= size());
             if (isUnique())
             {
-                int currentIndex = indexOf(e);
+                std::size_t currentIndex = indexOf(e);
                 _SCL_SECURE_ALWAYS_VALIDATE(
                         currentIndex == -1 || currentIndex == pos);
             }
@@ -68,7 +68,7 @@ namespace ecore
             std::size_t index = indexOf(e);
             if (index >= 0)
             {
-                remove(index);
+                EList<T>::remove(index);
                 return true;
             }
             else
@@ -79,6 +79,11 @@ namespace ecore
 
     protected:
         
+        virtual bool isUnique()
+        {
+            return false;
+        }
+
         virtual T_Element primitiveGet(std::size_t pos) const = 0;
 
         virtual void didSet(std::size_t pos, const T_Element& newObject, const T_Element& oldObject)
@@ -96,8 +101,8 @@ namespace ecore
             // Do nothing.
         }
 
-        virtual void didClear( int size , T_Element oldObjects[] ) {
-            for ( int i = 0 ; i <size ; ++i )
+        virtual void didClear( const std::vector<T_Element>& oldObjects ) {
+            for ( int i = 0 ; i < oldObjects.size() ; ++i )
                 didRemove( i , oldObjects[i] );
         }
 
