@@ -86,7 +86,7 @@ std::shared_ptr<[eOperation.eGenericType.generateCppType()/]> [else]
  * Transformation Java Types to C++
 */]
 [template public transformType(anEClassifier : EClassifier) ? (oclIsUndefined())]
-std::shared_ptr<boost::any>
+boost::any
 [/template]
 
 [template public transformType(anEClassifier : EClassifier) ? ((name = 'EBoolean') or (name = 'EBooleanObject') or (name = 'Boolean'))]
@@ -142,7 +142,7 @@ std::map
 [/template]
 
 [template public transformType(anEClassifier : EClassifier) ? (name = 'EJavaObject')]
-std::shared_ptr<boost::any>
+boost::any
 [/template]
 
 [template public transformType(anEClassifier : EClassifier) ? (name = 'ETreeIterator')]
@@ -154,7 +154,7 @@ void *
 [/template]
 
 [template public transformType(anEClassifier : EClassifier) ? ((name = 'EEnumerator') or (name = 'EDiagnosticChain'))]
-std::shared_ptr<boost::any>
+boost::any
 [/template]
 
 [template public transformType(anEClassifier : EClassifier) ? ((name = 'EString') or (name = 'String'))]
