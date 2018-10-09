@@ -16,12 +16,12 @@ virtual [anEOperation.generateOperationType()/] [anEOperation.name/]([anEOperati
 [anEOperation.generateOperationType()/] [anEOperation.eContainingClass.name.toUpperFirst()/]Impl::[anEOperation.name/]([anEOperation.generateParameterList()/])[if (hasKey('const'))] const[/if]
 {
 [if (hasKey('body'))]
-    //generated from body annotation
     [valueKey('body')/]
-    //end of body
 [else]
+    // [protected (anEOperation.name)]
     std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
     throw "UnsupportedOperationException";
+    // [/protected]
 [/if]
 }
 [/template]

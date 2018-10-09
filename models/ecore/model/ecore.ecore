@@ -173,13 +173,22 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EFactory" eSuperTypes="#//EModelElement">
     <eOperations name="create" eType="#//EObject">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="const"/>
+      </eAnnotations>
       <eParameters name="eClass" eType="#//EClass"/>
     </eOperations>
     <eOperations name="createFromString" eType="#//EJavaObject">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="const"/>
+      </eAnnotations>
       <eParameters name="eDataType" eType="#//EDataType"/>
       <eParameters name="literalValue" eType="#//EString"/>
     </eOperations>
     <eOperations name="convertToString" eType="#//EString">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="const"/>
+      </eAnnotations>
       <eParameters name="eDataType" eType="#//EDataType"/>
       <eParameters name="instanceValue" eType="#//EJavaObject"/>
     </eOperations>
