@@ -11,15 +11,16 @@
 #define ECORE_ELIST_HPP_
 
 #include <memory>
-#include <vector>
 
 namespace ecore {
 
 	template <typename T>
-	class EList {
+	class EList : public std::enable_shared_from_this<EList<T>> {
 
 	public:
 		typedef typename std::shared_ptr<T> T_Element;
+		typedef typename std::shared_ptr<EList<T>> T_Ptr_Type;
+        typedef typename std::shared_ptr<const EList<T>> T_Ptr_Const_Type;
 
 		virtual ~EList() {}
 
@@ -45,22 +46,178 @@ namespace ecore {
 
 		virtual void clear() = 0;
 
-		virtual bool contains(const T_Element& e) const = 0;
+		bool contains(const T_Element& e) const {
+		    return std::find(begin(), end(), e) != end();
+		}
 
-		virtual std::size_t indexOf(const T_Element& e, std::size_t from = 0) const = 0;
+		std::size_t indexOf(const T_Element& e, std::size_t from = 0) const {
+		    return std::distance(begin() + (int)from , std::find(begin(), end(), e));
+		}
 
-        typedef typename std::vector<T_Element>::iterator iterator;
+		/** Iterator interfaces for an EList<T>. */
+        template <typename EListPtrType>
+        class EListIterator : public std::iterator<std::random_access_iterator_tag, T_Element> {
+        public:
+            EListIterator(EListPtrType eList, std::size_t index)
+                : eList_(eList),
+                  index_(index) {
+            }
 
-        typedef typename std::vector<T_Element>::const_iterator const_iterator;
+            T_Element operator*() const {
+                return eList_->get(index_);
+            }
 
-        virtual iterator begin() = 0;
+            EListIterator& operator--() {
+                --index_;
+                return *this;
+            }
 
-        virtual const_iterator begin() const = 0;
+            EListIterator operator--(int) {
+                EListIterator old(*this);
+                --(*this);
+                return old;
+            }
 
-        virtual iterator end() = 0;
+            EListIterator& operator++() {
+                ++index_;
+                return *this;
+            }
 
-        virtual const_iterator end() const = 0;
+            EListIterator operator++(int) {
+                EListIterator old(*this);
+                ++(*this);
+                return old;
+            }
 
+            EListIterator& operator+=( difference_type offset )
+            {	
+                index_ += offset;
+                return ( *this );
+            }
+
+            EListIterator& operator-=( difference_type offset )
+            {
+                return ( *this += -offset );
+            }
+
+            EListIterator operator+( const difference_type& offset )
+            {
+                EListIterator tmp = *this;
+                return ( tmp += offset );
+            }
+            
+            EListIterator operator-( const difference_type& rhs )
+            {
+                EListIterator tmp = *this;
+                return ( tmp -= offset );
+            }
+
+            difference_type operator-( const EListIterator& rhs )
+            {
+                _Compat( rhs );
+                return index_ - rhs.index_;
+            }
+      
+            bool operator==(const EListIterator& rhs) const {
+                _Compat( rhs );
+                return ( index_ == rhs.index_ );
+            }
+
+            bool operator!=(const EListIterator& rhs) const {
+                return !(*this == rhs);
+            }
+
+            bool operator<( const EListIterator& rhs )
+            {
+                _Compat( rhs );
+                return index_ < rhs.index_;
+            }
+
+            bool operator>( const EListIterator& rhs )
+            {
+                return ( rhs < *this );
+            }
+
+            bool operator<=( const EListIterator& rhs )
+            {
+                return ( !( rhs < *this ) );
+            }
+            
+            bool operator>=( const EListIterator& rhs )
+            {
+                return ( !( *this < rhs ) );
+            }
+            
+            bool hasNext() const {
+                return ((int64_t)index_ < (int64_t)eList_->size() - 1);
+            }
+
+            const EListPtrType& getEList() const {
+                return eList_;
+            }
+
+            std::size_t getIndex() const {
+                return index_;
+            }
+
+        private:
+#if _ITERATOR_DEBUG_LEVEL == 2
+            void _Compat( const EListIterator& rhs ) const
+            {	// test for compatible iterator pair
+                if( eList_ != rhs.eList_ )
+                {
+                    _ASSERTE( "vector iterators incompatible" && 0 );
+                    _SCL_SECURE_INVALID_ARGUMENT;
+                }
+            }
+
+#elif _ITERATOR_DEBUG_LEVEL == 1
+            void _Compat( const EListIterator& rhs ) const
+            {	// test for compatible iterator pair
+                _SCL_SECURE_VALIDATE_RANGE( eList_ == rhs.eList_ );
+            }
+
+#else /* _ITERATOR_DEBUG_LEVEL == 0 */
+            void _Compat( const EListIterator& ) const
+            {	// test for compatible iterator pair
+            }
+#endif /* _ITERATOR_DEBUG_LEVEL */
+   
+        private:
+            EListPtrType eList_;
+            std::size_t index_;
+        };
+
+        typedef EListIterator<T_Ptr_Type> iterator;
+        typedef EListIterator<T_Ptr_Const_Type> const_iterator;
+
+        iterator begin() {
+            auto this_shared = std::enable_shared_from_this<EList<T>>::shared_from_this();
+            return iterator(this_shared, 0);
+        }
+
+        const_iterator begin() const {
+            auto this_shared = std::enable_shared_from_this<EList<T>>::shared_from_this();
+            return const_iterator(this_shared, 0);
+        }
+
+        iterator end() {
+            auto this_shared = std::enable_shared_from_this<EList<T>>::shared_from_this();
+            return iterator(this_shared, size());
+        }
+
+        const_iterator end() const {
+            auto this_shared = std::enable_shared_from_this<EList<T>>::shared_from_this();
+            return const_iterator(this_shared, size());
+        }
+
+        const_iterator cbegin() const {
+            return begin();
+        }
+
+        const_iterator cend() const {
+            return end();
+        }
 
 	};
 
