@@ -109,7 +109,11 @@
     <eOperations name="isInstance" eType="#//EBoolean">
       <eParameters name="object" eType="#//EJavaObject"/>
     </eOperations>
-    <eOperations name="getClassifierID" eType="#//EInt"/>
+    <eOperations name="getClassifierID" eType="#//EInt">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="doNotGenerate" value="true"/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceClassName" eType="#//EString"
         volatile="true" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -209,13 +213,41 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EObject">
-    <eOperations name="eClass" eType="#//EClass"/>
-    <eOperations name="eIsProxy" eType="#//EBoolean"/>
-    <eOperations name="eResource" eType="#//EResource"/>
-    <eOperations name="eContainer" eType="#//EObject"/>
-    <eOperations name="eContainingFeature" eType="#//EStructuralFeature"/>
-    <eOperations name="eContainmentFeature" eType="#//EReference"/>
+    <eOperations name="eClass" eType="#//EClass">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="const"/>
+        <details key="body" value="return this->eStaticClass();"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="eIsProxy" eType="#//EBoolean">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="const"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="eResource" eType="#//EResource">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="const"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="eContainer" eType="#//EObject">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="doNotGenerate" value="true"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="eContainingFeature" eType="#//EStructuralFeature">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="const"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="eContainmentFeature" eType="#//EReference">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="const"/>
+      </eAnnotations>
+    </eOperations>
     <eOperations name="eContents">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="doNotGenerate" value="true"/>
+      </eAnnotations>
       <eGenericType eClassifier="#//EEList">
         <eTypeArguments eClassifier="#//EObject"/>
       </eGenericType>
@@ -255,6 +287,9 @@
         </eGenericType>
       </eParameters>
     </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eContents" upperBound="-1"
+        eType="#//EObject"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eContainer" eType="#//EObject"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EOperation" eSuperTypes="#//ETypedElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
