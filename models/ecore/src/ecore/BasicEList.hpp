@@ -40,11 +40,7 @@ namespace ecore {
             v_[ pos ] = e;
         }
 
-        virtual const T& get( std::size_t pos ) const {
-            return v_.at( pos );
-        }
-
-        virtual T get( std::size_t pos ) {
+        virtual T get( std::size_t pos ) const {
             return v_.at( pos );
         }
 

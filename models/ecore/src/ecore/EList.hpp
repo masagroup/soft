@@ -26,13 +26,7 @@ namespace ecore {
 
 		virtual void add( std::size_t pos, const T& e) = 0;
 
-		// virtual bool addAll( const EList<T>& o ) = 0;
-
-		// virtual bool addAll( std::size_t pos, const EList<T>& o) = 0;
-
-		virtual const T& get( std::size_t pos ) const = 0;
-
-		virtual T get( std::size_t pos ) = 0;
+		virtual T get( std::size_t pos ) const = 0;
 
 		virtual void set( std::size_t pos, const T& e) = 0;
 
@@ -217,6 +211,94 @@ namespace ecore {
             return end();
         }
 
+        /**
+         * Allows treating an EList<T> as an EList<Q> (if T can be casted to Q dynamically)
+         */
+        template< typename Q >
+        inline typename EList< Q >::T_Ptr_Type asEListOf()
+        {
+            return std::make_shared<DelegateEList< Q, T >>(*this);
+        }
+
+	};
+
+	template< typename T, typename Q >
+	class DelegateEList: public EList< T >
+	{
+	public:
+
+	    typedef EList< Q > T_ListDelegate;
+
+	    DelegateEList(T_ListDelegate& delegate) :
+	        delegate_(delegate)
+	    {
+	    }
+
+	    virtual ~DelegateEList()
+        {
+        }
+
+	    virtual bool add( const T& e )
+	    {
+	        return delegate_.add( cast< T, Q >::do_cast(e) );
+	    }
+
+	    virtual void add( std::size_t pos, const T& e)
+	    {
+	        delegate_.add(pos, cast< T, Q >::do_cast(e) );
+	    }
+
+	    virtual T get( std::size_t pos ) const {
+	        return cast< Q, T >::do_cast( delegate_.get(pos) );
+	    }
+
+	    virtual void set( std::size_t pos, const T& e)
+	    {
+	        delegate_.set(pos, cast< T, Q >::do_cast(e) );
+	    }
+
+	    virtual T remove( std::size_t pos )
+	    {
+	        return cast< Q, T >::do_cast( delegate_.remove(pos) );
+	    }
+
+	    virtual bool remove( const T& e )
+	    {
+	        return delegate_.remove(cast< T, Q >::do_cast(e));
+	    }
+
+	    virtual std::size_t size() const
+	    {
+	        return delegate_.size();
+	    }
+
+	    virtual void clear()
+	    {
+	        delegate_.clear();
+	    }
+
+
+	protected:
+
+	    T_ListDelegate& delegate_;
+
+	    template< typename A, typename B >
+	    struct cast
+	    {
+	        static inline B do_cast(const A& a)
+	        {
+	            return std::dynamic_pointer_cast< typename B::element_type >(a);
+	        }
+	    };
+
+	    template< typename A >
+	    struct cast< A, A >
+	    {
+	        static inline A do_cast(const A& a)
+	        {
+	            return a;
+	        }
+	    };
 	};
 
 }
