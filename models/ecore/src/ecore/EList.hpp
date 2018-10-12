@@ -16,54 +16,52 @@ namespace ecore {
 
 	template <typename T>
 	class EList : public std::enable_shared_from_this<EList<T>> {
-
 	public:
-		typedef typename std::shared_ptr<T> T_Element;
 		typedef typename std::shared_ptr<EList<T>> T_Ptr_Type;
         typedef typename std::shared_ptr<const EList<T>> T_Ptr_Const_Type;
 
 		virtual ~EList() {}
 
-		virtual bool add( const T_Element& e ) = 0;
+		virtual bool add( const T& e ) = 0;
 
-		virtual void add( std::size_t pos, const T_Element& e) = 0;
+		virtual void add( std::size_t pos, const T& e) = 0;
 
 		// virtual bool addAll( const EList<T>& o ) = 0;
 
 		// virtual bool addAll( std::size_t pos, const EList<T>& o) = 0;
 
-		virtual const T_Element& get( std::size_t pos ) const = 0;
+		virtual const T& get( std::size_t pos ) const = 0;
 
-		virtual T_Element get( std::size_t pos ) = 0;
+		virtual T get( std::size_t pos ) = 0;
 
-		virtual void set( std::size_t pos, const T_Element& e) = 0;
+		virtual void set( std::size_t pos, const T& e) = 0;
 
-		virtual T_Element remove( std::size_t pos ) = 0;
+		virtual T remove( std::size_t pos ) = 0;
 
-		virtual bool remove( const T_Element& e ) = 0;
+		virtual bool remove( const T& e ) = 0;
 
 		virtual std::size_t size() const = 0;
 
 		virtual void clear() = 0;
 
-		bool contains(const T_Element& e) const {
+		bool contains(const T& e) const {
 		    return std::find(begin(), end(), e) != end();
 		}
 
-		std::size_t indexOf(const T_Element& e, std::size_t from = 0) const {
+		std::size_t indexOf(const T& e, std::size_t from = 0) const {
 		    return std::distance(begin() + (int)from , std::find(begin(), end(), e));
 		}
 
 		/** Iterator interfaces for an EList<T>. */
         template <typename EListPtrType>
-        class EListIterator : public std::iterator<std::random_access_iterator_tag, T_Element> {
+        class EListIterator : public std::iterator<std::random_access_iterator_tag, T> {
         public:
             EListIterator(EListPtrType eList, std::size_t index)
                 : eList_(eList),
                   index_(index) {
             }
 
-            T_Element operator*() const {
+            T operator*() const {
                 return eList_->get(index_);
             }
 

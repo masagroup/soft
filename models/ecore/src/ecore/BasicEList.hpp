@@ -20,11 +20,9 @@ namespace ecore {
     template <typename T>
     class BasicEList : public AbstractEList<T> {
     public:
-        typedef typename std::shared_ptr<T> T_Element;
-
         virtual ~BasicEList() {}
 
-        virtual void addUnique(const T_Element& e)
+        virtual void addUnique(const T& e)
         {
             std::size_t pos = size();
             v_.push_back(e);
@@ -32,33 +30,33 @@ namespace ecore {
             didChange();
         }
 
-        virtual void addUnique( std::size_t pos,  const T_Element& e) {
+        virtual void addUnique( std::size_t pos,  const T& e) {
             v_.insert( v_.begin() + pos , e );
             didAdd(pos, e);
             didChange();
         }
 
-        virtual void setUnique(std::size_t pos, const T_Element& e) {
+        virtual void setUnique(std::size_t pos, const T& e) {
             v_[ pos ] = e;
         }
 
-        virtual const T_Element& get( std::size_t pos ) const {
+        virtual const T& get( std::size_t pos ) const {
             return v_.at( pos );
         }
 
-        virtual T_Element get( std::size_t pos ) {
+        virtual T get( std::size_t pos ) {
             return v_.at( pos );
         }
 
-        virtual T_Element primitiveGet( std::size_t pos ) const
+        virtual T primitiveGet( std::size_t pos ) const
         {
             return v_[ pos ];
         }
 
-        virtual T_Element remove( std::size_t pos )
+        virtual T remove( std::size_t pos )
         {
             auto it = v_.begin() + pos;
-            T_Element oldObject = std::move( *it );
+            T oldObject = std::move( *it );
             v_.erase( it );
             didRemove(pos, oldObject);
             didChange();
@@ -73,13 +71,13 @@ namespace ecore {
 
         virtual void clear()
         {
-            std::vector<T_Element> oldObjects = v_;
+            std::vector<T> oldObjects = v_;
             v_.clear();
             didClear( oldObjects);
         }
 
     private:
-        std::vector<T_Element> v_;
+        std::vector<T> v_;
     };
 
 }
