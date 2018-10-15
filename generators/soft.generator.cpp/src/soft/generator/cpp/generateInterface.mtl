@@ -54,8 +54,8 @@ namespace [aClass.ePackage.name/]
 {
     class [aClass.name.toUpperFirst()/] [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))] : virtual public ecore::EObject 
 [else]
-[for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) before (':') separator (',')]
-virtual public [getClassWithNamespace(aClass,sClass)/][/for]
+[for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) before (' :') separator (',')]
+ virtual public [getClassWithNamespace(aClass,sClass)/][/for]
 [/if] {
         public:
             [aClass.name.toUpperFirst()/](const [aClass.name.toUpperFirst()/] &) = delete;

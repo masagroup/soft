@@ -7,8 +7,8 @@
 [template public generateOperationDeclaration(anEOperation : EOperation, impl: Boolean)]
 [if (((impl or (not hasImplOnly())) and (not (doNotGenerate() or ignore()))))]
 virtual [anEOperation.generateReturnType()/] [anEOperation.name/]([anEOperation.generateParameterList()/])[if (hasKey('const'))] const[/if] [abstractSufix(impl)/];
-[/if]
 
+[/if]
 [/template]
 
 
