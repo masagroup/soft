@@ -29,16 +29,12 @@ std::shared_ptr<ecore::EObject> [aClass.name.toUpperFirst()/]Impl::eContainer() 
     [if(ref->select(eType.name = aReference.eType.name)->asOrderedSet()->sortedBy(name)->first() = aReference)]
         [for(multipleRef : EReference | ref->select(eType.name = aReference.eType.name)->sortedBy(name))]
     if(auto wp = [multipleRef.name/]_.lock())
-    {
         return wp;
-    }
         [/for]
     [/if]
     [else]
     if(auto wp = [aReference.name/]_.lock())
-    {
         return wp;
-    }
     [/if]
 [/for]
 [/let]
@@ -57,6 +53,7 @@ std::shared_ptr<[aClass.name.toUpperFirst()/]> [aClass.name.toUpperFirst()/]Impl
 {
     return [generateGetThisPtrPropertyName()/]_.lock();
 }
+
 void [aClass.name.toUpperFirst()/]Impl::[generateGetThisPtrPropertySetterName()/](std::weak_ptr<[aClass.name.toUpperFirst()/]> [generateGetThisPtrPropertyName()/])
 {
     [generateGetThisPtrPropertyName()/]_ = [generateGetThisPtrPropertyName()/];
