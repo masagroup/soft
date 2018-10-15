@@ -12,13 +12,14 @@
 [anEAttribute.generateAttributeSetterDeclaration(impl)/]
 [/template]
 
-[template public generateAttributeGetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? (hasGetter())]
-virtual [if (anEAttribute.eType.oclIsKindOf(EDataType))]
-[if ( needReference(anEAttribute.eType) )]const [anEAttribute.generateAttributeType()/]&[else]
-[anEAttribute.generateAttributeType()/][/if]
-[else]
+[template private generateReturnType(anEAttribute : EAttribute)]
+[if (anEAttribute.eType.oclIsKindOf(EDataType))]
+[if ( needReference(anEAttribute.eType) )]const [anEAttribute.generateAttributeType()/]&[else][anEAttribute.generateAttributeType()/][/if][else]
 std::shared_ptr<[anEAttribute.generateAttributeType()/]>[/if]
- [anEAttribute.getGetterName()/]() const [abstractSufix(impl)/];
+[/template]
+
+[template public generateAttributeGetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? (hasGetter())]
+virtual [anEAttribute.generateReturnType()/] [anEAttribute.getGetterName()/]() const [abstractSufix(impl)/];
 
 [/template]
 
@@ -57,14 +58,14 @@ virtual void [anEAttribute.getSetterName()/] ([anEAttribute.generateParameterTyp
  * Section for the Attribute cpp implementation
 */]
 [template public generateAttributeGetterImplementationCpp(anEAttribute : EAttribute)? (hasGetter())]
-[anEAttribute.generateAttributeType()/] [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getGetterName()/]() const 
+[anEAttribute.generateReturnType()/] [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getGetterName()/]() const 
 {
     return [anEAttribute.name/]_;
 }
 [/template]
 
 [template public generateAttributeSetterImplementationCpp(anEAttribute : EAttribute, impl : Boolean) ? (( hasSetter() or(impl and hasImplSetterOnly())) )]
-void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getSetterName()/]([anEAttribute.generateAttributeType()/] _[anEAttribute.name/])
+void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getSetterName()/]([anEAttribute.generateParameterType()/] _[anEAttribute.name/])
 {
     [anEAttribute.name/]_ = _[anEAttribute.name/];
 } 

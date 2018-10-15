@@ -46,6 +46,7 @@ const std::shared_ptr<EList<[anEReference.eGenericType.generateCppType()/]> >& [
 
 [template public generateReferenceCpp(anEReference : EReference)]
 [anEReference.generateReferenceGetterCpp()/]
+
 [anEReference.generateReferenceSetterCpp()/]
 [/template]
 
@@ -64,15 +65,14 @@ void [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.get
 
 [template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter()and (not isUnion()))]
 [anEReference.generateReturnType()/] [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getGetterName()/]() const
-{
-[if (hasKey('getterbody'))]
-//generated from getterbody annotation
-[valueKey('getterbody')/]
-//end of body
+{[if (hasKey('getterbody'))]
+    //generated from getterbody annotation
+    [valueKey('getterbody')/]
+    //end of body
 [else]
-[if(anEReference.lowerBound>0)]//assert([anEReference.name/]_);[/if]
-    return [anEReference.name/]_;
-[/if]
+    [if(anEReference.lowerBound>0)]assert([anEReference.name/]_);[/if]
+    return [anEReference.name/]_[if (anEReference.isBackReference())].lock()[/if];
+    [/if]
 }
 [/template]
 
