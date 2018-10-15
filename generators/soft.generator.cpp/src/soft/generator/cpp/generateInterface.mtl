@@ -61,6 +61,8 @@ namespace [aClass.ePackage.name/]
             [aClass.name.toUpperFirst()/](const [aClass.name.toUpperFirst()/] &) = delete;
             [aClass.name.toUpperFirst()/]& operator=([aClass.name.toUpperFirst()/] const&) = delete;
 
+        protected:
+            [aClass.name.toUpperFirst()/](){}
      
         public:
                  //destructor

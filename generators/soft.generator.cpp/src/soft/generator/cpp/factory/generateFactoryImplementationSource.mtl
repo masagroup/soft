@@ -96,22 +96,17 @@ std::shared_ptr<[anEPackage.name.toUpperFirst().concat('Package')/]> [className/
 
 [template public generateCreateFunctionContent(anEClass : EClass, ref : OrderedSet(EReference), aReference : EReference, anEPackage : EPackage, addID : Boolean)]
 std::shared_ptr<[anEClass.name.toUpperFirst()/]Impl> element(new [anEClass.name.toUpperFirst()/]Impl());
+element->[generateGetThisPtrPropertySetterName()/](element);
 [if(addID)]
 element->set[anEClass.getClassifierIDName()/]ID(classID);
 [/if]
 [if(not aReference.eOpposite.name.oclIsUndefined())]
-[if(aReference.isBackReference())]
-if(auto wp = eContainer.lock())
-[else]
 if(nullptr != eContainer)
-[/if]
 [if(aReference.eOpposite.upperBound <> 1)]
-    [if(aReference.isBackReference())]wp[else]eContainer[/if]->get[aReference.eOpposite.name.toUpperFirst()/]()->add(element);
+    eContainer->get[aReference.eOpposite.name.toUpperFirst()/]()->add(element);
 [else]
-    [if(aReference.isBackReference())]wp[else]eContainer[/if]->set[aReference.eOpposite.name.toUpperFirst()/](element);
+    eContainer->set[aReference.eOpposite.name.toUpperFirst()/](element);
 [/if]
 [/if]
-element->[generateGetThisPtrPropertySetterName()/](element);
 return element;
-
 [/template]
