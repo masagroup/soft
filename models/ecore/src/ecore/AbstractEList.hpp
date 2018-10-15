@@ -20,13 +20,12 @@ namespace ecore
     {
 
     public:
-        typedef typename std::shared_ptr<T> T_Element;
-
+        
         virtual ~AbstractEList()
         {
         }
 
-        virtual bool add(const T_Element& e)
+        virtual bool add(const T& e)
         {
             if (isUnique() && contains(e))
                 return false;
@@ -37,18 +36,18 @@ namespace ecore
             }
         }
 
-        virtual void addUnique(const T_Element& object) = 0;
+        virtual void addUnique(const T& e) = 0;
 
-        virtual void add(std::size_t pos, const T_Element& e)
+        virtual void add(std::size_t pos, const T& e)
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size());
             _SCL_SECURE_ALWAYS_VALIDATE(!isUnique() || (isUnique() && !contains(e)));
             addUnique(pos, e);
         }
 
-        virtual void addUnique(std::size_t pos, const T_Element& e) = 0;
+        virtual void addUnique(std::size_t pos, const T& e) = 0;
 
-        virtual void set(std::size_t pos, const T_Element& e)
+        virtual void set(std::size_t pos, const T& e)
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE(pos <= size());
             if (isUnique())
@@ -60,10 +59,10 @@ namespace ecore
             setUnique(pos, e);
         }
 
-        virtual void setUnique(std::size_t pos, const T_Element& e) = 0;
+        virtual void setUnique(std::size_t pos, const T& e) = 0;
 
 
-        virtual bool remove(const T_Element& e)
+        virtual bool remove(const T& e)
         {
             std::size_t index = indexOf(e);
             if (index >= 0)
@@ -84,29 +83,29 @@ namespace ecore
             return false;
         }
 
-        virtual T_Element primitiveGet(std::size_t pos) const = 0;
+        virtual T primitiveGet(std::size_t pos) const = 0;
 
-        virtual void didSet(std::size_t pos, const T_Element& newObject, const T_Element& oldObject)
+        virtual void didSet(std::size_t pos, const T& newObject, const T& oldObject)
         {
             // Do nothing.
         }
 
-        virtual void didAdd(std::size_t pos, const T_Element& newObject)
+        virtual void didAdd(std::size_t pos, const T& newObject)
         {
             // Do nothing.
         }
 
-        virtual void didRemove(std::size_t pos, const T_Element& oldObject)
+        virtual void didRemove(std::size_t pos, const T& oldObject)
         {
             // Do nothing.
         }
 
-        virtual void didClear( const std::vector<T_Element>& oldObjects ) {
+        virtual void didClear( const std::vector<T>& oldObjects ) {
             for ( int i = 0 ; i < oldObjects.size() ; ++i )
                 didRemove( i , oldObjects[i] );
         }
 
-        virtual void didMove(std::size_t pos, const T_Element& movedObject, std::size_t oldIndex)
+        virtual void didMove(std::size_t pos, const T& movedObject, std::size_t oldIndex)
         {
             // Do nothing.
         }
