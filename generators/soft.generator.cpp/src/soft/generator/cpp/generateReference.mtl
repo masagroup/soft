@@ -16,7 +16,7 @@
 [/template]
 
 [template public generateReferenceGetterDeclaration(anEReference : EReference, impl : EBoolean)? (hasGetter() and (not isUnion()) )]
-virtual [anEReference.generateReferenceType()/] [anEReference.getGetterName()/]() const [abstractSufix(impl)/];
+virtual [anEReference.generateReturnType()/] [anEReference.getGetterName()/]() const [abstractSufix(impl)/];
 
 [/template]
 
@@ -31,8 +31,8 @@ virtual void [anEReference.getSetterName()/]([if (not anEReference.eGenericType.
 
 [template public generateReferenceParameter(anEReference : EReference)]
 [if(anEReference.upperBound = 1)]
-std::shared_ptr<[anEReference.eGenericType.generateCppType()/]> [anEReference.name/][else]
-std::shared_ptr<EList<[anEReference.eGenericType.generateCppType()/]> > [anEReference.name/][/if]
+const [anEReference.eGenericType.generateCppType()/]& [anEReference.name/][else]
+const std::shared_ptr<EList<[anEReference.eGenericType.generateCppType()/]> >& [anEReference.name/][/if]
 [/template]
 
 [template public generateReferenceProtected(anEReference : EReference) ]
@@ -63,7 +63,7 @@ void [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.get
 [/template]
 
 [template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter()and (not isUnion()))]
-[anEReference.generateReferenceType()/] [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getGetterName()/]() const
+[anEReference.generateReturnType()/] [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getGetterName()/]() const
 {
 [if (hasKey('getterbody'))]
 //generated from getterbody annotation

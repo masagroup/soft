@@ -73,12 +73,12 @@ std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/
 
 [let ref : OrderedSet(EReference) = aClass.getAllContainers()]
 [for(aReference:EReference | ref->sortedBy(name))]
-std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]([aReference.generateReferenceType(true)/] eContainer) const
+std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]([aReference.generateParameterType()/] eContainer) const
 {
     [generateCreateFunctionContent(aClass, ref, aReference, anEPackage, false)/]
 }
 [if(aClass.getClassifierIDName().size() > 0)]
-std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]([aReference.generateReferenceType(true)/] eContainer, const unsigned int classID) const
+std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]([aReference.generateParameterType()/] eContainer, const unsigned int classID) const
 {
     [generateCreateFunctionContent(aClass, ref, aReference, anEPackage, true)/]
 }[/if]

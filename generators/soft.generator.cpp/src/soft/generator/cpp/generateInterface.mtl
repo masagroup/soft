@@ -56,34 +56,14 @@ namespace [aClass.ePackage.name/]
 [else]
 [for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) before (':') separator (',')]
 virtual public [getClassWithNamespace(aClass,sClass)/][/for]
-[/if]
-    {
+[/if] {
         public:
-            [aClass.name.toUpperFirst()/](const [aClass.name.toUpperFirst()/] &) {}
+            [aClass.name.toUpperFirst()/](const [aClass.name.toUpperFirst()/] &) = delete;
             [aClass.name.toUpperFirst()/]& operator=([aClass.name.toUpperFirst()/] const&) = delete;
 
-        protected:
-            [aClass.name.toUpperFirst()/](){}
-
-            [if(aClass.hasContainerAttribute())]
-                [let ref:OrderedSet(EReference) = aClass.getAllContainers()]
-                    [for(aReference:EReference | ref->sortedBy(name)) separator('\n')]
-            //Additional constructors for the containments back reference
-                        [if(ref->select(eType.name = aReference.eType.name)->size()>1 )]
-                            [if(ref->select(eType.name = aReference.eType.name)->asOrderedSet()->sortedBy(name)->first() = aReference)]
-            [aClass.name.toUpperFirst()/]([aReference.generateReferenceType(true)/] par_[aReference.eType.name/], const int reference_id);
-                            [/if]
-                        [else]
-            [aClass.name.toUpperFirst()/]([aReference.generateReferenceType(true)/] par_[aReference.name/]);
-                        [/if]
-                    [/for]
-                [/let]
-            [/if]
-
+     
         public:
-            virtual std::shared_ptr<ecore::EObject> copy() const = 0;
-
-            //destructor
+                 //destructor
             virtual ~[aClass.name.toUpperFirst()/]() {}
             [if(aClass.eOperations->notEmpty())]
 

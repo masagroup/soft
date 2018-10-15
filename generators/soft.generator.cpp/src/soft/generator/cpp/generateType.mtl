@@ -4,29 +4,72 @@
 [import soft::generator::cpp::utils/]
 
 [query public requiresAny(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then true else (name = 'EEnumerator' or name = 'EDiagnosticChain' or name = 'EJavaObject') endif/]
+[query private isShared(aReference : EReference) : Boolean = if (aReference.hasKey('AggregationKind')) then aReference.valueKey('AggregationKind')='shared' else false endif/]
+[query public isBackReference(aReference:EReference) : Boolean = aReference.container or isShared()/]
+[query public needReference(anEDataType : EGenericType) : Boolean = anEDataType.eTypeArguments->notEmpty() or needReference(anEDataType.eClassifier)/]
+[query public needReference(anEClassifier : EClassifier) : Boolean = oclIsUndefined() or 
+                                                                (not oclIsKindOf(EDataType)) or 
+                                                                name = 'EString' or 
+                                                                name = 'EEnumerator' or 
+                                                                name = 'EDiagnosticChain' or 
+                                                                name = 'EEList' or  
+                                                                name = 'EMap' or 
+                                                                name = 'EJavaObject'/]
+
+[template public generateCppType(anEDataType : EGenericType)]
+[if (anEDataType.oclIsUndefined())]
+void[else]
+[if (anEDataType.eTypeArguments->notEmpty())]
+[anEDataType.generateGenericType()/]
+[elseif (not anEDataType.eClassifier.oclIsKindOf(EDataType))]
+std::shared_ptr<[anEDataType.eClassifier.generateType()/]>[else]
+[anEDataType.eClassifier.generateType()/][/if][/if]
+[/template]
+
+[template public generateGenericArgumentType(anEDataType : EGenericType)]
+[if (anEDataType.oclIsUndefined())]
+void[elseif (anEDataType.eClassifier.oclIsUndefined())]
+boost::any[elseif (not anEDataType.eClassifier.oclIsKindOf(EDataType))]
+std::shared_ptr<[anEDataType.eClassifier.generateType()/]>[else]
+[anEDataType.eClassifier.generateType()/][/if]
+[/template]
+
+[template public generateGenericType(anEDataType : EGenericType)]
+[if (anEDataType.eClassifier.name = 'EJavaClass')] [anEDataType.eClassifier.generateType()/][else]
+std::shared_ptr<[anEDataType.eClassifier.generateType()/]<[for (g : EGenericType | anEDataType.eTypeArguments) separator (',')][g.generateGenericArgumentType()/][/for]>>[/if]
+[/template]
+
+[template public generateParameterList(aOperation:EOperation) post(trim())]
+[for (sParameter : EParameter | aOperation.eParameters->select(p:EParameter | not p.doNotGenerate())) separator (',')]
+[sParameter.generateParameterType()/] [sParameter.name/][/for]
+[/template]
+
+[template public generateParameterType(eElement : ETypedElement)]
+[if (not (eElement.upperBound = 1))]
+const std::shared_ptr<EList<[eElement.eGenericType.generateCppType()/]> >&[else]
+[if (eElement.eGenericType.needReference())]
+const [eElement.eGenericType.generateCppType()/]&[else]
+[eElement.eGenericType.generateCppType()/][/if][/if]
+[/template]
+
+[template public generateReturnType(eElement : ETypedElement) post(trim())]
+[if (not (eElement.upperBound = 1))]
+std::shared_ptr<EList<[eElement.eGenericType.generateCppType()/]>>[else]
+[eElement.eGenericType.generateCppType()/][/if]
+[/template]
 
 [template public generateAttributeType(eAttribute : EAttribute)]
 [if (not(eAttribute.upperBound = 1))]
-std::shared_ptr<EList<[eAttribute.eGenericType.generateCppType()/]> >[elseif ((not eAttribute.eType.oclIsUndefined()) and (not eAttribute.eType.oclIsKindOf(EDataType)))]
-std::shared_ptr<[eAttribute.eGenericType.generateCppType()/]> [else]
-[eAttribute.eGenericType.generateCppType()/] [/if]
+std::shared_ptr<EList<[eAttribute.eGenericType.generateCppType()/]>>[else]
+[eAttribute.eGenericType.generateCppType()/][/if]
 [/template]
 
-[template public generateReferenceType(eReference : EReference) post(trim())]
-[generateReferenceType(true)/]
-[/template]
-
-[template public generateReferenceType(eReference : EReference, pointer : Boolean) post(trim())]
+[template public generateReferenceType(eReference : EReference)]
 [if (eReference.upperBound = 1)]
-    [if(pointer)][eReference.pointerType()/]<[/if][eReference.eGenericType.generateCppType()/] [if(pointer)]>[/if]
-[else]
-    [if(pointer)]std::shared_ptr<[/if]EList<[eReference.eGenericType.generateCppType()/]>[if(pointer)]>[/if]
-[/if]
+[eReference.pointerType()/]<[eReference.eGenericType.eClassifier.generateType()/] >[else]
+std::shared_ptr< EList<[eReference.eGenericType.generateCppType()/]>>[/if]
 [/template]
 
-[query private isShared(aReference : EReference) : Boolean = if (aReference.hasKey('AggregationKind')) then aReference.valueKey('AggregationKind')='shared' else false endif/]
-[query public isBackReference(aReference:EReference) : Boolean = aReference.container or isShared()/]
-[query public hasAbstractType(aReference : EReference) : Boolean = if (aReference.eType.oclIsKindOf(EClass)) then eType.oclAsType(EClass).abstract else false endif /]
 
 [template public pointerType(aReference : EReference) post(trim())]
 [if(isBackReference())]
@@ -36,136 +79,90 @@ std::shared_ptr
 [/if]
 [/template]
 
-[template public generateCppType(anEDataType : EGenericType)]
-[if (anEDataType.oclIsUndefined())]
-void[else]
-[if (anEDataType.eTypeArguments->notEmpty())]
-[anEDataType.generateGenericType()/][else]
-[anEDataType.eClassifier.transformType()/][/if]
-[/if]
-[/template]
-
-[template public generateGenericType(anEDataType : EGenericType)]
-[if (anEDataType.eClassifier.name = 'EJavaClass')] [anEDataType.eClassifier.transformType()/][else]
-[anEDataType.eClassifier.transformType()/]<[for (g : EGenericType | anEDataType.eTypeArguments) separator (',')] [g.eClassifier.generateType()/][/for] > [/if]
-[/template]
-
-[template public generateType(anEDataType : EClassifier)]
-[if (anEDataType.oclIsUndefined())]
-boost::any[else]
-[anEDataType.transformType()/][/if]
-[/template]
-
-[template public generateParameterList(aOperation:EOperation) post(trim())]
-[for (sParameter : EParameter | aOperation.eParameters->select(p:EParameter | not p.doNotGenerate())) separator (',')]
-[sParameter.generateParameterType()/] [sParameter.name/][/for]
-[/template]
-
-[template public generateParameterType(eParameter : EParameter)]
-[if (not (eParameter.upperBound = 1))]
-[if (not eParameter.eGenericType.oclIsKindOf(EDataType))]
-const std::shared_ptr<EList<[eParameter.eGenericType.generateCppType()/]> >&[/if]
-[elseif ((not eParameter.eType.oclIsUndefined()) and ((not eParameter.eType.oclIsKindOf(EDataType)) or (eParameter.eType.name = 'EEList') or (eParameter.eType.name = 'ETreeIterator') ))]
-const std::shared_ptr<[eParameter.eGenericType.generateCppType()/]>& [else]
-[if (eParameter.eGenericType.eClassifier.oclIsUndefined() or eParameter.eGenericType.eClassifier.name ='EJavaObject' or eParameter.eGenericType.eClassifier.name ='EEnumerator' or eParameter.eGenericType.eClassifier.name ='EDiagnosticChain')]
-const [eParameter.eGenericType.generateCppType()/]&[else] 
-[eParameter.eGenericType.generateCppType()/][/if] [/if]
-[/template]
-
-[template public generateOperationType(eOperation : EOperation) post(trim())]
-[if (not (eOperation.upperBound = 1))]
-[if (not eOperation.eGenericType.oclIsKindOf(EDataType))]
-std::shared_ptr<EList<[eOperation.eGenericType.generateCppType()/]> >[/if]
-[elseif ((not eOperation.eType.oclIsUndefined()) and ((not eOperation.eType.oclIsKindOf(EDataType)) or (eOperation.eType.name = 'EEList') or (eOperation.eType.name = 'ETreeIterator') ))]
-std::shared_ptr<[eOperation.eGenericType.generateCppType()/]> [else] 
-[eOperation.eGenericType.generateCppType()/] [/if]
-
-[/template]
-
 [**
  * Transformation Java Types to C++
 */]
-[template public transformType(anEClassifier : EClassifier) ? (oclIsUndefined())]
+[template public generateType(anEClassifier : EClassifier) ? (oclIsUndefined())]
 boost::any
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? ((name = 'EBoolean') or (name = 'EBooleanObject') or (name = 'Boolean'))]
+[template public generateType(anEClassifier : EClassifier) ? ((name = 'EBoolean') or (name = 'EBooleanObject') or (name = 'Boolean'))]
 bool
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? ((name = 'UnlimitedNatural' ))]
+[template public generateType(anEClassifier : EClassifier) ? ((name = 'UnlimitedNatural' ))]
 int
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? (name = 'EResource')]
+[template public generateType(anEClassifier : EClassifier) ? (name = 'EResource')]
 int
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? ((name = 'EInt') or (name = 'EIntegerObject') or (name = 'EBigInteger') or (name = 'Integer'))]
+[template public generateType(anEClassifier : EClassifier) ? ((name = 'EInt') or (name = 'EIntegerObject') or (name = 'EBigInteger') or (name = 'Integer'))]
 int
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? ((name = 'EDouble') or (name = 'EDoubleObject')or (name = 'EBigDecimal') or (name = 'Real'))]
+[template public generateType(anEClassifier : EClassifier) ? ((name = 'EDouble') or (name = 'EDoubleObject')or (name = 'EBigDecimal') or (name = 'Real'))]
 double
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? ((name = 'ELong') or (name = 'ELongObject') )]
+[template public generateType(anEClassifier : EClassifier) ? ((name = 'ELong') or (name = 'ELongObject') )]
 long
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? ((name = 'EByte') or (name = 'EByteObject') )]
+[template public generateType(anEClassifier : EClassifier) ? ((name = 'EByte') or (name = 'EByteObject') )]
 char
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? ((name = 'EByteArray'))]
+[template public generateType(anEClassifier : EClassifier) ? ((name = 'EByteArray'))]
 char
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? ((name = 'EChar') or (name = 'ECharacterObject') )]
+[template public generateType(anEClassifier : EClassifier) ? ((name = 'EChar') or (name = 'ECharacterObject') )]
 char
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? ((name = 'EFloat') or (name = 'EFloatObject') )]
+[template public generateType(anEClassifier : EClassifier) ? ((name = 'EFloat') or (name = 'EFloatObject') )]
 float
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? (name = 'EEList')]
+[template public generateType(anEClassifier : EClassifier) ? (name = 'EEList')]
 EList
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? (name = 'EDate')]
+[template public generateType(anEClassifier : EClassifier) ? (name = 'EDate')]
 int
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? (name = 'EMap')]
+[template public generateType(anEClassifier : EClassifier) ? (name = 'EMap')]
 std::map
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? (name = 'EJavaObject')]
+[template public generateType(anEClassifier : EClassifier) ? (name = 'EJavaObject')]
 boost::any
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? (name = 'ETreeIterator')]
+[template public generateType(anEClassifier : EClassifier) ? (name = 'ETreeIterator')]
 EList
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? (name = 'EJavaClass')]
+[template public generateType(anEClassifier : EClassifier) ? (name = 'EJavaClass')]
 void * 
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? ((name = 'EEnumerator') or (name = 'EDiagnosticChain'))]
+[template public generateType(anEClassifier : EClassifier) ? ((name = 'EEnumerator') or (name = 'EDiagnosticChain'))]
 boost::any
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? ((name = 'EString') or (name = 'String'))]
+[template public generateType(anEClassifier : EClassifier) ? ((name = 'EString') or (name = 'String'))]
 std::string
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? (not oclIsKindOf(EDataType))]
+[template public generateType(anEClassifier : EClassifier) ? (not oclIsKindOf(EDataType))]
 [anEClassifier.ePackage.name/]::[anEClassifier.name/]
 [/template]
 
-[template public transformType(anEClassifier : EClassifier) ? (oclIsKindOf(EEnum))]
+[template public generateType(anEClassifier : EClassifier) ? (oclIsKindOf(EEnum))]
 [anEClassifier.name/]
 [/template]
 
