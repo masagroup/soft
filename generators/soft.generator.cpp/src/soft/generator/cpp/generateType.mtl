@@ -35,7 +35,7 @@ std::shared_ptr<[anEDataType.eClassifier.generateType()/]>[else]
 [/template]
 
 [template public generateGenericType(anEDataType : EGenericType)]
-[if (anEDataType.eClassifier.name = 'EJavaClass')] [anEDataType.eClassifier.generateType()/][else]
+[if (anEDataType.eClassifier.name = 'EJavaClass')][anEDataType.eClassifier.generateType()/][else]
 std::shared_ptr<[anEDataType.eClassifier.generateType()/]<[for (g : EGenericType | anEDataType.eTypeArguments) separator (',')][g.generateGenericArgumentType()/][/for]>>[/if]
 [/template]
 
@@ -46,7 +46,7 @@ std::shared_ptr<[anEDataType.eClassifier.generateType()/]<[for (g : EGenericType
 
 [template public generateParameterType(eElement : ETypedElement)]
 [if (not (eElement.upperBound = 1))]
-const std::shared_ptr<EList<[eElement.eGenericType.generateCppType()/]> >&[else]
+const std::shared_ptr<EList<[eElement.eGenericType.generateCppType()/]>>&[else]
 [if (eElement.eGenericType.needReference())]
 const [eElement.eGenericType.generateCppType()/]&[else]
 [eElement.eGenericType.generateCppType()/][/if][/if]
@@ -66,8 +66,8 @@ std::shared_ptr<EList<[eAttribute.eGenericType.generateCppType()/]>>[else]
 
 [template public generateReferenceType(eReference : EReference)]
 [if (eReference.upperBound = 1)]
-[eReference.pointerType()/]<[eReference.eGenericType.eClassifier.generateType()/] >[else]
-std::shared_ptr< EList<[eReference.eGenericType.generateCppType()/]>>[/if]
+[eReference.pointerType()/]<[eReference.eGenericType.eClassifier.generateType()/]>[else]
+std::shared_ptr<EList<[eReference.eGenericType.generateCppType()/]>>[/if]
 [/template]
 
 
@@ -147,7 +147,7 @@ EList
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? (name = 'EJavaClass')]
-void * 
+void *
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? ((name = 'EEnumerator') or (name = 'EDiagnosticChain'))]
