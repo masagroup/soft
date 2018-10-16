@@ -30,10 +30,7 @@
 [comment namespace /]
 namespace [aClass.ePackage.name/] 
 {
-    class [className/] :[for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator (', ') after (', ')]
-virtual public [getClassWithNamespace(aClass, sClass)/]Impl[/for][if (aClass.eSuperTypes->isEmpty())]
-[if (not(aClass.name='EObject'))]virtual public ecore::EObjectImpl,[/if]
-[/if]virtual public [aClass.name.toUpperFirst()/] 
+    class [className/] :[for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator (', ') after (', ')] virtual public [getClassWithNamespace(aClass, sClass)/]Impl[/for][if (aClass.eSuperTypes->isEmpty())][if (not(aClass.name='EObject'))]virtual public ecore::EObjectImpl,[/if] [/if]virtual public [aClass.name.toUpperFirst()/] 
     {
         private:    
             [className/]& operator=([className/] const&) = delete;
@@ -68,12 +65,6 @@ virtual public [getClassWithNamespace(aClass, sClass)/]Impl[/for][if (aClass.eSu
             //*********************************
             [aClass.eReferences->sortedBy(name).generateReferenceDeclaration(true)/]
             [/if]
-            
-            //*********************************
-            // Structural Feature Getter/Setter
-            //*********************************
-            [aClass.generateEContainerOperation(true)/] 
-            
             
         protected:
             virtual std::shared_ptr<[needNamespace(aClass.ePackage, 'EClass')/]> eStaticClass() const;

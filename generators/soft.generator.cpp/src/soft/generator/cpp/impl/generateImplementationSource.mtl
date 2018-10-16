@@ -100,10 +100,7 @@ std::shared_ptr<[needNamespace(aClass.ePackage, 'EClass')/]> [className/]::eStat
 [aReference.generateReferenceCpp()/]
 [/for]
 
-
 [aClass.generateGetThisPtrCPP()/]
-
-[aClass.generateEContainerOperationCPP()/]
 
 //*********************************
 // Structural Feature Getter/Setter

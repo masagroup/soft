@@ -88,10 +88,6 @@ namespace [aClass.ePackage.name/]
             //*********************************
             [aClass.eReferences->sortedBy(name).generateReferenceDeclaration(false)/]
             [/if]
-
-        public:
-        
-            [aClass.generateEContainerOperation(false)/] 
             
     };
 }

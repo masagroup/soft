@@ -231,7 +231,7 @@
     </eOperations>
     <eOperations name="eContainer" eType="#//EObject">
       <eAnnotations source="http://net.masagroup/codegen">
-        <details key="doNotGenerate" value="true"/>
+        <details key="const"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eContainingFeature" eType="#//EStructuralFeature">
@@ -246,13 +246,16 @@
     </eOperations>
     <eOperations name="eContents">
       <eAnnotations source="http://net.masagroup/codegen">
-        <details key="doNotGenerate" value="true"/>
+        <details key="const"/>
       </eAnnotations>
       <eGenericType eClassifier="#//EEList">
         <eTypeArguments eClassifier="#//EObject"/>
       </eGenericType>
     </eOperations>
     <eOperations name="eAllContents">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="const"/>
+      </eAnnotations>
       <eGenericType eClassifier="#//ETreeIterator">
         <eTypeArguments eClassifier="#//EObject"/>
       </eGenericType>
@@ -287,9 +290,6 @@
         </eGenericType>
       </eParameters>
     </eOperations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eContents" upperBound="-1"
-        eType="#//EObject"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eContainer" eType="#//EObject"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EOperation" eSuperTypes="#//ETypedElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
