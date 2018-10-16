@@ -9,7 +9,7 @@ virtual std::shared_ptr<[aEClass.generateTypeClass()/]> create[aEClass.name/]() 
 [let ref:OrderedSet(EReference) = aEClass.getAllContainers()]
 [for(aReference:EReference | ref->sortedBy(name))]
 virtual std::shared_ptr<[aEClass.generateTypeClass()/]> create[aEClass.name/]([aReference.generateParameterType()/] eContainer) const [abstractSufix(impl)/];
-[if(aEClass.getClassifierIDName().size() > 0)]virtual std::shared_ptr<[aEClass.generateTypeClass()/]> create[aEClass.name/]([aReference.generateParameterType()/] eContainer, const unsigned int classID) const [abstractSufix(impl)/];[/if]
+[if(aEClass.getElementIDAccessorName().size() > 0)]virtual std::shared_ptr<[aEClass.generateTypeClass()/]> create[aEClass.name/]([aReference.generateParameterType()/] eContainer, const unsigned int classID) const [abstractSufix(impl)/];[/if]
 [/for]
 
 [/let]
@@ -68,25 +68,25 @@ void [aClass.name.toUpperFirst()/]Impl::[generateGetThisPtrPropertySetterName()/
 [query public generateGetThisPtrPropertyGetterName(anEClass : EClass) : String = 'get'.concat(generateGetThisPtrPropertyName().toUpperFirst())/]
 
 [template public generateStaticClassID(aEClass : EClass)]
-static const unsigned int [aEClass.getStaticElementID()/] = [aEClass.getSafeClassifierID()/];
-static const unsigned int [aEClass.getStaticElementID()/]_FEATURE_COUNT = [aEClass.getFeatureCount()/];
-static const unsigned int [aEClass.getStaticElementID()/]_OPERATION_COUNT = [aEClass.getOperationCount()/];
+static const unsigned int [aEClass.getElementID()/] = [aEClass.getSafeClassifierID()/];
+static const unsigned int [aEClass.getElementID()/]_FEATURE_COUNT = [aEClass.getFeatureCount()/];
+static const unsigned int [aEClass.getElementID()/]_OPERATION_COUNT = [aEClass.getOperationCount()/];
 [/template]
 
 [template public generateClassCreation(aEClass : EClass)]
-[aEClass.getVariableMemberName()/] = factory->createEClass(package, [aEClass.getStaticElementID()/]);
+[aEClass.getElementInstanceName()/] = factory->createEClass(package, [aEClass.getElementID()/]);
 
 [/template]
 
 [template public generateClassInit(aEClass : EClass)]
-[aEClass.getVariableMemberName()/]->setName("[aEClass.name/]");
-[aEClass.getVariableMemberName()/]->setAbstract([aEClass.abstract.toString()/]);
-[aEClass.getVariableMemberName()/]->setInterface([aEClass.interface.toString()/]);
+[aEClass.getElementInstanceName()/]->setName("[aEClass.name/]");
+[aEClass.getElementInstanceName()/]->setAbstract([aEClass.abstract.toString()/]);
+[aEClass.getElementInstanceName()/]->setInterface([aEClass.interface.toString()/]);
 
 [/template]
 
 [template public initSuperTypes(aEClass : EClass)]
 [for (superClass : EClass | aEClass.eSuperTypes->asOrderedSet()->sortedBy(name))]
-[aEClass.getVariableMemberName()/]->getESuperTypes()->add([aEClass.packageGetter(superClass)/]);
+[aEClass.getElementInstanceName()/]->getESuperTypes()->add([aEClass.packageGetter(superClass)/]);
 [/for]
 [/template]

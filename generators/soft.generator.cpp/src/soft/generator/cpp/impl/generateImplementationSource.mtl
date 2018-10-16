@@ -74,7 +74,7 @@ using namespace [aClass.ePackage.name/];
 
 std::shared_ptr<[needNamespace(aClass.ePackage, 'EClass')/]> [className/]::eStaticClass() const
 {
-    return [aClass.ePackage.name.concat('PackageImpl').toUpperFirst()/]::eInstance()->get[aClass.getMemberNameUpperFirst()/]();
+    return [aClass.ePackage.name.concat('PackageImpl').toUpperFirst()/]::eInstance()->get[aClass.getElementAccessorName()/]();
 }
 
 //*********************************

@@ -72,34 +72,34 @@ void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.get
 [/template]
 
 [template public generateStaticAttributeID(anEAttribute : EAttribute)]
-static const int [anEAttribute.getStaticElementID()/] = [anEAttribute.eContainingClass.getSafeClassifierID() * 100 + anEAttribute.getFeatureID()/];
+static const int [anEAttribute.getElementID()/] = [anEAttribute.eContainingClass.getSafeClassifierID() * 100 + anEAttribute.getFeatureID()/];
 
 [/template]
 
 [template public generateAttributeCreation(anEAttribute : EAttribute)]
-[anEAttribute.getVariableMemberName()/] = factory->createEAttribute([anEAttribute.eContainingClass.getVariableMemberName()/], [anEAttribute.getStaticElementID()/]);
+[anEAttribute.getElementInstanceName()/] = factory->createEAttribute([anEAttribute.eContainingClass.getElementInstanceName()/], [anEAttribute.getElementID()/]);
 
 [/template]
 
 [template public generateAttributeInitialization(anEAttribute : EAttribute)]
-[anEAttribute.getVariableMemberName()/] = [anEAttribute.getPackageGetter()/];
-[anEAttribute.getVariableMemberName()/]->setName("[anEAttribute.name/]");
-[anEAttribute.getVariableMemberName()/]->setEType([anEAttribute.eType.oclAsType(EDataType).packageGetter(anEAttribute)/]);
-[anEAttribute.getVariableMemberName()/]->setLowerBound([anEAttribute.lowerBound/]);
-[anEAttribute.getVariableMemberName()/]->setUpperBound([anEAttribute.upperBound/]);
-[anEAttribute.getVariableMemberName()/]->setTransient([anEAttribute.transient.toString()/]);
-[anEAttribute.getVariableMemberName()/]->setVolatile([anEAttribute.volatile.toString()/]);
-[anEAttribute.getVariableMemberName()/]->setChangeable([anEAttribute.changeable.toString()/]);
-[anEAttribute.getVariableMemberName()/]->setUnsettable([anEAttribute.unsettable.toString()/]);
-[anEAttribute.getVariableMemberName()/]->setUnique([anEAttribute.unique.toString()/]);
-[anEAttribute.getVariableMemberName()/]->setDerived([anEAttribute.derived.toString()/]);
-[anEAttribute.getVariableMemberName()/]->setOrdered([anEAttribute.ordered.toString()/]);
-[anEAttribute.getVariableMemberName()/]->setID([anEAttribute.iD.toString()/]);
+[anEAttribute.getElementInstanceName()/] = [anEAttribute.getPackageGetter()/];
+[anEAttribute.getElementInstanceName()/]->setName("[anEAttribute.name/]");
+[anEAttribute.getElementInstanceName()/]->setEType([anEAttribute.eType.oclAsType(EDataType).packageGetter(anEAttribute)/]);
+[anEAttribute.getElementInstanceName()/]->setLowerBound([anEAttribute.lowerBound/]);
+[anEAttribute.getElementInstanceName()/]->setUpperBound([anEAttribute.upperBound/]);
+[anEAttribute.getElementInstanceName()/]->setTransient([anEAttribute.transient.toString()/]);
+[anEAttribute.getElementInstanceName()/]->setVolatile([anEAttribute.volatile.toString()/]);
+[anEAttribute.getElementInstanceName()/]->setChangeable([anEAttribute.changeable.toString()/]);
+[anEAttribute.getElementInstanceName()/]->setUnsettable([anEAttribute.unsettable.toString()/]);
+[anEAttribute.getElementInstanceName()/]->setUnique([anEAttribute.unique.toString()/]);
+[anEAttribute.getElementInstanceName()/]->setDerived([anEAttribute.derived.toString()/]);
+[anEAttribute.getElementInstanceName()/]->setOrdered([anEAttribute.ordered.toString()/]);
+[anEAttribute.getElementInstanceName()/]->setID([anEAttribute.iD.toString()/]);
 {
 	std::string defaultValue = "[anEAttribute.defaultValueLiteral/]";
 	if (!defaultValue.empty())
 	{
-	   [anEAttribute.getVariableMemberName()/]->setDefaultValueLiteral(defaultValue);
+	   [anEAttribute.getElementInstanceName()/]->setDefaultValueLiteral(defaultValue);
 	}
 }
 

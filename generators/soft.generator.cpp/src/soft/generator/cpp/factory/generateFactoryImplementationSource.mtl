@@ -54,7 +54,7 @@ std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> [className/]::create(co
 	switch(classID)
 	{
 	[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
-		case [anEPackage.name.toUpperFirst()/]Package::[aClass.getStaticElementID()/]:
+		case [anEPackage.name.toUpperFirst()/]Package::[aClass.getElementID()/]:
             return this->create[aClass.name/]();
 	[/for]
 	default:
@@ -77,7 +77,7 @@ std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/
 {
     [generateCreateFunctionContent(aClass, ref, aReference, anEPackage, false)/]
 }
-[if(aClass.getClassifierIDName().size() > 0)]
+[if(aClass.getElementIDAccessorName().size() > 0)]
 std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]([aReference.generateParameterType()/] eContainer, const unsigned int classID) const
 {
     [generateCreateFunctionContent(aClass, ref, aReference, anEPackage, true)/]
@@ -98,7 +98,7 @@ std::shared_ptr<[anEPackage.name.toUpperFirst().concat('Package')/]> [className/
 std::shared_ptr<[anEClass.name.toUpperFirst()/]Impl> element(new [anEClass.name.toUpperFirst()/]Impl());
 element->[generateGetThisPtrPropertySetterName()/](element);
 [if(addID)]
-element->set[anEClass.getClassifierIDName()/]ID(classID);
+element->set[anEClass.getElementIDAccessorName()/]ID(classID);
 [/if]
 [if(not aReference.eOpposite.name.oclIsUndefined())]
 if(nullptr != eContainer)

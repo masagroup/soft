@@ -5,18 +5,18 @@
 
 
 [template public generateEDatatypeCreation(anEDatatype : EDataType)]
-[anEDatatype.getVariableMemberName()/] = factory->create[if (anEDatatype.oclIsKindOf(EEnum))]EEnum[else]EDataType[/if](package, [anEDatatype.getStaticElementID()/]);
+[anEDatatype.getElementInstanceName()/] = factory->create[if (anEDatatype.oclIsKindOf(EEnum))]EEnum[else]EDataType[/if](package, [anEDatatype.getElementID()/]);
 
 [/template]
 
 [template public generateEDatatypeInitialization(adatatype : EDataType)]
-[adatatype.getVariableMemberName()/]->setName("[adatatype.name/]");
+[adatatype.getElementInstanceName()/]->setName("[adatatype.name/]");
 [if (not adatatype.oclIsKindOf(EEnum))]
-[adatatype.getVariableMemberName()/]->setSerializable([adatatype.serializable.toString()/]);
+[adatatype.getElementInstanceName()/]->setSerializable([adatatype.serializable.toString()/]);
 [/if]
 [/template]
 
 [template public generateStaticDatatypeID(aEDatatype : EDataType)]
-static const int [aEDatatype.getStaticElementID()/] = [aEDatatype.getSafeClassifierID()/];
+static const int [aEDatatype.getElementID()/] = [aEDatatype.getSafeClassifierID()/];
 
 [/template]

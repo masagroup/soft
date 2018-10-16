@@ -27,28 +27,28 @@ virtual [anEOperation.generateReturnType()/] [anEOperation.name/]([anEOperation.
 [/template]
 
 [template public generateStaticOperationID(aOperation : EOperation) ? ( not hasImplOnly())]
-static const int [aOperation.getStaticElementID()/] = [aOperation.eContainingClass.getSafeClassifierID() * 100 + aOperation.eContainingClass.getFeatureCount() + aOperation.getOperationID()/];
+static const int [aOperation.getElementID()/] = [aOperation.eContainingClass.getSafeClassifierID() * 100 + aOperation.eContainingClass.getFeatureCount() + aOperation.getOperationID()/];
 
 [/template]
 
-[query public simpleDatatypeGetter(anEClassifier : EClassifier, anOperation: EOperation) : String = if anOperation.eType.oclIsUndefined() or anOperation.eTypeParameters->notEmpty() then 'nullptr' else needMetaModelPackageGetter(anEClassifier, anOperation.eContainingClass).concat('get').concat(anEClassifier.getMemberNameUpperFirst()).concat('()') endif/]
+[query public simpleDatatypeGetter(anEClassifier : EClassifier, anOperation: EOperation) : String = if anOperation.eType.oclIsUndefined() or anOperation.eTypeParameters->notEmpty() then 'nullptr' else needMetaModelPackageGetter(anEClassifier, anOperation.eContainingClass).concat('get').concat(anEClassifier.getElementAccessorName()).concat('()') endif/]
 
 [template public generateOperationCreation(anEOperation : EOperation) ? ( not hasImplOnly()) ]
-[anEOperation.getVariableMemberName()/] = factory->createEOperation([anEOperation.eContainingClass.getVariableMemberName()/], [anEOperation.getStaticElementID()/]);
+[anEOperation.getElementInstanceName()/] = factory->createEOperation([anEOperation.eContainingClass.getElementInstanceName()/], [anEOperation.getElementID()/]);
 
 [/template]
 
 [template public generateOperationInitialization(anEOperation : EOperation)? ( not hasImplOnly() )]
-[anEOperation.getVariableMemberName()/]->setEType([anEOperation.eType.simpleDatatypeGetter(anEOperation)/]);
-[anEOperation.getVariableMemberName()/]->setName("[anEOperation.name.toString()/]");
-[anEOperation.getVariableMemberName()/]->setLowerBound([anEOperation.lowerBound/]);
-[anEOperation.getVariableMemberName()/]->setUpperBound([anEOperation.upperBound/]);
-[anEOperation.getVariableMemberName()/]->setUnique([anEOperation.unique.toString()/]);
-[anEOperation.getVariableMemberName()/]->setOrdered([anEOperation.ordered.toString()/]);
+[anEOperation.getElementInstanceName()/]->setEType([anEOperation.eType.simpleDatatypeGetter(anEOperation)/]);
+[anEOperation.getElementInstanceName()/]->setName("[anEOperation.name.toString()/]");
+[anEOperation.getElementInstanceName()/]->setLowerBound([anEOperation.lowerBound/]);
+[anEOperation.getElementInstanceName()/]->setUpperBound([anEOperation.upperBound/]);
+[anEOperation.getElementInstanceName()/]->setUnique([anEOperation.unique.toString()/]);
+[anEOperation.getElementInstanceName()/]->setOrdered([anEOperation.ordered.toString()/]);
 
 [for (anEParameter : EParameter | anEOperation.eParameters) separator ('\r\n')]
 {
-	std::shared_ptr<ecore::EParameter> parameter = ecore::EcoreFactory::eInstance()->createEParameter([anEOperation.getVariableMemberName()/]);
+	std::shared_ptr<ecore::EParameter> parameter = ecore::EcoreFactory::eInstance()->createEParameter([anEOperation.getElementInstanceName()/]);
 	parameter->setName("[anEParameter.name/]");
 	parameter->setEType([anEParameter.eType.simpleDatatypeGetter(anEParameter.eOperation)/]);
 	parameter->setLowerBound(0);
