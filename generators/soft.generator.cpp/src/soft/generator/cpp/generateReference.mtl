@@ -77,39 +77,39 @@ void [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.get
 [/template]
 
 [template public generateStaticReferenceID(anEReference : EReference)]
-static const int [anEReference.getStaticAttributeIDName()/] = [anEReference.eContainingClass.getMyClassifierID() * 100 + anEReference.getFeatureID()/];
+static const int [anEReference.getStaticElementID()/] = [anEReference.eContainingClass.getSafeClassifierID() * 100 + anEReference.getFeatureID()/];
 
 [/template]
 
 [template public generateReferenceCreation(anEReference : EReference)]
-[anEReference.getClassMemberName()/] = factory->createEReference([anEReference.eContainingClass.getClassMemberName()/], [anEReference.getStaticAttributeIDName()/]);
+[anEReference.getVariableMemberName()/] = factory->createEReference([anEReference.eContainingClass.getVariableMemberName()/], [anEReference.getStaticElementID()/]);
 
 [/template] 
  
 [template public generateReferenceInitialization(anEReference : EReference)]
-[anEReference.getClassMemberName()/]->setName("[anEReference.name/]");
-[anEReference.getClassMemberName()/]->setEType([anEReference.eGenericType.eClassifier.packageGetter(anEReference)/]);
-[anEReference.getClassMemberName()/]->setLowerBound([anEReference.lowerBound/]);
-[anEReference.getClassMemberName()/]->setUpperBound([anEReference.upperBound/]);
-[anEReference.getClassMemberName()/]->setTransient([anEReference.transient.toString()/]);
-[anEReference.getClassMemberName()/]->setVolatile([anEReference.volatile.toString()/]);
-[anEReference.getClassMemberName()/]->setChangeable([anEReference.changeable.toString()/]);
-[anEReference.getClassMemberName()/]->setUnsettable([anEReference.unsettable.toString()/]);
-[anEReference.getClassMemberName()/]->setUnique([anEReference.unique.toString()/]);
-[anEReference.getClassMemberName()/]->setDerived([anEReference.derived.toString()/]);
-[anEReference.getClassMemberName()/]->setOrdered([anEReference.ordered.toString()/]);
-[anEReference.getClassMemberName()/]->setContainment([anEReference.containment.toString()/]);
-[anEReference.getClassMemberName()/]->setResolveProxies([anEReference.resolveProxies.toString()/]);
+[anEReference.getVariableMemberName()/]->setName("[anEReference.name/]");
+[anEReference.getVariableMemberName()/]->setEType([anEReference.eGenericType.eClassifier.packageGetter(anEReference)/]);
+[anEReference.getVariableMemberName()/]->setLowerBound([anEReference.lowerBound/]);
+[anEReference.getVariableMemberName()/]->setUpperBound([anEReference.upperBound/]);
+[anEReference.getVariableMemberName()/]->setTransient([anEReference.transient.toString()/]);
+[anEReference.getVariableMemberName()/]->setVolatile([anEReference.volatile.toString()/]);
+[anEReference.getVariableMemberName()/]->setChangeable([anEReference.changeable.toString()/]);
+[anEReference.getVariableMemberName()/]->setUnsettable([anEReference.unsettable.toString()/]);
+[anEReference.getVariableMemberName()/]->setUnique([anEReference.unique.toString()/]);
+[anEReference.getVariableMemberName()/]->setDerived([anEReference.derived.toString()/]);
+[anEReference.getVariableMemberName()/]->setOrdered([anEReference.ordered.toString()/]);
+[anEReference.getVariableMemberName()/]->setContainment([anEReference.containment.toString()/]);
+[anEReference.getVariableMemberName()/]->setResolveProxies([anEReference.resolveProxies.toString()/]);
 {
 	std::string defaultValue = "[anEReference.defaultValueLiteral/]";
 	if (!defaultValue.empty())
 	{
-		[anEReference.getClassMemberName()/]->setDefaultValueLiteral(defaultValue);
+		[anEReference.getVariableMemberName()/]->setDefaultValueLiteral(defaultValue);
 	}
 	std::shared_ptr<ecore::EReference>  otherEnd = [anEReference.eOpposite.getPackageGetter()/];
 	if (otherEnd != nullptr)
     {
-   		[anEReference.getClassMemberName()/]->setEOpposite(otherEnd);
+   		[anEReference.getVariableMemberName()/]->setEOpposite(otherEnd);
     }
 }
 

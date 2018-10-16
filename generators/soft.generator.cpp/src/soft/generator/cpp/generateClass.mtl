@@ -68,25 +68,25 @@ void [aClass.name.toUpperFirst()/]Impl::[generateGetThisPtrPropertySetterName()/
 [query public generateGetThisPtrPropertyGetterName(anEClass : EClass) : String = 'get'.concat(generateGetThisPtrPropertyName().toUpperFirst())/]
 
 [template public generateStaticClassID(aEClass : EClass)]
-static const unsigned int [aEClass.getStaticAttributeIDName()/] = [aEClass.getMyClassifierID()/];
-static const unsigned int [aEClass.getStaticAttributeIDName()/]_FEATURE_COUNT = [aEClass.getFeatureCount()/];
-static const unsigned int [aEClass.getStaticAttributeIDName()/]_OPERATION_COUNT = [aEClass.getOperationCount()/];
+static const unsigned int [aEClass.getStaticElementID()/] = [aEClass.getSafeClassifierID()/];
+static const unsigned int [aEClass.getStaticElementID()/]_FEATURE_COUNT = [aEClass.getFeatureCount()/];
+static const unsigned int [aEClass.getStaticElementID()/]_OPERATION_COUNT = [aEClass.getOperationCount()/];
 [/template]
 
 [template public generateClassCreation(aEClass : EClass)]
-[aEClass.getClassMemberName()/] = factory->createEClass(package, [aEClass.getStaticAttributeIDName()/]);
+[aEClass.getVariableMemberName()/] = factory->createEClass(package, [aEClass.getStaticElementID()/]);
 
 [/template]
 
 [template public generateClassInit(aEClass : EClass)]
-[aEClass.getClassMemberName()/]->setName("[aEClass.name/]");
-[aEClass.getClassMemberName()/]->setAbstract([aEClass.abstract.toString()/]);
-[aEClass.getClassMemberName()/]->setInterface([aEClass.interface.toString()/]);
+[aEClass.getVariableMemberName()/]->setName("[aEClass.name/]");
+[aEClass.getVariableMemberName()/]->setAbstract([aEClass.abstract.toString()/]);
+[aEClass.getVariableMemberName()/]->setInterface([aEClass.interface.toString()/]);
 
 [/template]
 
 [template public initSuperTypes(aEClass : EClass)]
 [for (superClass : EClass | aEClass.eSuperTypes->asOrderedSet()->sortedBy(name))]
-[aEClass.getClassMemberName()/]->getESuperTypes()->add([aEClass.packageGetter(superClass)/]);
+[aEClass.getVariableMemberName()/]->getESuperTypes()->add([aEClass.packageGetter(superClass)/]);
 [/for]
 [/template]

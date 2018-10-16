@@ -28,8 +28,8 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, boo
     switch(featureID)
     {
     [for (struct : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
-        case [struct.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[struct.getStaticAttributeIDName()/]:
-            return [struct.getGetterName()/](); //[aClass.getMyClassifierID()/][struct.getFeatureID()/]
+        case [struct.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[struct.getStaticElementID()/]:
+            return [struct.getGetterName()/](); //[aClass.getSafeClassifierID()/][struct.getFeatureID()/]
     [/for]
     }
 [/if]
@@ -62,8 +62,8 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::internalEIsSet(int featureID)
     switch(featureID)
     {
     [for (struct : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
-        case [struct.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[struct.getStaticAttributeIDName()/]:
-            return [struct.generateComparison()/]; //[aClass.getMyClassifierID()/][struct.getFeatureID()/]
+        case [struct.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[struct.getStaticElementID()/]:
+            return [struct.generateComparison()/]; //[aClass.getSafeClassifierID()/][struct.getFeatureID()/]
     [/for]
     }
 [/if]
@@ -96,10 +96,10 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::eSet(int featureID, const boo
     switch(featureID)
     {
 [for (struct : EStructuralFeature | aClass.eStructuralFeatures->select(upperBound = 1 and changeable)->asOrderedSet()->sortedBy(name))]
-        case [struct.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[struct.getStaticAttributeIDName()/]:
+        case [struct.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[struct.getStaticElementID()/]:
         {
             [struct.eGenericType.generateCppType()/] _[struct.name/] = boost::any_cast<[struct.eGenericType.generateCppType()/]>(newValue);
-            [struct.getSetterName()/](_[struct.name/]); //[aClass.getMyClassifierID()/][struct.getFeatureID()/]
+            [struct.getSetterName()/](_[struct.name/]); //[aClass.getSafeClassifierID()/][struct.getFeatureID()/]
             return true;
         }
 [/for]

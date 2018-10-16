@@ -47,12 +47,12 @@ namespace [anEPackage.name/]
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
             // Begin Class [aClass.name.toUpperFirst()/]
-            //Class and Feature IDs 
+            // Class and Feature IDs 
             [aClass.generateStaticClassID()/]
             [aClass.eAttributes->sortedBy(name).generateStaticAttributeID()/]
             [aClass.eReferences->sortedBy(name).generateStaticReferenceID()/]
             [aClass.eOperations->sortedBy(name).generateStaticOperationID()/]
-            //Class and Feature Getter
+            // Class and Feature Getter
             [aClass.generateModelElementGetter(anEPackage, false)/]
             [aClass.eAttributes->sortedBy(name).generateModelElementGetter(anEPackage, false)/]
             [aClass.eReferences->sortedBy(name).generateModelElementGetter(anEPackage, false)/]
