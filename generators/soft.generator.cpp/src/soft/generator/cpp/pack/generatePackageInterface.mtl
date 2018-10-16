@@ -45,7 +45,7 @@ namespace [anEPackage.name/]
             static const std::string eNS_URI;
             static const std::string eNS_PREFIX;
 
-[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
+[for (aClass : EClass | anEPackage.getOrderedClasses()) separator ('\r\n')]
             // Begin Class [aClass.name.toUpperFirst()/]
             // Class and Feature IDs 
             [aClass.generateStaticClassID()/]

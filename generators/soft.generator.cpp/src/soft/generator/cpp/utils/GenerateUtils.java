@@ -1,8 +1,15 @@
 package soft.generator.cpp.utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EPackage;
 
 import com.google.common.base.CaseFormat;
 
@@ -40,7 +47,7 @@ public class GenerateUtils {
      * This method breaks s into words delimited by separator and/or
      * mixed-case naming.
      */
-    private static List<String> splitWords(String s, char separator) {
+    private List<String> splitWords(String s, char separator) {
         List<String> result = new ArrayList<String>();
         if (s != null) {
             StringBuilder currentWord = new StringBuilder();
@@ -75,5 +82,31 @@ public class GenerateUtils {
             result.add(currentWord.toString());
         }
         return result;
+    }
+    
+    
+    public List<EClass> getOrderedClasses( EPackage ePackage ) {
+        List<EClass> result = new ArrayList<EClass>();
+        Set<EClass> resultSet = new HashSet<EClass>();
+        for ( EClassifier eClassifier : ePackage.getEClassifiers() ) {
+            if ( eClassifier instanceof EClass ) {
+                EClass eClass = (EClass)eClassifier;
+                List<EClass> extendChain = new LinkedList<>();
+                Set<EClass> visited = new HashSet<EClass>();
+                while( eClass != null && visited.add(eClass) )
+                {
+                    if (ePackage == eClass.getEPackage() && resultSet.add(eClass))
+                      extendChain.add(0, eClass);
+                    
+                    eClass = getSuperType(eClass);
+                }
+                result.addAll( extendChain );
+            }
+        };
+        return result;
+    }
+    
+    private EClass getSuperType( EClass eClass ) {
+        return eClass.getESuperTypes().stream().findFirst().orElse(null);
     }
 }

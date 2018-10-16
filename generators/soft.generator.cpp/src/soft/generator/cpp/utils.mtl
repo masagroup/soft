@@ -150,16 +150,17 @@ namespace ecore
 [query public getPackageGetter(aReference : EReference) : String = if oclIsUndefined() then 'nullptr' else getterPrefix().concat(getElementAccessorName()).concat('()') endif/]
 [query public getPackageGetter(aAttribute : EAttribute) : String = 'get'.concat(getElementAccessorName()).concat('()') /]
 
-
-[**
- * Get a string of the getterfunction for the element in the corresponding metamodel package 
-*/] 
 [query public packageGetter(aEClassifier : EClassifier, aStruct : EStructuralFeature) : String = packageGetter(aEClassifier,aStruct.eContainingClass) /]
 [query public packageGetter(aEClass : EClass, supertype : EClass) : String = packageGetter(supertype.oclAsType(EClassifier),aEClass.oclAsType(EClassifier)) /]
 [query public packageGetter(aEClassifier1 : EClassifier, aEClassifier2 : EClassifier) : String = needMetaModelPackageGetter(aEClassifier1, aEClassifier2).concat('get').concat(aEClassifier1.getElementAccessorName()).concat('()') /]
 [query public needMetaModelPackageGetter(aClassifier1 : EClassifier ,aClassifier2 : EClassifier ) : String = if(aClassifier1.ePackage.name = aClassifier2.ePackage.name )then '' else  aClassifier1.ePackage.nsPrefix.concat('::').concat(aClassifier1.ePackage.name.toUpperFirst()).concat('Package').concat('::eInstance()->')  endif /]
 
+[**
+ * GenerateUtils java class methods 
+*/]
 [query public lowerCamelToUpperUnderscore( eEObject : EObject , s : String ) : String = invoke('soft.generator.cpp.utils.GenerateUtils','lowerCamelToUpperUnderscore(java.lang.String)',Sequence{s}) /]
 [query public upperCamelToUpperUnderscore( eEObject : EObject , s : String ) : String = invoke('soft.generator.cpp.utils.GenerateUtils','upperCamelToUpperUnderscore(java.lang.String)',Sequence{s}) /]
 [query public splitAndCombineWords( eEObject : EObject , s : String, sep: String) : String = invoke('soft.generator.cpp.utils.GenerateUtils','splitAndCombineWords(java.lang.String,java.lang.String)',Sequence{s,sep}) /]
+
+[query public getOrderedClasses( anEPackage : EPackage ) : Sequence(EClass) = invoke('soft.generator.cpp.utils.GenerateUtils','getOrderedClasses(org.eclipse.emf.ecore.EPackage)',Sequence{anEPackage}) /]
 
