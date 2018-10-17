@@ -27,9 +27,9 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, boo
 [if  aClass.eStructuralFeatures->notEmpty()]
     switch(featureID)
     {
-    [for (struct : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
-        case [struct.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[struct.getElementID()/]:
-            return [struct.getGetterName()/](); //[aClass.getClassifierIDValue()/][struct.getFeatureID()/]
+    [for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
+        case [anStructFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
+            return [anStructFeature.getGetterName()/](); //[aClass.getClassifierIDValue()/][anStructFeature.getFeatureID()/]
     [/for]
     }
 [/if]
@@ -61,9 +61,9 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::internalEIsSet(int featureID)
 [if  aClass.eStructuralFeatures->notEmpty()]
     switch(featureID)
     {
-    [for (struct : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
-        case [struct.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[struct.getElementID()/]:
-            return [struct.generateComparison()/]; //[aClass.getClassifierIDValue()/][struct.getFeatureID()/]
+    [for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
+        case [anStructFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
+            return [anStructFeature.generateComparison()/]; //[aClass.getClassifierIDValue()/][anStructFeature.getFeatureID()/]
     [/for]
     }
 [/if]
@@ -95,11 +95,11 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::eSet(int featureID, const boo
 [if  aClass.eStructuralFeatures->select(upperBound = 1 and changeable)->notEmpty()]
     switch(featureID)
     {
-[for (struct : EStructuralFeature | aClass.eStructuralFeatures->select(upperBound = 1 and changeable)->asOrderedSet()->sortedBy(name))]
-        case [struct.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[struct.getElementID()/]:
+[for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->select(upperBound = 1 and changeable)->asOrderedSet()->sortedBy(name))]
+        case [anStructFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
         {
-            [struct.eGenericType.generateCppType()/] _[struct.name/] = boost::any_cast<[struct.eGenericType.generateCppType()/]>(newValue);
-            [struct.getSetterName()/](_[struct.name/]); //[aClass.getClassifierIDValue()/][struct.getFeatureID()/]
+            [anStructFeature.eGenericType.generateCppType()/] _[anStructFeature.name/] = boost::any_cast<[anStructFeature.eGenericType.generateCppType()/]>(newValue);
+            [anStructFeature.getSetterName()/](_[anStructFeature.name/]); //[aClass.getClassifierIDValue()/][anStructFeature.getFeatureID()/]
             return true;
         }
 [/for]
