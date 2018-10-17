@@ -41,9 +41,19 @@ namespace [anEPackage.name/]
             [packageName/](){}
 
         public:
-            //static variables
+            /** 
+             * The package name.
+             */
             static const std::string eNAME;
+            
+            /** 
+             * The package namespace URI.
+             */
             static const std::string eNS_URI;
+
+            /**
+             * The package namespace name.
+             */
             static const std::string eNS_PREFIX;
 
 [for (aClass : EClass | anEPackage.getOrderedClasses())]
