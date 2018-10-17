@@ -16,7 +16,10 @@
 [/if]
 [/template]
 
-[template public generateStaticDatatypeID(aEDatatype : EDataType)]
-static const int [aEDatatype.getElementID()/] = [aEDatatype.getClassifierIDValue()/];
+[template public generateStaticDataTypeID(aEDatatype : EDataType )]
+/**
+ * The meta object id for the [if aEDatatype.oclIsKindOf(EEnum)]enum[else]data type[/if] [aEDatatype.name/].
+ */
+static const int [aEDatatype.getClassifierIDName()/] = [aEDatatype.getClassifierIDValue()/];
 
 [/template]

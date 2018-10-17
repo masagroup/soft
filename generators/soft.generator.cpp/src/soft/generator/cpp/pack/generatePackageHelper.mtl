@@ -19,6 +19,9 @@
 [/template]
 
 [template public generateModelElementGetter(anENamedElement : ENamedElement, anEPackage : EPackage, impl : Boolean) ? ( not hasImplOnly())]
+/**
+ * Returns the meta object for the [anENamedElement.name.toUpperFirst()/]
+ */
 virtual std::shared_ptr<[getMetaModelTypeString(anENamedElement, anEPackage)/]> get[anENamedElement.getElementAccessorName()/]() const [abstractSufix(impl)/];
 
 [/template]

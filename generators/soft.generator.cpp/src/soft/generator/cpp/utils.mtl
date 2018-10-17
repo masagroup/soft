@@ -111,7 +111,6 @@ namespace ecore
 [query private getParameterListName( aOperation : EOperation) : String = if aOperation.eParameters->notEmpty() then '_'.concat(aOperation.getParameterListDetailsName()) else '' endif /]
 [query private getParameterListDetailsName(aOperation : EOperation) : String = if aOperation.eParameters->size()>1 then aOperation.eParameters->first().eType.name.concat('_').concat(aOperation.eParameters->last().eType.name) else aOperation.eParameters->first().eType.name endif /]
 
-[query public getClassifierIDName( anEClass : EClass ) : String = splitAndCombineWords(anEClass.name,'_').toUpperCase()/]
 
 [query public getElementAccessorName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName().toUpperFirst() /]
 [query public getElementInstanceName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName().concat('_') /]
@@ -170,7 +169,8 @@ namespace ecore
 [query public getOrderedClasses( anEPackage : EPackage ) : Sequence(EClass) = invoke('soft.generator.cpp.utils.GenerateUtils','getOrderedClasses(org.eclipse.emf.ecore.EPackage)',Sequence{anEPackage}) /]
 [query public getBaseClass( aEClass : EClass ) : EClass = if (aEClass.eSuperTypes->isEmpty() ) then null else aEClass.eSuperTypes->first() endif/]
 
-[query public getClassifierIDName(anEClass : EClass ,anEClassifier : EClassifier) : String = anEClass.getClassifierIDName().concat('__').concat(splitAndCombineWords(anEClassifier.name,'_')).toUpperCase()/]
+[query public getClassifierIDName( anEClass : EClassifier ) : String = splitAndCombineWords(anEClass.name,'_').toUpperCase()/]
+[query public getClassifierIDName( anEClass : EClass ,anEClassifier : EClassifier) : String = anEClass.getClassifierIDName().concat('__').concat(splitAndCombineWords(anEClassifier.name,'_')).toUpperCase()/]
 [query public getClassifierIDValue(anEClassifier : EClassifier) : EInt = if (anEClassifier.getClassifierID() = 0) then anEClassifier.ePackage.eClassifiers->selectByKind(EClassifier)->size() else anEClassifier.getClassifierID() endif/]
 
 [query public getFeatureCountID( aEClass : EClass ) : String = aEClass.getClassifierIDName().concat('_FEATURE_COUNT')/]
