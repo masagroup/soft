@@ -122,25 +122,6 @@ namespace ecore
     endif endif endif/]
 
 
-
-
-[query public getElementID(anENamedElement : ENamedElement) : String = 
-    if anENamedElement.oclIsKindOf(EClassifier) then 
-        anENamedElement.oclAsType(EClassifier).getElementID() 
-    else if anENamedElement.oclIsKindOf(EStructuralFeature) then 
-        anENamedElement.oclAsType(EStructuralFeature).getElementID()
-    else if anENamedElement.oclIsKindOf(EOperation) then
-        anENamedElement.oclAsType(EOperation).getElementID()
-    else
-         anENamedElement.name.toUpperCase()
-    endif endif endif
-/]
-[query private getElementID(anEClassifier : EClassifier) : String = anEClassifier.name.toUpperCase() /]
-[query private getElementID(aStructural : EStructuralFeature) : String = aStructural.eContainingClass.name.concat('__').concat( splitAndCombineWords(aStructural.name,'_')).toUpperCase() /]
-[query private getElementID(aOperation : EOperation) : String = aOperation.eContainingClass.name.concat('__').concat( splitAndCombineWords(aOperation.name , '_')).concat(aOperation.getParameterListName()).toUpperCase() /]
-
-
-
 [template public generateTypeClass(anEDataType : EClass)]
 [anEDataType.name/]
 [/template]
