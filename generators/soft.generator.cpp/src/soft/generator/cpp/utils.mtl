@@ -123,7 +123,6 @@ namespace ecore
     endif endif endif/]
 
 
-[query public getOperationIDName(anEClass : EClass ,aOperation : EOperation) : String = anEClass.getClassifierIDName().concat('__').concat( splitAndCombineWords(aOperation.name , '_')).concat(aOperation.getParameterListName()).toUpperCase() /]
 
 
 [query public getElementID(anENamedElement : ENamedElement) : String = 
@@ -174,7 +173,6 @@ namespace ecore
 [query public getClassifierIDName(anEClass : EClass ,anEClassifier : EClassifier) : String = anEClass.getClassifierIDName().concat('__').concat(splitAndCombineWords(anEClassifier.name,'_')).toUpperCase()/]
 [query public getClassifierIDValue(anEClassifier : EClassifier) : EInt = if (anEClassifier.getClassifierID() = 0) then anEClassifier.ePackage.eClassifiers->selectByKind(EClassifier)->size() else anEClassifier.getClassifierID() endif/]
 
-[query public getFeatureCount( aEClass : EClass ) : Integer = aEClass.eAllStructuralFeatures->size()/]
 [query public getFeatureCountID( aEClass : EClass ) : String = aEClass.getClassifierIDName().concat('_FEATURE_COUNT')/]
 [query public getFeatureCountValue( aEClass : EClass ) : String = 
     let baseClass : EClass = aEClass.getBaseClass() in
@@ -194,7 +192,7 @@ namespace ecore
     else
         let baseCount : Integer = baseClass.getFeatureCount() in
         if ( index < baseCount ) then
-            if baseClass.ePackage = aEClass.ePackage then aEClass.getFeatureID( aEFeature ) else aEClass.getFeatureID( aEFeature ) endif
+            if baseClass.ePackage = aEClass.ePackage then baseClass.getFeatureIDName( aEFeature ) else baseClass.getFeatureIDName( aEFeature ) endif
         else
             let baseCountID : String = if aEClass.ePackage = baseClass.ePackage then baseClass.getFeatureCountID() else baseClass.getFeatureCountID() endif in
             baseCountID.concat(' + ').concat( (index-baseCount).toString())
@@ -226,3 +224,30 @@ namespace ecore
     endif
 /]
 [query private isJavaUtilMapEntry(  aEFeature : EStructuralFeature , n : String  ) : Boolean = let entries : Sequence(String) = Sequence{'java.util.Map.Entry','java.util.Map$Entry'} in entries->includes(n)/]
+
+[query public getOperationCountID( aEClass : EClass ) : String = aEClass.getClassifierIDName().concat('_OPERATION_COUNT')/]
+[query public getOperationCountValue( aEClass : EClass ) : String = 
+    let baseClass : EClass = aEClass.getBaseClass() in
+    if baseClass.oclIsUndefined() then
+        aEClass.getOperationCount()
+    else
+        let baseCount : String = if baseClass.ePackage = aEClass.ePackage then baseClass.getOperationCountID() else baseClass.getOperationCountID() endif in
+        baseCount.concat(' + ').concat( (aEClass.getOperationCount() - baseClass.getOperationCount()).toString() )
+    endif
+/]
+[query public getOperationIDName(anEClass : EClass ,aOperation : EOperation) : String = anEClass.getClassifierIDName().concat('__').concat( splitAndCombineWords(aOperation.name , '_')).concat(aOperation.getParameterListName()).toUpperCase() /]
+[query public getOperationValue(aEClass : EClass , aOperation : EOperation ) : String = 
+    let index : Integer = aEClass.eAllOperations->indexOf(aOperation) - 1 in
+    let baseClass : EClass = aEClass.getBaseClass() in
+    if baseClass.oclIsUndefined() then
+        index.toString()
+    else
+        let baseCount : Integer = baseClass.getOperationCount() in
+        if ( index < baseCount ) then
+            if baseClass.ePackage = aEClass.ePackage then baseClass.getOperationIDName( aOperation ) else baseClass.getOperationIDName( aOperation ) endif
+        else
+            let baseCountID : String = if aEClass.ePackage = baseClass.ePackage then baseClass.getOperationCountID() else baseClass.getOperationCountID() endif in
+            baseCountID.concat(' + ').concat( (index-baseCount).toString())
+        endif 
+    endif 
+/]
