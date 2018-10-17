@@ -72,7 +72,7 @@ void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.get
 [/template]
 
 [template public generateAttributeCreation(anEAttribute : EAttribute)]
-[anEAttribute.getElementInstanceName()/] = factory->createEAttribute([anEAttribute.eContainingClass.getElementInstanceName()/], [anEAttribute.getElementID()/]);
+[anEAttribute.getElementInstanceName()/] = factory->createEAttribute([anEAttribute.eContainingClass.getElementInstanceName()/], [anEAttribute.eContainingClass.getFeatureIDName(anEAttribute)/]);
 
 [/template]
 

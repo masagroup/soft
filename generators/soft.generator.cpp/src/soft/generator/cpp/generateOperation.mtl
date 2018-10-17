@@ -45,7 +45,7 @@ static const int [anEClass.getOperationCountID()/] = [anEClass.getOperationCount
 [query public simpleDatatypeGetter(anEClassifier : EClassifier, anOperation: EOperation) : String = if anOperation.eType.oclIsUndefined() or anOperation.eTypeParameters->notEmpty() then 'nullptr' else needMetaModelPackageGetter(anEClassifier, anOperation.eContainingClass).concat('get').concat(anEClassifier.getElementAccessorName()).concat('()') endif/]
 
 [template public generateOperationCreation(anEOperation : EOperation) ? ( not hasImplOnly()) ]
-[anEOperation.getElementInstanceName()/] = factory->createEOperation([anEOperation.eContainingClass.getElementInstanceName()/], [anEOperation.getElementID()/]);
+[anEOperation.getElementInstanceName()/] = factory->createEOperation([anEOperation.eContainingClass.getElementInstanceName()/], [anEOperation.eContainingClass.getOperationIDName(anEOperation)/]);
 
 [/template]
 

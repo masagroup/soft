@@ -5,7 +5,7 @@
 
 
 [template public generateEDatatypeCreation(anEDatatype : EDataType)]
-[anEDatatype.getElementInstanceName()/] = factory->create[if (anEDatatype.oclIsKindOf(EEnum))]EEnum[else]EDataType[/if](package, [anEDatatype.getElementID()/]);
+[anEDatatype.getElementInstanceName()/] = factory->create[if (anEDatatype.oclIsKindOf(EEnum))]EEnum[else]EDataType[/if](package, [anEDatatype.getClassifierIDName()/]);
 
 [/template]
 

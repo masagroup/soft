@@ -66,7 +66,7 @@ void [packageName/]::init(const std::shared_ptr<ecore::EPackage>& package)
     initializePackageContents();   
 }
 
-[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\n')]
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
 // Begin Class [aClass.name.toUpperFirst()/]
 [aClass.generateModelElementGetterImpl(anEPackage)/]
 [aClass.eAttributes->sortedBy(name).generateModelElementGetterImpl(anEPackage)/]
@@ -118,7 +118,7 @@ void [packageName/]::createPackageContents(const std::shared_ptr<ecore::EPackage
     createPackageEDataTypes(package, factory);
 }
 
-[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\n')]
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
 void [packageName/]::create[aClass.name.toUpperFirst()/]Content(const std::shared_ptr<[needNamespace(anEPackage,'EPackage')/]>& package, const std::shared_ptr<[needNamespace(anEPackage,'EcoreFactory')/]>& factory)
 {
     [aClass.generateClassCreation()/]
@@ -178,7 +178,7 @@ void [packageName/]::initializePackageContents()
     initializePackageEDataTypes();
 }
 
-[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\n')]
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
 void [packageName/]::initialize[aClass.name.toUpperFirst()/]Content()
 {
     [aClass.generateClassInit()/]

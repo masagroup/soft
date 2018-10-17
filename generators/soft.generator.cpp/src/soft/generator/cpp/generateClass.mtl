@@ -76,7 +76,7 @@ static const unsigned int [aEClass.getClassifierIDName()/] = [aEClass.getClassif
 [/template]
 
 [template public generateClassCreation(aEClass : EClass)]
-[aEClass.getElementInstanceName()/] = factory->createEClass(package, [aEClass.getElementID()/]);
+[aEClass.getElementInstanceName()/] = factory->createEClass(package, [aEClass.getClassifierIDName()/]);
 
 [/template]
 
