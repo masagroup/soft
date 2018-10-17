@@ -7,6 +7,7 @@
 [import soft::generator::cpp::generateOperation /]
 [import soft::generator::cpp::generateReference /]
 [import soft::generator::cpp::generateSingleton /]
+[import soft::generator::cpp::generateStructuralFeature /]
 [import soft::generator::cpp::utils /]
 [import soft::generator::cpp::pack::generatePackageHelper /]
 
@@ -45,28 +46,16 @@ namespace [anEPackage.name/]
             static const std::string eNS_URI;
             static const std::string eNS_PREFIX;
 
-[for (aClass : EClass | anEPackage.getOrderedClasses()) separator ('\r\n')]
-            // Begin Class [aClass.name.toUpperFirst()/]
-            // Class and Feature IDs 
+[for (aClass : EClass | anEPackage.getOrderedClasses())]
             [aClass.generateStaticClassID()/]
-            [aClass.eAttributes->sortedBy(name).generateStaticAttributeID()/]
-            [aClass.eReferences->sortedBy(name).generateStaticReferenceID()/]
-            [aClass.eOperations->sortedBy(name).generateStaticOperationID()/]
-            // Class and Feature Getter
-            [aClass.generateModelElementGetter(anEPackage, false)/]
-            [aClass.eAttributes->sortedBy(name).generateModelElementGetter(anEPackage, false)/]
-            [aClass.eReferences->sortedBy(name).generateModelElementGetter(anEPackage, false)/]
-            [aClass.eOperations->sortedBy(name).generateModelElementGetter(anEPackage, false)/]
-            // End Class [aClass.name.toUpperFirst()/]
-
+            [aClass.eAllStructuralFeatures.generateStaticFeatureID(aClass)/]
+            [aClass.generateStaticFeatureCountID()/]
 [/for]
             [anEPackage.eAllContents(EDataType)->sortedBy(name).generateStaticDatatypeID()/]
             [anEPackage.eAllContents(EDataType)->sortedBy(name).generateModelElementGetter(anEPackage, false)/]
 
-            //Singleton Instance and Getter
             [generateSingletonDecl(packageName)/]
 [if anEPackage.name.equalsIgnoreCase('ecore')]
-
             //prevent from hiding functions
             using EPackage::getEAnnotation;
             using EPackage::getEClassifier;

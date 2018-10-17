@@ -77,7 +77,7 @@ void [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.get
 [/template]
 
 [template public generateStaticReferenceID(anEReference : EReference)]
-static const int [anEReference.getElementID()/] = [anEReference.eContainingClass.getSafeClassifierID() * 100 + anEReference.getFeatureID()/];
+static const int [anEReference.getElementID()/] = [anEReference.eContainingClass.getClassifierIDValue() * 100 + anEReference.getFeatureID()/];
 
 [/template]
 

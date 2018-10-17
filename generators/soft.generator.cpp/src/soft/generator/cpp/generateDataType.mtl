@@ -17,6 +17,6 @@
 [/template]
 
 [template public generateStaticDatatypeID(aEDatatype : EDataType)]
-static const int [aEDatatype.getElementID()/] = [aEDatatype.getSafeClassifierID()/];
+static const int [aEDatatype.getElementID()/] = [aEDatatype.getClassifierIDValue()/];
 
 [/template]

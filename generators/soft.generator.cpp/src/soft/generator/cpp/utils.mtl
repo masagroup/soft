@@ -111,6 +111,8 @@ namespace ecore
 [query private getParameterListName( aOperation : EOperation) : String = if aOperation.eParameters->notEmpty() then '_'.concat(aOperation.getParameterListDetailsName()) else '' endif /]
 [query private getParameterListDetailsName(aOperation : EOperation) : String = if aOperation.eParameters->size()>1 then aOperation.eParameters->first().eType.name.concat('_').concat(aOperation.eParameters->last().eType.name) else aOperation.eParameters->first().eType.name endif /]
 
+[query public getClassifierIDName( anEClass : EClass ) : String = splitAndCombineWords(anEClass.name,'_').toUpperCase()/]
+
 [query public getElementAccessorName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName().toUpperFirst() /]
 [query public getElementInstanceName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName().concat('_') /]
 [query public getElementIDAccessorName(anEClass : EClass) : String = 
@@ -119,6 +121,10 @@ namespace ecore
     else if(name = 'EOperation') then 'Operation'
     else ''
     endif endif endif/]
+
+
+[query public getOperationIDName(anEClass : EClass ,aOperation : EOperation) : String = anEClass.getClassifierIDName().concat('__').concat( splitAndCombineWords(aOperation.name , '_')).concat(aOperation.getParameterListName()).toUpperCase() /]
+
 
 [query public getElementID(anENamedElement : ENamedElement) : String = 
     if anENamedElement.oclIsKindOf(EClassifier) then 
@@ -135,7 +141,7 @@ namespace ecore
 [query private getElementID(aStructural : EStructuralFeature) : String = aStructural.eContainingClass.name.concat('__').concat( splitAndCombineWords(aStructural.name,'_')).toUpperCase() /]
 [query private getElementID(aOperation : EOperation) : String = aOperation.eContainingClass.name.concat('__').concat( splitAndCombineWords(aOperation.name , '_')).concat(aOperation.getParameterListName()).toUpperCase() /]
 
-[query public getSafeClassifierID(anEClassifier : EClassifier) : EInt = if (anEClassifier.getClassifierID() = 0) then anEClassifier.ePackage.eClassifiers->selectByKind(EClassifier)->size() else anEClassifier.getClassifierID() endif/]
+
 
 [template public generateTypeClass(anEDataType : EClass)]
 [anEDataType.name/]
@@ -163,4 +169,60 @@ namespace ecore
 [query public splitAndCombineWords( eEObject : EObject , s : String, sep: String) : String = invoke('soft.generator.cpp.utils.GenerateUtils','splitAndCombineWords(java.lang.String,java.lang.String)',Sequence{s,sep}) /]
 
 [query public getOrderedClasses( anEPackage : EPackage ) : Sequence(EClass) = invoke('soft.generator.cpp.utils.GenerateUtils','getOrderedClasses(org.eclipse.emf.ecore.EPackage)',Sequence{anEPackage}) /]
+[query public getBaseClass( aEClass : EClass ) : EClass = if (aEClass.eSuperTypes->isEmpty() ) then null else aEClass.eSuperTypes->first() endif/]
 
+[query public getClassifierIDName(anEClass : EClass ,anEClassifier : EClassifier) : String = anEClass.getClassifierIDName().concat('__').concat(splitAndCombineWords(anEClassifier.name,'_')).toUpperCase()/]
+[query public getClassifierIDValue(anEClassifier : EClassifier) : EInt = if (anEClassifier.getClassifierID() = 0) then anEClassifier.ePackage.eClassifiers->selectByKind(EClassifier)->size() else anEClassifier.getClassifierID() endif/]
+
+[query public getFeatureCount( aEClass : EClass ) : Integer = aEClass.eAllStructuralFeatures->size()/]
+[query public getFeatureCountID( aEClass : EClass ) : String = aEClass.getClassifierIDName().concat('_FEATURE_COUNT')/]
+[query public getFeatureCountValue( aEClass : EClass ) : String = 
+    let baseClass : EClass = aEClass.getBaseClass() in
+    if baseClass.oclIsUndefined() then
+        aEClass.getFeatureCount()
+    else
+        let baseCount : String = if baseClass.ePackage = aEClass.ePackage then baseClass.getFeatureCountID() else baseClass.getFeatureCountID() endif in
+        baseCount.concat(' + ').concat( (aEClass.getFeatureCount() - baseClass.getFeatureCount()).toString() )
+    endif
+/]
+[query public getFeatureIDName(anEClass : EClass ,aStructural : EStructuralFeature) : String = anEClass.getClassifierIDName().concat('__').concat( splitAndCombineWords(aStructural.name,'_')).toUpperCase() /]
+[query public getFeatureValue( aEClass : EClass , aEFeature : EStructuralFeature ) : String =
+    let index : Integer = aEClass.eAllStructuralFeatures->indexOf(aEFeature) - 1 in
+    let baseClass : EClass = aEClass.getBaseClass() in
+    if baseClass.oclIsUndefined() then
+        index.toString()
+    else
+        let baseCount : Integer = baseClass.getFeatureCount() in
+        if ( index < baseCount ) then
+            if baseClass.ePackage = aEClass.ePackage then aEClass.getFeatureID( aEFeature ) else aEClass.getFeatureID( aEFeature ) endif
+        else
+            let baseCountID : String = if aEClass.ePackage = baseClass.ePackage then baseClass.getFeatureCountID() else baseClass.getFeatureCountID() endif in
+            baseCountID.concat(' + ').concat( (index-baseCount).toString())
+        endif 
+    endif 
+/]
+[query public getFeatureKind( aEFeature : EStructuralFeature ) : String = 
+    let kind : String =
+    if aEFeature.oclIsKindOf(EReference) then 
+        let eRef : EReference = aEFeature.oclAsType(EReference) in
+        if ( eRef.containment ) then
+            if ( isJavaUtilMapEntry( aEFeature.eType.instanceClassName )) then 
+                'test'
+            else 
+                'containment reference' 
+            endif
+        else if ( eRef.container ) then
+            'container reference'
+        else
+            'reference'
+        endif endif
+    else
+        'attribute'
+    endif in
+    if ( not(kind = 'map') ) and aEFeature.many then
+        kind.concat(' list')
+    else
+        kind
+    endif
+/]
+[query private isJavaUtilMapEntry(  aEFeature : EStructuralFeature , n : String  ) : Boolean = let entries : Sequence(String) = Sequence{'java.util.Map.Entry','java.util.Map$Entry'} in entries->includes(n)/]

@@ -68,9 +68,11 @@ void [aClass.name.toUpperFirst()/]Impl::[generateGetThisPtrPropertySetterName()/
 [query public generateGetThisPtrPropertyGetterName(anEClass : EClass) : String = 'get'.concat(generateGetThisPtrPropertyName().toUpperFirst())/]
 
 [template public generateStaticClassID(aEClass : EClass)]
-static const unsigned int [aEClass.getElementID()/] = [aEClass.getSafeClassifierID()/];
-static const unsigned int [aEClass.getElementID()/]_FEATURE_COUNT = [aEClass.getFeatureCount()/];
-static const unsigned int [aEClass.getElementID()/]_OPERATION_COUNT = [aEClass.getOperationCount()/];
+/**
+ * The meta object id for the class [aEClass.name/].
+ */
+static const unsigned int [aEClass.getClassifierIDName()/] = [aEClass.getClassifierIDValue()/];
+
 [/template]
 
 [template public generateClassCreation(aEClass : EClass)]
