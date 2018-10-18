@@ -72,6 +72,7 @@ namespace [aClass.ePackage.name/]
             [aClass.generateIsSetDel(true)/]
             [aClass.generateSetDel(true)/]
 
+        [if aClass.eAttributes->notEmpty() or aClass.eReferences->notEmpty()]
         protected:
             [if(aClass.eAttributes->notEmpty())]
             //*********************************
@@ -85,7 +86,7 @@ namespace [aClass.ePackage.name/]
             //*********************************
             [aClass.eReferences->sortedBy(name).generateReferenceProtected()/]
             [/if]
-
+        [/if]
         private:
             std::weak_ptr<[aClass.name.toUpperFirst()/]> [generateGetThisPtrPropertyName()/]_;
     };
