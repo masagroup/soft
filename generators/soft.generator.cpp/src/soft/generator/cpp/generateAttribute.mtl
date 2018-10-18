@@ -93,9 +93,7 @@ void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.get
 {
 	std::string defaultValue = "[anEAttribute.defaultValueLiteral/]";
 	if (!defaultValue.empty())
-	{
 	   [anEAttribute.getElementInstanceName()/]->setDefaultValueLiteral(defaultValue);
-	}
 }
 
 [/template]

@@ -98,14 +98,11 @@ void [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.get
 {
 	std::string defaultValue = "[anEReference.defaultValueLiteral/]";
 	if (!defaultValue.empty())
-	{
 		[anEReference.getElementInstanceName()/]->setDefaultValueLiteral(defaultValue);
-	}
+
 	std::shared_ptr<ecore::EReference>  otherEnd = [anEReference.eOpposite.getPackageGetter()/];
 	if (otherEnd != nullptr)
-    {
    		[anEReference.getElementInstanceName()/]->setEOpposite(otherEnd);
-    }
 }
 
 [/template]

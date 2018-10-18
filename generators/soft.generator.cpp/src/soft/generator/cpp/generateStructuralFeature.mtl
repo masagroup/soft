@@ -29,7 +29,7 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, boo
     {
     [for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
         case [anStructFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
-            return [anStructFeature.getGetterName()/](); //[aClass.getClassifierIDValue()/][anStructFeature.getFeatureID()/]
+            return [anStructFeature.getGetterName()/]();
     [/for]
     }
 [/if]
@@ -44,9 +44,7 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, boo
     result = [getClassWithNamespace(aClass,sClass)/]Impl::eGet(featureID, resolve, coreType);
     [if (sClass <> eClasses->last())]
     if (!result->isEmpty())
-    {
         return result;
-    }
     [/if]
     [/for]
     return result;
@@ -63,7 +61,7 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::internalEIsSet(int featureID)
     {
     [for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
         case [anStructFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
-            return [anStructFeature.generateComparison()/]; //[aClass.getClassifierIDValue()/][anStructFeature.getFeatureID()/]
+            return [anStructFeature.generateComparison()/];
     [/for]
     }
 [/if]
@@ -78,9 +76,7 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::internalEIsSet(int featureID)
     result = [getClassWithNamespace(aClass,sClass)/]Impl::internalEIsSet(featureID);
     [if (sClass <> eClasses->last())]
     if (result)
-    {
         return result;
-    }
     [/if]
     [/for]
     return result;
@@ -99,7 +95,7 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::eSet(int featureID, const boo
         case [anStructFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
         {
             [anStructFeature.eGenericType.generateCppType()/] _[anStructFeature.name/] = boost::any_cast<[anStructFeature.eGenericType.generateCppType()/]>(newValue);
-            [anStructFeature.getSetterName()/](_[anStructFeature.name/]); //[aClass.getClassifierIDValue()/][anStructFeature.getFeatureID()/]
+            [anStructFeature.getSetterName()/](_[anStructFeature.name/]);
             return true;
         }
 [/for]
@@ -111,14 +107,12 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::eSet(int featureID, const boo
     return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::eSet(featureID, newValue);
 [else]
     bool result = false;
-    [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]        
+    [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]
     [for (sClass : EClass | eClasses)]
     result = [getClassWithNamespace(aClass,sClass)/]Impl::eSet(featureID, newValue);
     [if (sClass <> eClasses->last())]
     if (result)
-    {
         return result;
-    }
     [/if]
     [/for]
     return result;
