@@ -22,15 +22,19 @@
 [for (aEClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator ('\n')]
 #include "[aEClass.ePackage.name/]/impl/[aEClass.name.toUpperFirst()/]Impl.hpp"[/for]
 
-[if (not(aClass.name='EObject') and (aClass.eSuperTypes->isEmpty()))]
+[if aClass.eSuperTypes->isEmpty()]
+[if aClass.name='EObject']
+#include "ecore/BasicEObject.hpp"
+[else]
 #include "ecore/impl/EObjectImpl.hpp"
+[/if]
 [/if]
 
 //*********************************
 [comment namespace /]
 namespace [aClass.ePackage.name/] 
 {
-    class [className/] :[for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator (', ') after (', ')] virtual public [getClassWithNamespace(aClass, sClass)/]Impl[/for][if (aClass.eSuperTypes->isEmpty())][if (not(aClass.name='EObject'))]virtual public ecore::EObjectImpl,[/if] [/if]virtual public [aClass.name.toUpperFirst()/] 
+    class [className/] :[for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator (', ') after (', ')] virtual public [getClassWithNamespace(aClass, sClass)/]Impl[/for][if (aClass.eSuperTypes->isEmpty())][if aClass.name='EObject']virtual public ecore::BasicEObject,[else]virtual public ecore::EObjectImpl,[/if] [/if]virtual public [aClass.name.toUpperFirst()/] 
     {
         private:    
             [className/]& operator=([className/] const&) = delete;

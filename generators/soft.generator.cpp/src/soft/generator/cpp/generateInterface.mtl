@@ -45,14 +45,18 @@ namespace [element.ePackage.name/]
 #include "[elements.ePackage.name/]/[elements.name.toUpperFirst().concat('.hpp')/]"
 [/for]
 
-[if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
+[if aClass.eSuperTypes->isEmpty()]
+[if aClass.name ='EObject']
+#include "ecore/ENotifier.hpp"
+[else]
 #include "ecore/EObject.hpp"
+[/if]
 [/if]
 
 //*********************************
 namespace [aClass.ePackage.name/] 
 {
-    class [aClass.name.toUpperFirst()/] [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))] : virtual public ecore::EObject 
+    class [aClass.name.toUpperFirst()/] [if aClass.eSuperTypes->isEmpty()][if aClass.name ='EObject'] : virtual public ecore::ENotifier[else] : virtual public ecore::EObject[/if]
 [else]
 [for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) before (' :') separator (',')]
  virtual public [getClassWithNamespace(aClass,sClass)/][/for]

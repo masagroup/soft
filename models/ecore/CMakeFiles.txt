@@ -2,11 +2,13 @@
 # Sources
 set(SOURCE_FILES
     src/ecore/EAdapter.cpp
+    src/ecore/BasicEObject.cpp
 )   
 set(HEADER_FILES 
     src/ecore/EList.hpp
     src/ecore/AbstractEList.hpp
     src/ecore/BasicEList.hpp
+    src/ecore/BasicEObject.hpp
     src/ecore/EAdapter.hpp
     src/ecore/ENotification.hpp
     src/ecore/ENotifier.hpp

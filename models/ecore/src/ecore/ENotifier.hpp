@@ -10,12 +10,15 @@
 #ifndef ECORE_ENOTIFIER_HPP_
 #define ECORE_ENOTIFIER_HPP_
 
+#include <memory>
+
 namespace ecore
 {
     template <typename T>
     class EList;
 
     class EAdapter;
+    class ENotification;
 
     class ENotifier
     {
