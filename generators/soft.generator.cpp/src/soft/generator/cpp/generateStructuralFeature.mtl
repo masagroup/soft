@@ -14,7 +14,7 @@ virtual boost::any eGet(int featureID, bool resolve, bool coreType) const [abstr
 [/template]
 
 [template public generateIsSetDel(aClass : EClass,impl : Boolean)]
-virtual bool internalEIsSet(int featureID) const [abstractSufix(impl)/];
+virtual bool eIsSet(int featureID) const [abstractSufix(impl)/];
 [/template]
 
 [template public generateSetDel(aClass : EClass,impl : Boolean)]
@@ -54,7 +54,7 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, boo
 [/template]
 
 [template public generateIsSetImpl(aClass : EClass)]
-bool [aClass.name.toUpperFirst().concat('Impl')/]::internalEIsSet(int featureID) const
+bool [aClass.name.toUpperFirst().concat('Impl')/]::eIsSet(int featureID) const
 {
 [if  aClass.eStructuralFeatures->notEmpty()]
     switch(featureID)
@@ -66,14 +66,14 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::internalEIsSet(int featureID)
     }
 [/if]
 [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
-    return ecore::EObjectImpl::internalEIsSet(featureID);
+    return ecore::EObjectImpl::eIsSet(featureID);
 [elseif (aClass.eSuperTypes->size() = 1)]
-    return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::internalEIsSet(featureID);
+    return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::eIsSet(featureID);
 [else]
     bool result = false;
     [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]        
     [for (sClass : EClass | eClasses)]
-    result = [getClassWithNamespace(aClass,sClass)/]Impl::internalEIsSet(featureID);
+    result = [getClassWithNamespace(aClass,sClass)/]Impl::eIsSet(featureID);
     [if (sClass <> eClasses->last())]
     if (result)
         return result;
@@ -87,6 +87,42 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::internalEIsSet(int featureID)
 
 [template public generateSetImpl(aClass : EClass)]
 bool [aClass.name.toUpperFirst().concat('Impl')/]::eSet(int featureID, const boost::any& newValue)
+{
+[if  aClass.eStructuralFeatures->select(upperBound = 1 and changeable)->notEmpty()]
+    switch(featureID)
+    {
+[for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->select(upperBound = 1 and changeable)->asOrderedSet()->sortedBy(name))]
+        case [anStructFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
+        {
+            [anStructFeature.eGenericType.generateCppType()/] _[anStructFeature.name/] = boost::any_cast<[anStructFeature.eGenericType.generateCppType()/]>(newValue);
+            [anStructFeature.getSetterName()/](_[anStructFeature.name/]);
+            return true;
+        }
+[/for]
+    }
+[/if]
+[if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
+    return ecore::EObjectImpl::eSet(featureID, newValue);
+[elseif (aClass.eSuperTypes->size() = 1)]
+    return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::eSet(featureID, newValue);
+[else]
+    bool result = false;
+    [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]
+    [for (sClass : EClass | eClasses)]
+    result = [getClassWithNamespace(aClass,sClass)/]Impl::eSet(featureID, newValue);
+    [if (sClass <> eClasses->last())]
+    if (result)
+        return result;
+    [/if]
+    [/for]
+    return result;
+    [/let]
+[/if]
+}
+[/template]
+
+[template public generateUnSetImpl(aClass : EClass)]
+bool [aClass.name.toUpperFirst().concat('Impl')/]::eUnSet(int featureID, const boost::any& newValue)
 {
 [if  aClass.eStructuralFeatures->select(upperBound = 1 and changeable)->notEmpty()]
     switch(featureID)

@@ -261,14 +261,23 @@
       </eGenericType>
     </eOperations>
     <eOperations name="eCrossReferences">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="const"/>
+      </eAnnotations>
       <eGenericType eClassifier="#//EEList">
         <eTypeArguments eClassifier="#//EObject"/>
       </eGenericType>
     </eOperations>
     <eOperations name="eGet" eType="#//EJavaObject">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="const"/>
+      </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="eGet" eType="#//EJavaObject">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="const"/>
+      </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
       <eParameters name="resolve" eType="#//EBoolean"/>
     </eOperations>
@@ -277,6 +286,9 @@
       <eParameters name="newValue" eType="#//EJavaObject"/>
     </eOperations>
     <eOperations name="eIsSet" eType="#//EBoolean">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="const"/>
+      </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="eUnset">
