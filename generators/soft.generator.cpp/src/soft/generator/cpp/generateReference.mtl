@@ -4,12 +4,6 @@
 [import soft::generator::cpp::generateType /]
 [import soft::generator::cpp::utils /]
 
-
-
-[query public hasSetter(anEReference : EReference) : EBoolean = not hasKey('suppressedSetVisibility') and (anEReference.changeable and anEReference.upperBound=1) or hasKey('setterbody') /]
-[query public hasGetter(anEReference : EReference) : EBoolean = not hasKey('suppressedGetVisibility') or hasKey('getterbody') /]
-[query public hasUnSetter(anEReference : EReference) : EBoolean = not hasKey('suppressedUnsetVisibility') and anEReference.isChangeable() and anEReference.isUnSettable() /]
-
 [template public generateReferenceDeclaration(anEReference : EReference, impl : EBoolean) ]
 [anEReference.generateReferenceGetterDeclaration(impl)/]
 [anEReference.generateReferenceSetterDeclaration(impl)/]

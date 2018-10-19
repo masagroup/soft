@@ -9,15 +9,15 @@
 [**
  * eGet Function
 */]
-[template public generateGetDeclaration(aClass : EClass,impl : Boolean)]
+[template public generateGetDeclaration(aClass : EClass,impl : Boolean) ? (aClass.eStructuralFeatures->notEmpty()) post (trim())]
 virtual boost::any eGet(int featureID, bool resolve, bool coreType) const [abstractSufix(impl)/];
 [/template]
 
-[template public generateIsSetDeclaration(aClass : EClass,impl : Boolean)]
+[template public generateIsSetDeclaration(aClass : EClass,impl : Boolean) ? (aClass.eStructuralFeatures->notEmpty()) post (trim())]
 virtual bool eIsSet(int featureID) const [abstractSufix(impl)/];
 [/template]
 
-[template public generateSetDeclaration(aClass : EClass,impl : Boolean)]
+[template public generateSetDeclaration(aClass : EClass,impl : Boolean) ? (aClass.eStructuralFeatures->notEmpty()) post (trim())]
 virtual void eSet(int featureID, const boost::any& newValue) [abstractSufix(impl)/];
 [/template]
 
@@ -29,10 +29,9 @@ virtual void eUnSet(int featureID) [abstractSufix(impl)/];
 virtual boost::any eInvoke( int operationID, const std::shared_ptr<EList<boost::any>>& arguments )[abstractSufix(impl)/];
 [/template]
 
-[template public generateGetImplementation(aClass : EClass)]
+[template public generateGetImplementation(aClass : EClass) ? (aClass.eStructuralFeatures->notEmpty()) post (trim())]
 boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, bool resolve, bool coreType) const
 {
-[if  aClass.eStructuralFeatures->notEmpty()]
     switch(featureID)
     {
     [for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
@@ -40,7 +39,6 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, boo
             return [anStructFeature.getGetterName()/]();
     [/for]
     }
-[/if]
 [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
     return ecore::EObjectImpl::eGet(featureID, resolve, coreType);
 [elseif (aClass.eSuperTypes->size() = 1)]
@@ -61,10 +59,9 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, boo
 }
 [/template]
 
-[template public generateIsSetImplementation(aClass : EClass)]
+[template public generateIsSetImplementation(aClass : EClass) ? (aClass.eStructuralFeatures->notEmpty()) post (trim())]
 bool [aClass.name.toUpperFirst().concat('Impl')/]::eIsSet(int featureID) const
 {
-[if  aClass.eStructuralFeatures->notEmpty()]
     switch(featureID)
     {
     [for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
@@ -72,7 +69,6 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::eIsSet(int featureID) const
             return [anStructFeature.generateComparison()/];
     [/for]
     }
-[/if]
 [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
     return ecore::EObjectImpl::eIsSet(featureID);
 [elseif (aClass.eSuperTypes->size() = 1)]
@@ -93,22 +89,21 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::eIsSet(int featureID) const
 }
 [/template]
 
-[template public generateSetImplementation(aClass : EClass)]
+
+[template public generateSetImplementation(aClass : EClass) ? (aClass.eStructuralFeatures->select(hasSetter())->notEmpty()) post (trim())]
 void [aClass.name.toUpperFirst().concat('Impl')/]::eSet(int featureID, const boost::any& newValue)
 {
-[if  aClass.eStructuralFeatures->select(upperBound = 1 and changeable)->notEmpty()]
     switch(featureID)
     {
-[for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->select(upperBound = 1 and changeable)->asOrderedSet()->sortedBy(name))]
+[for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->select(hasSetter())->asOrderedSet()->sortedBy(name))]
         case [anStructFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
         {
-            [anStructFeature.eGenericType.generateCppType()/] _[anStructFeature.name/] = boost::any_cast<[anStructFeature.eGenericType.generateCppType()/]>(newValue);
-            [anStructFeature.getSetterName()/](_[anStructFeature.name/]);
+            [anStructFeature.eGenericType.generateCppType()/] [anStructFeature.name.first(1)/] = boost::any_cast<[anStructFeature.eGenericType.generateCppType()/]>(newValue);
+            [anStructFeature.getSetterName()/]([anStructFeature.name.first(1)/]);
             return;
         }
 [/for]
     }
-[/if]
 [if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
     ecore::EObjectImpl::eSet(featureID, newValue);
 [elseif (aClass.eSuperTypes->size() = 1)]

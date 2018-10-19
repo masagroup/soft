@@ -4,10 +4,6 @@
 [import soft::generator::cpp::generateType/]
 [import soft::generator::cpp::utils/]
 
-[query public hasSetter(anEAttribute : EAttribute) : Boolean = not hasKey('suppressedSetVisibility') and anEAttribute.changeable and (anEAttribute.upperBound = 1)/]
-[query public hasGetter(anEAttribute : EAttribute) : EBoolean = not hasKey('suppressedGetVisibility') and not hasKey('getterBody') /]
-[query public hasUnSetter(anEAttribute : EAttribute) : EBoolean = not hasKey('suppressedUnsetVisibility')and anEAttribute.isChangeable() and anEAttribute.isUnSettable()/]
-
 [template public generateAttributeDeclaration(anEAttribute : EAttribute, impl : Boolean)]
 [anEAttribute.generateAttributeGetterDeclaration(impl)/]
 [anEAttribute.generateAttributeSetterDeclaration(impl)/]
