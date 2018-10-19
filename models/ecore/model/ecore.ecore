@@ -57,7 +57,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="interface" eType="#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eSuperTypes" upperBound="-1"
         eType="#//EClass" unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="suppressedIsSetVisibility" value="true"/>
         <details key="suppressedUnsetVisibility" value="true"/>
       </eAnnotations>
@@ -93,7 +93,7 @@
         eType="#//EStructuralFeature" containment="true" resolveProxies="false" eOpposite="#//EStructuralFeature/eContainingClass"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eGenericSuperTypes" upperBound="-1"
         eType="#//EGenericType" unsettable="true" containment="true" resolveProxies="false">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="suppressedIsSetVisibility" value="true"/>
         <details key="suppressedUnsetVisibility" value="true"/>
       </eAnnotations>
@@ -110,13 +110,13 @@
       <eParameters name="object" eType="#//EJavaObject"/>
     </eOperations>
     <eOperations name="getClassifierID" eType="#//EInt">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="doNotGenerate" value="true"/>
       </eAnnotations>
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceClassName" eType="#//EString"
         volatile="true" unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="suppressedIsSetVisibility" value="true"/>
         <details key="suppressedUnsetVisibility" value="true"/>
       </eAnnotations>
@@ -131,7 +131,7 @@
         changeable="false" volatile="true" transient="true" derived="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceTypeName" eType="#//EString"
         volatile="true" unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="suppressedIsSetVisibility" value="true"/>
         <details key="suppressedUnsetVisibility" value="true"/>
       </eAnnotations>
@@ -142,7 +142,7 @@
         eType="#//ETypeParameter" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="classifierID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
         changeable="false" defaultValueLiteral="-1">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="implSetterOnly" value="true"/>
       </eAnnotations>
     </eStructuralFeatures>
@@ -177,20 +177,20 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EFactory" eSuperTypes="#//EModelElement">
     <eOperations name="create" eType="#//EObject">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
       </eAnnotations>
       <eParameters name="eClass" eType="#//EClass"/>
     </eOperations>
     <eOperations name="createFromString" eType="#//EJavaObject">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
       </eAnnotations>
       <eParameters name="eDataType" eType="#//EDataType"/>
       <eParameters name="literalValue" eType="#//EString"/>
     </eOperations>
     <eOperations name="convertToString" eType="#//EString">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
       </eAnnotations>
       <eParameters name="eDataType" eType="#//EDataType"/>
@@ -214,38 +214,38 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EObject">
     <eOperations name="eClass" eType="#//EClass">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
         <details key="body" value="return this->eStaticClass();"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eIsProxy" eType="#//EBoolean">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eResource" eType="#//EResource">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eContainer" eType="#//EObject">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eContainingFeature" eType="#//EStructuralFeature">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eContainmentFeature" eType="#//EReference">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eContents">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
       </eAnnotations>
       <eGenericType eClassifier="#//EEList">
@@ -253,7 +253,7 @@
       </eGenericType>
     </eOperations>
     <eOperations name="eAllContents">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
       </eAnnotations>
       <eGenericType eClassifier="#//ETreeIterator">
@@ -261,7 +261,7 @@
       </eGenericType>
     </eOperations>
     <eOperations name="eCrossReferences">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
       </eAnnotations>
       <eGenericType eClassifier="#//EEList">
@@ -269,14 +269,14 @@
       </eGenericType>
     </eOperations>
     <eOperations name="eGet" eType="#//EJavaObject">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
         <details key="interfaceOnly" value="true"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="eGet" eType="#//EJavaObject">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
         <details key="interfaceOnly" value="true"/>
       </eAnnotations>
@@ -284,27 +284,27 @@
       <eParameters name="resolve" eType="#//EBoolean"/>
     </eOperations>
     <eOperations name="eSet">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="interfaceOnly" value="true"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
       <eParameters name="newValue" eType="#//EJavaObject"/>
     </eOperations>
     <eOperations name="eIsSet" eType="#//EBoolean">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
         <details key="interfaceOnly" value="true"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="eUnset">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="interfaceOnly" value="true"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="eInvoke" eType="#//EJavaObject" eExceptions="#//EInvocationTargetException">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="interfaceOnly" value="true"/>
       </eAnnotations>
       <eParameters name="operation" eType="#//EOperation"/>
@@ -331,21 +331,21 @@
         eType="#//EParameter" containment="true" resolveProxies="false" eOpposite="#//EParameter/eOperation"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eExceptions" upperBound="-1"
         eType="#//EClassifier" unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="suppressedIsSetVisibility" value="true"/>
         <details key="suppressedUnsetVisibility" value="true"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eGenericExceptions" upperBound="-1"
         eType="#//EGenericType" unsettable="true" containment="true" resolveProxies="false">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="suppressedIsSetVisibility" value="true"/>
         <details key="suppressedUnsetVisibility" value="true"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="operationID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
         changeable="false" defaultValueLiteral="-1">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="implSetterOnly" value="true"/>
       </eAnnotations>
     </eStructuralFeatures>
@@ -410,7 +410,7 @@
         changeable="false" transient="true" resolveProxies="false" eOpposite="#//EClass/eStructuralFeatures"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="featureID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
         changeable="false" defaultValueLiteral="-1">
-      <eAnnotations source="http://net.masagroup/codegen">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="implSetterOnly" value="true"/>
       </eAnnotations>
     </eStructuralFeatures>
@@ -432,14 +432,14 @@
         changeable="false" volatile="true" transient="true" derived="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eType" eType="#//EClassifier"
         volatile="true" unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="suppressedIsSetVisibility" value="true"/>
         <details key="suppressedUnsetVisibility" value="true"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eGenericType" eType="#//EGenericType"
         volatile="true" unsettable="true" containment="true" resolveProxies="false">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="suppressedIsSetVisibility" value="true"/>
         <details key="suppressedUnsetVisibility" value="true"/>
       </eAnnotations>

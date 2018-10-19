@@ -4,12 +4,14 @@
 [import soft::generator::cpp::generateType/]
 [import soft::generator::cpp::utils/]
 
-[query public hasSetter(anEAttribute : EAttribute) : Boolean = anEAttribute.changeable and (anEAttribute.upperBound = 1)/]
-[query public hasGetter(anEAttribute : EAttribute) : EBoolean = not hasKey('getterBody') /]
+[query public hasSetter(anEAttribute : EAttribute) : Boolean = not hasKey('suppressedSetVisibility') and anEAttribute.changeable and (anEAttribute.upperBound = 1)/]
+[query public hasGetter(anEAttribute : EAttribute) : EBoolean = not hasKey('suppressedGetVisibility') and not hasKey('getterBody') /]
+[query public hasUnSetter(anEAttribute : EAttribute) : EBoolean = not hasKey('suppressedUnsetVisibility')and anEAttribute.isChangeable() and anEAttribute.isUnSettable()/]
 
 [template public generateAttributeDeclaration(anEAttribute : EAttribute, impl : Boolean)]
 [anEAttribute.generateAttributeGetterDeclaration(impl)/]
 [anEAttribute.generateAttributeSetterDeclaration(impl)/]
+
 [/template]
 
 [template private generateReturnType(anEAttribute : EAttribute)]
@@ -24,8 +26,12 @@ virtual [anEAttribute.generateReturnType()/] [anEAttribute.getGetterName()/]() c
 [/template]
 
 [template public generateAttributeSetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? ((hasSetter() or(impl and hasImplSetterOnly())) )]
-virtual void [anEAttribute.getSetterName()/] ([anEAttribute.generateParameterType()/] [anEAttribute.name/])[abstractSufix(impl)/]; 
+virtual void [anEAttribute.getSetterName()/]([anEAttribute.generateParameterType()/] [anEAttribute.name/]) [abstractSufix(impl)/]; 
 
+[/template]
+
+[template public generateAttributeUnSetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? (hasUnSetter())]
+virtual void [anEAttribute.getUnSetterName()/]() [abstractSufix(impl)/]; 
 
 [/template]
 
@@ -70,6 +76,14 @@ void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.get
     [anEAttribute.name/]_ = _[anEAttribute.name/];
 } 
 [/template]
+
+[template public generateAttributeUnSetterImplementationCpp(anEAttribute : EAttribute)? (hasUnSetter())]
+void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getUnSetterName()/]()
+{
+    [anEAttribute.name/]_ [generateDefaultValue()/];
+} 
+[/template]
+
 
 [template public generateAttributeCreation(anEAttribute : EAttribute)]
 [anEAttribute.getElementInstanceName()/] = factory->createEAttribute([anEAttribute.eContainingClass.getElementInstanceName()/], [anEAttribute.eContainingClass.getFeatureIDName(anEAttribute)/]);

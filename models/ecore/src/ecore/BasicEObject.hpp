@@ -48,7 +48,7 @@ namespace ecore
 
         virtual boost::any eGet(int featureID, bool resolve, bool coreType) const;
         virtual bool eIsSet(int featureID) const;
-        virtual bool eSet(int featureID, const boost::any& newValue);
+        virtual void eSet(int featureID, const boost::any& newValue);
         virtual void eUnset( int featureID );
         virtual boost::any eInvoke( int operationID, const std::shared_ptr<EList<boost::any>>& arguments );
 

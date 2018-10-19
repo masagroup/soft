@@ -9,6 +9,8 @@
 
 [query public getSetterName(feature : EStructuralFeature) : String = if hasKey('SetterName') then valueKey('SetterName') else 'set'.concat(name.toUpperFirst()) endif/]
 [query public getGetterName(feature : EStructuralFeature) : String = if hasKey('GetterName') then valueKey('GetterName') else getterPrefix().concat(name.toUpperFirst()) endif/]
+[query public getUnSetterName(feature : EStructuralFeature) : String = if hasKey('UnSetterName') then valueKey('UnSetterName') else 'unset'.concat(name.toUpperFirst()) endif/]
+
 
 [**
  * Guards
@@ -58,15 +60,29 @@
 [query public hasContainerAttribute(aClass : EClass) : Boolean =  getContainerAttribute()->notEmpty() /]
 [query public getContainerAttribute(aClass : EClass) : OrderedSet(EReference) =  aClass.eReferences->select(isContainerAttribute())->sortedBy(name) /]
 [query public isContainerAttribute(aRef : EReference) : Boolean =  aRef.container/]
+[query public isContainer(aStructuralFeature : EStructuralFeature) : Boolean =  
+    if aStructuralFeature.oclIsKindOf(EReference) then
+        let eReference : EReference = aStructuralFeature.oclAsType(EReference) in
+        if eReference.eOpposite.oclIsUndefined() then
+            false
+        else
+            eReference.eOpposite.containment
+        endif
+    else 
+        false 
+    endif
+/]
+[query public isChangeable(aStructuralFeature : EStructuralFeature) : Boolean = aStructuralFeature.changeable/]
+[query public isUnSettable(aStructuralFeature : EStructuralFeature) : Boolean = aStructuralFeature.unsettable and not aStructuralFeature.isContainer() /]
 
 [query public getSuperTypeContainers(aClass:EClass) : OrderedSet(EReference) = if not(aClass.eSuperTypes->isEmpty()) then aClass.eSuperTypes.getAllContainers()->flatten()->asOrderedSet() else OrderedSet{} endif /]
 [query public getAllContainers(aClass : EClass) : OrderedSet(EReference) =  if getContainerAttribute()->notEmpty() then if getSuperTypeContainers()->isEmpty() then getContainerAttribute() else OrderedSet{getContainerAttribute()}->append(getSuperTypeContainers()->flatten()->reject(oclIsUndefined())->asOrderedSet())->flatten()->asOrderedSet() endif else getSuperTypeContainers()->asOrderedSet() endif /]
 
-[query public hasSourceGen(aModelElement : EModelElement) : Boolean = eAnnotations->select(source = 'http://net.masagroup/codegen')->notEmpty()  /]
-[query public SourceGen(aModelElement : EModelElement) : EAnnotation = eAnnotations->select(source = 'http://net.masagroup/codegen')->first() /]
+[query public hasGenModel(aModelElement : EModelElement) : Boolean = eAnnotations->select( source = 'http://net.masagroup/soft/2018/GenModel' )->notEmpty() /]
+[query public getGenModelAnnotation(aModelElement : EModelElement) : EAnnotation = eAnnotations->select( source = 'http://net.masagroup/soft/2018/GenModel' )->first() /]
 
-[query public hasKey(aModelElement : EModelElement, aKey:String) : Boolean = if aModelElement.hasSourceGen() then aModelElement.SourceGen().details->select(key = aKey)->notEmpty() else false endif /]
-[query public valueKey(aModelElement : EModelElement, aKey:String) : String = aModelElement.SourceGen().details->select(key = aKey)->first().value /]
+[query public hasKey(aModelElement : EModelElement, aKey:String) : Boolean = if aModelElement.hasGenModel() then aModelElement.getGenModelAnnotation().details->select(key = aKey)->notEmpty() else false endif /]
+[query public valueKey(aModelElement : EModelElement, aKey:String) : String = aModelElement.getGenModelAnnotation().details->select(key = aKey)->first().value /]
 
 [query public ignore(aModelElement : EModelElement) : Boolean = eAnnotations->select(source = 'ignore')->notEmpty()  /]
 

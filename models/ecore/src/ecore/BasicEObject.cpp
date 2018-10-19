@@ -113,11 +113,10 @@ void ecore::BasicEObject::eSet( const std::shared_ptr<ecore::EStructuralFeature>
     throw "The feature '" + eFeature->getName() + "' is not a valid feature";
 }
 
-bool ecore::BasicEObject::eSet( int featureID, const boost::any & newValue )
+void ecore::BasicEObject::eSet( int featureID, const boost::any & newValue )
 {
     std::shared_ptr<EStructuralFeature> eFeature = eClass()->getEStructuralFeature( featureID );
     BOOST_ASSERT_MSG( eFeature != nullptr, ( static_cast<std::ostringstream&>( std::stringstream() << "Invalid featureID:  " << featureID ) ).str().c_str() );
-    return false;
 }
 
 
