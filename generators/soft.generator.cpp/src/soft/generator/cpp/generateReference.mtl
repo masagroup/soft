@@ -15,7 +15,7 @@
 [anEReference.generateReferenceSetterDeclaration(impl)/]
 [/template]
 
-[template public generateReferenceGetterDeclaration(anEReference : EReference, impl : EBoolean)? (hasGetter() and (not isUnion()) )]
+[template public generateReferenceGetterDeclaration(anEReference : EReference, impl : EBoolean)? (hasGetter())]
 virtual [anEReference.generateReturnType()/] [anEReference.getGetterName()/]() const [abstractSufix(impl)/];
 
 [/template]
@@ -63,7 +63,7 @@ void [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.get
 }
 [/template]
 
-[template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter()and (not isUnion()))]
+[template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter())]
 [anEReference.generateReturnType()/] [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getGetterName()/]() const
 {[if (hasKey('getterbody'))]
     //generated from getterbody annotation
