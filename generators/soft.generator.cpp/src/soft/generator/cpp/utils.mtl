@@ -70,7 +70,8 @@
 
 [query public ignore(aModelElement : EModelElement) : Boolean = eAnnotations->select(source = 'ignore')->notEmpty()  /]
 
-[query public hasImplOnly(aModelElement : EModelElement) : Boolean =  if aModelElement.hasKey('implOnly') then aModelElement.valueKey('implOnly')='true' else false endif /]
+[query public hasInterfaceOnly(aModelElement : EModelElement) : Boolean =  if aModelElement.hasKey('interfaceOnly') then aModelElement.valueKey('interfaceOnly')='true' else false endif /]
+[query public hasImplementationOnly(aModelElement : EModelElement) : Boolean =  if aModelElement.hasKey('implementationOnly') then aModelElement.valueKey('implementationOnly')='true' else false endif /]
 [query public doNotGenerate(aModelElement : EModelElement) : Boolean =  if aModelElement.hasKey('doNotGenerate') then aModelElement.valueKey('doNotGenerate')='true' else false endif /]
 [query public hasImplSetterOnly(aModelElement : EModelElement) : Boolean = if aModelElement.hasKey('implSetterOnly') then aModelElement.valueKey('implSetterOnly')='true' else false endif/]
 

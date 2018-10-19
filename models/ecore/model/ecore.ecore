@@ -271,30 +271,42 @@
     <eOperations name="eGet" eType="#//EJavaObject">
       <eAnnotations source="http://net.masagroup/codegen">
         <details key="const"/>
+        <details key="interfaceOnly" value="true"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="eGet" eType="#//EJavaObject">
       <eAnnotations source="http://net.masagroup/codegen">
         <details key="const"/>
+        <details key="interfaceOnly" value="true"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
       <eParameters name="resolve" eType="#//EBoolean"/>
     </eOperations>
     <eOperations name="eSet">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="interfaceOnly" value="true"/>
+      </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
       <eParameters name="newValue" eType="#//EJavaObject"/>
     </eOperations>
     <eOperations name="eIsSet" eType="#//EBoolean">
       <eAnnotations source="http://net.masagroup/codegen">
         <details key="const"/>
+        <details key="interfaceOnly" value="true"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="eUnset">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="interfaceOnly" value="true"/>
+      </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="eInvoke" eType="#//EJavaObject" eExceptions="#//EInvocationTargetException">
+      <eAnnotations source="http://net.masagroup/codegen">
+        <details key="interfaceOnly" value="true"/>
+      </eAnnotations>
       <eParameters name="operation" eType="#//EOperation"/>
       <eParameters name="arguments">
         <eGenericType eClassifier="#//EEList">
