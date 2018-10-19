@@ -2,7 +2,9 @@
 #include "ecore/BasicEList.hpp"
 #include "ecore/EAdapter.hpp"
 #include "ecore/EClass.hpp"
+#include "ecore/EOperation.hpp"
 #include "ecore/EStructuralFeature.hpp"
+
 
 #include <boost/assert.hpp>
 #include <string>
@@ -67,6 +69,12 @@ int ecore::BasicEObject::eDerivedStructuralFeatureID( const std::shared_ptr<EStr
     return eStructuralFeature->getFeatureID();
 }
 
+int ecore::BasicEObject::eDerivedOperationID( const std::shared_ptr<EOperation>& eOperation ) const
+{
+    BOOST_VERIFY_MSG( eClass()->getEAllOperations()->contains( eOperation ), ( static_cast<std::ostringstream&>( std::stringstream() << "The operation '" << eOperation->getName() << "' is not a valid operation" ) ).str().c_str() );
+    return eOperation->getOperationID();
+}
+
 boost::any ecore::BasicEObject::eGet( const std::shared_ptr<ecore::EStructuralFeature>& eFeature, bool resolve, bool coreType ) const
 {
     int featureID = eDerivedStructuralFeatureID( eFeature );
@@ -125,6 +133,21 @@ void ecore::BasicEObject::eUnset( int featureID )
 {
     std::shared_ptr<EStructuralFeature> eFeature = eClass()->getEStructuralFeature( featureID );
     BOOST_ASSERT_MSG( eFeature != nullptr, ( static_cast<std::ostringstream&>( std::stringstream() << "Invalid featureID:  " << featureID ) ).str().c_str() );
+}
+
+boost::any ecore::BasicEObject::eInvoke( const std::shared_ptr<ecore::EOperation>& eOperation, const std::shared_ptr<EList<boost::any>>& arguments )
+{
+    int operationID = eDerivedOperationID( eOperation );
+    if( operationID >= 0 )
+        return eInvoke( operationID , arguments );
+    throw "The operation '" + eOperation->getName() + "' is not a valid operation";
+}
+
+boost::any ecore::BasicEObject::eInvoke( int operationID, const std::shared_ptr<EList<boost::any>>& arguments )
+{
+    std::shared_ptr<EOperation> eOperation = eClass()->getEOperation( operationID );
+    BOOST_ASSERT_MSG( eOperation != nullptr, ( static_cast<std::ostringstream&>( std::stringstream() << "Invalid operationID:  " << operationID ) ).str().c_str() );
+    return boost::any();
 }
 
 void ecore::BasicEObject::eInverseAdd( int featureID, const boost::any & newValue )

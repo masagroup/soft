@@ -35,6 +35,7 @@ namespace ecore
         virtual bool eIsSet( const std::shared_ptr<ecore::EStructuralFeature>& feature ) const;
         virtual void eSet( const std::shared_ptr<ecore::EStructuralFeature>& feature, const boost::any& newValue );
         virtual void eUnset( const std::shared_ptr<ecore::EStructuralFeature>& feature );
+        virtual boost::any eInvoke( const std::shared_ptr<ecore::EOperation>& operation, const std::shared_ptr<EList<boost::any>>& arguments );
 
         // Container
         virtual void eInverseAdd( int featureID, const boost::any& newValue );
@@ -43,12 +44,13 @@ namespace ecore
 
     protected:
         virtual int eDerivedStructuralFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;
-
+        virtual int eDerivedOperationID( const std::shared_ptr<EOperation>& eOperation ) const;
 
         virtual boost::any eGet(int featureID, bool resolve, bool coreType) const;
         virtual bool eIsSet(int featureID) const;
         virtual bool eSet(int featureID, const boost::any& newValue);
         virtual void eUnset( int featureID );
+        virtual boost::any eInvoke( int operationID, const std::shared_ptr<EList<boost::any>>& arguments );
 
     protected:
         std::shared_ptr< EList<EAdapter*> > eAdapters_;
