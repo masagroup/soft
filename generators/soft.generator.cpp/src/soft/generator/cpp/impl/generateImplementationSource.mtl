@@ -50,19 +50,22 @@ using namespace [aClass.ePackage.name/];
 //*********************************
 [className/]::[className/]()
 {
+[if aClass.eAttributes->notEmpty()]
     //*********************************
     // Attribute Members
     //*********************************
     [for (aAttribute : EAttribute | aClass.eAttributes->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-    [aAttribute.generateAttributeInit()/][/for]
-
+    [aAttribute.generateAttributeInit()/]
+    [/for]
+[/if]
+[if aClass.eReferences->notEmpty()]
     //*********************************
     // Reference Members
     //*********************************
     [for (aReference : EReference | aClass.eReferences->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
     [aReference.generateReferenceInit()/]
     [/for]
-
+[/if]
 }
 
 [className/]::~[className/]()

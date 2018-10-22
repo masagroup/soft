@@ -35,7 +35,7 @@ const std::shared_ptr<EList<[anEReference.eGenericType.generateCppType()/]> >& [
 [/template]
 
 [template public generateReferenceInit(eReference : EReference)? (not(eReference.upperBound=1))]
-    [eReference.name/]_.reset(new BasicEList<[eReference.eGenericType.generateCppType()/]>());
+[eReference.name/]_.reset(new BasicEList<[eReference.eGenericType.generateCppType()/]>());
 [/template]
 
 [template public generateReferenceCpp(anEReference : EReference)]
