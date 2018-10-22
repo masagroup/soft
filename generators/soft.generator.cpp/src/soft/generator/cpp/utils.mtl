@@ -72,12 +72,15 @@
         false 
     endif
 /]
+
 [query public isChangeable(aStructuralFeature : EStructuralFeature) : Boolean = aStructuralFeature.changeable/]
 [query public isUnSettable(aStructuralFeature : EStructuralFeature) : Boolean = aStructuralFeature.unsettable and not aStructuralFeature.isContainer() /]
 
-[query public hasSetter(aStructuralFeature : EStructuralFeature) : Boolean = not hasKey('suppressedSetVisibility') and aStructuralFeature.changeable and aStructuralFeature.upperBound = 1/]
-[query public hasGetter(aStructuralFeature : EStructuralFeature) : EBoolean = not hasKey('suppressedGetVisibility') and not hasKey('getterBody') /]
-[query public hasUnSetter(aStructuralFeature : EStructuralFeature) : EBoolean = not hasKey('suppressedUnsetVisibility')and aStructuralFeature.isChangeable() and aStructuralFeature.isUnSettable()/]
+[query public isGet(aStructuralFeature : EStructuralFeature) : Boolean = true/]
+[query public isSet(aStructuralFeature : EStructuralFeature) : Boolean = isChangeable() and aStructuralFeature.upperBound = 1/]
+[query public isUnSet(aStructuralFeature : EStructuralFeature) : Boolean = isChangeable() and isUnSettable()/]
+[query public isIsSet(aStructuralFeature : EStructuralFeature) : Boolean = isUnSettable()/]
+
 
 [query public getSuperTypeContainers(aClass:EClass) : OrderedSet(EReference) = if not(aClass.eSuperTypes->isEmpty()) then aClass.eSuperTypes.getAllContainers()->flatten()->asOrderedSet() else OrderedSet{} endif /]
 [query public getAllContainers(aClass : EClass) : OrderedSet(EReference) =  if getContainerAttribute()->notEmpty() then if getSuperTypeContainers()->isEmpty() then getContainerAttribute() else OrderedSet{getContainerAttribute()}->append(getSuperTypeContainers()->flatten()->reject(oclIsUndefined())->asOrderedSet())->flatten()->asOrderedSet() endif else getSuperTypeContainers()->asOrderedSet() endif /]
@@ -167,6 +170,9 @@ namespace ecore
 [query public upperCamelToUpperUnderscore( eEObject : EObject , s : String ) : String = invoke('soft.generator.cpp.utils.GenerateUtils','upperCamelToUpperUnderscore(java.lang.String)',Sequence{s}) /]
 [query public splitAndCombineWords( eEObject : EObject , s : String, sep: String) : String = invoke('soft.generator.cpp.utils.GenerateUtils','splitAndCombineWords(java.lang.String,java.lang.String)',Sequence{s,sep}) /]
 
+[**
+ * Feature / Operation IDs and Count IDs 
+*/]
 [query public getOrderedClasses( anEPackage : EPackage ) : Sequence(EClass) = invoke('soft.generator.cpp.utils.GenerateUtils','getOrderedClasses(org.eclipse.emf.ecore.EPackage)',Sequence{anEPackage}) /]
 [query public getBaseClass( aEClass : EClass ) : EClass = if (aEClass.eSuperTypes->isEmpty() ) then null else aEClass.eSuperTypes->first() endif/]
 
@@ -252,3 +258,30 @@ namespace ecore
         endif 
     endif 
 /]
+
+[**
+ * Feature / Operation accessors visibility
+*/]
+[query public getVisibilityType( aEModelElement : EModelElement , aAccessor : String, aImplementation : Boolean ) : String =
+    let key : String = aAccessor.concat('Visibility') in   
+    if hasKey( key ) then
+        let value : String = valueKey( key ) in
+        let index : Integer = value.index( ':' ) in
+        if ( index = -1 ) then
+            value
+        else
+            if ( aImplementation ) then
+                value.substring( index )
+            else
+                value.substring(0 , index )
+            endif
+        endif
+    else 
+        'public'
+    endif
+/]
+
+[query public hasSetter(aStructuralFeature : EStructuralFeature , aVisibility : String , aImplementation : Boolean ) : Boolean = isSet() and aStructuralFeature.getVisibilityType('set',aImplementation ) = aVisibility /]
+[query public hasGetter(aStructuralFeature : EStructuralFeature , aVisibility : String , aImplementation : Boolean) : Boolean = isGet() and aStructuralFeature.getVisibilityType('get', aImplementation ) = aVisibility /]
+[query public hasUnSetter(aStructuralFeature : EStructuralFeature , aVisibility : String , aImplementation : Boolean) : Boolean = isUnSet() and aStructuralFeature.getVisibilityType('unset', aImplementation ) = aVisibility /]
+[query public hasIsSet(aStructuralFeature : EStructuralFeature , aVisibility : String , aImplementation : Boolean) : Boolean = isIsSet() and aStructuralFeature.getVisibilityType('isset', aImplementation ) = aVisibility /]
