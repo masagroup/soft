@@ -81,7 +81,6 @@
 [query public isUnSet(aStructuralFeature : EStructuralFeature) : Boolean = isChangeable() and isUnSettable()/]
 [query public isIsSet(aStructuralFeature : EStructuralFeature) : Boolean = isUnSettable()/]
 
-
 [query public getSuperTypeContainers(aClass:EClass) : OrderedSet(EReference) = if not(aClass.eSuperTypes->isEmpty()) then aClass.eSuperTypes.getAllContainers()->flatten()->asOrderedSet() else OrderedSet{} endif /]
 [query public getAllContainers(aClass : EClass) : OrderedSet(EReference) =  if getContainerAttribute()->notEmpty() then if getSuperTypeContainers()->isEmpty() then getContainerAttribute() else OrderedSet{getContainerAttribute()}->append(getSuperTypeContainers()->flatten()->reject(oclIsUndefined())->asOrderedSet())->flatten()->asOrderedSet() endif else getSuperTypeContainers()->asOrderedSet() endif /]
 
@@ -112,6 +111,8 @@ namespace ecore
 [query public requiresList(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else (name = 'ETreeIterator' or name = 'EEList') endif/]
 
 [query public getMetaModelPackageNameForEStructuralFeature(aStructural : EStructuralFeature,aClass: EClass) : String = if( aStructural.eContainingClass.ePackage = aClass.ePackage  ) then aStructural.eContainingClass.ePackage.name.concat('Package').toUpperFirst() else aStructural.eContainingClass.ePackage.name.concat('::').concat(aStructural.eContainingClass.ePackage.name.concat('Package').toUpperFirst()) endif/]
+[query public getMetaModelPackageNameForOperation(aOperation : EOperation,aClass: EClass) : String = if( aOperation.eContainingClass.ePackage = aClass.ePackage  ) then aOperation.eContainingClass.ePackage.name.concat('Package').toUpperFirst() else aOperation.eContainingClass.ePackage.name.concat('::').concat(aOperation.eContainingClass.ePackage.name.concat('Package').toUpperFirst()) endif/]
+
 
 [query private getMemberName(anENamedElement : ENamedElement) : String = 
     if anENamedElement.oclIsKindOf(EClassifier) then 
@@ -282,3 +283,5 @@ namespace ecore
 [query public hasGetter(aStructuralFeature : EStructuralFeature , aVisibility : String , aImplementation : Boolean) : Boolean = isGet() and aStructuralFeature.getVisibilityType('get', aImplementation ) = aVisibility /]
 [query public hasUnSetter(aStructuralFeature : EStructuralFeature , aVisibility : String , aImplementation : Boolean) : Boolean = isUnSet() and aStructuralFeature.getVisibilityType('unset', aImplementation ) = aVisibility /]
 [query public hasIsSet(aStructuralFeature : EStructuralFeature , aVisibility : String , aImplementation : Boolean) : Boolean = isIsSet() and aStructuralFeature.getVisibilityType('isset', aImplementation ) = aVisibility /]
+
+[query public isVoid(aOperation : EOperation) : Boolean = aOperation.eType.oclIsUndefined() /]
