@@ -93,13 +93,9 @@
 
 [query public ignore(aModelElement : EModelElement) : Boolean = eAnnotations->select(source = 'ignore')->notEmpty()  /]
 
-[query public hasInterfaceOnly(aModelElement : EModelElement) : Boolean =  if aModelElement.hasKey('interfaceOnly') then aModelElement.valueKey('interfaceOnly')='true' else false endif /]
-[query public hasImplementationOnly(aModelElement : EModelElement) : Boolean =  if aModelElement.hasKey('implementationOnly') then aModelElement.valueKey('implementationOnly')='true' else false endif /]
-[query public doNotGenerate(aModelElement : EModelElement) : Boolean =  if aModelElement.hasKey('doNotGenerate') then aModelElement.valueKey('doNotGenerate')='true' else false endif /]
-[query public hasImplSetterOnly(aModelElement : EModelElement) : Boolean = if aModelElement.hasKey('implSetterOnly') then aModelElement.valueKey('implSetterOnly')='true' else false endif/]
 
 [template public generateTypesForwardDeclaration(anEClass : EClass)]
-[if (anEClass.eReferences->select(upperBound <> 1)->size() > 0 or anEClass.eOperations.eParameters->select((eType.requiresList()  or upperBound <> 1) and not doNotGenerate())->size() > 0)]
+[if (anEClass.eReferences->select(upperBound <> 1)->size() > 0 or anEClass.eOperations.eParameters->select((eType.requiresList()  or upperBound <> 1))->size() > 0)]
 namespace ecore 
 {
     template<typename T> class EList;
@@ -108,7 +104,7 @@ namespace ecore
 [/template]
 
 [template public generateAbstractDataTypesIncludes(anEClass : EClass)]
-[if (anEClass.eReferences->select(upperBound <> 1)->size() > 0 or anEClass.eOperations.eParameters->select((eType.requiresList()  or upperBound <> 1) and not doNotGenerate())->size() > 0)]
+[if (anEClass.eReferences->select(upperBound <> 1)->size() > 0 or anEClass.eOperations.eParameters->select((eType.requiresList()  or upperBound <> 1))->size() > 0)]
 #include "ecore/EList.hpp"
 [/if]
 [/template]
@@ -262,8 +258,9 @@ namespace ecore
 [**
  * Feature / Operation accessors visibility
 */]
+[query public getVisibilityType( aEModelElement : EModelElement , aImplementation : Boolean ) : String = getVisibilityType(aEModelElement, null, aImplementation)/]
 [query public getVisibilityType( aEModelElement : EModelElement , aAccessor : String, aImplementation : Boolean ) : String =
-    let key : String = aAccessor.concat('Visibility') in   
+    let key : String = if aAccessor.oclIsUndefined() then 'visibility' else aAccessor.concat('Visibility') endif in   
     if hasKey( key ) then
         let value : String = valueKey( key ) in
         let index : Integer = value.index( ':' ) in
@@ -271,9 +268,9 @@ namespace ecore
             value
         else
             if ( aImplementation ) then
-                value.substring( index )
+                value.substring( index + 1 )
             else
-                value.substring(0 , index )
+                value.substring(1 , index - 1 )
             endif
         endif
     else 

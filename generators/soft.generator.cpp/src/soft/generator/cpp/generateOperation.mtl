@@ -4,15 +4,16 @@
 [import soft::generator::cpp::generateType/]
 [import soft::generator::cpp::utils/]
 
-[template public generateOperationDeclaration(anEOperation : EOperation, impl: Boolean)]
-[if ( ((not impl and (not hasImplementationOnly())) or ( impl and not hasInterfaceOnly())) and (not (doNotGenerate() or ignore())) )]
+[query private isPublic( anEOperation : EOperation, impl: Boolean ) : Boolean = anEOperation.getVisibilityType(impl) = 'public'/]
+
+[template public generateOperationDeclaration(anEOperation : EOperation, impl: Boolean)  ? ( anEOperation.isPublic(impl) ) ]
 virtual [anEOperation.generateReturnType()/] [anEOperation.name/]([anEOperation.generateParameterList()/])[if (hasKey('const'))] const[/if] [abstractSufix(impl)/];
 
-[/if]
+
 [/template]
 
 
-[template public generateOperationImplementation(anEOperation : EOperation) ? ( not hasInterfaceOnly() and not (ignore() or doNotGenerate()))]
+[template public generateOperationImplementation(anEOperation : EOperation) ? ( anEOperation.isPublic(true))]
 [anEOperation.generateReturnType()/] [anEOperation.eContainingClass.name.toUpperFirst()/]Impl::[anEOperation.name/]([anEOperation.generateParameterList()/])[if (hasKey('const'))] const[/if]
 {
 [if (hasKey('body'))]
@@ -26,7 +27,7 @@ virtual [anEOperation.generateReturnType()/] [anEOperation.name/]([anEOperation.
 }
 [/template]
 
-[template public generateStaticOperationID(aOperation : EOperation , aClass : EClass ) ? ( not hasImplementationOnly())]
+[template public generateStaticOperationID(aOperation : EOperation , aClass : EClass )]
 /**
  * The operation id for the '[aOperation.name/]' operation.
  */
@@ -44,12 +45,12 @@ static const int [anEClass.getOperationCountID()/] = [anEClass.getOperationCount
 
 [query public simpleDatatypeGetter(anEClassifier : EClassifier, anOperation: EOperation) : String = if anOperation.eType.oclIsUndefined() or anOperation.eTypeParameters->notEmpty() then 'nullptr' else needMetaModelPackageGetter(anEClassifier, anOperation.eContainingClass).concat('get').concat(anEClassifier.getElementAccessorName()).concat('()') endif/]
 
-[template public generateOperationCreation(anEOperation : EOperation) ? ( not hasImplementationOnly()) ]
+[template public generateOperationCreation(anEOperation : EOperation)]
 [anEOperation.getElementInstanceName()/] = factory->createEOperation([anEOperation.eContainingClass.getElementInstanceName()/], [anEOperation.eContainingClass.getOperationIDName(anEOperation)/]);
 
 [/template]
 
-[template public generateOperationInitialization(anEOperation : EOperation)? ( not hasImplementationOnly() )]
+[template public generateOperationInitialization(anEOperation : EOperation)]
 [anEOperation.getElementInstanceName()/]->setEType([anEOperation.eType.simpleDatatypeGetter(anEOperation)/]);
 [anEOperation.getElementInstanceName()/]->setName("[anEOperation.name.toString()/]");
 [anEOperation.getElementInstanceName()/]->setLowerBound([anEOperation.lowerBound/]);

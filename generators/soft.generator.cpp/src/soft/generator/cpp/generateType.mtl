@@ -40,7 +40,7 @@ std::shared_ptr<[anEDataType.eClassifier.generateType()/]<[for (g : EGenericType
 [/template]
 
 [template public generateParameterList(aOperation:EOperation) post(trim())]
-[for (sParameter : EParameter | aOperation.eParameters->select(p:EParameter | not p.doNotGenerate())) separator (',')]
+[for (sParameter : EParameter | aOperation.eParameters) separator (',')]
 [sParameter.generateParameterType()/] [sParameter.name/][/for]
 [/template]
 

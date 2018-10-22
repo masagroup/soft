@@ -9,12 +9,12 @@
 [anEReference.generateReferenceSetterDeclaration(impl)/]
 [/template]
 
-[template public generateReferenceGetterDeclaration(anEReference : EReference, impl : EBoolean)? (hasGetter())]
+[template public generateReferenceGetterDeclaration(anEReference : EReference, impl : EBoolean)? (hasGetter('public',impl))]
 virtual [anEReference.generateReturnType()/] [anEReference.getGetterName()/]() const [abstractSufix(impl)/];
 
 [/template]
 
-[template public generateReferenceSetterDeclaration(anEReference : EReference, impl : EBoolean) ? ( hasSetter() )]
+[template public generateReferenceSetterDeclaration(anEReference : EReference, impl : EBoolean) ? ( hasSetter('public',impl) )]
 virtual void [anEReference.getSetterName()/]([if (not anEReference.eGenericType.oclIsKindOf(EDataType))]
 [generateReferenceParameter(anEReference)/][else]
 [anEReference.eGenericType.generateCppType()/][/if]
@@ -44,7 +44,7 @@ const std::shared_ptr<EList<[anEReference.eGenericType.generateCppType()/]> >& [
 [anEReference.generateReferenceSetterCpp()/]
 [/template]
 
-[template public generateReferenceSetterCpp(anEReference : EReference) ? (hasSetter())]
+[template public generateReferenceSetterCpp(anEReference : EReference) ? (hasSetter('public',true))]
 void [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getSetterName()/]([generateReferenceParameter(anEReference)/])
 {
 [if (hasKey('setterbody'))]
@@ -57,7 +57,7 @@ void [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.get
 }
 [/template]
 
-[template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter())]
+[template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter('public',true))]
 [anEReference.generateReturnType()/] [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getGetterName()/]() const
 {[if (hasKey('getterbody'))]
     //generated from getterbody annotation

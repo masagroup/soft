@@ -18,7 +18,7 @@
 
 [/template]
 
-[template public generateModelElementGetter(anENamedElement : ENamedElement, anEPackage : EPackage, impl : Boolean) ? ( not hasImplementationOnly())]
+[template public generateModelElementGetter(anENamedElement : ENamedElement, anEPackage : EPackage, impl : Boolean)]
 /**
  * Returns the meta object for the [anENamedElement.name.toUpperFirst()/]
  */

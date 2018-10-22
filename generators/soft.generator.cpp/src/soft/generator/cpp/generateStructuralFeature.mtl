@@ -90,12 +90,12 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::eIsSet(int featureID) const
 [/template]
 
 
-[template public generateSetImplementation(aClass : EClass) ? (aClass.eStructuralFeatures->select(hasSetter())->notEmpty()) post (trim())]
+[template public generateSetImplementation(aClass : EClass) ? (aClass.eStructuralFeatures->select(hasSetter('public',true))->notEmpty()) post (trim())]
 void [aClass.name.toUpperFirst().concat('Impl')/]::eSet(int featureID, const boost::any& newValue)
 {
     switch(featureID)
     {
-[for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->select(hasSetter())->asOrderedSet()->sortedBy(name))]
+[for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->select(hasSetter('public',true))->asOrderedSet()->sortedBy(name))]
         case [anStructFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
         {
             [anStructFeature.eGenericType.generateCppType()/] [anStructFeature.name.first(1)/] = boost::any_cast<[anStructFeature.eGenericType.generateCppType()/]>(newValue);

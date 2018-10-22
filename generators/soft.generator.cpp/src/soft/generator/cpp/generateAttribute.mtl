@@ -16,17 +16,17 @@
 std::shared_ptr<[anEAttribute.generateAttributeType()/]>[/if]
 [/template]
 
-[template public generateAttributeGetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? (hasGetter())]
+[template public generateAttributeGetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? (hasGetter('public',impl))]
 virtual [anEAttribute.generateReturnType()/] [anEAttribute.getGetterName()/]() const [abstractSufix(impl)/];
 
 [/template]
 
-[template public generateAttributeSetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? ((hasSetter() or(impl and hasImplSetterOnly())) )]
+[template public generateAttributeSetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? ((hasSetter('public',impl)) )]
 virtual void [anEAttribute.getSetterName()/]([anEAttribute.generateParameterType()/] [anEAttribute.name/]) [abstractSufix(impl)/]; 
 
 [/template]
 
-[template public generateAttributeUnSetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? (hasUnSetter())]
+[template public generateAttributeUnSetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? (hasUnSetter('public',impl))]
 virtual void [anEAttribute.getUnSetterName()/]() [abstractSufix(impl)/]; 
 
 [/template]
@@ -59,21 +59,21 @@ virtual void [anEAttribute.getUnSetterName()/]() [abstractSufix(impl)/];
 [***
  * Section for the Attribute cpp implementation
 */]
-[template public generateAttributeGetterImplementationCpp(anEAttribute : EAttribute)? (hasGetter())]
+[template public generateAttributeGetterImplementationCpp(anEAttribute : EAttribute)? (hasGetter('public',true))]
 [anEAttribute.generateReturnType()/] [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getGetterName()/]() const 
 {
     return [anEAttribute.name/]_;
 }
 [/template]
 
-[template public generateAttributeSetterImplementationCpp(anEAttribute : EAttribute, impl : Boolean) ? (( hasSetter() or(impl and hasImplSetterOnly())) )]
+[template public generateAttributeSetterImplementationCpp(anEAttribute : EAttribute, impl : Boolean) ? ( hasSetter('public',impl)) ]
 void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getSetterName()/]([anEAttribute.generateParameterType()/] _[anEAttribute.name/])
 {
     [anEAttribute.name/]_ = _[anEAttribute.name/];
 } 
 [/template]
 
-[template public generateAttributeUnSetterImplementationCpp(anEAttribute : EAttribute)? (hasUnSetter())]
+[template public generateAttributeUnSetterImplementationCpp(anEAttribute : EAttribute)? (hasUnSetter('public',true))]
 void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getUnSetterName()/]()
 {
     [anEAttribute.name/]_ [generateDefaultValue()/];
