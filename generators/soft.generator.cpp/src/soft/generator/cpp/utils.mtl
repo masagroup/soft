@@ -205,8 +205,8 @@ namespace ecore
     if aEFeature.oclIsKindOf(EReference) then 
         let eRef : EReference = aEFeature.oclAsType(EReference) in
         if ( eRef.containment ) then
-            if ( isJavaUtilMapEntry( aEFeature.eType.instanceClassName )) then 
-                'test'
+            if ( isMap( aEFeature.eType.instanceClassName )) then 
+                'map'
             else 
                 'containment reference' 
             endif
@@ -224,7 +224,7 @@ namespace ecore
         kind
     endif
 /]
-[query private isJavaUtilMapEntry(  aEFeature : EStructuralFeature , n : String  ) : Boolean = let entries : Sequence(String) = Sequence{'java.util.Map.Entry','java.util.Map$Entry'} in entries->includes(n)/]
+[query private isMap(  aEFeature : EStructuralFeature , n : String  ) : Boolean = let entries : Sequence(String) = Sequence{'java.util.Map.Entry','java.util.Map$Entry'} in entries->includes(n)/]
 
 [query public getOperationCountID( aEClass : EClass ) : String = aEClass.getClassifierIDName().concat('_OPERATION_COUNT')/]
 [query public getOperationCountValue( aEClass : EClass ) : String = 
