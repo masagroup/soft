@@ -66,6 +66,14 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, boo
 [/template]
 
 [template public generateIsSetImplementation(aClass : EClass) ? (aClass.getEIsSetFeatures()->notEmpty()) post (trim())]
+[if aClass.getEIsSetFeatures()->select( eFeature : EStructuralFeature | eFeature.oclIsKindOf(EReference) and eFeature.oclAsType(EReference).isBackReference() )->notEmpty()]
+template <typename T>
+bool is_uninitialized(std::weak_ptr<T> const& weak) {
+    using wt = std::weak_ptr<T>;
+    return !weak.owner_before(wt{}) && !wt{}.owner_before(weak);
+}
+
+[/if]
 bool [aClass.name.toUpperFirst().concat('Impl')/]::eIsSet(int featureID) const
 {
     switch(featureID)
@@ -81,7 +89,7 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::eIsSet(int featureID) const
     return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::eIsSet(featureID);
 [else]
     bool result = false;
-    [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]        
+    [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]
     [for (sClass : EClass | eClasses)]
     result = [getClassWithNamespace(aClass,sClass)/]Impl::eIsSet(featureID);
     [if (sClass <> eClasses->last())]
@@ -163,19 +171,25 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eInvoke(int operationID
 
 [template public generateComparison(anStructFeature : EStructuralFeature) ? (oclIsKindOf(EAttribute) and not eType.isAny()) post (trim())]
 [if (anStructFeature.upperBound <> 1)]
-![anStructFeature.getGetterName()/]()->empty()
+[anStructFeature.name/]_ != nullptr && ![anStructFeature.name/]_->empty()
 [elseif (eType.oclIsKindOf(EEnum))]
 [anStructFeature.name/]_ ![anStructFeature.oclAsType(EAttribute).generateDefaultValue()/];
 [else]
-[anStructFeature.getGetterName()/]() != [anStructFeature.oclAsType(EAttribute).getDefaultValue()/]
+[anStructFeature.name/]_ != [anStructFeature.oclAsType(EAttribute).getDefaultValue()/]
 [/if]
 [/template]
 
-[template public generateComparison(anStructFeature : EStructuralFeature) ? (not oclIsKindOf(EAttribute) and not eType.isAny())]
-[anStructFeature.getGetterName()/]() != [anStructFeature.eType.getDefaultValue()/]
+[template public generateComparison(anStructFeature : EStructuralFeature) ? (oclIsKindOf(EReference) and not eType.isAny()) post (trim())]
+[if (anStructFeature.upperBound <> 1)]
+[anStructFeature.name/]_ != nullptr && ![anStructFeature.name/]_->empty()
+[elseif anStructFeature.oclAsType(EReference).isBackReference() ]
+!is_uninitialized([anStructFeature.name/]_)
+[else]
+[anStructFeature.name/]_ != [anStructFeature.eType.getDefaultValue()/]
+[/if]
 [/template]
 
-[template public generateComparison(anStructFeature : EStructuralFeature) ? (eType.isAny())]
+[template public generateComparison(anStructFeature : EStructuralFeature) ? (eType.isAny()) post (trim())]
 ![anStructFeature.getGetterName()/]().empty()
 [/template]
 

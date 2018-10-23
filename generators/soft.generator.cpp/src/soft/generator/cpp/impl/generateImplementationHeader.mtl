@@ -74,8 +74,8 @@ namespace [aClass.ePackage.name/]
             virtual std::shared_ptr<[needNamespace(aClass.ePackage, 'EClass')/]> eStaticClass() const;
             [aClass.generateGetDeclaration(true)/]
             [aClass.generateSetDeclaration(true)/]
-            [aClass.generateIsSetDeclaration(true)/]
             [aClass.generateUnSetDeclaration(true)/]
+            [aClass.generateIsSetDeclaration(true)/]
             [aClass.generateInvokeDeclaration(true)/]
 
         [if aClass.eAttributes->notEmpty() or aClass.eReferences->notEmpty()]

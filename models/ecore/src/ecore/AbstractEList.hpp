@@ -76,6 +76,11 @@ namespace ecore
             }
         }
 
+        virtual bool empty() const
+        {
+            return size() == 0;
+        }
+
     protected:
 
         virtual bool isUnique()

@@ -76,6 +76,11 @@ namespace ecore {
             didClear( oldObjects );
         }
 
+        virtual bool empty() const
+        {
+            return v_.empty();
+        }
+
     private:
         std::vector<T> v_;
     };

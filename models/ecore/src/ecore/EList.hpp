@@ -38,8 +38,10 @@ namespace ecore {
 
         virtual void clear() = 0;
 
-        bool contains( const T& e ) const {
-            return std::find( begin(), end(), e ) != end();
+        virtual bool empty() const = 0;
+
+        bool contains(const T& e) const {
+            return std::find(begin(), end(), e) != end();
         }
 
         std::size_t indexOf( const T& e, std::size_t from = 0 ) const {
