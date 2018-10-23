@@ -64,6 +64,7 @@ std::shared_ptr<[needNamespace(aClass.ePackage, 'EClass')/]> [className/]::eStat
     return [aClass.ePackage.name.concat('PackageImpl').toUpperFirst()/]::eInstance()->get[aClass.getElementAccessorName()/]();
 }
 
+[if aClass.eAttributes->notEmpty()]
 //*********************************
 // Attribute Setter Getter
 //*********************************
@@ -72,26 +73,26 @@ std::shared_ptr<[needNamespace(aClass.ePackage, 'EClass')/]> [className/]::eStat
 
 [aAttribute.generateAttributeGetterImplementationCpp()/]
 [/for]
-
+[/if]
+[if aClass.eOperations->notEmpty()]
 //*********************************
 // Operations
 //*********************************
 [for (aOperation : EOperation | aClass.eOperations->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
 [aOperation.generateOperationImplementation()/]
 [/for]
-
+[/if]
+[if aClass.eReferences->notEmpty()]
 //*********************************
 // References
 //*********************************
 [for (aReference : EReference | aClass.eReferences->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
 [aReference.generateReferenceCpp()/]
 [/for]
+[/if]
 
 [aClass.generateGetThisPtrCPP()/]
 
-//*********************************
-// Structural Feature Getter/Setter
-//*********************************
 [aClass.generateGetImplementation()/]
 
 [aClass.generateIsSetImplementation()/]
