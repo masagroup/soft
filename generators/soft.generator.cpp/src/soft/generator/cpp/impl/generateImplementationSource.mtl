@@ -40,7 +40,7 @@
 #include "[aClass.ePackage.name/]/[aClass.ePackage.name.toUpperFirst()/]Factory.hpp"
 #include "ecore/EAttribute.hpp"
 #include "ecore/EStructuralFeature.hpp"
-#include "ecore/BasicEList.hpp"
+#include "ecore/EObjectEList.hpp"
 
 [comment namespace /]
 using namespace [aClass.ePackage.name/];
@@ -50,22 +50,6 @@ using namespace [aClass.ePackage.name/];
 //*********************************
 [className/]::[className/]()
 {
-[if aClass.eAttributes->notEmpty()]
-    //*********************************
-    // Attribute Members
-    //*********************************
-    [for (aAttribute : EAttribute | aClass.eAttributes->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-    [aAttribute.generateAttributeInit()/]
-    [/for]
-[/if]
-[if aClass.eReferences->notEmpty()]
-    //*********************************
-    // Reference Members
-    //*********************************
-    [for (aReference : EReference | aClass.eReferences->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-    [aReference.generateReferenceInit()/]
-    [/for]
-[/if]
 }
 
 [className/]::~[className/]()

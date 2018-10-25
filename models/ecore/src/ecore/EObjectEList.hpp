@@ -11,6 +11,7 @@
 #define ECORE_EOBJECTELIST_HPP_
 
 #include "ecore/BasicElist.hpp"
+#include "ecore/ENotification.hpp"
 
 #include <memory>
 #include <algorithm>
@@ -20,7 +21,7 @@ namespace ecore
 	class BasicEObject;
 
 	template <typename T, bool containement = false, bool inverse = false, bool opposite = false >
-	class EObjectEList : public BasicEList
+	class EObjectEList : public BasicEList<T>
 	{
 	public:
 		EObjectEList(const std::shared_ptr<BasicEObject>& owner, int featureID )
@@ -45,7 +46,7 @@ namespace ecore
 		}
 
 
-		virtual ~EObjectList()
+		virtual ~EObjectEList()
 		{
 		}
 
@@ -66,7 +67,7 @@ namespace ecore
 	
 	protected:
 
-		template <typename Q, opposite = false >
+		template <typename Q, bool opposite = false >
 		struct Opposite
 		{
 			Opposite(EObjectEList& list) : list_(list) {}
@@ -76,10 +77,10 @@ namespace ecore
 			inline void inverseRemove(const Q& q) { q->eInverseRemove(list_.owner_, BasicEObject::EOPPOSITE_FEATURE_BASE - list_.featureID_); }
 
 			EObjectEList& list_;
-		}
+		};
 
-		template <typename Q, true >
-		struct Opposite
+		template <typename Q>
+		struct Opposite<Q,true>
 		{
 			Opposite(EObjectEList& list) : list_(list) {}
 
@@ -88,7 +89,7 @@ namespace ecore
 			inline void inverseRemove(const Q& q) { q->eInverseRemove(list_.owner_, list_.inverseFeatureID_); }
 
 			EObjectEList& list_;
-		}
+		};
 
 		template <typename Q, bool inverse = false, bool opposite = false >
 		struct Inverse
@@ -100,8 +101,8 @@ namespace ecore
 			inline void inverseRemove(const Q& q) {}
 		};
 
-		template <typename Q, true , bool opposite = false >
-		struct Inverse
+		template <typename Q, bool opposite>
+		struct Inverse<Q,true,opposite>
 		{
 			inline Inverse(EObjectEList& list) : opposite_(list) {}
 

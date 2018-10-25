@@ -52,16 +52,21 @@ virtual void [anEAttribute.getUnSetterName()/]() [abstractSufix(impl)/];
 [/if]
 [/template]
 
-[template public generateAttributeInit(anEAttribute : EAttribute) ? (not(anEAttribute.upperBound = 1))]
-[anEAttribute.name/]_.reset(new BasicEList<[anEAttribute.eGenericType.generateCppType()/]>());
-[/template]
-
 [***
  * Section for the Attribute cpp implementation
 */]
 [template public generateAttributeGetterImplementationCpp(anEAttribute : EAttribute)? (hasGetter('public',true))]
 [anEAttribute.generateReturnType()/] [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getGetterName()/]() const 
 {
+    return [anEAttribute.name/]_;
+}
+[/template]
+
+[template public generateAttributeGetterImplementationCpp(anEAttribute : EAttribute)? (hasGetter('public',true) and anEAttribute.upperBound <> 1)]
+[anEAttribute.generateReturnType()/] [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getGetterName()/]() const 
+{
+    if ( ![anEAttribute.name/]_ )
+         const_cast<[anEAttribute.eContainingClass.name.toUpperFirst()/]Impl*>(this)->[anEAttribute.name/]_.reset(new BasicEList<[anEAttribute.eGenericType.generateCppType()/]>());
     return [anEAttribute.name/]_;
 }
 [/template]

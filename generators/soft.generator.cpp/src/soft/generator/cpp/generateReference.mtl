@@ -1,6 +1,7 @@
 [comment encoding = UTF-8 /]
 [module generateReference('http://www.eclipse.org/emf/2002/Ecore')]
 
+[import soft::generator::cpp::generateClass /]
 [import soft::generator::cpp::generateType /]
 [import soft::generator::cpp::utils /]
 
@@ -34,10 +35,6 @@ const std::shared_ptr<EList<[anEReference.eGenericType.generateCppType()/]> >& [
 
 [/template]
 
-[template public generateReferenceInit(eReference : EReference)? (not(eReference.upperBound=1))]
-[eReference.name/]_.reset(new BasicEList<[eReference.eGenericType.generateCppType()/]>());
-[/template]
-
 [template public generateReferenceCpp(anEReference : EReference)]
 [anEReference.generateReferenceGetterCpp()/]
 
@@ -66,8 +63,58 @@ void [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.get
 [else]
     [if(anEReference.lowerBound>0)]assert([anEReference.name/]_);[/if]
     return [anEReference.name/]_[if (anEReference.isBackReference())].lock()[/if];
-    [/if]
+[/if]
 }
+[/template]
+
+[template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter('public',true) and anEReference.upperBound <> 1)]
+[anEReference.generateReturnType()/] [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getGetterName()/]() const
+{[if (hasKey('getterbody'))]
+    //generated from getterbody annotation
+    [valueKey('getterbody')/]
+    //end of body
+[else]
+    if ( ![anEReference.name/]_ )
+        const_cast<[anEReference.eContainingClass.name.toUpperFirst()/]Impl*>(this)->[anEReference.name/]_.reset(new [getListConstructor()/]); 
+    return [anEReference.name/]_;
+[/if]
+}
+[/template]
+
+[template private getListConstructor( anEReference : EReference ) post(trim())]
+[let typeArgument : String = anEReference.eGenericType.generateCppType()]
+[let thisPtrGetterName : String = anEReference.eContainingClass.generateGetThisPtrPropertyGetterName()]
+[let packageName : String = anEReference.getMetaModelPackageNameForEStructuralFeature(anEReference.eContainingClass)]
+[let featureID : String = anEReference.eContainingClass.getFeatureIDName( anEReference )]
+[if (anEReference.containment)]
+    [if anEReference.eOpposite.oclIsUndefined() ]
+        EObjectEList<[typeArgument/],true,true,false>([thisPtrGetterName/](), [packageName/]::[featureID/] )
+    [else]
+        [let reverseFeature :EReference = anEReference.eOpposite ]
+        [let reversePackageName : String = reverseFeature.getMetaModelPackageNameForEStructuralFeature(reverseFeature.eContainingClass) ]
+        [let reverseFeatureID :String = reverseFeature.eContainingClass.getFeatureIDName(reverseFeature) ]
+        EObjectEList<[typeArgument/],true,true,true>( [thisPtrGetterName/](), [packageName/]::[featureID/] , [reversePackageName/]::[reverseFeatureID/])
+        [/let]
+        [/let]
+        [/let]
+    [/if]
+[else]
+    [if anEReference.eOpposite.oclIsUndefined() ]
+        EObjectEList<[typeArgument/],false,false,false>( [thisPtrGetterName/](), [packageName/]::[featureID/])
+    [else]
+        [let reverseFeature :EReference = anEReference.eOpposite ]
+        [let reversePackageName : String = reverseFeature.getMetaModelPackageNameForEStructuralFeature(reverseFeature.eContainingClass) ]
+        [let reverseFeatureID :String = reverseFeature.eContainingClass.getFeatureIDName(reverseFeature) ]
+        EObjectEList<[typeArgument/],false,true,true>( [thisPtrGetterName/](), [packageName/]::[featureID/] , [reversePackageName/]::[reverseFeatureID/])
+        [/let]
+        [/let]
+        [/let]
+    [/if]
+[/if]
+[/let]
+[/let]
+[/let]
+[/let]
 [/template]
 
 [template public generateReferenceCreation(anEReference : EReference)]
