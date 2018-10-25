@@ -23,26 +23,30 @@ namespace ecore
 	class EObjectEList : public BasicEList
 	{
 	public:
-		EObjectEList(const std::shared_ptr<BasicEObject>& owner, int featureID , int inverseFeatureID = -1)
+		EObjectEList(const std::shared_ptr<BasicEObject>& owner, int featureID )
 			: owner_(owner)
 			, featureID_(featureID)
-			, inverseFeatureID_( inverseFeatureID )
+			, inverseFeatureID_( -1 )
 		{
-			if (inverseFeatureID_ == -1)
+			std::shared_ptr<EReference> reference = dynamic_pointer_cast<EReference>( owner->getFeature(featureID) );
+			if (reference)
 			{
-				std::shared_ptr<EReference> reference = dynamic_pointer_cast<EReference>( owner->getFeature(featureID) );
-				if (reference)
-				{
-					std::shared_ptr<EReference> opposite = reference->getEOpposite();
-					if (opposite)
-						inverseFeatureID_ = opposite->getFeatureID();
-				}
+				std::shared_ptr<EReference> opposite = reference->getEOpposite();
+				if (opposite)
+					inverseFeatureID_ = opposite->getFeatureID();
 			}
 		}
 
+		EObjectEList( const std::shared_ptr<BasicEObject>& owner, int featureID, int inverseFeatureID )
+			: owner_( owner )
+			, featureID_( featureID )
+			, inverseFeatureID_( inverseFeatureID )
+		{
+		}
+
+
 		virtual ~EObjectList()
 		{
-
 		}
 
 		virtual void addUnique(const T& e)
