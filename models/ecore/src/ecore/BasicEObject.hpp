@@ -16,6 +16,9 @@ namespace ecore
 {
     class BasicEObject: public virtual ecore::EObject
     {
+	public:
+		static const int EOPPOSITE_FEATURE_BASE = -1;
+
     protected:
         BasicEObject();
 

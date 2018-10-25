@@ -12,4 +12,5 @@ set(HEADER_FILES
     src/ecore/EAdapter.hpp
     src/ecore/ENotification.hpp
     src/ecore/ENotifier.hpp
+    src/ecore/EObjectEList.hpp
 )
