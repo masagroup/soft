@@ -16,58 +16,58 @@ namespace ecore
 {
 
     template<typename T>
-    class AbstractEList: public EList<T>
+    class AbstractEList : public EList<T>
     {
 
     public:
-        
+
         virtual ~AbstractEList()
         {
         }
 
-        virtual bool add(const T& e)
+        virtual bool add( const T& e )
         {
-            if (isUnique() && contains(e))
+            if (isUnique() && contains( e ))
                 return false;
             else
             {
-                addUnique(e);
+                addUnique( e );
                 return true;
             }
         }
 
-        virtual void addUnique(const T& e) = 0;
+        virtual void addUnique( const T& e ) = 0;
 
-        virtual void add(std::size_t pos, const T& e)
+        virtual void add( std::size_t pos, const T& e )
         {
-            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size());
-            _SCL_SECURE_ALWAYS_VALIDATE(!isUnique() || (isUnique() && !contains(e)));
-            addUnique(pos, e);
+            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
+            _SCL_SECURE_ALWAYS_VALIDATE( !isUnique() || (isUnique() && !contains( e )) );
+            addUnique( pos, e );
         }
 
-        virtual void addUnique(std::size_t pos, const T& e) = 0;
+        virtual void addUnique( std::size_t pos, const T& e ) = 0;
 
-        virtual void set(std::size_t pos, const T& e)
+        virtual void set( std::size_t pos, const T& e )
         {
-            _SCL_SECURE_ALWAYS_VALIDATE_RANGE(pos <= size());
+            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
             if (isUnique())
             {
-                std::size_t currentIndex = indexOf(e);
+                std::size_t currentIndex = indexOf( e );
                 _SCL_SECURE_ALWAYS_VALIDATE(
-                        currentIndex == -1 || currentIndex == pos);
+                    currentIndex == -1 || currentIndex == pos );
             }
-            setUnique(pos, e);
+            setUnique( pos, e );
         }
 
-        virtual void setUnique(std::size_t pos, const T& e) = 0;
+        virtual T setUnique( std::size_t pos, const T& e ) = 0;
 
 
-        virtual bool remove(const T& e)
+        virtual bool remove( const T& e )
         {
-            std::size_t index = indexOf(e);
+            std::size_t index = indexOf( e );
             if (index >= 0)
             {
-                EList<T>::remove(index);
+                EList<T>::remove( index );
                 return true;
             }
             else
@@ -77,35 +77,35 @@ namespace ecore
         }
 
     protected:
-        
+
         virtual bool isUnique()
         {
             return false;
         }
 
-        virtual T primitiveGet(std::size_t pos) const = 0;
+        virtual T primitiveGet( std::size_t pos ) const = 0;
 
-        virtual void didSet(std::size_t pos, const T& newObject, const T& oldObject)
+        virtual void didSet( std::size_t pos, const T& newObject, const T& oldObject )
         {
             // Do nothing.
         }
 
-        virtual void didAdd(std::size_t pos, const T& newObject)
+        virtual void didAdd( std::size_t pos, const T& newObject )
         {
             // Do nothing.
         }
 
-        virtual void didRemove(std::size_t pos, const T& oldObject)
+        virtual void didRemove( std::size_t pos, const T& oldObject )
         {
             // Do nothing.
         }
 
         virtual void didClear( const std::vector<T>& oldObjects ) {
-            for ( int i = 0 ; i < oldObjects.size() ; ++i )
-                didRemove( i , oldObjects[i] );
+            for (int i = 0; i < oldObjects.size(); ++i)
+                didRemove( i, oldObjects[i] );
         }
 
-        virtual void didMove(std::size_t pos, const T& movedObject, std::size_t oldIndex)
+        virtual void didMove( std::size_t pos, const T& movedObject, std::size_t oldIndex )
         {
             // Do nothing.
         }

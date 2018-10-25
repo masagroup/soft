@@ -22,22 +22,26 @@ namespace ecore {
     public:
         virtual ~BasicEList() {}
 
-        virtual void addUnique(const T& e)
+        virtual void addUnique( const T& e )
         {
             std::size_t pos = size();
-            v_.push_back(e);
-            didAdd( pos, e);
+            v_.push_back( e );
+            didAdd( pos, e );
             didChange();
         }
 
-        virtual void addUnique( std::size_t pos,  const T& e) {
-            v_.insert( v_.begin() + pos , e );
-            didAdd(pos, e);
+        virtual void addUnique( std::size_t pos, const T& e ) {
+            v_.insert( v_.begin() + pos, e );
+            didAdd( pos, e );
             didChange();
         }
 
-        virtual void setUnique(std::size_t pos, const T& e) {
-            v_[ pos ] = e;
+        virtual T setUnique( std::size_t pos, const T& e ) {
+            T old = v_[pos];
+            v_[pos] = e;
+            didSet( pos, e, old );
+            didChange();
+            return old;
         }
 
         virtual T get( std::size_t pos ) const {
@@ -46,7 +50,7 @@ namespace ecore {
 
         virtual T primitiveGet( std::size_t pos ) const
         {
-            return v_[ pos ];
+            return v_[pos];
         }
 
         virtual T remove( std::size_t pos )
@@ -54,7 +58,7 @@ namespace ecore {
             auto it = v_.begin() + pos;
             T oldObject = std::move( *it );
             v_.erase( it );
-            didRemove(pos, oldObject);
+            didRemove( pos, oldObject );
             didChange();
             return oldObject;
         }
@@ -69,7 +73,7 @@ namespace ecore {
         {
             std::vector<T> oldObjects = v_;
             v_.clear();
-            didClear( oldObjects);
+            didClear( oldObjects );
         }
 
     private:
