@@ -52,7 +52,7 @@ namespace ecore
 			const std::shared_ptr<EStructuralFeature>& feature,
 			const T & oldValue,
 			const T & newValue,
-			int position) :
+			std::size_t position) :
 			eventType_(type), notifier_(notifier), feature_(feature),
 			oldValue_(oldValue), newValue_(newValue), position_(position)
 		{
@@ -86,7 +86,7 @@ namespace ecore
 			return newValue_;
 		}
 
-		int getPosition() const
+		std::size_t getPosition() const
 		{
 			return position_;
 		}
@@ -98,7 +98,7 @@ namespace ecore
 		std::shared_ptr<EStructuralFeature> feature_;
 		boost::any oldValue_;
 		boost::any newValue_;
-		int position_;
+		std::size_t position_;
 	};
 }
 #endif

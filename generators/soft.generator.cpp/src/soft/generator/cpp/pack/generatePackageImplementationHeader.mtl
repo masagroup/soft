@@ -9,8 +9,8 @@
 [import soft::generator::cpp::utils /]
 [import soft::generator::cpp::pack::generatePackageHelper /]
 
-[template public generatePackageImplHeader(anEPackage : EPackage)]
-[file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(anEPackage.name.toUpperFirst()).concat('PackageImpl.hpp'), false, 'UTF-8')]
+[template public generatePackageImplHeader(anEPackage : EPackage) { packageName : String = anEPackage.name.toUpperFirst().concat('PackageImpl'); }]
+[file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(packageName).concat('.hpp'), false, 'UTF-8')]
 [startGuard(anEPackage,'PackageImpl')/]
 
 [comment  Generate Includes for the Factory/]
@@ -36,17 +36,17 @@ namespace ecore
 
 namespace [anEPackage.name/]
 {
-    class [anEPackage.name.toUpperFirst().concat('PackageImpl')/] : public [anEPackage.needNamespace('EPackageImpl')/] ,virtual public [anEPackage.name.toUpperFirst().concat('Package')/]
+    class [packageName/] : public [anEPackage.needNamespace('EPackageImpl')/] ,virtual public [anEPackage.name.toUpperFirst().concat('Package')/]
     {
         private:    
-            [anEPackage.name.toUpperFirst().concat('PackageImpl')/]([anEPackage.name.toUpperFirst().concat('PackageImpl')/] const&) = delete;
-            [anEPackage.name.toUpperFirst().concat('PackageImpl')/]& operator=([anEPackage.name.toUpperFirst().concat('PackageImpl')/] const&) = delete;
+            [packageName/]([packageName/] const&) = delete;
+            [packageName/]& operator=([packageName/] const&) = delete;
 
         protected:
-            [anEPackage.name.toUpperFirst().concat('PackageImpl')/]();
+            [packageName/]();
 
         public:
-            virtual ~[anEPackage.name.toUpperFirst().concat('PackageImpl')/]();
+            virtual ~[packageName/]();
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
             // Begin Class [aClass.name.toUpperFirst()/]
@@ -69,15 +69,12 @@ namespace [anEPackage.name/]
 
             friend class [anEPackage.name.concat('Package').toUpperFirst()/];
 
-            static bool isInited;
-            static [anEPackage.name.concat('Package').toUpperFirst()/]* create();
+            static [packageName/]* create();
             bool isInitialized = false;
             bool isCreated = false;
 
-            virtual void init(const std::shared_ptr<ecore::EPackage>& package);
-
-        public:
-            void createPackageContents(const std::shared_ptr<ecore::EPackage>& package);
+            void init(const std::shared_ptr<[packageName/]>& package);
+            void createPackageContents(const std::shared_ptr<[packageName/]>& package);
             void initializePackageContents();
 
         private:

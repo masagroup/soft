@@ -19,7 +19,7 @@
 //Model includes
 #include "[aClass.ePackage.name/]/[aClass.name.toUpperFirst().concat('.hpp')/]"
 
-[for (aEClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator ('\n')]
+[for (aEClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
 #include "[aEClass.ePackage.name/]/impl/[aEClass.name.toUpperFirst()/]Impl.hpp"[/for]
 
 [if aClass.eSuperTypes->isEmpty()]
@@ -94,7 +94,7 @@ namespace [aClass.ePackage.name/]
             [/if]
         [/if]
         private:
-            std::weak_ptr<[aClass.name.toUpperFirst()/]> [generateGetThisPtrPropertyName()/]_;
+            std::weak_ptr<[className/]> [generateGetThisPtrPropertyName()/]_;
     };
 }
 [endGuard(guardName)/]

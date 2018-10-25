@@ -4,8 +4,8 @@
 [import soft::generator::cpp::generateClass /]
 [import soft::generator::cpp::utils /]
 
-[template public generateFactoryImplHeader(anEPackage : EPackage)]
-[file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(anEPackage.name.toUpperFirst()).concat('FactoryImpl.hpp'), false, 'UTF-8')]
+[template public generateFactoryImplHeader(anEPackage : EPackage) { factoryName : String = anEPackage.name.toUpperFirst().concat('FactoryImpl'); } ]
+[file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(factoryName).concat('.hpp'), false, 'UTF-8')]
 [startGuard(anEPackage,'FactoryImpl')/]
 
 #include "ecore/impl/EFactoryImpl.hpp"
@@ -14,7 +14,7 @@
 #include "[anEPackage.name/]/[anEPackage.name.toUpperFirst().concat('Factory')/].hpp"
 
 namespace [anEPackage.name/] 
-{[for (elements : EClassifier| OrderedSet{anEPackage.eClassifiers}->flatten()->selectByKind(EClass)->sortedBy(name)) separator ('\n')]
+{[for (elements : EClassifier| OrderedSet{anEPackage.eClassifiers}->flatten()->selectByKind(EClass)->sortedBy(name)) separator ('\r\n')]
 	class [elements.name/];[/for]
 
 }
@@ -22,19 +22,19 @@ namespace [anEPackage.name/]
 [comment namespace /]
 namespace [anEPackage.name/] 
 {
-	class [anEPackage.name.toUpperFirst().concat('FactoryImpl')/] : virtual public [needNamespace(anEPackage, 'EFactoryImpl')/] , virtual public [anEPackage.name.toUpperFirst().concat('Factory')/] 
+	class [factoryName/] : virtual public [needNamespace(anEPackage, 'EFactoryImpl')/] , virtual public [anEPackage.name.toUpperFirst().concat('Factory')/] 
 	{
 		private:    
-			[anEPackage.name.toUpperFirst().concat('FactoryImpl')/]([anEPackage.name.toUpperFirst().concat('FactoryImpl')/] const&) = delete;
-			[anEPackage.name.toUpperFirst().concat('FactoryImpl')/]& operator=([anEPackage.name.toUpperFirst().concat('FactoryImpl')/] const&) = delete;
+			[factoryName/]([factoryName/] const&) = delete;
+			[factoryName/]& operator=([factoryName/] const&) = delete;
 
 		protected:
 			friend class [anEPackage.name.toUpperFirst().concat('Factory')/];
 			// Constructor
-			[anEPackage.name.toUpperFirst().concat('FactoryImpl')/]();
+			[factoryName/]();
 
 		public:
-			virtual ~[anEPackage.name.toUpperFirst().concat('FactoryImpl')/]();
+			virtual ~[factoryName/]();
 
             virtual std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> create(const std::shared_ptr<[needNamespace(anEPackage, 'EClass')/]>&  eClass) const;
             
@@ -45,7 +45,7 @@ namespace [anEPackage.name/]
 			virtual std::shared_ptr<[anEPackage.name.toUpperFirst()/]Package> get[anEPackage.name.toUpperFirst()/]Package() const;
 
 		private:
-			static [anEPackage.name.toUpperFirst().concat('Factory')/]* create();
+			static [factoryName/]* create();
 	};
 }
 [endGuard(anEPackage,'FactoryImpl')/]

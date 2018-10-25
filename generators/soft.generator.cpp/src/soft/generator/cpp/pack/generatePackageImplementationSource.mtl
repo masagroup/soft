@@ -11,7 +11,7 @@
 
 [query public metaModelIncludes(anEPackage : EPackage) : Set(EPackage) = OrderedSet{anEPackage.eAllContents(EClass).eAllSuperTypes.ePackage,anEPackage.eAllContents(EStructuralFeature).eType.ePackage,anEPackage.eAllContents(EParameter).eType.ePackage}->flatten() /]
 
-[template public generatePackageImplSource(anEPackage : EPackage) { packageName : String = anEPackage.name.toUpperFirst().concat('PackageImpl').toUpperFirst(); }]
+[template public generatePackageImplSource(anEPackage : EPackage) { packageName : String = anEPackage.name.toUpperFirst().concat('PackageImpl');}]
 [file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(packageName).concat('.cpp'), false, 'UTF-8')]
 #include "[anEPackage.name/]/impl/[packageName/].hpp"
 
@@ -36,8 +36,6 @@
 
 using namespace [anEPackage.name/];
 
-bool [packageName/]::isInited = false;
-
 [packageName/]::[packageName/]()
 {
     setEFactoryInstance(std::shared_ptr<ecore::EFactory >( [anEPackage.name.concat('Factory').toUpperFirst()/]::eInstance()));
@@ -47,18 +45,12 @@ bool [packageName/]::isInited = false;
 {
 }
 
-[anEPackage.name.concat('Package').toUpperFirst()/]* [packageName/]::create()
+[packageName/]* [packageName/]::create()
 {
-    if (isInited)
-        return [anEPackage.name.concat('Package').toUpperFirst()/]::eInstance().get();
-    isInited = true;
-     
-    // Obtain or create package and create package meta-data objects
-    [packageName/] * metaModelPackage = new [packageName/]();
-    return metaModelPackage;
+    return new [packageName/]();
 }
 
-void [packageName/]::init(const std::shared_ptr<ecore::EPackage>& package)
+void [packageName/]::init(const std::shared_ptr<[packageName/]>& package)
 {
     // Initialize created meta-data
     createPackageContents(package);
@@ -103,7 +95,7 @@ void [packageName/]::init(const std::shared_ptr<ecore::EPackage>& package)
 
 using namespace [anEPackage.name/];
 
-void [packageName/]::createPackageContents(const std::shared_ptr<ecore::EPackage>& package)
+void [packageName/]::createPackageContents(const std::shared_ptr<[packageName/]>& package)
 {
     if (isCreated) 
         return;

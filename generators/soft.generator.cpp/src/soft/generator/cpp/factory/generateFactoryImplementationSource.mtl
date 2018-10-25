@@ -5,9 +5,9 @@
 [import soft::generator::cpp::generateType /]
 [import soft::generator::cpp::utils /]
 
-[template public generateFactoryImplSource(anEPackage : EPackage) {className : String = anEPackage.name.toUpperFirst().concat('FactoryImpl');}]
-[file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(className).concat('.cpp'), false, 'UTF-8')]
-#include "[anEPackage.name/]/impl/[className/].hpp"
+[template public generateFactoryImplSource(anEPackage : EPackage) {factoryName : String = anEPackage.name.toUpperFirst().concat('FactoryImpl');}]
+[file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(factoryName).concat('.cpp'), false, 'UTF-8')]
+#include "[anEPackage.name/]/impl/[factoryName/].hpp"
 
 #include <iostream>
 #include <boost/current_function.hpp>
@@ -31,24 +31,24 @@ using namespace [anEPackage.name/];
 // Constructor / Destructor
 //*********************************
 
-[className/]::[className/]()
+[factoryName/]::[factoryName/]()
 {
 }
 
-[className/]::~[className/]()
+[factoryName/]::~[factoryName/]()
 {
 }
 
-[anEPackage.name.toUpperFirst().concat('Factory')/]* [className/]::create()
+[factoryName/]* [factoryName/]::create()
 {
-	return new [className/]();
+	return new [factoryName/]();
 }
 
 //*********************************
 // creators
 //*********************************
 
-std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> [className/]::create(const std::shared_ptr<[needNamespace(anEPackage, 'EClass')/]>&  eClass) const
+std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> [factoryName/]::create(const std::shared_ptr<[needNamespace(anEPackage, 'EClass')/]>&  eClass) const
 {
     int classID = eClass->getClassifierID();
 	switch(classID)
@@ -64,7 +64,7 @@ std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> [className/]::create(co
 }
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
-std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]() const
+std::shared_ptr<[aClass.generateTypeClass()/]> [factoryName/]::create[aClass.name/]() const
 {
     std::shared_ptr<[aClass.name.toUpperFirst()/]Impl> element(new [aClass.name.toUpperFirst()/]Impl());
     element->[generateGetThisPtrPropertySetterName()/](element);
@@ -73,12 +73,12 @@ std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/
 
 [let ref : OrderedSet(EReference) = aClass.getAllContainers()]
 [for(aReference:EReference | ref->sortedBy(name))]
-std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]([aReference.generateParameterType()/] eContainer) const
+std::shared_ptr<[aClass.generateTypeClass()/]> [factoryName/]::create[aClass.name/]([aReference.generateParameterType()/] eContainer) const
 {
     [generateCreateFunctionContent(aClass, ref, aReference, anEPackage, false)/]
 }
 [if(aClass.getElementIDAccessorName().size() > 0)]
-std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]([aReference.generateParameterType()/] eContainer, const unsigned int classID) const
+std::shared_ptr<[aClass.generateTypeClass()/]> [factoryName/]::create[aClass.name/]([aReference.generateParameterType()/] eContainer, const unsigned int classID) const
 {
     [generateCreateFunctionContent(aClass, ref, aReference, anEPackage, true)/]
 }[/if]
@@ -87,7 +87,7 @@ std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/
 [/let]
 [/for]
 
-std::shared_ptr<[anEPackage.name.toUpperFirst().concat('Package')/]> [className/]::get[anEPackage.name.toUpperFirst().concat('Package')/]() const
+std::shared_ptr<[anEPackage.name.toUpperFirst().concat('Package')/]> [factoryName/]::get[anEPackage.name.toUpperFirst().concat('Package')/]() const
 {
 	return [anEPackage.name.toUpperFirst().concat('Package')/]::eInstance();
 }

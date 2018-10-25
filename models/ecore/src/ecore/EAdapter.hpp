@@ -29,7 +29,7 @@ namespace ecore
 
         virtual ~EAdapter();
 
-        virtual void notifyChanged(const ENotification& notification) = 0;
+        virtual void notifyChanged(const std::shared_ptr<ENotification>& notification) = 0;
 
         std::shared_ptr<ENotifier> getTarget();
 

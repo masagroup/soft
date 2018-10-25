@@ -22,13 +22,14 @@ namespace ecore
     protected:
         BasicEObject();
 
+	public:
         virtual ~BasicEObject();
 
         // Notification
         virtual EList<EAdapter*>& eAdapters();
         virtual bool eDeliver();
         virtual void eSetDeliver( bool deliver );
-        virtual void eNotify( const ENotification& notification );
+        virtual void eNotify( const std::shared_ptr<ENotification>& notification );
         bool eNotificationRequired();
 
         // Getter/ Setter

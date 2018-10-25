@@ -42,7 +42,7 @@ void BasicEObject::eSetDeliver( bool deliver )
     eDeliver_ = deliver;
 }
 
-void BasicEObject::eNotify( const ENotification& notification )
+void BasicEObject::eNotify( const std::shared_ptr<ENotification>& notification )
 {
     for( auto eAdapter : *eAdapters_ )
         eAdapter->notifyChanged( notification );

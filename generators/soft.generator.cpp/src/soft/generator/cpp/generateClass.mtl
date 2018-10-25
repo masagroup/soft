@@ -44,17 +44,17 @@ std::shared_ptr<ecore::EObject> [aClass.name.toUpperFirst()/]Impl::eContainer() 
 
 
 [template public generateGetThisPtr(aClass : EClass)]
-virtual std::shared_ptr<[aClass.name/]> [generateGetThisPtrPropertyGetterName()/]() const;
-virtual void [generateGetThisPtrPropertySetterName()/](std::weak_ptr<[aClass.name.toUpperFirst()/]> [generateGetThisPtrPropertyName()/]);
+std::shared_ptr<[aClass.name/]Impl> [generateGetThisPtrPropertyGetterName()/]() const;
+void [generateGetThisPtrPropertySetterName()/](const std::weak_ptr<[aClass.name/]Impl>& [generateGetThisPtrPropertyName()/]);
 [/template]
 
 [template public generateGetThisPtrCPP(aClass: EClass)]
-std::shared_ptr<[aClass.name.toUpperFirst()/]> [aClass.name.toUpperFirst()/]Impl::[generateGetThisPtrPropertyGetterName()/]() const
+std::shared_ptr<[aClass.name/]Impl> [aClass.name/]Impl::[generateGetThisPtrPropertyGetterName()/]() const
 {
     return [generateGetThisPtrPropertyName()/]_.lock();
 }
 
-void [aClass.name.toUpperFirst()/]Impl::[generateGetThisPtrPropertySetterName()/](std::weak_ptr<[aClass.name.toUpperFirst()/]> [generateGetThisPtrPropertyName()/])
+void [aClass.name/]Impl::[generateGetThisPtrPropertySetterName()/](const std::weak_ptr<[aClass.name/]Impl>& [generateGetThisPtrPropertyName()/])
 {
     [generateGetThisPtrPropertyName()/]_ = [generateGetThisPtrPropertyName()/];
     [for (superClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name))]
@@ -63,7 +63,7 @@ void [aClass.name.toUpperFirst()/]Impl::[generateGetThisPtrPropertySetterName()/
 }
 [/template]
 
-[query public generateGetThisPtrPropertyName(anEClass : EClass) : String = 'this'.concat(anEClass.name.toUpperFirst()).concat('Ptr')/]
+[query public generateGetThisPtrPropertyName(anEClass : EClass) : String = 'this'.concat(anEClass.name).concat('Ptr')/]
 [query public generateGetThisPtrPropertySetterName(anEClass : EClass) : String = 'set'.concat(generateGetThisPtrPropertyName().toUpperFirst())/]
 [query public generateGetThisPtrPropertyGetterName(anEClass : EClass) : String = 'get'.concat(generateGetThisPtrPropertyName().toUpperFirst())/]
 

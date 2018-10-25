@@ -27,6 +27,8 @@ namespace [anEPackage.eClass().ePackage.name/]
 [comment namespace /]
 namespace [anEPackage.name/] 
 {
+    class [packageName/]Impl;
+
     /*!
     The Metamodel Package for the [anEPackage.name/] metamodel. This package is used to enable the reflection of model elements. It contains all model elements
     which were described in an ecore file.
@@ -73,7 +75,7 @@ namespace [anEPackage.name/]
 [/for]
             [anEPackage.eAllContents(EDataType)->sortedBy(name).generateModelElementGetter(anEPackage, false)/]
 
-            [generateSingletonDecl(packageName)/]
+            [generateSingletonDeclaration(packageName)/]
 [if anEPackage.name.equalsIgnoreCase('ecore')]
             //prevent from hiding functions
             using EPackage::getEAnnotation;

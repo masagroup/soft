@@ -11,7 +11,9 @@
 #define ECORE_EOBJECTELIST_HPP_
 
 #include "ecore/BasicElist.hpp"
+#include "ecore/EClass.hpp"
 #include "ecore/ENotification.hpp"
+#include "ecore/EReference.hpp"
 
 #include <memory>
 #include <algorithm>
@@ -28,8 +30,9 @@ namespace ecore
 			: owner_(owner)
 			, featureID_(featureID)
 			, inverseFeatureID_( -1 )
+		    , inverse_(*this)
 		{
-			std::shared_ptr<EReference> reference = dynamic_pointer_cast<EReference>( owner->getFeature(featureID) );
+			std::shared_ptr<EReference> reference = std::dynamic_pointer_cast<EReference>( owner->eClass()->getEStructuralFeature(featureID) );
 			if (reference)
 			{
 				std::shared_ptr<EReference> opposite = reference->getEOpposite();
@@ -42,6 +45,7 @@ namespace ecore
 			: owner_( owner )
 			, featureID_( featureID )
 			, inverseFeatureID_( inverseFeatureID )
+			, inverse_( *this )
 		{
 		}
 
@@ -54,8 +58,8 @@ namespace ecore
 		{
 			if (isNotificationRequired())
 			{
-				int index = size();
-				doAddUnique(object);
+				std::size_t index = size();
+				BasicEList<T>::addUnique( e );
 				std::shared_ptr< ENotification > notification = createNotification(ENotification::ADD, nullptr, e, index);
 				inverse_.inverseAdd(e);
 				dispatchNotification(notification);
@@ -116,12 +120,14 @@ namespace ecore
 	private :
 
 		bool isNotificationRequired() const {
-			return (auto owner = owner_.lock()) ? p->eNotificationRequired() : false;
+			auto owner = owner_.lock();
+			return owner ? owner->eNotificationRequired() : false;
 		}
 
-		std::shared_ptr< ENotification > createNotification(ENotification::EventType eventType, const T& oldValue, const T& newValue, int position) const
+		std::shared_ptr< ENotification > createNotification(ENotification::EventType eventType, const T& oldValue, const T& newValue, std::size_t position) const
 		{
-			return (auto owner = owner_.lock()) ? std::make_shared<ENotification>(eventType, owner, owner->getFeature(featureID_) , oldValue, newValue, position) : nullptr;
+			auto owner = owner_.lock();
+			return owner ? std::make_shared<ENotification>( eventType, owner, owner->eClass()->getEStructuralFeature( featureID_ ), oldValue, newValue, position ) : nullptr;
 		}
 
 		void dispatchNotification(const std::shared_ptr<ENotification>& notification) const
@@ -130,6 +136,7 @@ namespace ecore
 				owner->eNotify(notification);
 		}
 
+		
 	private:
 		std::weak_ptr<BasicEObject> owner_;
 		int featureID_;
