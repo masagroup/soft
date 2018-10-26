@@ -1,6 +1,9 @@
 [comment encoding = UTF-8 /]
 [module generateBuildFile('http://www.eclipse.org/emf/2002/Ecore')/]
 
+[import soft::generator::cpp::utils/]
+
+[query private isTests( aPackage : EPackage ) : Boolean = if hasKey('generateTests') then valueKey('generateTests') = 'true' else false endif/]
 
 [template public generateBuildFile(aPackage : EPackage) { packageName : String = aPackage.name; }]
 [comment    generate CMakeLists.txt for model libary/]
@@ -28,7 +31,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 # Boost
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.68.0 REQUIRED COMPONENTS unit_test_framework)
+find_package(Boost 1.68.0 REQUIRED[if isTests()] COMPONENTS unit_test_framework[/if])
 
 # Generated sources
 set(GENERATED_SOURCE_FILES
@@ -72,6 +75,7 @@ source_group(src FILES ${SOURCE_FILES} ${HEADER_FILES})
 source_group(src-gen FILES ${GENERATED_HEADER_INTERFACE_FILES} ${GENERATED_SOURCE_FILES})
 source_group(src-gen\\impl FILES ${GENERATED_HEADER_IMPLEMENTATION_FILES} ${GENERATED_SOURCE_IMPLEMENTATION_FILES})
 
+[if isTests()]
 set(PROJECT_TESTS_NAME "${PROJECT_NAME}.tests")
 add_executable( ${PROJECT_TESTS_NAME} ${TESTS_FILES})
 target_include_directories(${PROJECT_TESTS_NAME} PUBLIC src)
@@ -79,6 +83,7 @@ target_include_directories(${PROJECT_TESTS_NAME} PUBLIC src-gen)
 target_include_directories( ${PROJECT_TESTS_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_TESTS_NAME} ${PROJECT_NAME})
 target_link_libraries(${PROJECT_TESTS_NAME} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+[/if]
 
 #-----------------------------------------------------
 # DELIVERING binaries and header to delivery
