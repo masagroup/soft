@@ -61,13 +61,12 @@ namespace ecore
 
         virtual T setUnique( std::size_t pos, const T& e ) = 0;
 
-
         virtual bool remove( const T& e )
         {
             std::size_t index = indexOf( e );
             if (index >= 0)
             {
-                EList<T>::remove( index );
+                remove( index );
                 return true;
             }
             else
@@ -75,6 +74,8 @@ namespace ecore
                 return false;
             }
         }
+
+        virtual T remove( std::size_t index ) = 0;
 
         virtual bool empty() const
         {

@@ -28,7 +28,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 # Boost
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.68.0 REQUIRED)
+find_package(Boost 1.68.0 REQUIRED COMPONENTS unit_test_framework)
 
 # Generated sources
 set(GENERATED_SOURCE_FILES
@@ -72,6 +72,13 @@ source_group(src FILES ${SOURCE_FILES} ${HEADER_FILES})
 source_group(src-gen FILES ${GENERATED_HEADER_INTERFACE_FILES} ${GENERATED_SOURCE_FILES})
 source_group(src-gen\\impl FILES ${GENERATED_HEADER_IMPLEMENTATION_FILES} ${GENERATED_SOURCE_IMPLEMENTATION_FILES})
 
+set(PROJECT_TESTS_NAME "${PROJECT_NAME}.tests")
+add_executable( ${PROJECT_TESTS_NAME} ${TESTS_FILES})
+target_include_directories(${PROJECT_TESTS_NAME} PUBLIC src)
+target_include_directories(${PROJECT_TESTS_NAME} PUBLIC src-gen)
+target_include_directories( ${PROJECT_TESTS_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_TESTS_NAME} ${PROJECT_NAME})
+target_link_libraries(${PROJECT_TESTS_NAME} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
 #-----------------------------------------------------
 # DELIVERING binaries and header to delivery

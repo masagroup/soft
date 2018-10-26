@@ -14,3 +14,8 @@ set(HEADER_FILES
     src/ecore/ENotifier.hpp
     src/ecore/EObjectEList.hpp
 )
+set(TESTS_FILES
+    tests/main.cpp
+    tests/BasicEListTests.cpp
+    tests/EcoreFactoryTests.cpp
+   )
