@@ -15,12 +15,38 @@
 #include <vector>
 
 
-namespace ecore {
+namespace ecore
+{
 
     template <typename T>
-    class BasicEList : public AbstractEList<T> {
+    class BasicEList : public AbstractEList<T>
+    {
     public:
-        virtual ~BasicEList() {}
+        BasicEList()
+            : AbstractEList<T>()
+            , v_()
+        {
+
+        }
+
+        BasicEList( std::initializer_list<T> init )
+            : AbstractEList<T>()
+            , v_( init )
+        {
+
+        }
+
+
+        BasicEList( const BasicEList<T>& o )
+            : AbstractEList<T>( o )
+            , v_( o.v_ )
+        {
+
+        }
+
+        virtual ~BasicEList()
+        {
+        }
 
         virtual void addUnique( const T& e )
         {
@@ -30,31 +56,35 @@ namespace ecore {
             didChange();
         }
 
-        virtual void addUnique( std::size_t pos, const T& e ) {
+        virtual void addUnique( std::size_t pos, const T& e )
+        {
             v_.insert( v_.begin() + pos, e );
             didAdd( pos, e );
             didChange();
         }
 
-        virtual T setUnique( std::size_t pos, const T& e ) {
-            T old = v_[pos];
-            v_[pos] = e;
+        virtual T setUnique( std::size_t pos, const T& e )
+        {
+            T old = v_[ pos ];
+            v_[ pos ] = e;
             didSet( pos, e, old );
             didChange();
             return old;
         }
 
-        virtual T get( std::size_t pos ) const {
+        virtual T get( std::size_t pos ) const
+        {
             return v_.at( pos );
         }
 
         virtual T primitiveGet( std::size_t pos ) const
         {
-            return v_[pos];
+            return v_[ pos ];
         }
 
         virtual T remove( std::size_t pos )
         {
+            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
             auto it = v_.begin() + pos;
             T oldObject = std::move( *it );
             v_.erase( it );

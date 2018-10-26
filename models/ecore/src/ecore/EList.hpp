@@ -44,8 +44,9 @@ namespace ecore {
             return std::find(begin(), end(), e) != end();
         }
 
-        std::size_t indexOf( const T& e, std::size_t from = 0 ) const {
-            return std::distance( begin() + (int)from, std::find( begin(), end(), e ) );
+        std::size_t indexOf( const T& e ) const {
+            std::size_t index = std::distance( begin() , std::find( begin() , end(), e ) );
+            return index == size() ? -1 : index;
         }
 
         /** Iterator interfaces for an EList<T>. */

@@ -104,6 +104,11 @@ namespace ecore
 
     protected:
 
+        virtual bool isUnique() const
+        {
+            return true;
+        }
+
         template <typename Q, bool opposite = false >
         struct Opposite
         {
