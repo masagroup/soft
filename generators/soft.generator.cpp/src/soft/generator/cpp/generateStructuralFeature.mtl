@@ -11,6 +11,8 @@
 [query private getESetFeatures(aClass : EClass) : Set(EStructuralFeature) = aClass.eStructuralFeatures->select( eFeature | eFeature.isSet())/]
 [query private getEIsSetFeatures(aClass : EClass) : Set(EStructuralFeature) = aClass.getEGetFeatures()/]
 [query private getEUnSetFeatures(aClass : EClass) : Set(EStructuralFeature) = aClass.getESetFeatures()/]
+[query private getEInverseAddFeatures(aClass : EClass) : Set(EStructuralFeature) = aClass.eStructuralFeatures->select( eFeature | eFeature.isBidirectional() and not eFeature.isVolatile())/]
+[query private getEInverseRemoveFeatures(aClass : EClass) : Set(EStructuralFeature) = aClass.eStructuralFeatures->select( eFeature | eFeature.isContains() or (eFeature.isBidirectional() and not eFeature.isVolatile()))/]
 
 [**
  * eGet Function
@@ -34,6 +36,15 @@ virtual void eUnSet(int featureID) [abstractSufix(impl)/];
 [template public generateInvokeDeclaration(aClass : EClass,impl : Boolean) ? (aClass.eOperations->notEmpty()) post (trim())]
 virtual boost::any eInvoke( int operationID, const std::shared_ptr<EList<boost::any>>& arguments )[abstractSufix(impl)/];
 [/template]
+
+[template public generateInverseAddDeclaration(aClass : EClass,impl : Boolean) ? (aClass.getEInverseAddFeatures()->notEmpty()) post (trim())]
+virtual void eBasicInverseAdd( const std::shared_ptr<BasicEObject>& otherEnd, int featureID )[abstractSufix(impl)/];
+[/template]
+
+[template public generateInverseRemoveDeclaration(aClass : EClass,impl : Boolean) ? (aClass.getEInverseRemoveFeatures()->notEmpty()) post (trim())]
+virtual void eBasicInverseRemove( const std::shared_ptr<BasicEObject>& otherEnd, int featureID )[abstractSufix(impl)/];
+[/template]
+
 
 [template public generateGetImplementation(aClass : EClass) ? (aClass.getEGetFeatures()->notEmpty()) post (trim())]
 boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, bool resolve, bool coreType) const
@@ -208,3 +219,39 @@ static const int [anEClass.getFeatureIDName(anStructFeature)/] = [anEClass.getFe
 static const int [anEClass.getFeatureCountID()/] = [anEClass.getFeatureCountValue()/];
 
 [/template]
+
+
+[template public generateInverseAddImplementation(aClass : EClass) ? (aClass.getEInverseAddFeatures()->notEmpty()) ]
+void [aClass.name.toUpperFirst().concat('Impl')/]::eBasicInverseAdd( const std::shared_ptr<BasicEObject>& otherEnd, int featureID )
+{
+    // [protected (aClass.name.concat('Impl::eBasicInverseAdd'))]
+    switch( featureID )
+    {
+    [for ( eFeature : EStructuralFeature | aClass.getEInverseAddFeatures()->sortedBy(name) )]
+        case [eFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[eFeature.eContainingClass.getFeatureIDName(eFeature)/]:
+        {
+            break;
+        }
+    [/for]
+    }
+    // [/protected]
+}
+[/template]
+
+[template public generateInverseRemoveImplementation(aClass : EClass) ? (aClass.getEInverseRemoveFeatures()->notEmpty()) ]
+void [aClass.name.toUpperFirst().concat('Impl')/]::eBasicInverseRemove( const std::shared_ptr<BasicEObject>& otherEnd, int featureID )
+{
+    // [protected (aClass.name.concat('Impl::eBasicInverseRemove'))]
+    switch( featureID )
+    {
+    [for ( eFeature : EStructuralFeature | aClass.getEInverseRemoveFeatures()->sortedBy(name) )]
+        case [eFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[eFeature.eContainingClass.getFeatureIDName(eFeature)/]:
+        {
+            break;
+        }
+    [/for]
+    }
+    // [/protected]
+}
+[/template]
+

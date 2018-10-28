@@ -77,6 +77,8 @@ namespace [aClass.ePackage.name/]
             [aClass.generateUnSetDeclaration(true)/]
             [aClass.generateIsSetDeclaration(true)/]
             [aClass.generateInvokeDeclaration(true)/]
+            [aClass.generateInverseAddDeclaration(true)/]
+            [aClass.generateInverseRemoveDeclaration(true)/]
 
         [if aClass.eAttributes->notEmpty() or aClass.eReferences->notEmpty()]
         protected:
