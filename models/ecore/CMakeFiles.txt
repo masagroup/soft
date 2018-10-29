@@ -23,4 +23,6 @@ set(TESTS_FILES
     tests/main.cpp
     tests/BasicEListTests.cpp
     tests/EcoreFactoryTests.cpp
+    tests/NotificationTests.cpp
+    tests/NotificationChainTests.cpp
    )
