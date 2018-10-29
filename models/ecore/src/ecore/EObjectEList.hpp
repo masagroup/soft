@@ -12,8 +12,8 @@
 
 #include "ecore/BasicElist.hpp"
 #include "ecore/EClass.hpp"
-#include "ecore/ENotification.hpp"
 #include "ecore/EReference.hpp"
+#include "ecore/Notification.hpp"
 
 #include <memory>
 #include <algorithm>
@@ -169,7 +169,7 @@ namespace ecore
         std::shared_ptr< ENotification > createNotification( ENotification::EventType eventType, const T& oldValue, const T& newValue, std::size_t position ) const
         {
             auto owner = owner_.lock();
-            return owner ? std::make_shared<ENotification>( eventType, owner, owner->eClass()->getEStructuralFeature( featureID_ ), oldValue, newValue, position ) : nullptr;
+            return owner ? std::make_shared<Notification>( eventType, owner, owner->eClass()->getEStructuralFeature( featureID_ ), oldValue, newValue, position ) : nullptr;
         }
 
         void dispatchNotification( const std::shared_ptr<ENotification>& notification ) const

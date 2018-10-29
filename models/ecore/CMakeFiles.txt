@@ -3,6 +3,8 @@
 set(SOURCE_FILES
     src/ecore/EAdapter.cpp
     src/ecore/BasicEObject.cpp
+    src/ecore/Notification.cpp
+    src/ecore/NotificationChain.cpp
 )   
 set(HEADER_FILES 
     src/ecore/EList.hpp
@@ -11,8 +13,11 @@ set(HEADER_FILES
     src/ecore/BasicEObject.hpp
     src/ecore/EAdapter.hpp
     src/ecore/ENotification.hpp
+    src/ecore/ENotificationChain.hpp
     src/ecore/ENotifier.hpp
     src/ecore/EObjectEList.hpp
+    src/ecore/Notification.hpp
+    src/ecore/NotificationChain.hpp
 )
 set(TESTS_FILES
     tests/main.cpp

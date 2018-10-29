@@ -2,11 +2,10 @@
 #include "ecore/BasicEList.hpp"
 #include "ecore/EAdapter.hpp"
 #include "ecore/EClass.hpp"
-#include "ecore/ENotification.hpp"
 #include "ecore/EOperation.hpp"
 #include "ecore/EReference.hpp"
 #include "ecore/EStructuralFeature.hpp"
-
+#include "ecore/Notification.hpp"
 
 #include <boost/assert.hpp>
 #include <string>
@@ -199,7 +198,7 @@ void ecore::BasicEObject::eBasicSetContainer( const std::shared_ptr<EObject>& ne
     {
         if (oldContainer  && oldContainerFeatureID >= 0 && oldContainerFeatureID != newContainerFeatureID)
         {
-            eNotify( std::make_shared<ENotification>( ENotification::SET,
+            eNotify( std::make_shared<Notification>( ENotification::SET,
                 std::dynamic_pointer_cast<ENotifier>(getThisPtr()),
                 oldContainer->eClass()->getEStructuralFeature( oldContainerFeatureID ),
                 oldContainer,
@@ -207,7 +206,7 @@ void ecore::BasicEObject::eBasicSetContainer( const std::shared_ptr<EObject>& ne
         }
         if (newContainerFeatureID >= 0)
         {
-            eNotify( std::make_shared<ENotification>( ENotification::SET,
+            eNotify( std::make_shared<Notification>( ENotification::SET,
                 getThisPtr(),
                 newContainer->eClass()->getEStructuralFeature( newContainerFeatureID ),
                 oldContainerFeatureID == newContainerFeatureID ? oldContainer : std::shared_ptr<EObject>(),

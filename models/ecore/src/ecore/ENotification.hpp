@@ -37,70 +37,24 @@ namespace ecore
             EVENT_TYPE_COUNT
         };
 
-        template< typename T >
-        ENotification( EventType type,
-            const std::shared_ptr<ENotifier>& notifier,
-            const std::shared_ptr<EStructuralFeature>& feature,
-            const T & oldValue,
-            const T & newValue ) :
-            eventType_( type ), notifier_( notifier ), feature_( feature ),
-            oldValue_( oldValue ), newValue_( newValue ), position_( -1 )
-        {
-        }
+        ENotification() = default;
 
-        template< typename T >
-        ENotification( EventType type,
-            const std::shared_ptr<ENotifier>& notifier,
-            const std::shared_ptr<EStructuralFeature>& feature,
-            const T & oldValue,
-            const T & newValue,
-            std::size_t position ) :
-            eventType_( type ), notifier_( notifier ), feature_( feature ),
-            oldValue_( oldValue ), newValue_( newValue ), position_( position )
-        {
-        }
+        virtual ~ENotification() {}
 
-        virtual ~ENotification()
-        {
-        }
+        virtual EventType getEventType() const = 0;
+        
+        virtual std::shared_ptr<ENotifier> getNotifier() const = 0;
+        
+        virtual std::shared_ptr<EStructuralFeature> getFeature() const = 0;
+        
+        virtual const boost::any& getOldValue() const = 0;
+        
+        virtual const boost::any& getNewValue() const = 0;
+        
+        virtual std::size_t getPosition() const = 0;
+   
+        virtual bool merge( const std::shared_ptr<ENotification>& other ) = 0;
 
-        EventType getEventType() const
-        {
-            return eventType_;
-        }
-
-        std::shared_ptr<ENotifier> getNotifier() const
-        {
-            return notifier_;
-        }
-
-        std::shared_ptr<EStructuralFeature> getFeature() const
-        {
-            return feature_;
-        }
-
-        const boost::any& getOldValue() const
-        {
-            return oldValue_;
-        }
-        const boost::any& getNewValue() const
-        {
-            return newValue_;
-        }
-
-        std::size_t getPosition() const
-        {
-            return position_;
-        }
-
-    protected:
-
-        EventType eventType_;
-        std::shared_ptr<ENotifier> notifier_;
-        std::shared_ptr<EStructuralFeature> feature_;
-        boost::any oldValue_;
-        boost::any newValue_;
-        std::size_t position_;
     };
 }
 #endif
