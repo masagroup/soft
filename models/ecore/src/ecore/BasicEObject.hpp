@@ -14,6 +14,8 @@
 
 namespace ecore
 {
+    class ENotificationChain;
+
     class BasicEObject : public virtual ecore::EObject
     {
     public:
@@ -45,8 +47,8 @@ namespace ecore
         virtual boost::any eInvoke( const std::shared_ptr<ecore::EOperation>& operation, const std::shared_ptr<EList<boost::any>>& arguments );
 
         // Container
-        void eInverseAdd( const std::shared_ptr<BasicEObject>& otherEnd, int featureID );
-        void eInverseRemove( const std::shared_ptr<BasicEObject>& otherEnd, int featureID );
+        std::shared_ptr<ENotificationChain> eInverseAdd( const std::shared_ptr<BasicEObject>& otherEnd, int featureID , const std::shared_ptr<ENotificationChain>& notifications  );
+        std::shared_ptr<ENotificationChain> eInverseRemove( const std::shared_ptr<BasicEObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
 
     protected:
         virtual int eDerivedStructuralFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;
@@ -58,12 +60,11 @@ namespace ecore
         virtual void eUnset( int featureID );
         virtual boost::any eInvoke( int operationID, const std::shared_ptr<EList<boost::any>>& arguments );
 
-        virtual void eBasicInverseAdd( const std::shared_ptr<BasicEObject>& otherEnd, int featureID );
-        virtual void eBasicInverseRemove( const std::shared_ptr<BasicEObject>& otherEnd, int featureID );
-        void eBasicSetContainer( const std::shared_ptr<EObject>& newContainer, int newContainerFeatureID );
-        void eBasicRemoveFromContainer();
-        void eBasicRemoveFromContainerFeature();
-
+        virtual std::shared_ptr<ENotificationChain> eBasicInverseAdd( const std::shared_ptr<BasicEObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
+        virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shared_ptr<BasicEObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
+        std::shared_ptr<ENotificationChain> eBasicSetContainer( const std::shared_ptr<EObject>& newContainer, int newContainerFeatureID, const std::shared_ptr<ENotificationChain>& notifications );
+        std::shared_ptr<ENotificationChain> eBasicRemoveFromContainer( const std::shared_ptr<ENotificationChain>& notifications );
+        std::shared_ptr<ENotificationChain> eBasicRemoveFromContainerFeature( const std::shared_ptr<ENotificationChain>& notifications );
 
     protected:
         std::shared_ptr< EList<EAdapter*> > eAdapters_;
