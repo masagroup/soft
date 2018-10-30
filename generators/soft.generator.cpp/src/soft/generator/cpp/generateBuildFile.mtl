@@ -32,6 +32,11 @@ set(CMAKE_CXX_STANDARD 14)
 # Boost
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.68.0 REQUIRED[if isTests()] COMPONENTS unit_test_framework[/if])
+[if isTests()]
+
+# Turtle
+find_package(Turtle 2.3.0)
+[/if]
 
 # Generated sources
 set(GENERATED_SOURCE_FILES
@@ -81,6 +86,7 @@ add_executable( ${PROJECT_TESTS_NAME} ${TESTS_FILES})
 target_include_directories(${PROJECT_TESTS_NAME} PUBLIC src)
 target_include_directories(${PROJECT_TESTS_NAME} PUBLIC src-gen)
 target_include_directories( ${PROJECT_TESTS_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
+target_include_directories( ${PROJECT_TESTS_NAME} PUBLIC ${Turtle_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_TESTS_NAME} ${PROJECT_NAME})
 target_link_libraries(${PROJECT_TESTS_NAME} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 [/if]
