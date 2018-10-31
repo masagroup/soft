@@ -39,7 +39,6 @@ target_link_libraries(${PROJECT_NAME} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 source_group(src FILES ${TESTS_FILES})
 
 [/file]
-
 [/template]
 
 

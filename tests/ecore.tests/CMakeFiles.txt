@@ -7,4 +7,5 @@ set(TESTS_FILES
     src/EcoreFactoryTests.cpp
     src/NotificationTests.cpp
     src/NotificationChainTests.cpp
-   )
+)
+
