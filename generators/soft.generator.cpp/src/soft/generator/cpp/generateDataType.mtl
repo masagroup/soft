@@ -1,7 +1,7 @@
 [comment encoding = UTF-8 /]
 [module generateDataType('http://www.eclipse.org/emf/2002/Ecore')]
 
-[import soft::generator::cpp::utils /]
+[import soft::generator::cpp::generateCommon /]
 
 
 [template public generateEDatatypeCreation(anEDatatype : EDataType)]

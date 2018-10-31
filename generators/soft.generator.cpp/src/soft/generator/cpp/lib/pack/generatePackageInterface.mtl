@@ -8,8 +8,8 @@
 [import soft::generator::cpp::generateReference /]
 [import soft::generator::cpp::generateSingleton /]
 [import soft::generator::cpp::generateStructuralFeature /]
-[import soft::generator::cpp::utils /]
-[import soft::generator::cpp::pack::generatePackageHelper /]
+[import soft::generator::cpp::generateCommon /]
+[import soft::generator::cpp::lib::pack::generatePackageHelper /]
 
 [template public generatePackageInterface(anEPackage : EPackage) { packageName : String = anEPackage.name.toUpperFirst().concat('Package'); }]
 [file ('src-gen/'.concat(anEPackage.name).concat('/').concat(packageName).concat('.hpp'), false, 'UTF-8')]

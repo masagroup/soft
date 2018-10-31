@@ -6,8 +6,8 @@
 [import soft::generator::cpp::generateDataType /]
 [import soft::generator::cpp::generateOperation /]
 [import soft::generator::cpp::generateReference /]
-[import soft::generator::cpp::utils /]
-[import soft::generator::cpp::pack::generatePackageHelper /]
+[import soft::generator::cpp::generateCommon /]
+[import soft::generator::cpp::lib::pack::generatePackageHelper /]
 
 [query public metaModelIncludes(anEPackage : EPackage) : Set(EPackage) = OrderedSet{anEPackage.eAllContents(EClass).eAllSuperTypes.ePackage,anEPackage.eAllContents(EStructuralFeature).eType.ePackage,anEPackage.eAllContents(EParameter).eType.ePackage}->flatten() /]
 

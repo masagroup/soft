@@ -2,7 +2,7 @@
 [module generateClass('http://www.eclipse.org/emf/2002/Ecore')]
 
 [import soft::generator::cpp::generateType/]
-[import soft::generator::cpp::utils/]
+[import soft::generator::cpp::generateCommon/]
 
 [template public generateClassCreate(aEClass : EClass,impl : Boolean) ? (aEClass.abstract=false)]
 virtual std::shared_ptr<[aEClass.generateTypeClass()/]> create[aEClass.name/]() const [abstractSufix(impl)/];

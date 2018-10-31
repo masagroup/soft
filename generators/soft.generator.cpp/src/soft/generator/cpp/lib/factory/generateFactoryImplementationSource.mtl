@@ -3,7 +3,7 @@
 
 [import soft::generator::cpp::generateClass /]
 [import soft::generator::cpp::generateType /]
-[import soft::generator::cpp::utils /]
+[import soft::generator::cpp::generateCommon /]
 
 [template public generateFactoryImplSource(anEPackage : EPackage) {factoryName : String = anEPackage.name.toUpperFirst().concat('FactoryImpl');}]
 [file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(factoryName).concat('.cpp'), false, 'UTF-8')]

@@ -1,7 +1,7 @@
 [comment encoding = UTF-8 /]
 [module generateBuildFile('http://www.eclipse.org/emf/2002/Ecore')/]
 
-[import soft::generator::cpp::utils/]
+[import soft::generator::cpp::generateCommon/]
 
 [template public generateLibraryBuildFile(aPackage : EPackage) { packageName : String = aPackage.name; }]
 [comment    generate CMakeLists.txt for model libary/]
@@ -98,6 +98,3 @@ source_group(src FILES ${TESTS_FILES})
 [/file]
 [/template]
 
-[template public generateTestsBuildFile(aPackage : EPackage) { packageName : String = aPackage.name; }]
-
-[/template]

@@ -2,7 +2,7 @@
 [module generateAttribute('http://www.eclipse.org/emf/2002/Ecore')/]
 
 [import soft::generator::cpp::generateType/]
-[import soft::generator::cpp::utils/]
+[import soft::generator::cpp::generateCommon/]
 
 [template public generateAttributeDeclaration(anEAttribute : EAttribute, impl : Boolean)]
 [anEAttribute.generateAttributeGetterDeclaration(impl)/]

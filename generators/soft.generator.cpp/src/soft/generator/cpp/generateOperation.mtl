@@ -2,7 +2,7 @@
 [module generateOperation('http://www.eclipse.org/emf/2002/Ecore')]
 
 [import soft::generator::cpp::generateType/]
-[import soft::generator::cpp::utils/]
+[import soft::generator::cpp::generateCommon/]
 
 [query private isPublic( anEOperation : EOperation, impl: Boolean ) : Boolean = anEOperation.getVisibilityType(impl) = 'public'/]
 

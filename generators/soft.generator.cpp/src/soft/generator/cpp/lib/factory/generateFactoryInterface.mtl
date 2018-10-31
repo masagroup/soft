@@ -16,7 +16,7 @@
 
 [import soft::generator::cpp::generateClass /]
 [import soft::generator::cpp::generateSingleton /]
-[import soft::generator::cpp::utils /]
+[import soft::generator::cpp::generateCommon /]
  
 [template public generateFactoryInterface(anEPackage : EPackage) {packageName : String = anEPackage.name.toUpperFirst().concat('Factory');}]
 [file ('src-gen/'.concat(anEPackage.name).concat('/').concat(packageName).concat('.hpp'), false, 'UTF-8')]

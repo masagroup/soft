@@ -1,7 +1,7 @@
 [comment encoding = UTF-8 /]
 [module generateType('http://www.eclipse.org/emf/2002/Ecore')/]
 
-[import soft::generator::cpp::utils/]
+[import soft::generator::cpp::generateCommon/]
 
 [query public isAny(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then true else (name = 'EEnumerator' or name = 'EDiagnosticChain' or name = 'EJavaObject') endif/]
 [query private isShared(aReference : EReference) : Boolean = if (aReference.hasKey('AggregationKind')) then aReference.valueKey('AggregationKind')='shared' else false endif/]

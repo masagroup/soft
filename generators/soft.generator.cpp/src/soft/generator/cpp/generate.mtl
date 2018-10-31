@@ -1,13 +1,15 @@
 [comment encoding = UTF-8 /]
 [module generate('http://www.eclipse.org/emf/2002/Ecore')/]
 
-[import soft::generator::cpp::generateBuildFile/]
-[import soft::generator::cpp::generateInterface/]
-[import soft::generator::cpp::factory::generateFactory/]
-[import soft::generator::cpp::impl::generateImplementation/]
-[import soft::generator::cpp::pack::generatePackage/]
+
+[import soft::generator::cpp::lib::generateBuildFile/]
+[import soft::generator::cpp::lib::generateInterface/]
+[import soft::generator::cpp::lib::factory::generateFactory/]
+[import soft::generator::cpp::lib::impl::generateImplementation/]
+[import soft::generator::cpp::lib::pack::generatePackage/]
 [import soft::generator::cpp::tests::generateMock/]
-[import soft::generator::cpp::utils/]
+[import soft::generator::cpp::tests::generateBuildFile/]
+
 
 [template public generateModel(aPackage : EPackage)]
 [comment @main/]

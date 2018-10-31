@@ -6,7 +6,7 @@
 [import soft::generator::cpp::generateOperation/]
 [import soft::generator::cpp::generateReference/]
 [import soft::generator::cpp::generateType/]
-[import soft::generator::cpp::utils/]
+[import soft::generator::cpp::generateCommon/]
 
 [query public includes(aClass : EClass) : Set(EClassifier) =OrderedSet{aClass.eSuperTypes,aClass.eAllStructuralFeatures.eType,aClass.eOperations.eType,aClass.eOperations.eParameters.eType}->flatten() /]
 

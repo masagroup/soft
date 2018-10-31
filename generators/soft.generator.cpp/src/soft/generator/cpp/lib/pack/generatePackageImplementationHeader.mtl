@@ -6,8 +6,8 @@
 [import soft::generator::cpp::generateType /]
 [import soft::generator::cpp::generateOperation /]
 [import soft::generator::cpp::generateReference /]
-[import soft::generator::cpp::utils /]
-[import soft::generator::cpp::pack::generatePackageHelper /]
+[import soft::generator::cpp::generateCommon /]
+[import soft::generator::cpp::lib::pack::generatePackageHelper /]
 
 [template public generatePackageImplHeader(anEPackage : EPackage) { packageName : String = anEPackage.name.toUpperFirst().concat('PackageImpl'); }]
 [file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(packageName).concat('.hpp'), false, 'UTF-8')]

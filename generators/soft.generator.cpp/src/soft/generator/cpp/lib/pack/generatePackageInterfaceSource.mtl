@@ -2,8 +2,8 @@
 [module generatePackageInterfaceSource('http://www.eclipse.org/emf/2002/Ecore')]
 
 [import soft::generator::cpp::generateSingleton /]
-[import soft::generator::cpp::utils /]
-[import soft::generator::cpp::pack::generatePackageHelper /]
+[import soft::generator::cpp::generateCommon /]
+[import soft::generator::cpp::lib::pack::generatePackageHelper /]
 
 [template public generatePackageInterfaceSource(anEPackage : EPackage) {packageName : String = anEPackage.name.toUpperFirst().concat('Package').toUpperFirst(); }]
 [file ('src-gen/'.concat(anEPackage.name).concat('/').concat(packageName).concat('.cpp'), false, 'UTF-8')]

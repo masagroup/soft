@@ -3,7 +3,7 @@
 
 [import soft::generator::cpp::generateClass /]
 [import soft::generator::cpp::generateType /]
-[import soft::generator::cpp::utils /]
+[import soft::generator::cpp::generateCommon /]
 
 [template public generateReferenceDeclaration(anEReference : EReference, impl : EBoolean) ]
 [anEReference.generateReferenceGetterDeclaration(impl)/]
