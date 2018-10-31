@@ -34,6 +34,7 @@ find_package(Turtle 2.3.0)
 add_executable( ${PROJECT_NAME} ${TESTS_FILES})
 target_include_directories( ${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
 target_include_directories( ${PROJECT_NAME} PUBLIC ${Turtle_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} [packageName/])
 target_link_libraries(${PROJECT_NAME} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
 source_group(src FILES ${TESTS_FILES})

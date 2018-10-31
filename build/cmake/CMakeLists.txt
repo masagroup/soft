@@ -6,11 +6,17 @@ if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
       CACHE STRING "")
 endif()
 
+
+
+
 # soft root dir
 get_filename_component(SOFT_ROOT_DIR ${CMAKE_SOURCE_DIR}/../.. ABSOLUTE)
 
 # update cmake search path for packages/modules
 list(APPEND CMAKE_MODULE_PATH ${SOFT_ROOT_DIR}/build/cmake/modules)
+
+#update cmake install path
+set( CMAKE_INSTALL_PREFIX "${SOFT_ROOT_DIR}")
 
 project(soft CXX)
 

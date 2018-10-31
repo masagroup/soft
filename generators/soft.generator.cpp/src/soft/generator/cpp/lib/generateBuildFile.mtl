@@ -76,7 +76,8 @@ source_group(src-gen\\impl FILES ${GENERATED_HEADER_IMPLEMENTATION_FILES} ${GENE
 #-----------------------------------------------------
 # DELIVERING binaries and header to delivery
 #-----------------------------------------------------
-
+install(TARGETS ${PROJECT_NAME} DESTINATION dist/lib )
+install(FILES ${GENERATED_HEADER_INTERFACE_FILES} ${HEADER_FILES} DESTINATION dist/include )
 
 [/file]
 [/template]
