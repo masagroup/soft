@@ -6,6 +6,7 @@
 [import soft::generator::cpp::factory::generateFactory/]
 [import soft::generator::cpp::impl::generateImplementation/]
 [import soft::generator::cpp::pack::generatePackage/]
+[import soft::generator::cpp::tests::generateMock/]
 [import soft::generator::cpp::utils/]
 
 [template public generateModel(aPackage : ecore::EPackage)]
@@ -13,6 +14,7 @@
 [for (aClass : EClass | aPackage.eAllContents(EClass))]
     [aClass.generateInterface()/]
     [aClass.generateImplementation()/]
+    [aClass.generateMock()/]
 [/for]
 
 
