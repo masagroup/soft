@@ -7,12 +7,13 @@
 [import soft::generator::cpp::generateOperation /]
 [import soft::generator::cpp::generateReference /]
 [import soft::generator::cpp::generateCommon /]
+[import soft::generator::cpp::lib::generateCommon /]
 [import soft::generator::cpp::lib::pack::generatePackageHelper /]
 
 [query public metaModelIncludes(anEPackage : EPackage) : Set(EPackage) = OrderedSet{anEPackage.eAllContents(EClass).eAllSuperTypes.ePackage,anEPackage.eAllContents(EStructuralFeature).eType.ePackage,anEPackage.eAllContents(EParameter).eType.ePackage}->flatten() /]
 
 [template public generatePackageImplSource(anEPackage : EPackage) { packageName : String = anEPackage.name.toUpperFirst().concat('PackageImpl');}]
-[file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(packageName).concat('.cpp'), false, 'UTF-8')]
+[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/impl/').concat(packageName).concat('.cpp'), false, 'UTF-8')]
 #include "[anEPackage.name/]/impl/[packageName/].hpp"
 
 #include "ecore/EList.hpp"
@@ -70,7 +71,7 @@ void [packageName/]::init(const std::shared_ptr<[packageName/]>& package)
 
 [comment] create additional file for create function to reduce comiling time
 [/comment]
-[file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(packageName).concat('_Creation.cpp'), false, 'UTF-8')]
+[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/impl/').concat(packageName).concat('_Creation.cpp'), false, 'UTF-8')]
 #include "[anEPackage.name/]/impl/[packageName/].hpp"
 
 // metamodel factory
@@ -127,7 +128,7 @@ void [packageName/]::createPackageEDataTypes(const std::shared_ptr<[needNamespac
 
 [comment] create additional file for initialize function to reduce comiling time
 [/comment]
-[file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(packageName).concat('_Initialization.cpp'), false, 'UTF-8')]
+[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/impl/').concat(packageName).concat('_Initialization.cpp'), false, 'UTF-8')]
 #include "[anEPackage.name/]/impl/[packageName/].hpp"
 
 #include "ecore/EList.hpp"

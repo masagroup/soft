@@ -166,7 +166,8 @@ public class Generate extends AbstractAcceleoGenerator {
                 .desc("the input model").build();
         Option outputOption = Option.builder("o").argName("folder").longOpt("output").required().hasArg()
                 .desc("the output folder").build();
-        Option propertyOption = Option.builder("p").argName("property").desc("a property").valueSeparator('=').build();
+        Option propertyOption = Option.builder("p").argName("property=value").desc("a property").valueSeparator('=')
+                .numberOfArgs(2).build();
 
         generateOptions.addOption(helpOption);
         generateOptions.addOption(templateOption);
@@ -188,8 +189,8 @@ public class Generate extends AbstractAcceleoGenerator {
             if (line.hasOption("templates"))
                 templates = Arrays.asList(line.getOptionValues("templates"));
             Properties properties = new Properties();
-            if (line.hasOption("property"))
-                properties = line.getOptionProperties("property");
+            if (line.hasOption("p"))
+                properties = line.getOptionProperties("p");
 
             Generate generator = new Generate(model, output, Arrays.asList(templates, properties));
             generator.doGenerate(new BasicMonitor());

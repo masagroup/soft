@@ -9,10 +9,11 @@
 [import soft::generator::cpp::generateSingleton /]
 [import soft::generator::cpp::generateStructuralFeature /]
 [import soft::generator::cpp::generateCommon /]
+[import soft::generator::cpp::lib::generateCommon /]
 [import soft::generator::cpp::lib::pack::generatePackageHelper /]
 
 [template public generatePackageInterface(anEPackage : EPackage) { packageName : String = anEPackage.name.toUpperFirst().concat('Package'); }]
-[file ('src-gen/'.concat(anEPackage.name).concat('/').concat(packageName).concat('.hpp'), false, 'UTF-8')]
+[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/').concat(packageName).concat('.hpp'), false, 'UTF-8')]
 [startGuard(anEPackage,'Package')/]
 
 #include "ecore/EPackage.hpp"

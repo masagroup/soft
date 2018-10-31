@@ -17,9 +17,10 @@
 [import soft::generator::cpp::generateClass /]
 [import soft::generator::cpp::generateSingleton /]
 [import soft::generator::cpp::generateCommon /]
- 
+[import soft::generator::cpp::lib::generateCommon /] 
+
 [template public generateFactoryInterface(anEPackage : EPackage) {packageName : String = anEPackage.name.toUpperFirst().concat('Factory');}]
-[file ('src-gen/'.concat(anEPackage.name).concat('/').concat(packageName).concat('.hpp'), false, 'UTF-8')]
+[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/').concat(packageName).concat('.hpp'), false, 'UTF-8')]
 [startGuard(anEPackage,'Factory')/]
 
 #include <map>

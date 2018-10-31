@@ -8,11 +8,12 @@
 [import soft::generator::cpp::generateReference/]
 [import soft::generator::cpp::generateStructuralFeature/]
 [import soft::generator::cpp::generateType/]
+[import soft::generator::cpp::lib::generateCommon /]
 [import soft::generator::cpp::lib::generateInterface /]
 
 
 [template public generateImplementationSource(aClass : EClass) { className : String = aClass.name.toUpperFirst().concat('Impl'); }]
-[file ('src-gen/'.concat(aClass.ePackage.name).concat('/impl/').concat(className).concat('.cpp'), false, 'UTF-8')]
+[file (getOutputDirectory().concat('/src-gen/').concat(aClass.ePackage.name).concat('/impl/').concat(className).concat('.cpp'), false, 'UTF-8')]
 #include "[aClass.ePackage.name/]/impl/[className.concat('.hpp')/]"
 
 #include <cassert>

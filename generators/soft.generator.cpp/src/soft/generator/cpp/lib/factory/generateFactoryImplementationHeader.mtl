@@ -3,9 +3,10 @@
 
 [import soft::generator::cpp::generateClass /]
 [import soft::generator::cpp::generateCommon /]
+[import soft::generator::cpp::lib::generateCommon/]
 
 [template public generateFactoryImplHeader(anEPackage : EPackage) { factoryName : String = anEPackage.name.toUpperFirst().concat('FactoryImpl'); } ]
-[file ('src-gen/'.concat(anEPackage.name).concat('/impl/').concat(factoryName).concat('.hpp'), false, 'UTF-8')]
+[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/impl/').concat(factoryName).concat('.hpp'), false, 'UTF-8')]
 [startGuard(anEPackage,'FactoryImpl')/]
 
 #include "ecore/impl/EFactoryImpl.hpp"

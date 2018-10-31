@@ -7,11 +7,12 @@
 [import soft::generator::cpp::generateReference/]
 [import soft::generator::cpp::generateType/]
 [import soft::generator::cpp::generateCommon/]
+[import soft::generator::cpp::lib::generateCommon/]
 
 [query public includes(aClass : EClass) : Set(EClassifier) =OrderedSet{aClass.eSuperTypes,aClass.eAllStructuralFeatures.eType,aClass.eOperations.eType,aClass.eOperations.eParameters.eType}->flatten() /]
 
 [template public generateInterface(aClass : EClass)]
-[file ('src-gen/'.concat(aClass.ePackage.name).concat('/').concat(aClass.name.toUpperFirst()).concat('.hpp'), false, 'UTF-8')]
+[file (getOutputDirectory().concat('/src-gen/').concat(aClass.ePackage.name).concat('/').concat(aClass.name.toUpperFirst()).concat('.hpp'), false, 'UTF-8')]
 [startGuard(aClass)/]
 
 [if (aClass.eOperations.eParameters.eType->select(name = 'EMap')->size() > 0 or aClass.eAttributes.eType->select(name = 'EMap')->size() > 0)]
