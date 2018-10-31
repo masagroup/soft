@@ -14,7 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
@@ -25,13 +27,15 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.eclipse.acceleo.engine.event.IAcceleoTextGenerationListener;
-import org.eclipse.acceleo.engine.generation.strategy.IAcceleoGenerationStrategy;
 import org.eclipse.acceleo.engine.service.AbstractAcceleoGenerator;
+import org.eclipse.acceleo.engine.service.AcceleoService;
 import org.eclipse.emf.common.util.BasicMonitor;
 import org.eclipse.emf.common.util.Monitor;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+
+import com.google.common.collect.Maps;
 
 /**
  * Entry point of the 'Generate' generation module.
@@ -61,8 +65,8 @@ public class Generate extends AbstractAcceleoGenerator {
      * @generated
      */
     private List<String> propertiesFiles = new ArrayList<String>();
-
     private List<String> templates = new ArrayList<String>(Arrays.asList(TEMPLATE_NAMES));
+    private Properties properties = new Properties();
 
     /**
      * Allows the public constructor to be used. Note that a generator created this
@@ -121,16 +125,28 @@ public class Generate extends AbstractAcceleoGenerator {
         initialize(model, targetFolder, arguments);
     }
 
-    @SuppressWarnings("unchecked")
     public void initialize(URI modelURI, File targetFolder, List<? extends Object> arguments) throws IOException {
-        super.initialize(modelURI, targetFolder, arguments);
-        templates = arguments.isEmpty() ? Arrays.asList(TEMPLATE_NAMES) : (List<String>) arguments;
+        super.initialize(modelURI, targetFolder, Collections.emptyList());
+        initializeArguments(arguments);
     }
 
-    @SuppressWarnings("unchecked")
     public void initialize(EObject model, File targetFolder, List<? extends Object> arguments) throws IOException {
-        super.initialize(model, targetFolder, arguments);
-        templates = arguments.isEmpty() ? Arrays.asList(TEMPLATE_NAMES) : (List<String>) arguments;
+        super.initialize(model, targetFolder, Collections.emptyList());
+        initializeArguments(arguments);
+    }
+
+    private void initializeArguments(List<? extends Object> arguments) {
+        @SuppressWarnings("unchecked")
+        List<String> templates = (List<String>) arguments.get(0);
+        this.templates = templates.isEmpty() ? Arrays.asList(TEMPLATE_NAMES) : templates;
+        Properties properties = (Properties) arguments.get(1);
+        this.properties = properties;
+    }
+
+    protected AcceleoService createAcceleoService() {
+        AcceleoService service = super.createAcceleoService();
+        service.addProperties(Maps.fromProperties(properties));
+        return service;
     }
 
     /**
@@ -150,10 +166,13 @@ public class Generate extends AbstractAcceleoGenerator {
                 .desc("the input model").build();
         Option outputOption = Option.builder("o").argName("folder").longOpt("output").required().hasArg()
                 .desc("the output folder").build();
+        Option propertyOption = Option.builder("p").argName("property").desc("a property").valueSeparator('=').build();
+
         generateOptions.addOption(helpOption);
         generateOptions.addOption(templateOption);
         generateOptions.addOption(modelOption);
         generateOptions.addOption(outputOption);
+        generateOptions.addOption(propertyOption);
 
         HelpFormatter help = new HelpFormatter();
         CommandLineParser parser = new DefaultParser();
@@ -166,10 +185,13 @@ public class Generate extends AbstractAcceleoGenerator {
             URI model = URI.createFileURI(line.getOptionValue("model"));
             File output = new File(line.getOptionValue("output"));
             List<String> templates = new ArrayList<>();
-            if (line.hasOption("t"))
-                templates = Arrays.asList(line.getOptionValues("t"));
+            if (line.hasOption("templates"))
+                templates = Arrays.asList(line.getOptionValues("templates"));
+            Properties properties = new Properties();
+            if (line.hasOption("property"))
+                properties = line.getOptionProperties("property");
 
-            Generate generator = new Generate(model, output, templates);
+            Generate generator = new Generate(model, output, Arrays.asList(templates, properties));
             generator.doGenerate(new BasicMonitor());
 
         } catch (ParseException e) {
@@ -244,35 +266,6 @@ public class Generate extends AbstractAcceleoGenerator {
     }
 
     /**
-     * If you need to change the way files are generated, this is your entry point.
-     * <p>
-     * The default is
-     * {@link org.eclipse.acceleo.engine.generation.strategy.DefaultStrategy}; it
-     * generates files on the fly. If you only need to preview the results, return a
-     * new {@link org.eclipse.acceleo.engine.generation.strategy.PreviewStrategy}.
-     * Both of these aren't aware of the running Eclipse and can be used standalone.
-     * </p>
-     * <p>
-     * If you need the file generation to be aware of the workspace (A typical
-     * example is when you wanna override files that are under clear case or any
-     * other VCS that could forbid the overriding), then return a new
-     * {@link org.eclipse.acceleo.engine.generation.strategy.WorkspaceAwareStrategy}.
-     * <b>Note</b>, however, that this <b>cannot</b> be used standalone.
-     * </p>
-     * <p>
-     * All three of these default strategies support merging through JMerge.
-     * </p>
-     * 
-     * @return The generation strategy that is to be used for generations launched
-     *         through this launcher.
-     * @generated
-     */
-    @Override
-    public IAcceleoGenerationStrategy getGenerationStrategy() {
-        return super.getGenerationStrategy();
-    }
-
-    /**
      * This will be called in order to find and load the module that will be
      * launched through this launcher. We expect this name not to contain file
      * extension, and the module to be located beside the launcher.
@@ -297,47 +290,6 @@ public class Generate extends AbstractAcceleoGenerator {
      */
     @Override
     public List<String> getProperties() {
-        /*
-         * If you want to change the content of this method, do NOT forget to change the
-         * "@generated" tag in the Javadoc of this method to "@generated NOT". Without
-         * this new tag, any compilation of the Acceleo module with the main template
-         * that has caused the creation of this class will revert your modifications.
-         */
-
-        /*
-         * TODO if your generation module requires access to properties files, add their
-         * qualified path to the list here.
-         * 
-         * Properties files can be located in an Eclipse plug-in or in the file system
-         * (all Acceleo projects are Eclipse plug-in). In order to use properties files
-         * located in an Eclipse plugin, you need to add the path of the properties
-         * files to the "propertiesFiles" list:
-         * 
-         * final String prefix = "platform:/plugin/"; final String pluginName =
-         * "org.eclipse.acceleo.module.sample"; final String packagePath =
-         * "/org/eclipse/acceleo/module/sample/properties/"; final String fileName =
-         * "default.properties"; propertiesFiles.add(prefix + pluginName + packagePath +
-         * fileName);
-         * 
-         * With this mechanism, you can load properties files from your plugin or from
-         * another plugin.
-         * 
-         * You may want to load properties files from the file system, for that you need
-         * to add the absolute path of the file:
-         * 
-         * propertiesFiles.add("C:\Users\MyName\MyFile.properties");
-         * 
-         * If you want to let your users add properties files located in the same folder
-         * as the model:
-         *
-         * if (EMFPlugin.IS_ECLIPSE_RUNNING && model != null && model.eResource() !=
-         * null) {
-         * propertiesFiles.addAll(AcceleoEngineUtils.getPropertiesFilesNearModel(model.
-         * eResource())); }
-         * 
-         * To learn more about Properties Files, have a look at the Acceleo
-         * documentation (Help -> Help Contents).
-         */
         return propertiesFiles;
     }
 
