@@ -10,6 +10,7 @@
 [import soft::generator::cpp::utils/]
 
 [template public generateModel(aPackage : EPackage)]
+[comment @main/]
 [for (aClass : EClass | aPackage.eAllContents(EClass))]
     [aClass.generateInterface()/]
     [aClass.generateImplementation()/]

@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<launchConfiguration type="org.eclipse.acceleo.ide.ui.launching.launchConfigurationType">
-<stringAttribute key="org.eclipse.acceleo.ide.ui.ARGUMENTS" value=""/>
-<booleanAttribute key="org.eclipse.acceleo.ide.ui.COMPUTE_PROFILING" value="false"/>
-<booleanAttribute key="org.eclipse.acceleo.ide.ui.COMPUTE_TRACEABILITY" value="false"/>
-<stringAttribute key="org.eclipse.acceleo.ide.ui.LAUNCHING_STRATEGY_DESCRIPTION" value="Java Application"/>
-<stringAttribute key="org.eclipse.acceleo.ide.ui.MODEL_PATH" value="/soft.models/ecore.ecore"/>
-<stringAttribute key="org.eclipse.acceleo.ide.ui.TARGET_PATH" value="/ecore"/>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/soft.generator.cpp/src/soft/generator/cpp/Generate.java"/>
 </listAttribute>
@@ -13,7 +7,9 @@
 <listEntry value="1"/>
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="soft.generator.cpp.Generate"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="&quot;D:/dev/projects/soft/models/ecore.ecore&quot; &quot;D:/dev/projects/soft/libraries/ecore&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-m ../../models/ecore.ecore -o ../../libraries/ecore"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="soft.generator.cpp"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 </launchConfiguration>
