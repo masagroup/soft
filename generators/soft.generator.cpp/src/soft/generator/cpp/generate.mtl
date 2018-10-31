@@ -9,17 +9,25 @@
 [import soft::generator::cpp::tests::generateMock/]
 [import soft::generator::cpp::utils/]
 
-[template public generateModel(aPackage : ecore::EPackage)]
-[comment @main/]
+[template public generateModel(aPackage : EPackage)]
 [for (aClass : EClass | aPackage.eAllContents(EClass))]
     [aClass.generateInterface()/]
     [aClass.generateImplementation()/]
-    [aClass.generateMock()/]
 [/for]
-
-
-[aPackage.generateBuildFile()/]
 [aPackage.generateFactory()/]
 [aPackage.generatePackage()/]
+[/template]
+
+[template public generateLibraryProject(aPackage : EPackage)]
+[aPackage.generateLibraryBuildFile()/]
+[/template]
+
+
+[template public generateTests(aPackage: EPackage)]
 
 [/template]
+
+[template public generateTestsProject(aPackage : EPackage)]
+[aPackage.generateTestsBuildFile()/]
+[/template]
+

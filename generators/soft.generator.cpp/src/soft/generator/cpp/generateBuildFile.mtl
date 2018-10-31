@@ -3,7 +3,7 @@
 
 [import soft::generator::cpp::utils/]
 
-[template public generateBuildFile(aPackage : EPackage) { packageName : String = aPackage.name; }]
+[template public generateLibraryBuildFile(aPackage : EPackage) { packageName : String = aPackage.name; }]
 [comment    generate CMakeLists.txt for model libary/]
 [file ('CMakeLists.txt', false, 'UTF-8')]
 #############################################################################
@@ -98,3 +98,6 @@ source_group(src FILES ${TESTS_FILES})
 [/file]
 [/template]
 
+[template public generateTestsBuildFile(aPackage : EPackage) { packageName : String = aPackage.name; }]
+
+[/template]

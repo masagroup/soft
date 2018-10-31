@@ -13,6 +13,7 @@ package soft.generator.cpp;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.acceleo.engine.event.IAcceleoTextGenerationListener;
@@ -27,7 +28,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 /**
  * Entry point of the 'Generate' generation module.
  *
- * @generated
+ * @generated NOT
  */
 public class Generate extends AbstractAcceleoGenerator {
     /**
@@ -40,9 +41,9 @@ public class Generate extends AbstractAcceleoGenerator {
     /**
      * The name of the templates that are to be generated.
      *
-     * @generated
+     * @generated NOT
      */
-    public static final String[] TEMPLATE_NAMES = { "generateModel" };
+    public static final String[] TEMPLATE_NAMES = { "generateModel" , "generateLibraryProject" , "generateTests" , "generateTestsProject"};
     
     /**
      * The list of properties files from the launch parameters (Launch configuration).
@@ -51,6 +52,9 @@ public class Generate extends AbstractAcceleoGenerator {
      */
     private List<String> propertiesFiles = new ArrayList<String>();
 
+    
+    private List<String> templates = new ArrayList<String>( Arrays.asList(TEMPLATE_NAMES) );
+    
     /**
      * Allows the public constructor to be used. Note that a generator created
      * this way cannot be used to launch generations before one of
@@ -323,11 +327,11 @@ public class Generate extends AbstractAcceleoGenerator {
      * This will be used to get the list of templates that are to be launched by this launcher.
      * 
      * @return The list of templates to call on the module {@link #getModuleName()}.
-     * @generated
+     * @generated NOT
      */
     @Override
     public String[] getTemplateNames() {
-        return TEMPLATE_NAMES;
+        return (String[]) templates.toArray(new String[templates.size()]);
     }
     
     /**
