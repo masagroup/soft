@@ -4,7 +4,7 @@
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::tests::generateCommon /]
 
-[template public generateMock(aClass : EClass) ? (aClass.ePackage.hasTests()) { className : String = aClass.getMockName(); guardName : String = '_'.concat(className); }  ]
+[template public generateMock(aClass : EClass) { className : String = aClass.getMockName(); guardName : String = '_'.concat(className); }  ]
 [file (aClass.ePackage.getOutputDirectory().concat('/src-gen/').concat(aClass.ePackage.name).concat('/').concat(className).concat('.hpp'), false, 'UTF-8')]
 [startGuard(guardName)/]
 

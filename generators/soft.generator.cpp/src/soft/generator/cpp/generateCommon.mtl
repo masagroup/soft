@@ -293,5 +293,3 @@ namespace ecore
 [query public isVoid(aOperation : EOperation) : Boolean = aOperation.eType.oclIsUndefined() /]
 [query public isCppKeyWord( o : OclAny, s : String ) : Boolean = s = 'volatile' or s = 'class' /]
 [query public getSafeVariableName( anEAttribute : EAttribute ) : String = if isCppKeyWord(anEAttribute.name) then anEAttribute.name.first(1) else anEAttribute.name endif/]
-
-[query public hasTests( aPackage : EPackage ) : Boolean = if hasKey('generateTests') then valueKey('generateTests') = 'true' else false endif/]
