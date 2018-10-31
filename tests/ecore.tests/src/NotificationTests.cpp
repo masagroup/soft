@@ -1,6 +1,7 @@
 #include <boost/test/auto_unit_test.hpp>
 
 #include "ecore/Notification.hpp"
+#include "ecore/MockStructuralFeature.hpp"
 
 using namespace ecore;
 

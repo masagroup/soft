@@ -2,9 +2,10 @@
 [module generateMock('http://www.eclipse.org/emf/2002/Ecore')]
 
 [import soft::generator::cpp::generateCommon /]
+[import soft::generator::cpp::tests::generateCommon /]
 
-[template public generateMock(aClass : EClass) ? (aClass.ePackage.hasTests()) { className : String = 'Mock'.concat( if ( aClass.name.first(1) = 'I' or aClass.name.first(1) = 'E' ) then aClass.name.substring(2) else aClass.name endif ); guardName : String = '_'.concat(className); }  ]
-[file ('tests/'.concat(aClass.ePackage.name).concat('/').concat(className).concat('.hpp'), false, 'UTF-8')]
+[template public generateMock(aClass : EClass) ? (aClass.ePackage.hasTests()) { className : String = aClass.getMockName(); guardName : String = '_'.concat(className); }  ]
+[file (aClass.ePackage.getOutputDirectory().concat('/src-gen/').concat(aClass.ePackage.name).concat('/').concat(className).concat('.hpp'), false, 'UTF-8')]
 [startGuard(guardName)/]
 
 [endGuard(guardName)/]

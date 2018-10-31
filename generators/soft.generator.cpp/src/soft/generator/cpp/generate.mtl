@@ -29,7 +29,9 @@
 
 [template public generateTests(aPackage: EPackage)]
 [comment @main/]
-[aPackage.generatePackage()/]
+[for (aClass : EClass | aPackage.eAllContents(EClass))]
+    [aClass.generateMock()/]
+[/for]
 [/template]
 
 [template public generateTestsProject(aPackage : EPackage)]
