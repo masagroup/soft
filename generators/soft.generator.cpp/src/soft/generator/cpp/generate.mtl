@@ -22,15 +22,18 @@
 [/template]
 
 [template public generateLibraryProject(aPackage : EPackage)]
+[comment @main/]
 [aPackage.generateLibraryBuildFile()/]
 [/template]
 
 
 [template public generateTests(aPackage: EPackage)]
-
+[comment @main/]
+[aPackage.generatePackage()/]
 [/template]
 
 [template public generateTestsProject(aPackage : EPackage)]
+[comment @main/]
 [aPackage.generateTestsBuildFile()/]
 [/template]
 

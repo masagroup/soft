@@ -5,7 +5,6 @@
 [import soft::generator::cpp::lib::generateCommon/]
 
 [template public generateLibraryBuildFile(aPackage : EPackage) { packageName : String = aPackage.name; }]
-[comment    generate CMakeLists.txt for model libary/]
 [file (getOutputDirectory().concat('/CMakeLists.txt'), false, 'UTF-8')]
 #############################################################################
 #                                                                           #
