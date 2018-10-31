@@ -15,4 +15,5 @@ list(APPEND CMAKE_MODULE_PATH ${SOFT_ROOT_DIR}/build/cmake/modules)
 project(soft CXX)
 
 #ecore
-add_subdirectory(${SOFT_ROOT_DIR}/models/ecore ${CMAKE_CURRENT_BINARY_DIR}/ecore)
+add_subdirectory(${SOFT_ROOT_DIR}/libraries/ecore ${CMAKE_CURRENT_BINARY_DIR}/ecore)
+add_subdirectory(${SOFT_ROOT_DIR}/tests/ecore.tests ${CMAKE_CURRENT_BINARY_DIR}/ecore.tests)

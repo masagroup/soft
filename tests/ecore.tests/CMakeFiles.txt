@@ -1,0 +1,10 @@
+
+# Sources
+
+set(TESTS_FILES
+    src/main.cpp
+    src/BasicEListTests.cpp
+    src/EcoreFactoryTests.cpp
+    src/NotificationTests.cpp
+    src/NotificationChainTests.cpp
+   )
