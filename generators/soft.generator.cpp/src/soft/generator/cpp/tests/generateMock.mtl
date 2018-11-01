@@ -4,9 +4,29 @@
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::tests::generateCommon /]
 
-[template public generateMock(aClass : EClass) { className : String = aClass.getMockName(); guardName : String = '_'.concat(className); }  ]
-[file (aClass.ePackage.getOutputDirectory().concat('/src-gen/').concat(aClass.ePackage.name).concat('/').concat(className).concat('.hpp'), false, 'UTF-8')]
+[template public generateMock(aClass : EClass) { mockName : String = aClass.getMockName(); guardName : String = '_'.concat(mockName); }  ]
+[file (aClass.ePackage.getOutputDirectory().concat('/src-gen/').concat(aClass.ePackage.name).concat('/').concat(mockName).concat('.hpp'), false, 'UTF-8')]
 [startGuard(guardName)/]
+
+#include "[aClass.ePackage.name/]/[aClass.name.toUpperFirst().concat('.hpp')/]"
+[for (aClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
+#include "[aClass.ePackage.name/]/[aClass.getMockName()/].hpp"[/for]
+[if aClass.eSuperTypes->isEmpty()]
+[if aClass.name='EObject']
+#include "ecore/MockNotifier.hpp"
+[else]
+#include "ecore/MockObject.hpp"
+[/if]
+[/if]
+
+
+namespace [aClass.ePackage.name/]
+{
+
+    class [mockName/] : public virtual [if (aClass.eSuperTypes->isEmpty())][if aClass.name='EObject']MockNotifier[else]MockObject[/if][else][aClass.eSuperTypes->first().getMockName()/][/if], public virtual [aClass.name.toUpperFirst()/] 
+    {
+    };
+} 
 
 [endGuard(guardName)/]
 [/file]
