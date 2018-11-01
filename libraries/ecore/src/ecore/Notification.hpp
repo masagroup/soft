@@ -20,26 +20,14 @@ namespace ecore
     {
     public:
 
-        template< typename T >
         Notification( EventType type,
                        const std::shared_ptr<ENotifier>& notifier,
                        const std::shared_ptr<EStructuralFeature>& feature,
-                       const T & oldValue,
-                       const T & newValue ):
+                       const boost::any& oldValue,
+                       const boost::any& newValue,
+                       std::size_t position  = NO_INDEX ):
             eventType_( type ), notifier_( notifier ), feature_( feature ),
-            oldValue_( oldValue ), newValue_( newValue ), position_( -1 )
-        {
-        }
-
-        template< typename T >
-        Notification( EventType type,
-                       const std::shared_ptr<ENotifier>& notifier,
-                       const std::shared_ptr<EStructuralFeature>& feature,
-                       const T & oldValue,
-                       const T & newValue,
-                       std::size_t position ):
-            eventType_( type ), notifier_( notifier ), feature_( feature ),
-            oldValue_( oldValue ), newValue_( newValue ), position_( position )
+            oldValue_( oldValue ), newValue_( newValue ), position_( position ), next_()
         {
         }
 

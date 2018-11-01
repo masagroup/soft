@@ -28,6 +28,10 @@ namespace ecore
         ENotificationChain() = default;
         virtual ~ENotificationChain() {}
 
+        /**
+        * Adds a notification to the chain.
+        * @return whether the notification was added.
+        */
         virtual bool add( const std::shared_ptr<ENotification>& notification ) = 0;
 
         virtual void dispatch() = 0;
