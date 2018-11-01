@@ -37,14 +37,22 @@ set(GENERATED_MOCK_FILES
 [/for] 
 )
 
-add_executable( ${PROJECT_NAME} ${TESTS_FILES} ${GENERATED_MOCK_FILES})
+set(CMAKE_FILES
+    CMakeLists.txt
+)
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles.txt")
+   list(APPEND CMAKE_FILES "CMakeFiles.txt")
+endif()
+
+add_executable(${PROJECT_NAME} ${CMAKE_FILES} ${TESTS_FILES} ${GENERATED_MOCK_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC src)
 target_include_directories(${PROJECT_NAME} PUBLIC src-gen)
-target_include_directories( ${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
-target_include_directories( ${PROJECT_NAME} PUBLIC ${Turtle_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${Turtle_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} [packageName/])
 target_link_libraries(${PROJECT_NAME} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
+source_group(cmake FILES ${CMAKE_FILES})
 source_group(src FILES ${TESTS_FILES})
 source_group(src-gen FILES ${GENERATED_MOCK_FILES})
 
