@@ -32,4 +32,21 @@ BOOST_AUTO_TEST_CASE( Constructor )
     }
 }
 
+BOOST_AUTO_TEST_CASE( Dispatch )
+{
+    std::shared_ptr<MockNotifier> notifier = std::make_shared<MockNotifier>();
+    std::shared_ptr<MockStructuralFeature> feature = std::make_shared<MockStructuralFeature>();
+    {
+        auto notification = std::make_shared<Notification>( ENotification::ADD, notifier, feature, 1, 2 );
+        MOCK_EXPECT( notifier->eNotify ).with( notification ).once();
+        notification->dispatch();
+    }
+}
+
+BOOST_AUTO_TEST_CASE( Merge )
+{
+    
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
