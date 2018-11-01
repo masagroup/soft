@@ -1,11 +1,15 @@
 
 # Sources
 
-set(TESTS_FILES
+set(SOURCE_FILES
     src/main.cpp
     src/BasicEListTests.cpp
     src/EcoreFactoryTests.cpp
     src/NotificationTests.cpp
     src/NotificationChainTests.cpp
+)
+
+set(SOURCE_ECORE_FILES
+    src/ecore/MockNotifier.hpp
 )
 

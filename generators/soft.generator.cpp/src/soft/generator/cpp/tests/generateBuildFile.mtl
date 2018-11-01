@@ -31,7 +31,7 @@ set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.68.0 REQUIRED COMPONENTS unit_test_framework)
 find_package(Turtle 2.3.0)
 
-set(GENERATED_MOCK_FILES
+set(GENERATED_SOURCE_FILES
 [for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
     src-gen/[packageName/]/[aClass.getMockName()/].hpp
 [/for] 
@@ -44,7 +44,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles.txt")
    list(APPEND CMAKE_FILES "CMakeFiles.txt")
 endif()
 
-add_executable(${PROJECT_NAME} ${CMAKE_FILES} ${TESTS_FILES} ${GENERATED_MOCK_FILES})
+add_executable(${PROJECT_NAME} ${CMAKE_FILES} ${SOURCE_FILES} ${SOURCE_[packageName.toUpper()/]_FILES} ${GENERATED_SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC src)
 target_include_directories(${PROJECT_NAME} PUBLIC src-gen)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
@@ -53,8 +53,9 @@ target_link_libraries(${PROJECT_NAME} [packageName/])
 target_link_libraries(${PROJECT_NAME} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
 source_group(cmake FILES ${CMAKE_FILES})
-source_group(src FILES ${TESTS_FILES})
-source_group(src-gen FILES ${GENERATED_MOCK_FILES})
+source_group(src FILES ${SOURCE_FILES})
+source_group(src\\[packageName/] FILES ${SOURCE_[packageName.toUpper()/]_FILES})
+source_group(src-gen\\[packageName/] FILES ${GENERATED_SOURCE_FILES})
 
 [/file]
 [/template]

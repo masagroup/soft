@@ -77,9 +77,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 
 # Visual studio specific project layout
 source_group(cmake FILES ${CMAKE_FILES})
-source_group(src FILES ${SOURCE_FILES} ${HEADER_FILES})
-source_group(src-gen FILES ${GENERATED_HEADER_INTERFACE_FILES} ${GENERATED_SOURCE_FILES})
-source_group(src-gen\\impl FILES ${GENERATED_HEADER_IMPLEMENTATION_FILES} ${GENERATED_SOURCE_IMPLEMENTATION_FILES})
+source_group(src\\[packageName/] FILES ${SOURCE_FILES} ${HEADER_FILES})
+source_group(src-gen\\[packageName/] FILES ${GENERATED_HEADER_INTERFACE_FILES} ${GENERATED_SOURCE_FILES})
+source_group(src-gen\\[packageName/]\\impl FILES ${GENERATED_HEADER_IMPLEMENTATION_FILES} ${GENERATED_SOURCE_IMPLEMENTATION_FILES})
 
 #-----------------------------------------------------
 # DELIVERING binaries and header to delivery
