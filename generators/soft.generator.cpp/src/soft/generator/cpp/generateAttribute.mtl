@@ -10,6 +10,12 @@
 
 [/template]
 
+[template public generateAttributeMock(anEAttribute : EAttribute)]
+[anEAttribute.generateAttributeGetterMock()/]
+[anEAttribute.generateAttributeSetterMock()/]
+[/template]
+
+
 [template private generateReturnType(anEAttribute : EAttribute)]
 [if (anEAttribute.eType.oclIsKindOf(EDataType))]
 [if ( needReference(anEAttribute.eType) )]const [anEAttribute.generateAttributeType()/]&[else][anEAttribute.generateAttributeType()/][/if][else]
@@ -21,14 +27,26 @@ virtual [anEAttribute.generateReturnType()/] [anEAttribute.getGetterName()/]() c
 
 [/template]
 
+[template public generateAttributeGetterMock(anEAttribute : EAttribute) ? (hasGetter('public',false))]
+MOCK_METHOD([anEAttribute.getGetterName()/],0);
+[/template]
+
 [template public generateAttributeSetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? ((hasSetter('public',impl)) )]
 virtual void [anEAttribute.getSetterName()/]([anEAttribute.generateParameterType()/] [anEAttribute.getSafeVariableName()/]) [abstractSufix(impl)/]; 
 
 [/template]
 
+[template public generateAttributeSetterMock(anEAttribute : EAttribute) ? (hasSetter('public',false))]
+MOCK_METHOD([anEAttribute.getSetterName()/],1);
+[/template]
+
 [template public generateAttributeUnSetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? (hasUnSetter('public',impl))]
 virtual void [anEAttribute.getUnSetterName()/]() [abstractSufix(impl)/]; 
 
+[/template]
+
+[template public generateAttributeUnSetterMock(anEAttribute : EAttribute) ? (hasUnSetter('public',false))]
+MOCK_METHOD([anEAttribute.getUnSetterName()/],0);
 [/template]
 
 [template public generateAttributeProtected(anEAttribute : EAttribute)]
