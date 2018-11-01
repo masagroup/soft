@@ -4,6 +4,7 @@
 [import soft::generator::cpp::generateCommon/]
 [import soft::generator::cpp::generateOperation/]
 [import soft::generator::cpp::generateAttribute/]
+[import soft::generator::cpp::generateReference/]
 [import soft::generator::cpp::tests::generateCommon/]
 
 [template public generateMock(aClass : EClass) { mockName : String = aClass.getMockName(); guardName : String = '_'.concat(mockName); }  ]
@@ -31,7 +32,7 @@ namespace [aClass.ePackage.name/]
         typedef [aClass.name.toUpperFirst()/] base_type;
         [aClass.eOperations->sortedBy(name).generateOperationMock()/]
         [aClass.eAttributes->sortedBy(name).generateAttributeMock()/]
-        
+        [aClass.eReferences->sortedBy(name).generateReferenceMock()/]
     };
 } 
 

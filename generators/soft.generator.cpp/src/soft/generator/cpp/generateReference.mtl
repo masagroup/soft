@@ -10,10 +10,20 @@
 [anEReference.generateReferenceSetterDeclaration(impl)/]
 [/template]
 
+[template public generateReferenceMock(anEReference : EReference) ]
+[anEReference.generateReferenceGetterMock()/]
+[anEReference.generateReferenceSetterMock()/]
+[/template]
+
 [template public generateReferenceGetterDeclaration(anEReference : EReference, impl : EBoolean)? (hasGetter('public',impl))]
 virtual [anEReference.generateReturnType()/] [anEReference.getGetterName()/]() const [abstractSufix(impl)/];
 
 [/template]
+
+[template public generateReferenceGetterMock(anEReference : EReference)? (hasGetter('public',false))]
+MOCK_METHOD([anEReference.getGetterName()/],0);
+[/template]
+
 
 [template public generateReferenceSetterDeclaration(anEReference : EReference, impl : EBoolean) ? ( hasSetter('public',impl) )]
 virtual void [anEReference.getSetterName()/]([if (not anEReference.eGenericType.oclIsKindOf(EDataType))]
@@ -22,6 +32,10 @@ virtual void [anEReference.getSetterName()/]([if (not anEReference.eGenericType.
 [anEReference.name/]) [abstractSufix(impl)/];
 
 
+[/template]
+
+[template public generateReferenceSetterMock(anEReference : EReference)? (hasSetter('public',false))]
+MOCK_METHOD([anEReference.getSetterName()/],1);
 [/template]
 
 [template public generateReferenceParameter(anEReference : EReference)]
