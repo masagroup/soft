@@ -39,9 +39,13 @@ std::shared_ptr<[anEDataType.eClassifier.generateType()/]>[else]
 std::shared_ptr<[anEDataType.eClassifier.generateType()/]<[for (g : EGenericType | anEDataType.eTypeArguments) separator (',')][g.generateGenericArgumentType()/][/for]>>[/if]
 [/template]
 
-[template public generateParameterList(aOperation:EOperation) post(trim())]
+[template public generateParameterList(aOperation:EOperation ) post(trim())]
+[generateParameterList(aOperation,true)/]
+[/template]
+
+[template public generateParameterList(aOperation:EOperation, varName : Boolean) post(trim())]
 [for (sParameter : EParameter | aOperation.eParameters) separator (',')]
-[sParameter.generateParameterType()/] [sParameter.name/][/for]
+[sParameter.generateParameterType()/][if varName] [sParameter.name/][/if][/for]
 [/template]
 
 [template public generateParameterType(eElement : ETypedElement) post (trim())]

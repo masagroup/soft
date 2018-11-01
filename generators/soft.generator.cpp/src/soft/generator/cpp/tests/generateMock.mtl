@@ -2,6 +2,7 @@
 [module generateMock('http://www.eclipse.org/emf/2002/Ecore')]
 
 [import soft::generator::cpp::generateCommon /]
+[import soft::generator::cpp::generateOperation /]
 [import soft::generator::cpp::tests::generateCommon /]
 
 [template public generateMock(aClass : EClass) { mockName : String = aClass.getMockName(); guardName : String = '_'.concat(mockName); }  ]
@@ -25,6 +26,10 @@ namespace [aClass.ePackage.name/]
 
     class [mockName/] : public virtual [if (aClass.eSuperTypes->isEmpty())][if aClass.name='EObject']MockNotifier[else]MockObject[/if][else][aClass.eSuperTypes->first().getMockName()/][/if], public virtual [aClass.name.toUpperFirst()/] 
     {
+    public:
+        typedef [aClass.name.toUpperFirst()/] base_type;
+        [aClass.eOperations->sortedBy(name).generateOperationMock()/]
+        
     };
 } 
 
