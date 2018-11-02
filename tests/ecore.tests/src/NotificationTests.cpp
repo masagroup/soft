@@ -2,6 +2,7 @@
 
 #include "ecore/Notification.hpp"
 #include "ecore/MockNotifier.hpp"
+#include "ecore/MockNotification.hpp"
 #include "ecore/MockStructuralFeature.hpp"
 
 #include <type_traits>
@@ -194,6 +195,21 @@ BOOST_AUTO_TEST_CASE( Add )
         MOCK_EXPECT( notifier->eNotify ).with( other ).once();
         notification->dispatch();
     }
+    {
+        auto obj1 = std::make_shared<MockObject>();
+        auto obj2 = std::make_shared<MockObject>();
+        auto notification = std::make_shared<Notification>( ENotification::ADD, notifier, feature, nullptr, obj1 );
+        auto other = std::make_shared<MockNotification>();
+        auto otherNotifier = std::make_shared<MockNotifier>();
+        MOCK_EXPECT( other->getEventType ).returns( ENotification::SET );
+        MOCK_EXPECT( other->getNotifier ).returns( otherNotifier );
+        MOCK_EXPECT( other->getFeature ).returns( feature );
+        BOOST_CHECK( notification->add( other ) );
+        MOCK_EXPECT( notifier->eNotify ).with( notification ).once();
+        MOCK_EXPECT( otherNotifier->eNotify ).with( other ).once();
+        notification->dispatch();
+    }
+
 }
 
 
