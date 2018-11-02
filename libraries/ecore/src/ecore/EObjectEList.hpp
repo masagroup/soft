@@ -25,6 +25,7 @@ namespace ecore
     template <typename T, bool containement = false, bool inverse = false, bool opposite = false >
     class EObjectEList : public BasicEList<T,true>
     {
+        typedef BasicEList<T, true> Super;
     public:
         EObjectEList( const std::shared_ptr<BasicEObject>& owner, int featureID )
             : owner_( owner )
@@ -57,7 +58,7 @@ namespace ecore
         virtual void addUnique( const T& e )
         {
             auto index = size();
-            BasicEList<T>::addUnique( e );
+            Super::addUnique( e );
             auto object = std::dynamic_pointer_cast<BasicEObject>( e );
             _ASSERTE( object );
             auto notifications = inverse_.inverseAdd( object, nullptr );
@@ -66,7 +67,7 @@ namespace ecore
 
         virtual void addUnique( std::size_t index, const T& e )
         {
-            BasicEList<T>::addUnique( index, e );
+            Super::addUnique( index, e );
             auto object = std::dynamic_pointer_cast<BasicEObject>( e );
             _ASSERTE( object );
             auto notifications = inverse_.inverseAdd( object, nullptr );
@@ -75,7 +76,7 @@ namespace ecore
 
         virtual T remove( std::size_t index )
         {
-            auto oldObject = BasicEList<T>::remove( index );
+            auto oldObject = Super::remove( index );
             auto oldBasicObject = std::dynamic_pointer_cast<BasicEObject>( oldObject );
             _ASSERTE( oldBasicObject );
             auto notifications = inverse_.inverseRemove( oldBasicObject, nullptr );
@@ -85,7 +86,7 @@ namespace ecore
 
         virtual T setUnique( std::size_t index, const T& newObject )
         {
-            T oldObject = BasicEList<T>::setUnique( index, newObject );
+            T oldObject = Super::setUnique( index, newObject );
             if( newObject != oldObject )
             {
                 auto oldBasicObject = std::dynamic_pointer_cast<BasicEObject>( oldObject );
