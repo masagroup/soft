@@ -68,22 +68,10 @@ void [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.get
 }
 [/template]
 
-[template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter('public',true))]
-[anEReference.generateReturnType()/] [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getGetterName()/]() const
-{[if (hasKey('getterbody'))]
-    //generated from getterbody annotation
-    [valueKey('getterbody')/]
-    //end of body
-[else]
-    [if(anEReference.lowerBound>0)]assert([anEReference.name/]_);[/if]
-    return [anEReference.name/]_[if (anEReference.isBackReference())].lock()[/if];
-[/if]
-}
-[/template]
-
 [template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter('public',true) and anEReference.upperBound <> 1)]
 [anEReference.generateReturnType()/] [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getGetterName()/]() const
-{[if (hasKey('getterbody'))]
+{
+[if (hasKey('getterbody'))]
     //generated from getterbody annotation
     [valueKey('getterbody')/]
     //end of body
@@ -91,6 +79,19 @@ void [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.get
     if ( ![anEReference.name/]_ )
         const_cast<[anEReference.eContainingClass.name.toUpperFirst()/]Impl*>(this)->[anEReference.name/]_.reset(new [getListConstructor()/]); 
     return [anEReference.name/]_;
+[/if]
+}
+[/template]
+
+[template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter('public',true))]
+[anEReference.generateReturnType()/] [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getGetterName()/]() const
+{
+[if (hasKey('getterbody'))]
+    //generated from getterbody annotation
+    [valueKey('getterbody')/]
+    //end of body
+[else][if(anEReference.lowerBound>0)]assert([anEReference.name/]_);[/if]
+    return [anEReference.name/]_[if (anEReference.isBackReference())].lock()[/if];
 [/if]
 }
 [/template]

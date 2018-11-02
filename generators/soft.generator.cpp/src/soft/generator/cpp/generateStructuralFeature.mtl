@@ -182,7 +182,7 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eInvoke(int operationID
 
 [template public generateComparison(anStructFeature : EStructuralFeature) ? (oclIsKindOf(EAttribute) and not eType.isAny()) post (trim())]
 [if (anStructFeature.upperBound <> 1)]
-[anStructFeature.name/]_ != nullptr && ![anStructFeature.name/]_->empty()
+[anStructFeature.name/]_ && ![anStructFeature.name/]_->empty()
 [elseif (eType.oclIsKindOf(EEnum))]
 [anStructFeature.name/]_ ![anStructFeature.oclAsType(EAttribute).generateDefaultValue()/];
 [else]
@@ -192,7 +192,7 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eInvoke(int operationID
 
 [template public generateComparison(anStructFeature : EStructuralFeature) ? (oclIsKindOf(EReference) and not eType.isAny()) post (trim())]
 [if (anStructFeature.upperBound <> 1)]
-[anStructFeature.name/]_ != nullptr && ![anStructFeature.name/]_->empty()
+[anStructFeature.name/]_ && ![anStructFeature.name/]_->empty()
 [elseif anStructFeature.oclAsType(EReference).isBackReference() ]
 !is_uninitialized([anStructFeature.name/]_)
 [else]
