@@ -45,20 +45,6 @@ namespace ecore
 
         virtual void addUnique( std::size_t pos, const T& e ) = 0;
 
-        virtual void addAll( const T_Ptr_Type& other )
-        {
-
-        }
-
-        //virtual void addAllUnique( const T_Ptr_Type& other ) = 0;
-
-        virtual void addAll( std::size_t pos, const T_Ptr_Type& other )
-        {
-
-        }
-
-        //virtual void addAllUnique( std::size_t pos, const T_Ptr_Type& other ) = 0;
-
         virtual void set( std::size_t pos, const T& e )
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );

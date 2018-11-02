@@ -11,5 +11,6 @@ set(SOURCE_FILES
 
 set(SOURCE_ECORE_FILES
     src/ecore/MockNotifier.hpp
+    src/ecore/MockNotification.hpp
 )
 
