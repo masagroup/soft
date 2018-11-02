@@ -23,7 +23,7 @@ namespace ecore
     class BasicEObject;
 
     template <typename T, bool containement = false, bool inverse = false, bool opposite = false >
-    class EObjectEList : public BasicEList<T>
+    class EObjectEList : public BasicEList<T,true>
     {
     public:
         EObjectEList( const std::shared_ptr<BasicEObject>& owner, int featureID )
@@ -101,12 +101,7 @@ namespace ecore
         }
 
     protected:
-
-        virtual bool isUnique() const
-        {
-            return true;
-        }
-
+        
         template <typename Q, bool opposite = false >
         struct Opposite
         {

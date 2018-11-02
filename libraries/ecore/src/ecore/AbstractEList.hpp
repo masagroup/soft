@@ -15,11 +15,16 @@
 namespace ecore
 {
 
-    template<typename T>
+    template<typename T , bool unique = false >
     class AbstractEList : public EList<T>
     {
 
     public:
+
+        AbstractEList()
+            : uniquePolicy_( *this )
+        {
+        }
 
         virtual ~AbstractEList()
         {
@@ -27,13 +32,7 @@ namespace ecore
 
         virtual bool add( const T& e )
         {
-            if (isUnique() && contains( e ))
-                return false;
-            else
-            {
-                addUnique( e );
-                return true;
-            }
+            return uniquePolicy_.add( e );
         }
 
         virtual void addUnique( const T& e ) = 0;
@@ -41,22 +40,29 @@ namespace ecore
         virtual void add( std::size_t pos, const T& e )
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
-            _SCL_SECURE_ALWAYS_VALIDATE( !isUnique() || (isUnique() && !contains( e )) );
-            addUnique( pos, e );
+            uniquePolicy_.add( pos, e );
         }
 
         virtual void addUnique( std::size_t pos, const T& e ) = 0;
 
+        virtual void addAll( const T_Ptr_Type& other )
+        {
+
+        }
+
+        //virtual void addAllUnique( const T_Ptr_Type& other ) = 0;
+
+        virtual void addAll( std::size_t pos, const T_Ptr_Type& other )
+        {
+
+        }
+
+        //virtual void addAllUnique( std::size_t pos, const T_Ptr_Type& other ) = 0;
+
         virtual void set( std::size_t pos, const T& e )
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
-            if (isUnique())
-            {
-                std::size_t currentIndex = indexOf( e );
-                _SCL_SECURE_ALWAYS_VALIDATE(
-                    currentIndex == -1 || currentIndex == pos );
-            }
-            setUnique( pos, e );
+            uniquePolicy_.set( pos, e );
         }
 
         virtual T setUnique( std::size_t pos, const T& e ) = 0;
@@ -84,10 +90,62 @@ namespace ecore
 
     protected:
 
-        virtual bool isUnique()
+        template <bool unique = false> 
+        struct UniquePolicy
         {
-            return false;
-        }
+            inline UniquePolicy( AbstractEList& list ) : list_(list) {}
+
+            inline bool add( const T& e )
+            {
+                list_.addUnique( e );
+                return true;
+            }
+
+            inline void add( std::size_t pos, const T& e )
+            {
+                list_.addUnique( pos, e );
+            }
+
+            inline void set( std::size_t pos, const T& e )
+            {
+                list_.setUnique( pos, e );
+            }
+
+            AbstractEList& list_;
+        };
+
+        template <>
+        struct UniquePolicy<true>
+        {
+            inline UniquePolicy( AbstractEList& list ) : list_( list ) {}
+
+            inline bool add( const T& e )
+            {
+                if (list_.contains( e ))
+                    return  false;
+                else
+                {
+                    list_.addUnique( e );
+                    return true;
+                }
+            }
+
+            inline void add( std::size_t pos, const T& e )
+            {
+                _SCL_SECURE_ALWAYS_VALIDATE( !list_.contains( e ) );
+                list_.addUnique( pos, e );
+            }
+
+            inline void set( std::size_t pos, const T& e )
+            {
+                std::size_t currentIndex = list_.indexOf( e );
+                _SCL_SECURE_ALWAYS_VALIDATE(currentIndex == -1 || currentIndex == pos );
+                list_.setUnique( pos, e );
+            }
+
+            AbstractEList& list_;
+        };
+
 
         virtual T primitiveGet( std::size_t pos ) const = 0;
 
@@ -121,6 +179,8 @@ namespace ecore
             // Do nothing.
         }
 
+    private:
+        UniquePolicy<unique> uniquePolicy_;
     };
 
 }

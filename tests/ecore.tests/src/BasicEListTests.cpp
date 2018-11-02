@@ -121,6 +121,27 @@ BOOST_AUTO_TEST_CASE( Add_Index )
     BOOST_CHECK_EQUAL( list.get( 1 ), 1 );
 }
 
+BOOST_AUTO_TEST_CASE( Unique_Add)
+{
+    std::shared_ptr<BasicEList<int,true>> list = std::make_shared<BasicEList<int,true>>();
+    BOOST_CHECK( list->add( 1 ) );
+    BOOST_CHECK( !list->add( 1 ) );
+}
+
+BOOST_AUTO_TEST_CASE( Unique_Add_Index )
+{
+    std::shared_ptr<BasicEList<int, true>> list = std::make_shared<BasicEList<int, true>>();
+    list->add( 0 , 1);
+    list->add( 0 , 2);
+}
+
+BOOST_AUTO_TEST_CASE( Unique_Add_Index_InvalidElement, *boost::unit_test::precondition( no_debugger() ) )
+{
+    std::shared_ptr<BasicEList<int, true>> list = std::make_shared<BasicEList<int, true>>();
+    list->add( 0, 1 );
+    BOOST_REQUIRE_THROW( list->add( 1, 1 ), boost::execution_exception );
+}
+
 BOOST_AUTO_TEST_CASE( Remove_InvalidIndex, *boost::unit_test::precondition( no_debugger() ) )
 {
     BasicEList<int> list;

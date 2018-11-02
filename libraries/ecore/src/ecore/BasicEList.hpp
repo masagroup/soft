@@ -18,19 +18,19 @@
 namespace ecore
 {
 
-    template <typename T>
-    class BasicEList : public AbstractEList<T>
+    template <typename T, bool unique = false>
+    class BasicEList : public AbstractEList<T,unique>
     {
     public:
         BasicEList()
-            : AbstractEList<T>()
+            : AbstractEList<T, unique>()
             , v_()
         {
 
         }
 
         BasicEList( std::initializer_list<T> init )
-            : AbstractEList<T>()
+            : AbstractEList<T, unique>()
             , v_( init )
         {
 
@@ -38,7 +38,7 @@ namespace ecore
 
 
         BasicEList( const BasicEList<T>& o )
-            : AbstractEList<T>( o )
+            : AbstractEList<T, unique>( o )
             , v_( o.v_ )
         {
 
