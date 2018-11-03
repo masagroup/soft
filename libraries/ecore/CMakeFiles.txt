@@ -16,6 +16,7 @@ set(HEADER_FILES
     src/ecore/ENotificationChain.hpp
     src/ecore/ENotifier.hpp
     src/ecore/EObjectEList.hpp
+    src/ecore/ImmutableEList.hpp
     src/ecore/Notification.hpp
     src/ecore/NotificationChain.hpp
 )

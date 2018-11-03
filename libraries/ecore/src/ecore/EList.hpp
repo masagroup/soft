@@ -24,7 +24,11 @@ namespace ecore {
 
         virtual bool add( const T& e ) = 0;
 
+        virtual bool addAll( const std::shared_ptr<EList<T>>& l ) = 0;
+
         virtual void add( std::size_t pos, const T& e ) = 0;
+
+        virtual bool addAll( std::size_t pos, const std::shared_ptr<EList<T>>& l ) = 0;
 
         virtual T get( std::size_t pos ) const = 0;
 

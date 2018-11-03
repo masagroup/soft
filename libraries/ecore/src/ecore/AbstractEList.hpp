@@ -11,6 +11,10 @@
 #define ECORE_ABSTRACTELIST_HPP_
 
 #include "ecore/EList.hpp"
+#include "ecore/ImmutableEList.hpp"
+
+#include <vector>
+#include<unordered_set>
 
 namespace ecore
 {
@@ -37,6 +41,13 @@ namespace ecore
 
         virtual void addUnique( const T& e ) = 0;
 
+        virtual bool addAll( const std::shared_ptr<EList<T>>& l )
+        {
+            return uniquePolicy_.addAll( l );
+        }
+
+        virtual bool addAllUnique( const std::shared_ptr<EList<T>>& l ) = 0;
+        
         virtual void add( std::size_t pos, const T& e )
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
@@ -44,6 +55,14 @@ namespace ecore
         }
 
         virtual void addUnique( std::size_t pos, const T& e ) = 0;
+
+        virtual bool addAll( std::size_t pos, const std::shared_ptr<EList<T>>& l )
+        {
+            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
+            return uniquePolicy_.addAll( pos, l );
+        }
+
+        virtual bool addAllUnique( std::size_t pos, const std::shared_ptr<EList<T>>& l ) = 0;
 
         virtual void set( std::size_t pos, const T& e )
         {
@@ -87,9 +106,19 @@ namespace ecore
                 return true;
             }
 
+            inline bool addAll( const std::shared_ptr<EList<T>>& l )
+            {
+                return list_.addAllUnique( l );
+            }
+
             inline void add( std::size_t pos, const T& e )
             {
                 list_.addUnique( pos, e );
+            }
+
+            inline bool addAll( std::size_t pos, const std::shared_ptr<EList<T>>& l )
+            {
+                return list_.addAllUnique( pos, l );
             }
 
             inline void set( std::size_t pos, const T& e )
@@ -116,10 +145,20 @@ namespace ecore
                 }
             }
 
+            inline bool addAll( const std::shared_ptr<EList<T>>& l )
+            {
+                return list_.addAllUnique( getNonDuplicates( l ) );
+            }
+
             inline void add( std::size_t pos, const T& e )
             {
                 _SCL_SECURE_ALWAYS_VALIDATE( !list_.contains( e ) );
                 list_.addUnique( pos, e );
+            }
+
+            inline bool addAll( std::size_t pos, const std::shared_ptr<EList<T>>& l )
+            {
+                return list_.addAllUnique( pos, getNonDuplicates( l ) );
             }
 
             inline void set( std::size_t pos, const T& e )
@@ -128,12 +167,25 @@ namespace ecore
                 _SCL_SECURE_ALWAYS_VALIDATE(currentIndex == -1 || currentIndex == pos );
                 list_.setUnique( pos, e );
             }
+        
+            std::shared_ptr<EList<T>> getNonDuplicates( const std::shared_ptr<EList<T>> & l )
+            {
+                std::unordered_set<T> s;
+                std::vector<T> v;
+                for (auto e : *l)
+                {
+                    auto i = s.insert( e );
+                    if (i.second)
+                    {
+                        if ( !list_.contains(e) )
+                            v.push_back( e );
+                    }
+                }
+                return std::make_shared<ImmutableEList<T>>( std::move(v) );
+            }
 
             AbstractEList& list_;
         };
-
-
-        virtual T primitiveGet( std::size_t pos ) const = 0;
 
         virtual void didSet( std::size_t pos, const T& newObject, const T& oldObject )
         {

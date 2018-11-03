@@ -63,6 +63,38 @@ namespace ecore
             didChange();
         }
 
+        virtual bool addAllUnique( const std::shared_ptr<EList<T>>& l )
+        {
+            std::size_t growth = l->size();
+            std::size_t oldSize = v_.size();
+            v_.resize( oldSize + growth );
+            for (int i = 0; i < growth; ++i)
+            {
+                auto t = l->get( i );
+                v_[i + oldSize] = t;
+                didAdd( i + oldSize, t );
+                didChange();
+            }
+            return growth != 0 ;
+        }
+
+        virtual bool addAllUnique( std::size_t pos,  const std::shared_ptr<EList<T>>& l )
+        {
+            std::size_t growth = l->size();
+            std::size_t oldSize = v_.size();
+            v_.resize( oldSize + growth );
+            for (int i = (int)oldSize -1 ; i >= (int)pos; --i)
+                v_[ i + growth ] = v_[i];
+            for (int i = 0; i < growth; ++i)
+            {
+                auto t = l->get( i );
+                v_[i + pos] = t;
+                didAdd( i + pos, t );
+                didChange();
+            }
+            return growth != 0;
+        }
+
         virtual T setUnique( std::size_t pos, const T& e )
         {
             T old = v_[ pos ];
@@ -74,12 +106,7 @@ namespace ecore
 
         virtual T get( std::size_t pos ) const
         {
-            return v_.at( pos );
-        }
-
-        virtual T primitiveGet( std::size_t pos ) const
-        {
-            return v_[ pos ];
+            return v_[pos];
         }
 
         virtual T remove( std::size_t pos )
