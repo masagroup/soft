@@ -138,7 +138,7 @@ namespace ecore
             return v_.empty();
         }
 
-    private:
+    protected:
         std::vector<T> v_;
     };
 

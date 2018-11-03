@@ -17,7 +17,7 @@
 
 namespace ecore
 {
-    class NotificationChain : public ENotificationChain , public std::enable_shared_from_this<ENotificationChain>
+    class NotificationChain : public ENotificationChain , public std::enable_shared_from_this<NotificationChain>
     {
     public:
         NotificationChain() = default;

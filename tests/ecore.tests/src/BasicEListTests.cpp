@@ -183,13 +183,13 @@ BOOST_AUTO_TEST_CASE( AddAll )
 {
     {
         auto list = std::make_shared<BasicEList<int>>();
-        auto other = std::make_shared<ImmutableEList<int>>( std::vector<int>{ 1, 2 } );
+        auto other = std::make_shared<ImmutableEList<int>>( std::initializer_list<int>{ 1, 2 } );
         BOOST_CHECK( list->addAll( other ) );
         BOOST_CHECK_EQUAL( *list, std::vector<int>( { 1, 2 } ) );
     }
     {
         auto list = std::make_shared<BasicEList<int>>( std::initializer_list<int>{ 1, 2 } );
-        auto other = std::make_shared<ImmutableEList<int>>( std::vector<int>{ 3, 4 } );
+        auto other = std::make_shared<ImmutableEList<int>>( std::initializer_list<int>{ 3, 4 } );
         BOOST_CHECK( list->addAll( other ) );
         BOOST_CHECK_EQUAL( *list, std::vector<int>( { 1, 2 , 3 ,4 } ) );
     }
@@ -199,19 +199,19 @@ BOOST_AUTO_TEST_CASE( AddAll_Index )
 {
     {
         auto list = std::make_shared<BasicEList<int>>( std::initializer_list<int>{ 1, 2 } );
-        auto other = std::make_shared<ImmutableEList<int>>( std::vector<int>{ 3, 4 } );
+        auto other = std::make_shared<ImmutableEList<int>>( std::initializer_list<int>{ 3, 4 } );
         BOOST_CHECK( list->addAll( 0, other ) );
         BOOST_CHECK_EQUAL( *list, std::vector<int>( { 3,4,1,2 } ) );
     }
     {
         auto list = std::make_shared<BasicEList<int>>( std::initializer_list<int>{ 1, 2 } );
-        auto other = std::make_shared<ImmutableEList<int>>( std::vector<int>{ 3, 4 } );
+        auto other = std::make_shared<ImmutableEList<int>>( std::initializer_list<int>{ 3, 4 } );
         BOOST_CHECK( list->addAll( 1, other ) );
         BOOST_CHECK_EQUAL( *list, std::vector<int>( { 1,3,4,2 } ) );
     }
     {
         auto list = std::make_shared<BasicEList<int>>( std::initializer_list<int>{ 1, 2 } );
-        auto other = std::make_shared<ImmutableEList<int>>( std::vector<int>{ 3, 4 } );
+        auto other = std::make_shared<ImmutableEList<int>>( std::initializer_list<int>{ 3, 4 } );
         BOOST_CHECK( list->addAll( 2, other ) );
         BOOST_CHECK_EQUAL( *list, std::vector<int>( { 1,2,3,4 } ) );
     }
@@ -241,7 +241,7 @@ BOOST_AUTO_TEST_CASE( Unique_Add_Index_InvalidElement, *boost::unit_test::precon
 BOOST_AUTO_TEST_CASE( Unique_AddAll )
 {
     auto list = std::make_shared<BasicEList<int, true>>( std::initializer_list<int>{ 1, 2 } );
-    auto other = std::make_shared<ImmutableEList<int>>( std::vector<int>{ 2, 3 } );
+    auto other = std::make_shared<ImmutableEList<int>>( std::initializer_list<int>{ 2, 3 } );
     BOOST_CHECK( list->addAll( other ) );
     BOOST_CHECK_EQUAL( *list, std::vector<int>( { 1,2,3 } ) );
 }
@@ -250,19 +250,19 @@ BOOST_AUTO_TEST_CASE( Unique_AddAll_Index )
 {
     {
         auto list = std::make_shared<BasicEList<int, true>>( std::initializer_list<int>{ 1, 2 } );
-        auto other = std::make_shared<ImmutableEList<int>>( std::vector<int>{ 2, 3 } );
+        auto other = std::make_shared<ImmutableEList<int>>( std::initializer_list<int>{ 2, 3 } );
         BOOST_CHECK( list->addAll( 0, other ) );
         BOOST_CHECK_EQUAL( *list, std::vector<int>( { 3,1,2 } ) );
     }
     {
         auto list = std::make_shared<BasicEList<int, true>>( std::initializer_list<int>{ 1, 2 } );
-        auto other = std::make_shared<ImmutableEList<int>>( std::vector<int>{ 2, 3 } );
+        auto other = std::make_shared<ImmutableEList<int>>( std::initializer_list<int>{ 2, 3 } );
         BOOST_CHECK( list->addAll( 1, other ) );
         BOOST_CHECK_EQUAL( *list, std::vector<int>( { 1,3,2 } ) );
     }
     {
         auto list = std::make_shared<BasicEList<int, true>>( std::initializer_list<int>{ 1, 2 } );
-        auto other = std::make_shared<ImmutableEList<int>>( std::vector<int>{ 2, 3 } );
+        auto other = std::make_shared<ImmutableEList<int>>( std::initializer_list<int>{ 2, 3 } );
         BOOST_CHECK( list->addAll( 2, other ) );
         BOOST_CHECK_EQUAL( *list, std::vector<int>( { 1,2,3 } ) );
     }
