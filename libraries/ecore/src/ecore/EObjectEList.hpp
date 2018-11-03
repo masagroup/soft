@@ -97,7 +97,6 @@ namespace ecore
             return true;
         }
 
-
         virtual T remove( std::size_t index )
         {
             auto oldObject = Super::remove( index );
