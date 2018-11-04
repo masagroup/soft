@@ -19,5 +19,6 @@ set(HEADER_FILES
     src/ecore/ImmutableEList.hpp
     src/ecore/Notification.hpp
     src/ecore/NotificationChain.hpp
+    src/ecore/NotifyingEList.hpp
 )
 

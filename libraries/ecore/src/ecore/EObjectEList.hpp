@@ -11,6 +11,7 @@
 #define ECORE_EOBJECTELIST_HPP_
 
 #include "ecore/BasicElist.hpp"
+#include "ecore/NotifyingElist.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/EReference.hpp"
 #include "ecore/Notification.hpp"
@@ -24,7 +25,7 @@ namespace ecore
     class BasicEObject;
 
     template <typename T, bool containement = false, bool inverse = false, bool opposite = false >
-    class EObjectEList : public BasicEList<T, true>
+    class EObjectEList : public BasicEList<T, true> , public NotifyingEList<T>
     {
         typedef BasicEList<T, true> Super;
     public:
@@ -75,6 +76,13 @@ namespace ecore
             createAndDispatchNotification( notifications, ENotification::ADD, nullptr, e, index );
         }
 
+        virtual std::shared_ptr<ENotificationChain> add( const T& e, const std::shared_ptr<ENotificationChain>& notifications )
+        {
+            auto index = size();
+            Super::addUnique( e );
+            return createAndAddNotification( notifications, ENotification::ADD, nullptr, e, index );
+        }
+
         virtual bool addAllUnique( const std::shared_ptr<EList<T>>& l )
         {
             return addAllUnique( size(), l );
@@ -107,6 +115,18 @@ namespace ecore
             return oldObject;
         }
 
+        virtual std::shared_ptr<ENotificationChain> remove( const T& e, const std::shared_ptr<ENotificationChain>& notifications )
+        {
+            std::size_t index = indexOf( e );
+            if (index != -1)
+            {
+                auto oldObject = Super::remove( index );
+                return createAndAddNotification( notifications, ENotification::REMOVE, oldObject, nullptr, index );
+            }
+            return notifications;
+            
+        }
+
         virtual T setUnique( std::size_t index, const T& newObject )
         {
             T oldObject = Super::setUnique( index, newObject );
@@ -122,6 +142,12 @@ namespace ecore
                 createAndDispatchNotification( notifications, ENotification::SET, oldObject, newObject, index );
             }
             return oldObject;
+        }
+
+        virtual std::shared_ptr<ENotificationChain> set( std::size_t index, const T& object, const std::shared_ptr<ENotificationChain>& notifications )
+        {
+            auto oldObject = Super::setUnique( index, object );
+            return createAndAddNotification( notifications, ENotification::SET, oldObject, object, index );
         }
 
     protected:
@@ -221,10 +247,24 @@ namespace ecore
             return std::make_shared<NotificationChain>();
         }
 
-        std::shared_ptr< ENotification > createNotification( ENotification::EventType eventType, const boost::any& oldValue, const boost::any& newValue, std::size_t position )
+        std::shared_ptr< Notification > createNotification( ENotification::EventType eventType, const boost::any& oldValue, const boost::any& newValue, std::size_t position )
         {
             auto owner = owner_.lock();
             return owner ? std::make_shared<Notification>( eventType, owner, owner->eClass()->getEStructuralFeature( featureID_ ), oldValue, newValue, position ) : nullptr;
+        }
+
+        std::shared_ptr<ENotificationChain> createAndAddNotification( const std::shared_ptr<ENotificationChain>& ns, ENotification::EventType eventType, const T& oldValue, const T& newValue, std::size_t position )
+        {
+            std::shared_ptr<ENotificationChain> notifications = ns;
+            if (isNotificationRequired())
+            {
+                auto notification = createNotification( eventType, oldValue, newValue, position );
+                if (notifications)
+                    notifications->add( notification );
+                else
+                    notifications = notification;
+            }
+            return notifications;
         }
 
         void createAndDispatchNotification( const std::shared_ptr<ENotificationChain>& notifications, ENotification::EventType eventType, const T& oldValue, const T& newValue, std::size_t position )
