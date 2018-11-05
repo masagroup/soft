@@ -35,7 +35,7 @@ namespace ecore
             , inverseFeatureID_( -1 )
             , inverse_( *this )
         {
-            std::shared_ptr<EReference> reference = std::dynamic_pointer_cast<EReference>(owner->eClass()->getEStructuralFeature( featureID ));
+            auto reference = std::dynamic_pointer_cast<EReference>(owner->eClass()->getEStructuralFeature( featureID ));
             if (reference)
             {
                 std::shared_ptr<EReference> opposite = reference->getEOpposite();
@@ -61,18 +61,14 @@ namespace ecore
         {
             auto index = size();
             Super::addUnique( e );
-            auto object = std::dynamic_pointer_cast<BasicEObject>(e);
-            _ASSERTE( object );
-            auto notifications = inverse_.inverseAdd( object, nullptr );
+            auto notifications = inverse_.inverseAdd( e, nullptr );
             createAndDispatchNotification( notifications, ENotification::ADD, nullptr, e, index );
         }
 
         virtual void addUnique( std::size_t index, const T& e )
         {
             Super::addUnique( index, e );
-            auto object = std::dynamic_pointer_cast<BasicEObject>(e);
-            _ASSERTE( object );
-            auto notifications = inverse_.inverseAdd( object, nullptr );
+            auto notifications = inverse_.inverseAdd( e, nullptr );
             createAndDispatchNotification( notifications, ENotification::ADD, nullptr, e, index );
         }
 
@@ -96,8 +92,7 @@ namespace ecore
             auto notifications = createNotificationChain();
             for (int i = 0; i < l->size(); ++i)
             {
-                auto object = std::dynamic_pointer_cast<BasicEObject>(v_[i + index]);
-                _ASSERTE( object );
+                auto object = v_[ i + index ];
                 notifications = inverse_.inverseAdd( object, notifications );
             }
             createAndDispatchNotification( notifications, [&]() { return l->size() == 1 ? createNotification( ENotification::ADD, nullptr, l->get( 0 ), index ) 
@@ -108,9 +103,7 @@ namespace ecore
         virtual T remove( std::size_t index )
         {
             auto oldObject = Super::remove( index );
-            auto oldBasicObject = std::dynamic_pointer_cast<BasicEObject>(oldObject);
-            _ASSERTE( oldBasicObject );
-            auto notifications = inverse_.inverseRemove( oldBasicObject, nullptr );
+            auto notifications = inverse_.inverseRemove( oldObject, nullptr );
             createAndDispatchNotification( notifications, ENotification::REMOVE, oldObject, nullptr, index );
             return oldObject;
         }
@@ -132,13 +125,9 @@ namespace ecore
             T oldObject = Super::setUnique( index, newObject );
             if (newObject != oldObject)
             {
-                auto oldBasicObject = std::dynamic_pointer_cast<BasicEObject>(oldObject);
-                auto newBasicObject = std::dynamic_pointer_cast<BasicEObject>(newObject);
-                _ASSERTE( oldBasicObject );
-                _ASSERTE( newBasicObject );
                 std::shared_ptr<ENotificationChain> notifications;
-                notifications = inverse_.inverseRemove( oldBasicObject, notifications );
-                notifications = inverse_.inverseAdd( newBasicObject, notifications );
+                notifications = inverse_.inverseRemove( oldObject, notifications );
+                notifications = inverse_.inverseAdd( newObject, notifications );
                 createAndDispatchNotification( notifications, ENotification::SET, oldObject, newObject, index );
             }
             return oldObject;
@@ -152,82 +141,82 @@ namespace ecore
 
     protected:
 
-        template <typename Q, bool opposite = false >
+        template <bool opposite = false >
         struct Opposite
         {
             Opposite( EObjectEList& list ) : list_( list )
             {
             }
 
-            inline std::shared_ptr<ENotificationChain> inverseAdd( const Q& q, const std::shared_ptr<ENotificationChain>& notifications )
+            inline std::shared_ptr<ENotificationChain> inverseAdd( const T& t, const std::shared_ptr<ENotificationChain>& notifications )
             {
-                return q->eInverseAdd( list_.getOwner(), BasicEObject::EOPPOSITE_FEATURE_BASE - list_.featureID_, notifications );
+                return t->eInverseAdd( list_.getOwner(), BasicEObject::EOPPOSITE_FEATURE_BASE - list_.featureID_, notifications );
             }
 
-            inline std::shared_ptr<ENotificationChain> inverseRemove( const Q& q, const std::shared_ptr<ENotificationChain>& notifications )
+            inline std::shared_ptr<ENotificationChain> inverseRemove( const T& t, const std::shared_ptr<ENotificationChain>& notifications )
             {
-                return q->eInverseRemove( list_.getOwner(), BasicEObject::EOPPOSITE_FEATURE_BASE - list_.featureID_, notifications );
+                return t->eInverseRemove( list_.getOwner(), BasicEObject::EOPPOSITE_FEATURE_BASE - list_.featureID_, notifications );
             }
 
             EObjectEList& list_;
         };
 
-        template <typename Q>
-        struct Opposite<Q, true>
+        template <>
+        struct Opposite<true>
         {
             Opposite( EObjectEList& list ) : list_( list )
             {
             }
 
-            inline std::shared_ptr<ENotificationChain> inverseAdd( const Q& q, const std::shared_ptr<ENotificationChain>& notifications )
+            inline std::shared_ptr<ENotificationChain> inverseAdd( const T& t, const std::shared_ptr<ENotificationChain>& notifications )
             {
-                return q->eInverseAdd( list_.getOwner(), list_.inverseFeatureID_, notifications );
+                return t->eInverseAdd( list_.getOwner(), list_.inverseFeatureID_, notifications );
             }
 
-            inline std::shared_ptr<ENotificationChain> inverseRemove( const Q& q, const std::shared_ptr<ENotificationChain>& notifications )
+            inline std::shared_ptr<ENotificationChain> inverseRemove( const T& t, const std::shared_ptr<ENotificationChain>& notifications )
             {
-                return q->eInverseRemove( list_.getOwner(), list_.inverseFeatureID_, notifications );
+                return t->eInverseRemove( list_.getOwner(), list_.inverseFeatureID_, notifications );
             }
 
             EObjectEList& list_;
         };
 
-        template <typename Q, bool inverse = false, bool opposite = false >
+        template <bool inverse = false, bool opposite = false >
         struct Inverse
         {
             inline Inverse( EObjectEList& list )
             {
             }
 
-            inline std::shared_ptr<ENotificationChain> inverseAdd( const Q& q, const std::shared_ptr<ENotificationChain>& notifications )
+            inline std::shared_ptr<ENotificationChain> inverseAdd( const T& t, const std::shared_ptr<ENotificationChain>& notifications )
             {
                 return  notifications;
             }
 
-            inline std::shared_ptr<ENotificationChain> inverseRemove( const Q& q, const std::shared_ptr<ENotificationChain>& notifications )
+            inline std::shared_ptr<ENotificationChain> inverseRemove( const T& t, const std::shared_ptr<ENotificationChain>& notifications )
             {
                 return  notifications;
             }
         };
 
-        template <typename Q, bool opposite>
-        struct Inverse<Q, true, opposite>
+        template <bool opposite>
+        struct Inverse<true, opposite>
         {
             inline Inverse( EObjectEList& list ) : opposite_( list )
             {
             }
 
-            inline std::shared_ptr<ENotificationChain> inverseAdd( const Q& q, const std::shared_ptr<ENotificationChain>& notifications )
+            inline std::shared_ptr<ENotificationChain> inverseAdd( const T& t, const std::shared_ptr<ENotificationChain>& notifications )
             {
-                return opposite_.inverseAdd( q, notifications );
+                return opposite_.inverseAdd( t, notifications );
             }
 
-            inline std::shared_ptr<ENotificationChain> inverseRemove( const Q& q, const std::shared_ptr<ENotificationChain>& notifications )
+            inline std::shared_ptr<ENotificationChain> inverseRemove( const T& t, const std::shared_ptr<ENotificationChain>& notifications )
             {
-                return opposite_.inverseRemove( q, notifications );
+                return opposite_.inverseRemove( t, notifications );
             }
 
-            Opposite<Q, opposite> opposite_;
+            Opposite<opposite> opposite_;
         };
 
     private:
@@ -296,7 +285,7 @@ namespace ecore
         std::weak_ptr<BasicEObject> owner_;
         int featureID_;
         int inverseFeatureID_;
-        Inverse<std::shared_ptr<BasicEObject>, inverse, opposite> inverse_;
+        Inverse<inverse, opposite> inverse_;
     };
 
 }

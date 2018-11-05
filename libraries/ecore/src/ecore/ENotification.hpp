@@ -39,8 +39,6 @@ namespace ecore
             EVENT_TYPE_COUNT
         };
 
-        ENotification() = default;
-
         virtual ~ENotification() {}
 
         /**

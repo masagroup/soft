@@ -23,11 +23,6 @@ namespace ecore
     class ENotifier
     {
     public:
-        ENotifier( EAdapter const& ) = delete;
-        ENotifier& operator=( EAdapter const& ) = delete;
-
-    public:
-        ENotifier() = default;
         virtual ~ENotifier(){};
 
         /**

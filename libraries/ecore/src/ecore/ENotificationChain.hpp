@@ -21,11 +21,6 @@ namespace ecore
     class ENotificationChain
     {
     public:
-        ENotificationChain( ENotificationChain const& ) = delete;
-        ENotificationChain& operator=( ENotificationChain const& ) = delete;
-
-    public:
-        ENotificationChain() = default;
         virtual ~ENotificationChain() {}
 
         /**

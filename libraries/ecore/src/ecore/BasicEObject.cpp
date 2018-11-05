@@ -161,17 +161,17 @@ boost::any BasicEObject::eInvoke( int operationID, const std::shared_ptr<EList<b
     return boost::any();
 }
 
-std::shared_ptr<ENotificationChain> BasicEObject::eBasicInverseAdd( const std::shared_ptr<BasicEObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
+std::shared_ptr<ENotificationChain> BasicEObject::eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
 {
     return notifications;
 }
 
-std::shared_ptr<ENotificationChain> BasicEObject::eBasicInverseRemove( const std::shared_ptr<BasicEObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
+std::shared_ptr<ENotificationChain> BasicEObject::eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
 {
     return notifications;
 }
 
-std::shared_ptr<ENotificationChain> BasicEObject::eInverseAdd( const std::shared_ptr<BasicEObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& n )
+std::shared_ptr<ENotificationChain> BasicEObject::eInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& n )
 {
     auto notifications = n;
     if (featureID >= 0)
@@ -183,7 +183,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eInverseAdd( const std::shared
     }
 }
 
-std::shared_ptr<ENotificationChain> BasicEObject::eInverseRemove( const std::shared_ptr<BasicEObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
+std::shared_ptr<ENotificationChain> BasicEObject::eInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
 {
     if (featureID >= 0)
         return eBasicInverseRemove( otherEnd, featureID , notifications );
