@@ -20,11 +20,9 @@ namespace ecore
     {
     public:
         static const int EOPPOSITE_FEATURE_BASE = -1;
-
-    protected:
-        BasicEObject();
-
+    
     public:
+        BasicEObject();
         virtual ~BasicEObject();
 
         void setThisPtr( const std::shared_ptr<BasicEObject>& thisPtr );

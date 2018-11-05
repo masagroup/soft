@@ -5,6 +5,7 @@ set(SOURCE_FILES
     src/main.cpp
     src/BasicEListTests.cpp
     src/EcoreFactoryTests.cpp
+    src/EObjectEListTests.cpp
     src/NotificationTests.cpp
     src/NotificationChainTests.cpp
 )

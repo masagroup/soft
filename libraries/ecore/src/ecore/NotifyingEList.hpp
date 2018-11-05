@@ -15,6 +15,9 @@
 
 namespace ecore
 {
+
+    class ENotificationChain;
+
     template <typename T>
     class NotifyingEList
     {
