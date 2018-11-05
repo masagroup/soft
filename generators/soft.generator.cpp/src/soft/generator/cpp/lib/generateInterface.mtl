@@ -54,14 +54,17 @@ namespace [element.ePackage.name/]
 [/if]
 [/if]
 
+// [protected ('forward declarations for '.concat(aClass.name))]
+// [/protected]
+
 //*********************************
 namespace [aClass.ePackage.name/] 
 {
     class [aClass.name.toUpperFirst()/] [if aClass.eSuperTypes->isEmpty()][if aClass.name ='EObject'] : virtual public ecore::ENotifier[else] : virtual public ecore::EObject[/if]
 [else]
 [for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) before (' :') separator (',')]
- virtual public [getClassWithNamespace(aClass,sClass)/][/for]
-[/if] {
+ virtual public [getClassWithNamespace(aClass,sClass)/][/for][/if]
+    {
         public:
             [aClass.name.toUpperFirst()/](const [aClass.name.toUpperFirst()/] &) = delete;
             [aClass.name.toUpperFirst()/]& operator=([aClass.name.toUpperFirst()/] const&) = delete;
@@ -93,7 +96,9 @@ namespace [aClass.ePackage.name/]
             //*********************************
             [aClass.eReferences->sortedBy(name).generateReferenceDeclaration(false)/]
             [/if]
-            
+    
+            // [protected (aClass.name)]
+            // [/protected]
     };
 }
 [endGuard(aClass)/]

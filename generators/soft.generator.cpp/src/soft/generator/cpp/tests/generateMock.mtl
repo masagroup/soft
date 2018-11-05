@@ -33,6 +33,8 @@ namespace [aClass.ePackage.name/]
         [aClass.eOperations->sortedBy(name).generateOperationMock()/]
         [aClass.eAttributes->sortedBy(name).generateAttributeMock()/]
         [aClass.eReferences->sortedBy(name).generateReferenceMock()/]
+        // [protected (mockName)]
+        // [/protected]
     };
 } 
 
