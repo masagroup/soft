@@ -7,22 +7,17 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_MOCK_NOTIFIER_HPP_
-#define ECORE_MOCK_NOTIFIER_HPP_
+#ifndef ECORE_MOCK_ADAPTER_HPP_
+#define ECORE_MOCK_ADAPTER_HPP_
 
-#include "ecore/ENotifier.hpp"
+#include "ecore/EAdapter.hpp"
 #include "turtle/mock.hpp"
 
 namespace ecore
 {
-    class MockNotifier : public virtual ENotifier, public mock::object
+    MOCK_BASE_CLASS( MockAdapter , EAdapter )
     {
-    public:
-        typedef ENotifier base_type;
-        MOCK_METHOD( eAdapters, 0 , EList<EAdapter*>&() );
-        MOCK_METHOD( eDeliver, 0 );
-        MOCK_METHOD( eSetDeliver, 1 );
-        MOCK_METHOD( eNotify, 1 );
+        MOCK_METHOD( notifyChanged, 1 );
     };
 }
 

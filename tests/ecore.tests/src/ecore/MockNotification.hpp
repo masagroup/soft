@@ -15,10 +15,8 @@
 
 namespace ecore
 {
-    class MockNotification : public virtual ENotification, public mock::object
+    MOCK_BASE_CLASS( MockNotification , ENotification )
     {
-    public:
-        typedef ENotification base_type;
         MOCK_METHOD( getEventType, 0 );
         MOCK_METHOD( getNotifier, 0 );
         MOCK_METHOD( getFeature, 0 );
