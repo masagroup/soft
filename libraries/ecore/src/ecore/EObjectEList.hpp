@@ -28,6 +28,9 @@ namespace ecore
     class EObjectEList : public BasicEList<T, true> , public NotifyingEList<T>
     {
         typedef BasicEList<T, true> Super;
+
+        static const boost::any no_value;
+
     public:
         EObjectEList( const std::shared_ptr<EObject>& owner, int featureID )
             : owner_( owner )
@@ -62,21 +65,21 @@ namespace ecore
             auto index = size();
             Super::addUnique( e );
             auto notifications = inverse_.inverseAdd( e, nullptr );
-            createAndDispatchNotification( notifications, ENotification::ADD, nullptr, e, index );
+            createAndDispatchNotification( notifications, ENotification::ADD, no_value, e, index );
         }
 
         virtual void addUnique( std::size_t index, const T& e )
         {
             Super::addUnique( index, e );
             auto notifications = inverse_.inverseAdd( e, nullptr );
-            createAndDispatchNotification( notifications, ENotification::ADD, nullptr, e, index );
+            createAndDispatchNotification( notifications, ENotification::ADD, no_value, e, index );
         }
 
         virtual std::shared_ptr<ENotificationChain> add( const T& e, const std::shared_ptr<ENotificationChain>& notifications )
         {
             auto index = size();
             Super::addUnique( e );
-            return createAndAddNotification( notifications, ENotification::ADD, nullptr, e, index );
+            return createAndAddNotification( notifications, ENotification::ADD, no_value, e, index );
         }
 
         virtual bool addAllUnique( const std::shared_ptr<EList<T>>& l )
@@ -95,8 +98,8 @@ namespace ecore
                 auto object = v_[ i + index ];
                 notifications = inverse_.inverseAdd( object, notifications );
             }
-            createAndDispatchNotification( notifications, [&]() { return l->size() == 1 ? createNotification( ENotification::ADD, nullptr, l->get( 0 ), index ) 
-                                                                                        : createNotification( ENotification::ADD_MANY, nullptr, l, index ); } );
+            createAndDispatchNotification( notifications, [&]() { return l->size() == 1 ? createNotification( ENotification::ADD, no_value, l->get( 0 ), index )
+                                                                                        : createNotification( ENotification::ADD_MANY, no_value, l, index ); } );
             return true;
         }
 
@@ -104,7 +107,7 @@ namespace ecore
         {
             auto oldObject = Super::remove( index );
             auto notifications = inverse_.inverseRemove( oldObject, nullptr );
-            createAndDispatchNotification( notifications, ENotification::REMOVE, oldObject, nullptr, index );
+            createAndDispatchNotification( notifications, ENotification::REMOVE, oldObject, no_value, index );
             return oldObject;
         }
 
@@ -114,7 +117,7 @@ namespace ecore
             if (index != -1)
             {
                 auto oldObject = Super::remove( index );
-                return createAndAddNotification( notifications, ENotification::REMOVE, oldObject, nullptr, index );
+                return createAndAddNotification( notifications, ENotification::REMOVE, oldObject, no_value, index );
             }
             return notifications;
             
@@ -287,6 +290,9 @@ namespace ecore
         int inverseFeatureID_;
         Inverse<inverse, opposite> inverse_;
     };
+
+    template <typename T, bool containement, bool inverse, bool opposite> 
+    const boost::any EObjectEList<T,containement,inverse,opposite>::no_value;
 
 }
 
