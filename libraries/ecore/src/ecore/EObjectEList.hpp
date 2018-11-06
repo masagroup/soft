@@ -11,6 +11,7 @@
 #define ECORE_EOBJECTELIST_HPP_
 
 #include "ecore/BasicElist.hpp"
+#include "ecore/Constants.hpp"
 #include "ecore/NotifyingElist.hpp"
 #include "ecore/EObject.hpp"
 #include "ecore/EClass.hpp"
@@ -28,9 +29,6 @@ namespace ecore
     class EObjectEList : public BasicEList<T, true> , public NotifyingEList<T>
     {
         typedef BasicEList<T, true> Super;
-
-        static const boost::any no_value;
-
     public:
         EObjectEList( const std::shared_ptr<EObject>& owner, int featureID )
             : owner_( owner )
@@ -65,21 +63,21 @@ namespace ecore
             auto index = size();
             Super::addUnique( e );
             auto notifications = inverse_.inverseAdd( e, nullptr );
-            createAndDispatchNotification( notifications, ENotification::ADD, no_value, e, index );
+            createAndDispatchNotification( notifications, ENotification::ADD, NO_VALUE, e, index );
         }
 
         virtual void addUnique( std::size_t index, const T& e )
         {
             Super::addUnique( index, e );
             auto notifications = inverse_.inverseAdd( e, nullptr );
-            createAndDispatchNotification( notifications, ENotification::ADD, no_value, e, index );
+            createAndDispatchNotification( notifications, ENotification::ADD, NO_VALUE, e, index );
         }
 
         virtual std::shared_ptr<ENotificationChain> add( const T& e, const std::shared_ptr<ENotificationChain>& notifications )
         {
             auto index = size();
             Super::addUnique( e );
-            return createAndAddNotification( notifications, ENotification::ADD, no_value, e, index );
+            return createAndAddNotification( notifications, ENotification::ADD, NO_VALUE, e, index );
         }
 
         virtual bool addAllUnique( const std::shared_ptr<EList<T>>& l )
@@ -98,8 +96,8 @@ namespace ecore
                 auto object = v_[ i + index ];
                 notifications = inverse_.inverseAdd( object, notifications );
             }
-            createAndDispatchNotification( notifications, [&]() { return l->size() == 1 ? createNotification( ENotification::ADD, no_value, l->get( 0 ), index )
-                                                                                        : createNotification( ENotification::ADD_MANY, no_value, l, index ); } );
+            createAndDispatchNotification( notifications, [&]() { return l->size() == 1 ? createNotification( ENotification::ADD, NO_VALUE, l->get( 0 ), index )
+                                                                                        : createNotification( ENotification::ADD_MANY, NO_VALUE, l, index ); } );
             return true;
         }
 
@@ -107,7 +105,7 @@ namespace ecore
         {
             auto oldObject = Super::remove( index );
             auto notifications = inverse_.inverseRemove( oldObject, nullptr );
-            createAndDispatchNotification( notifications, ENotification::REMOVE, oldObject, no_value, index );
+            createAndDispatchNotification( notifications, ENotification::REMOVE, oldObject, NO_VALUE, index );
             return oldObject;
         }
 
@@ -117,7 +115,7 @@ namespace ecore
             if (index != -1)
             {
                 auto oldObject = Super::remove( index );
-                return createAndAddNotification( notifications, ENotification::REMOVE, oldObject, no_value, index );
+                return createAndAddNotification( notifications, ENotification::REMOVE, oldObject, NO_VALUE, index );
             }
             return notifications;
             
@@ -153,12 +151,12 @@ namespace ecore
 
             inline std::shared_ptr<ENotificationChain> inverseAdd( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
             {
-                return object->eInverseAdd( list_.getOwner(), BasicEObject::EOPPOSITE_FEATURE_BASE - list_.featureID_, notifications );
+                return object->eInverseAdd( list_.getOwner(), EOPPOSITE_FEATURE_BASE - list_.featureID_, notifications );
             }
 
             inline std::shared_ptr<ENotificationChain> inverseRemove( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
             {
-                return object->eInverseRemove( list_.getOwner(), BasicEObject::EOPPOSITE_FEATURE_BASE - list_.featureID_, notifications );
+                return object->eInverseRemove( list_.getOwner(), EOPPOSITE_FEATURE_BASE - list_.featureID_, notifications );
             }
 
             EObjectEList& list_;
@@ -291,8 +289,6 @@ namespace ecore
         Inverse<inverse, opposite> inverse_;
     };
 
-    template <typename T, bool containement, bool inverse, bool opposite> 
-    const boost::any EObjectEList<T,containement,inverse,opposite>::no_value;
 
 }
 

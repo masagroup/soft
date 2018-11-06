@@ -1,5 +1,6 @@
 #include "BasicEObject.hpp"
 #include "ecore/BasicEList.hpp"
+#include "ecore/Constants.hpp"
 #include "ecore/EAdapter.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/EOperation.hpp"

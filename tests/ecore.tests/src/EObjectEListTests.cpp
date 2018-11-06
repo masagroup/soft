@@ -28,42 +28,129 @@ BOOST_AUTO_TEST_CASE( Constructor )
     }
 }
 
-BOOST_AUTO_TEST_CASE( Add )
+BOOST_AUTO_TEST_CASE( Add_SimpleNoNotifications )
 {
     auto object = std::make_shared<MockObject>();
     auto owner = std::make_shared<MockObject>();
-    // simple add with no notifications
-    {
-        std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>>>( owner, 1, 2 );
-        MOCK_EXPECT( owner->eDeliver ).once().returns( false );
-        BOOST_CHECK( list->add( object ) );
-        BOOST_CHECK_EQUAL( list->size() , 1 );
-        BOOST_CHECK_EQUAL( list->get( 0 ), object );
-        BOOST_CHECK( !list->add( object ) );
-    }
-    // simple add with a notification
-    {
-        auto mockClass = std::make_shared<MockClass>();
-        auto mockFeature = std::make_shared<MockStructuralFeature>();
-        auto mockAdapters = std::make_shared<MockList<EAdapter*>>();
-        MOCK_EXPECT( mockClass->getEStructuralFeature_EInt ).with( 1 ).returns( mockFeature );
-        MOCK_EXPECT( mockAdapters->empty ).returns( false );
-        MOCK_EXPECT( owner->eClass).returns(mockClass);
-        MOCK_EXPECT( owner->eDeliver ).once().returns( true );
-        MOCK_EXPECT( owner->eAdapters ).returns( boost::ref(*mockAdapters) );
-        MOCK_EXPECT( owner->eNotify ).with( [ = ]( const std::shared_ptr<ENotification>& n )
-        {
-            return n->getNotifier() == owner
-                && n->getFeature() == mockFeature
-                && n->getOldValue().empty()
-                && boost::any_cast<std::shared_ptr<EObject>>( n->getNewValue() ) == object
-                && n->getPosition() == 0;
-        } ).once();
-        std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>>>( owner, 1, 2 );
-        BOOST_CHECK(list->add( object ));
-        BOOST_CHECK( !list->add( object ) );
-    }
-    
+    std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>>>( owner, 1, 2 );
+    MOCK_EXPECT( owner->eDeliver ).once().returns( false );
+    BOOST_CHECK( list->add( object ) );
+    BOOST_CHECK_EQUAL( list->size(), 1 );
+    BOOST_CHECK_EQUAL( list->get( 0 ), object );
+    BOOST_CHECK( !list->add( object ) );
 }
+
+BOOST_AUTO_TEST_CASE( Add_SimpleNotifications )
+{
+    auto object = std::make_shared<MockObject>();
+    auto owner = std::make_shared<MockObject>();
+    auto mockClass = std::make_shared<MockClass>();
+    auto mockFeature = std::make_shared<MockStructuralFeature>();
+    auto mockAdapters = std::make_shared<MockList<EAdapter*>>();
+    MOCK_EXPECT( mockClass->getEStructuralFeature_EInt ).with( 1 ).returns( mockFeature );
+    MOCK_EXPECT( mockAdapters->empty ).returns( false );
+    MOCK_EXPECT( owner->eClass).returns(mockClass);
+    MOCK_EXPECT( owner->eDeliver ).once().returns( true );
+    MOCK_EXPECT( owner->eAdapters ).returns( boost::ref(*mockAdapters) );
+    MOCK_EXPECT( owner->eNotify ).with( [ = ]( const std::shared_ptr<ENotification>& n )
+    {
+        return n->getNotifier() == owner
+            && n->getFeature() == mockFeature
+            && n->getOldValue().empty()
+            && boost::any_cast<std::shared_ptr<EObject>>( n->getNewValue() ) == object
+            && n->getPosition() == 0;
+    } ).once();
+    std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>>>( owner, 1, 2 );
+    BOOST_CHECK(list->add( object ));
+    BOOST_CHECK_EQUAL( list->size(), 1 );
+    BOOST_CHECK_EQUAL( list->get( 0 ), object );
+    BOOST_CHECK( !list->add( object ) );
+}
+
+BOOST_AUTO_TEST_CASE( Add_InverseNoNotifications )
+{
+    auto object = std::make_shared<MockObject>();
+    auto owner = std::make_shared<MockObject>();
+    std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, true, false>>( owner, 1, 2 );
+    MOCK_EXPECT( owner->eDeliver ).once().returns( false );
+    MOCK_EXPECT( object->eInverseAdd ).with( owner,-2, nullptr ).once().returns( nullptr );
+    BOOST_CHECK( list->add( object ) );
+    BOOST_CHECK_EQUAL( list->size(), 1 );
+    BOOST_CHECK_EQUAL( list->get( 0 ), object );
+    BOOST_CHECK( !list->add( object ) );
+}
+
+BOOST_AUTO_TEST_CASE( Add_InverseNotifications )
+{
+    auto object = std::make_shared<MockObject>();
+    auto owner = std::make_shared<MockObject>();
+    auto mockClass = std::make_shared<MockClass>();
+    auto mockFeature = std::make_shared<MockStructuralFeature>();
+    auto mockAdapters = std::make_shared<MockList<EAdapter*>>();
+    MOCK_EXPECT( mockClass->getEStructuralFeature_EInt ).with( 1 ).returns( mockFeature );
+    MOCK_EXPECT( mockAdapters->empty ).returns( false );
+    MOCK_EXPECT( owner->eClass ).returns( mockClass );
+    MOCK_EXPECT( owner->eDeliver ).once().returns( true );
+    MOCK_EXPECT( owner->eAdapters ).returns( boost::ref( *mockAdapters ) );
+    MOCK_EXPECT( owner->eNotify ).with( [ = ]( const std::shared_ptr<ENotification>& n )
+    {
+        return n->getNotifier() == owner
+            && n->getFeature() == mockFeature
+            && n->getOldValue().empty()
+            && boost::any_cast<std::shared_ptr<EObject>>( n->getNewValue() ) == object
+            && n->getPosition() == 0;
+    } ).once();
+    MOCK_EXPECT( object->eInverseAdd ).with( owner, -2, nullptr ).once().returns( nullptr );
+
+    std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, true, false>>( owner, 1, 2 );
+    BOOST_CHECK( list->add( object ) );
+    BOOST_CHECK_EQUAL( list->size(), 1 );
+    BOOST_CHECK_EQUAL( list->get( 0 ), object );
+    BOOST_CHECK( !list->add( object ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( Add_InverseOppositeNoNotifications )
+{
+    auto object = std::make_shared<MockObject>();
+    auto owner = std::make_shared<MockObject>();
+    std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, true, true>>( owner, 1, 2 );
+    MOCK_EXPECT( owner->eDeliver ).once().returns( false );
+    MOCK_EXPECT( object->eInverseAdd ).with( owner, 2, nullptr ).once().returns( nullptr );
+    BOOST_CHECK( list->add( object ) );
+    BOOST_CHECK_EQUAL( list->size(), 1 );
+    BOOST_CHECK_EQUAL( list->get( 0 ), object );
+    BOOST_CHECK( !list->add( object ) );
+}
+
+BOOST_AUTO_TEST_CASE( Add_InverseOppositeNotifications )
+{
+    auto object = std::make_shared<MockObject>();
+    auto owner = std::make_shared<MockObject>();
+    auto mockClass = std::make_shared<MockClass>();
+    auto mockFeature = std::make_shared<MockStructuralFeature>();
+    auto mockAdapters = std::make_shared<MockList<EAdapter*>>();
+    MOCK_EXPECT( mockClass->getEStructuralFeature_EInt ).with( 1 ).returns( mockFeature );
+    MOCK_EXPECT( mockAdapters->empty ).returns( false );
+    MOCK_EXPECT( owner->eClass ).returns( mockClass );
+    MOCK_EXPECT( owner->eDeliver ).once().returns( true );
+    MOCK_EXPECT( owner->eAdapters ).returns( boost::ref( *mockAdapters ) );
+    MOCK_EXPECT( owner->eNotify ).with( [ = ]( const std::shared_ptr<ENotification>& n )
+    {
+        return n->getNotifier() == owner
+            && n->getFeature() == mockFeature
+            && n->getOldValue().empty()
+            && boost::any_cast<std::shared_ptr<EObject>>( n->getNewValue() ) == object
+            && n->getPosition() == 0;
+    } ).once();
+    MOCK_EXPECT( object->eInverseAdd ).with( owner, 2, nullptr ).once().returns( nullptr );
+
+    std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, true, true>>( owner, 1, 2 );
+    BOOST_CHECK( list->add( object ) );
+    BOOST_CHECK_EQUAL( list->size(), 1 );
+    BOOST_CHECK_EQUAL( list->get( 0 ), object );
+    BOOST_CHECK( !list->add( object ) );
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
