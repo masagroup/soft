@@ -38,11 +38,11 @@ virtual boost::any eInvoke( int operationID, const std::shared_ptr<EList<boost::
 [/template]
 
 [template public generateInverseAddDeclaration(aClass : EClass,impl : Boolean) ? (aClass.getEInverseAddFeatures()->notEmpty()) post (trim())]
-virtual std::shared_ptr<ENotificationChain> eBasicInverseAdd( const std::shared_ptr<BasicEObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )[abstractSufix(impl)/];
+virtual std::shared_ptr<ENotificationChain> eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )[abstractSufix(impl)/];
 [/template]
 
 [template public generateInverseRemoveDeclaration(aClass : EClass,impl : Boolean) ? (aClass.getEInverseRemoveFeatures()->notEmpty()) post (trim())]
-virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shared_ptr<BasicEObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )[abstractSufix(impl)/];
+virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )[abstractSufix(impl)/];
 [/template]
 
 
@@ -222,7 +222,7 @@ static const int [anEClass.getFeatureCountID()/] = [anEClass.getFeatureCountValu
 
 
 [template public generateInverseAddImplementation(aClass : EClass) ? (aClass.getEInverseAddFeatures()->notEmpty()) ]
-std::shared_ptr<ENotificationChain> [aClass.name.toUpperFirst().concat('Impl')/]::eBasicInverseAdd( const std::shared_ptr<BasicEObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
+std::shared_ptr<ENotificationChain> [aClass.name.toUpperFirst().concat('Impl')/]::eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
 {
     // [protected (aClass.name.concat('Impl::eBasicInverseAdd'))]
     switch( featureID )
@@ -230,7 +230,17 @@ std::shared_ptr<ENotificationChain> [aClass.name.toUpperFirst().concat('Impl')/]
     [for ( eFeature : EStructuralFeature | aClass.getEInverseAddFeatures()->sortedBy(name) )]
         case [eFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[eFeature.eContainingClass.getFeatureIDName(eFeature)/]:
         {
+[if eFeature.upperBound <> 1]
+            auto list = std::dynamic_pointer_cast<NotifyingEList>( [eFeature.getGetterName() /]);
+            return list->add( otherEnd , notifications );
+[elseif eFeature.isContainer()]
+            auto msgs = notifications;
+            if (eContainer())
+                msgs = eBasicRemoveFromContainer(msgs);
+            return eBasicSetContainer( otherEnd , msgs );
+[else]
             break;
+[/if]
         }
     [/for]
     }
@@ -240,7 +250,7 @@ std::shared_ptr<ENotificationChain> [aClass.name.toUpperFirst().concat('Impl')/]
 [/template]
 
 [template public generateInverseRemoveImplementation(aClass : EClass) ? (aClass.getEInverseRemoveFeatures()->notEmpty()) ]
-std::shared_ptr<ENotificationChain> [aClass.name.toUpperFirst().concat('Impl')/]::eBasicInverseRemove( const std::shared_ptr<BasicEObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
+std::shared_ptr<ENotificationChain> [aClass.name.toUpperFirst().concat('Impl')/]::eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
 {
     // [protected (aClass.name.concat('Impl::eBasicInverseRemove'))]
     switch( featureID )
