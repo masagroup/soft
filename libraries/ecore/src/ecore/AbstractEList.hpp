@@ -39,22 +39,21 @@ namespace ecore
             return uniquePolicy_.add( e );
         }
 
-        virtual void addUnique( const T& e ) = 0;
-
-        virtual bool addAll( const std::shared_ptr<EList<T>>& l )
-        {
-            return uniquePolicy_.addAll( l );
-        }
-
-        virtual bool addAllUnique( const std::shared_ptr<EList<T>>& l ) = 0;
-        
         virtual void add( std::size_t pos, const T& e )
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
             uniquePolicy_.add( pos, e );
         }
 
+        virtual void addUnique( const T& e ) = 0;
+
         virtual void addUnique( std::size_t pos, const T& e ) = 0;
+
+
+        virtual bool addAll( const std::shared_ptr<EList<T>>& l )
+        {
+            return uniquePolicy_.addAll( l );
+        }
 
         virtual bool addAll( std::size_t pos, const std::shared_ptr<EList<T>>& l )
         {
@@ -62,11 +61,13 @@ namespace ecore
             return uniquePolicy_.addAll( pos, l );
         }
 
+        virtual bool addAllUnique( const std::shared_ptr<EList<T>>& l ) = 0;
+
         virtual bool addAllUnique( std::size_t pos, const std::shared_ptr<EList<T>>& l ) = 0;
 
         virtual void set( std::size_t pos, const T& e )
         {
-            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
+            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos < size() );
             uniquePolicy_.set( pos, e );
         }
 

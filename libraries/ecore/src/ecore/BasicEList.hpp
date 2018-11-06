@@ -111,7 +111,7 @@ namespace ecore
 
         virtual T remove( std::size_t pos )
         {
-            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
+            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos < size() );
             auto it = v_.begin() + pos;
             T oldObject = std::move( *it );
             v_.erase( it );
