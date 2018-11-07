@@ -113,10 +113,6 @@ public class GenerateUtils {
         return eClass.getESuperTypes().stream().findFirst().orElse(null);
     }
 
-    public String join(Collection<String> c, String delimiter) {
-        return String.join(delimiter, c);
-    }
-
     public String format(String s, Collection<String> c) {
         return MessageFormat.format(s, c.toArray());
     }

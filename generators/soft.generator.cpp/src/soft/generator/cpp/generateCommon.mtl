@@ -1,6 +1,12 @@
 [comment encoding = UTF-8 /]
 [module generateCommon('http://www.eclipse.org/emf/2002/Ecore')/]
 
+
+[query public join( aUnused : OclAny, aSequence : Sequence(String) , aDelimiter : String ) : String = 
+    aSequence->iterate(s ; res: String ='' | ( res.concat( if ( aSequence->first() = s ) then '' else aDelimiter endif ).concat(s)))
+/]
+
+
 [**
  * Helper for c++ abstract function sufix
 */]
@@ -10,7 +16,6 @@
 [query public getSetterName(feature : EStructuralFeature) : String = if hasKey('SetterName') then valueKey('SetterName') else 'set'.concat(name.toUpperFirst()) endif/]
 [query public getGetterName(feature : EStructuralFeature) : String = if hasKey('GetterName') then valueKey('GetterName') else getterPrefix().concat(name.toUpperFirst()) endif/]
 [query public getUnSetterName(feature : EStructuralFeature) : String = if hasKey('UnSetterName') then valueKey('UnSetterName') else 'unset'.concat(name.toUpperFirst()) endif/]
-
 
 [**
  * Guards
@@ -86,7 +91,6 @@
         aPackage.eSuperPackage.getNamespaceNames()->append( aPackage.name )
     endif
 /]
-[query private join( aUnused : OclAny, aStringCollection : Sequence(String) , aDelimiter : String ) : String = invoke('soft.generator.cpp.utils.GenerateUtils','join(java.util.Collection,java.lang.String)',Sequence{aStringCollection,aDelimiter})/]
 [query private format( aUnused : OclAny, aString : String ,aStringCollection : Sequence(String) ) : String = invoke('soft.generator.cpp.utils.GenerateUtils','format(java.lang.String,java.util.Collection)',Sequence{aString,aStringCollection})/]
 [query private findMatches( aUnused : OclAny, aString : String ,aPattern : String ) : Boolean = invoke('soft.generator.cpp.utils.GenerateUtils','findMatches(java.lang.String,java.lang.String)',Sequence{aString,aPattern})/]
 
