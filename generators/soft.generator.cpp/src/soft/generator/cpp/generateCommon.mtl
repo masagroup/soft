@@ -54,8 +54,61 @@
 #endif /* [getGuardName(sufix)/] */
 [/template]
 
+[**
+ * Namespaces
+*/]
+[query public getInterfaceNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getInterfaceNamespace() ) /]
+[query public getImplementationNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getImplementationNamespace() )/]
+[query private getBaseNamespace( aPackage : EPackage ) : String = if hasKey('baseNamespace') then valueKey('baseNamespace') else '' endif/]
+[query private getInterfaceNamespace( aPackage : EPackage ) : String = if hasKey('interfaceNamespace') then valueKey('interfaceNamespace') else '' endif/]
+[query private getImplementationNamespace( aPackage : EPackage ) : String = if hasKey('implementationNamespace') then valueKey('implementationNamespace') else 'impl' endif/]
+[query private getQualifiedNamespaceName( aPackage : EPackage , aSuffix : String  ) : String = 
+    if ( findMatches(aSuffix,'\\{\\d+\\}') ) then
+        addNamespacePrefix(aPackage.getBaseNamespace(),format(aSuffix,aPackage.getNamespaceNameSubstitutions()))
+    else 
+        addNamespaceSuffix(aPackage.getQualifiedNamespaceName(),aSuffix) endif
+/]
+[query private getQualifiedNamespaceName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getBaseNamespace() , aPackage.name )/]
+[query private addNamespacePrefix( aPackage : EPackage, aPrefix : String , aName : String ) : String = if ( aPrefix = '' ) then aName else aPrefix + '::' + aName endif/]
+[query private addNamespaceSuffix( aPackage : EPackage, aName : String , aSuffix : String ) : String = if ( aSuffix = '' ) then aName else aName + '::' + aSuffix endif/]
+[query private getNamespaceNameSubstitutions( aPackage : EPackage ) : Sequence(String) =
+   let names : Sequence(String) = aPackage.getNamespaceNames() in
+    if ( names->size() > 1 ) then
+        names->prepend( join( names , '::' ) )
+    else
+        names
+    endif
+/]
+[query private getNamespaceNames( aPackage : EPackage ) : Sequence(String) =
+    if ( aPackage.oclIsUndefined() ) then
+        Sequence(String){}
+    else
+        aPackage.eSuperPackage.getNamespaceNames()->append( aPackage.name )
+    endif
+/]
+[query private join( aUnused : OclAny, aStringCollection : Sequence(String) , aDelimiter : String ) : String = invoke('soft.generator.cpp.utils.GenerateUtils','join(java.util.Collection,java.lang.String)',Sequence{aStringCollection,aDelimiter})/]
+[query private format( aUnused : OclAny, aString : String ,aStringCollection : Sequence(String) ) : String = invoke('soft.generator.cpp.utils.GenerateUtils','format(java.lang.String,java.util.Collection)',Sequence{aString,aStringCollection})/]
+[query private findMatches( aUnused : OclAny, aString : String ,aPattern : String ) : Boolean = invoke('soft.generator.cpp.utils.GenerateUtils','findMatches(java.lang.String,java.lang.String)',Sequence{aString,aPattern})/]
+
+[**
+ * Output folders
+*/]
+[query public getImplementationFolder( aPackage : EPackage ) : String = aPackage.getImplementationNamespaceName().substituteAll('::', '/')/]
+[query public getInterfaceFolder( aPackage : EPackage ) : String = aPackage.getInterfaceNamespaceName().substituteAll('::', '/')/]
+
+[**
+ * Classes names
+*/]
+[query public getInterfaceName( aClass : EClass ) : String = let pattern : String = aClass.ePackage.getInterfaceNamePattern() in if pattern ='' then aClass.name else format(pattern, Sequence{aClass.name}) endif /]
+[query public getQualifiedInterfaceName( aClass : EClass ) : String = aClass.ePackage.getInterfaceNamespaceName() + '::' + aClass.getInterfaceName()/]
+[query private getInterfaceNamePattern( aPackage : EPackage ) : String = if hasKey('interfaceNamePattern') then valueKey('interfaceNamePattern') else '' endif/]
+
+[query public getImplementationName( aClass : EClass ) : String = let pattern : String = aClass.ePackage.getImplementationNamePattern() in if pattern ='' then aClass.name + 'Impl' else format(pattern, Sequence{aClass.name}) endif /]
+[query public getQualifiedImplementationName( aClass : EClass ) : String = aClass.ePackage.getImplementationNamespaceName() + '::' + aClass.getImplementationName()/]
+[query private getImplementationNamePattern( aPackage : EPackage ) : String = if hasKey('implementationNamePattern') then valueKey('implementationNamePattern') else '' endif/]
+
 [query public needNamespace(anPackage : EPackage,str :String) : String = if not( anPackage.name = 'ecore') then 'ecore::'.concat(str) else str endif /]
-[query public getClassWithNamespace(aClass : EClass, base : EClass) : String = if aClass.ePackage.name = base.ePackage.name then base.name else base.ePackage.name.concat('::').concat(base.name) endif /]
+[query public getClassWithNamespace(aClass : EClass, base : EClass) : String = if aClass.ePackage = base.ePackage then base.name else base.ePackage.name.concat('::').concat(base.name) endif /]
 
 [query public hasContainerAttribute(aClass : EClass) : Boolean =  getContainerAttribute()->notEmpty() /]
 [query public getContainerAttribute(aClass : EClass) : OrderedSet(EReference) =  aClass.eReferences->select(isContainerAttribute())->sortedBy(name) /]
@@ -302,7 +355,7 @@ namespace ecore
 [query public getBaseClass( aEClass : EClass ) : EClass = if (aEClass.eSuperTypes->isEmpty() ) then null else aEClass.eSuperTypes->first() endif/]
 
 [query public getInterfaceExtends(aClass : EClass ) : Sequence(String) =
-    let qualifiedInterfaces : Sequence(String) = aClass.eSuperTypes->collect(c | getClassWithNamespace( aClass , c ) ) in
+    let qualifiedInterfaces : Sequence(String) = aClass.eSuperTypes->collect(c | c.getQualifiedInterfaceName() ) in
     if ( qualifiedInterfaces->isEmpty() ) then
         if ( aClass.name = 'EObject' ) then
             qualifiedInterfaces->prepend('ecore::ENotifier')
@@ -323,7 +376,7 @@ namespace ecore
             'ecore::EObjectImpl'
         endif
     else
-        getClassWithNamespace( aClass , extendsClass )
+        extendsClass.getQualifiedImplementationName()
     endif
 /]
 

@@ -16,6 +16,8 @@
 #ifndef ECORE_EOBJECT_HPP
 #define ECORE_EOBJECT_HPP
 
+#include "ecore/ENotifier.hpp"
+
 #include <list>
 #include <memory>
 #include <string>
@@ -59,12 +61,6 @@ namespace ecore
 }
 // End of user code
 
-// base class includes
-#include "ecore/ENotifier.hpp"
-
-
-
-//*********************************
 namespace ecore 
 {
     class EObject  : virtual public ecore::ENotifier
@@ -114,7 +110,6 @@ namespace ecore
             virtual void eUnset(const std::shared_ptr<ecore::EStructuralFeature>& feature) = 0;
             
             
-    
             // Start of user code EObject
             virtual std::shared_ptr<ENotificationChain> eInverseAdd( const std::shared_ptr<EObject>& otherEnd
                                                                    , int featureID

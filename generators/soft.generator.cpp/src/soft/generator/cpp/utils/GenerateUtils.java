@@ -1,11 +1,14 @@
 package soft.generator.cpp.utils;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
@@ -24,8 +27,8 @@ public class GenerateUtils {
     }
 
     /**
-     * Formats a string by splitting it into words separated by underscores and/or mixed-casing and then
-     * recombining them using the specified separator.
+     * Formats a string by splitting it into words separated by underscores and/or
+     * mixed-casing and then recombining them using the specified separator.
      */
     public String splitAndCombineWords(String s, String separator) {
         List<String> parsedName = new ArrayList<String>();
@@ -44,8 +47,8 @@ public class GenerateUtils {
     }
 
     /**
-     * This method breaks s into words delimited by separator and/or
-     * mixed-case naming.
+     * This method breaks s into words delimited by separator and/or mixed-case
+     * naming.
      */
     private List<String> splitWords(String s, char separator) {
         List<String> result = new ArrayList<String>();
@@ -54,7 +57,8 @@ public class GenerateUtils {
             boolean lastIsLower = false;
             for (int index = 0, length = s.length(); index < length; ++index) {
                 char curChar = s.charAt(index);
-                if (Character.isUpperCase(curChar) || (!lastIsLower && Character.isDigit(curChar)) || curChar == separator) {
+                if (Character.isUpperCase(curChar) || (!lastIsLower && Character.isDigit(curChar))
+                        || curChar == separator) {
                     if (lastIsLower && currentWord.length() > 1 || curChar == separator && currentWord.length() > 0) {
                         result.add(currentWord.toString());
                         currentWord = new StringBuilder();
@@ -83,30 +87,41 @@ public class GenerateUtils {
         }
         return result;
     }
-    
-    
-    public List<EClass> getOrderedClasses( EPackage ePackage ) {
+
+    public List<EClass> getOrderedClasses(EPackage ePackage) {
         List<EClass> result = new ArrayList<EClass>();
         Set<EClass> resultSet = new HashSet<EClass>();
-        for ( EClassifier eClassifier : ePackage.getEClassifiers() ) {
-            if ( eClassifier instanceof EClass ) {
-                EClass eClass = (EClass)eClassifier;
+        for (EClassifier eClassifier : ePackage.getEClassifiers()) {
+            if (eClassifier instanceof EClass) {
+                EClass eClass = (EClass) eClassifier;
                 List<EClass> extendChain = new LinkedList<>();
                 Set<EClass> visited = new HashSet<EClass>();
-                while( eClass != null && visited.add(eClass) )
-                {
+                while (eClass != null && visited.add(eClass)) {
                     if (ePackage == eClass.getEPackage() && resultSet.add(eClass))
-                      extendChain.add(0, eClass);
-                    
+                        extendChain.add(0, eClass);
+
                     eClass = getSuperType(eClass);
                 }
-                result.addAll( extendChain );
+                result.addAll(extendChain);
             }
-        };
+        }
+        ;
         return result;
     }
-    
-    private EClass getSuperType( EClass eClass ) {
+
+    private EClass getSuperType(EClass eClass) {
         return eClass.getESuperTypes().stream().findFirst().orElse(null);
+    }
+
+    public String join(Collection<String> c, String delimiter) {
+        return String.join(delimiter, c);
+    }
+
+    public String format(String s, Collection<String> c) {
+        return MessageFormat.format(s, c.toArray());
+    }
+
+    public boolean findMatches(String s, String pattern) {
+        return Pattern.compile(pattern).matcher(s).find();
     }
 }

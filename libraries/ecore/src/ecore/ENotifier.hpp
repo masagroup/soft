@@ -23,7 +23,7 @@ namespace ecore
     class ENotifier
     {
     public:
-        virtual ~ENotifier(){};
+        virtual ~ENotifier() = default;
 
         /**
         * Returns list of the adapters associated with this notifier.

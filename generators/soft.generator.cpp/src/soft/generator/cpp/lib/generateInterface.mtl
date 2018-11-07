@@ -11,9 +11,16 @@
 
 [query public includes(aClass : EClass) : Set(EClassifier) =OrderedSet{aClass.eSuperTypes,aClass.eAllStructuralFeatures.eType,aClass.eOperations.eType,aClass.eOperations.eParameters.eType}->flatten() /]
 
-[template public generateInterface(aClass : EClass)]
-[file (aClass.ePackage.getOutputDirectory().concat('/src-gen/').concat(aClass.ePackage.name).concat('/').concat(aClass.name.toUpperFirst()).concat('.hpp'), false, 'UTF-8')]
+[template public generateInterface(aClass : EClass) { className : String = aClass.getInterfaceName(); } ]
+[file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getInterfaceFolder() + '/' + className +'.hpp', false, 'UTF-8')]
 [startGuard(aClass)/]
+
+[for ( baseInclude : String | aClass.getInterfaceExtends()->asOrderedSet()->sortedBy( str | str ) ) separator ('\r\n')]
+#include "[baseInclude.substitute('::', '/').concat('.hpp')/]"
+[/for]
+[for (enumInclude : EEnum| aClass.includes()->selectByKind(EEnum)->asOrderedSet()->sortedBy(name) ) separator ('\r\n')]
+#include "[enumInclude.ePackage.name/]/[enumInclude.name.toUpperFirst().concat('.hpp')/]"
+[/for]
 
 [if (aClass.eOperations.eParameters.eType->select(name = 'EMap')->size() > 0 or aClass.eAttributes.eType->select(name = 'EMap')->size() > 0)]
 #include <map>
@@ -27,72 +34,49 @@
 
 //forward declarations
 [generateTypesForwardDeclaration()/]
-[for (element : EClassifier| aClass.includes()->selectByKind(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-namespace [element.ePackage.name/] 
+[for (aCls : EClass| aClass.includes()->selectByKind(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
+namespace [aCls.ePackage.getInterfaceNamespaceName()/] 
 {
-    class [element.name/];
+    class [aCls.getInterfaceName()/];
 }
 [/for]
 
 // [protected ('forward declarations for '.concat(aClass.name))]
 // [/protected]
 
-[let baseIncludes : OrderedSet(String) = aClass.getInterfaceExtends()->asOrderedSet()->sortedBy( str | str )]
-[if baseIncludes->notEmpty()]
-// base class includes
-[for ( baseInclude : String | baseIncludes ) separator ('\r\n')]
-#include "[baseInclude.substitute('::', '/').concat('.hpp')/]"
-[/for]
-[/if] 
-[/let]
-[let enumIncludes : OrderedSet(EEnum) = aClass.includes()->selectByKind(EEnum)->asOrderedSet()->sortedBy(name)]
-[if enumIncludes->notEmpty()]
-// enum includes
-[for (enumInclude : EEnum| enumIncludes ) separator ('\r\n')]
-#include "[enumInclude.ePackage.name/]/[enumInclude.name.toUpperFirst().concat('.hpp')/]"
-[/for]
-[/if]
-[/let]
-
-
-
-//*********************************
-namespace [aClass.ePackage.name/] 
+namespace [aClass.ePackage.getInterfaceNamespaceName()/] 
 {
-    class [aClass.name.toUpperFirst()/] [for ( extend : String | aClass.getInterfaceExtends()->sortedBy( str | str )) before (' : ') separator (', ')]virtual public [extend/][/for]
+    class [className/] [for ( extend : String | aClass.getInterfaceExtends()->sortedBy( str | str )) before (' : ') separator (', ')]virtual public [extend/][/for]
     {
         public:
-            [aClass.name.toUpperFirst()/](const [aClass.name.toUpperFirst()/] &) = delete;
-            [aClass.name.toUpperFirst()/]& operator=([aClass.name.toUpperFirst()/] const&) = delete;
+            [className/](const [className/] &) = delete;
+            [className/]& operator=([className/] const&) = delete;
 
         protected:
-            [aClass.name.toUpperFirst()/]() = default;
+            [className/]() = default;
      
         public:
             //destructor
-            virtual ~[aClass.name.toUpperFirst()/]() = default;
-            [if(aClass.eOperations->notEmpty())]
+            virtual ~[className/]() = default;
 
+            [if(aClass.eOperations->notEmpty())]
             //*********************************
             // Operations
             //*********************************
             [aClass.eOperations->sortedBy(name).generateOperationDeclaration(false)/]
             [/if]
             [if(aClass.eAttributes->notEmpty())]
-
             //*********************************
             // Attributes Getter Setter
             //*********************************
             [aClass.eAttributes->sortedBy(name).generateAttributeDeclaration(false)/]
             [/if]
             [if(aClass.eReferences->notEmpty())]
-
             //*********************************
             // References
             //*********************************
             [aClass.eReferences->sortedBy(name).generateReferenceDeclaration(false)/]
             [/if]
-    
             // [protected (aClass.name)]
             // [/protected]
     };
