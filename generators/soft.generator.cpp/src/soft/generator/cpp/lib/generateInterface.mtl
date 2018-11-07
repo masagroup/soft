@@ -11,7 +11,7 @@
 
 [query public includes(aClass : EClass) : Set(EClassifier) =OrderedSet{aClass.eSuperTypes,aClass.eAllStructuralFeatures.eType,aClass.eOperations.eType,aClass.eOperations.eParameters.eType}->flatten() /]
 
-[template public generateInterface(aClass : EClass) { className : String = aClass.getInterfaceName(); } ]
+[template public generateInterface(aClass : EClass) { className : String = aClass.getInterfaceName(); classNamespace : String = aClass.ePackage.getInterfaceNamespaceName(); } ]
 [file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getInterfaceFolder() + '/' + className +'.hpp', false, 'UTF-8')]
 [startGuard(aClass)/]
 
@@ -44,9 +44,10 @@ namespace [aCls.ePackage.getInterfaceNamespaceName()/]
 // [protected ('forward declarations for '.concat(aClass.name))]
 // [/protected]
 
-namespace [aClass.ePackage.getInterfaceNamespaceName()/] 
+
+namespace [classNamespace/] 
 {
-    class [className/] [for ( extend : String | aClass.getInterfaceExtends()->sortedBy( str | str )) before (' : ') separator (', ')]virtual public [extend/][/for]
+    class [className/] [for ( extend : String | aClass.getInterfaceExtends()->collect( s | getShortNamespace(s, classNamespace))->sortedBy( s | s )) before (' : ') separator (', ')]virtual public [extend/][/for]
     {
         public:
             [className/](const [className/] &) = delete;

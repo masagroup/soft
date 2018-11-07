@@ -61,9 +61,10 @@ namespace ecore
 }
 // End of user code
 
+
 namespace ecore 
 {
-    class EObject  : virtual public ecore::ENotifier
+    class EObject  : virtual public ENotifier
     {
         public:
             EObject(const EObject &) = delete;
