@@ -19,16 +19,14 @@
 #include <list>
 #include <memory>
 #include <string>
-
 #include <boost/any.hpp>
 
+//forward declarations
 namespace ecore 
 {
     template<typename T> class EList;
 }
 
-
-//Forward Declaration for used types
 namespace ecore 
 {
     class EClass;
@@ -54,12 +52,6 @@ namespace ecore
     class EStructuralFeature;
 }
 
-// base class includes
-
-// enum includes
-
-#include "ecore/ENotifier.hpp"
-
 // Start of user code forward declarations for EObject
 namespace ecore
 {
@@ -67,21 +59,26 @@ namespace ecore
 }
 // End of user code
 
+// base class includes
+#include "ecore/ENotifier.hpp"
+
+
+
 //*********************************
 namespace ecore 
 {
-    class EObject : virtual public ecore::ENotifier
+    class EObject  : virtual public ecore::ENotifier
     {
         public:
             EObject(const EObject &) = delete;
             EObject& operator=(EObject const&) = delete;
 
         protected:
-            EObject(){}
+            EObject() = default;
      
         public:
             //destructor
-            virtual ~EObject() {}
+            virtual ~EObject() = default;
 
             //*********************************
             // Operations

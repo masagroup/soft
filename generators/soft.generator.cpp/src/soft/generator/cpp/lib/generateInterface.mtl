@@ -21,14 +21,12 @@
 #include <list>
 #include <memory>
 #include <string>
-
 [if (aClass.eAttributes.eType->select(isAny())->size() = 0 and aClass.eOperations.eParameters.eType->select(isAny())->size() > 0)]
 #include <boost/any.hpp>
 [/if]
 
+//forward declarations
 [generateTypesForwardDeclaration()/]
-
-//Forward Declaration for used types
 [for (element : EClassifier| aClass.includes()->selectByKind(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
 namespace [element.ePackage.name/] 
 {
@@ -36,45 +34,43 @@ namespace [element.ePackage.name/]
 }
 [/for]
 
-// base class includes
-[for (elements : EClassifier| aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-#include "[elements.ePackage.name/]/[elements.name.toUpperFirst().concat('.hpp')/]"
-[/for]
-
-// enum includes
-[for (elements : EEnum| aClass.includes()->selectByKind(EEnum)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-#include "[elements.ePackage.name/]/[elements.name.toUpperFirst().concat('.hpp')/]"
-[/for]
-
-[if aClass.eSuperTypes->isEmpty()]
-[if aClass.name ='EObject']
-#include "ecore/ENotifier.hpp"
-[else]
-#include "ecore/EObject.hpp"
-[/if]
-[/if]
-
 // [protected ('forward declarations for '.concat(aClass.name))]
 // [/protected]
+
+[let baseIncludes : OrderedSet(String) = aClass.getInterfaceExtends()->asOrderedSet()->sortedBy( str | str )]
+[if baseIncludes->notEmpty()]
+// base class includes
+[for ( baseInclude : String | baseIncludes ) separator ('\r\n')]
+#include "[baseInclude.substitute('::', '/').concat('.hpp')/]"
+[/for]
+[/if] 
+[/let]
+[let enumIncludes : OrderedSet(EEnum) = aClass.includes()->selectByKind(EEnum)->asOrderedSet()->sortedBy(name)]
+[if enumIncludes->notEmpty()]
+// enum includes
+[for (enumInclude : EEnum| enumIncludes ) separator ('\r\n')]
+#include "[enumInclude.ePackage.name/]/[enumInclude.name.toUpperFirst().concat('.hpp')/]"
+[/for]
+[/if]
+[/let]
+
+
 
 //*********************************
 namespace [aClass.ePackage.name/] 
 {
-    class [aClass.name.toUpperFirst()/] [if aClass.eSuperTypes->isEmpty()][if aClass.name ='EObject'] : virtual public ecore::ENotifier[else] : virtual public ecore::EObject[/if]
-[else]
-[for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) before (' :') separator (',')]
- virtual public [getClassWithNamespace(aClass,sClass)/][/for][/if]
+    class [aClass.name.toUpperFirst()/] [for ( extend : String | aClass.getInterfaceExtends()->sortedBy( str | str )) before (' : ') separator (', ')]virtual public [extend/][/for]
     {
         public:
             [aClass.name.toUpperFirst()/](const [aClass.name.toUpperFirst()/] &) = delete;
             [aClass.name.toUpperFirst()/]& operator=([aClass.name.toUpperFirst()/] const&) = delete;
 
         protected:
-            [aClass.name.toUpperFirst()/](){}
+            [aClass.name.toUpperFirst()/]() = default;
      
         public:
             //destructor
-            virtual ~[aClass.name.toUpperFirst()/]() {}
+            virtual ~[aClass.name.toUpperFirst()/]() = default;
             [if(aClass.eOperations->notEmpty())]
 
             //*********************************
