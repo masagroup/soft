@@ -270,14 +270,36 @@ std::shared_ptr<ENotificationChain> [aClass.name.toUpperFirst().concat('Impl')/]
     // [protected (aClass.name.concat('Impl::eBasicInverseRemove'))]
     switch( featureID )
     {
-    [for ( eFeature : EStructuralFeature | aClass.getEInverseRemoveFeatures()->sortedBy(name) )]
-        case [eFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[eFeature.eContainingClass.getFeatureIDName(eFeature)/]:
+[for ( eFeature : EStructuralFeature | aClass.getEInverseRemoveFeatures()->sortedBy(name) )]
+    [let featureID : String = eFeature.getMetaModelPackageNameForEStructuralFeature(aClass).concat('::').concat(eFeature.eContainingClass.getFeatureIDName(eFeature))]
+        case [featureID/]:
         {
+        [if eFeature.upperBound <> 1]
+            auto list = std::dynamic_pointer_cast<NotifyingEList<std::shared_ptr<EObject>>>( [eFeature.getGetterName()/]() );
+            _ASSERTE(list);
+            return list->remove( otherEnd , notifications );
+        [elseif eFeature.isContainer()]
+            return eBasicSetContainer( nullptr , [featureID/], notifications );
+        [else]
             break;
+        [/if]
+    [/let]
         }
-    [/for]
+[/for]
     }
-    return notifications;
+[if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
+    return ecore::EObjectImpl::eBasicInverseRemove(otherEnd, featureID, notifications);
+[elseif (aClass.eSuperTypes->size() = 1)]
+    return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::eBasicInverseRemove(otherEnd, featureID, notifications);
+[else]
+    auto msgs = notifications;
+    [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]
+    [for (sClass : EClass | eClasses)]
+    msgs = [getClassWithNamespace(aClass,sClass)/]Impl::eBasicInverseRemove(otherEnd, featureID, msgs);
+    [/for]
+    [/let]
+    return msgs;
+[/if]
     // [/protected]
 }
 [/template]
