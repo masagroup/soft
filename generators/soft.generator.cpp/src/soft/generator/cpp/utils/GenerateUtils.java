@@ -1,14 +1,11 @@
 package soft.generator.cpp.utils;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
@@ -113,11 +110,4 @@ public class GenerateUtils {
         return eClass.getESuperTypes().stream().findFirst().orElse(null);
     }
 
-    public String format(String s, Collection<String> c) {
-        return MessageFormat.format(s, c.toArray());
-    }
-
-    public boolean findMatches(String s, String pattern) {
-        return Pattern.compile(pattern).matcher(s).find();
-    }
 }

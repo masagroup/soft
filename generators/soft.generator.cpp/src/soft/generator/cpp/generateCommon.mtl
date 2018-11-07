@@ -2,8 +2,16 @@
 [module generateCommon('http://www.eclipse.org/emf/2002/Ecore')/]
 
 
-[query public join( aUnused : OclAny, aSequence : Sequence(String) , aDelimiter : String ) : String = 
+[query public join( aSequence : Sequence(String) , aDelimiter : String ) : String = 
     aSequence->iterate(s ; res: String ='' | ( res.concat( if ( aSequence->first() = s ) then '' else aDelimiter endif ).concat(s)))
+/]
+
+[query public format( aString : String , aArguments : Sequence(String) ) : String =
+    Sequence{1..aArguments->size()}->iterate(index ; res: String =aString | res.replace('\\{'+ (index - 1) + '\\}', aArguments->at(index)))
+/]
+
+[query public matches( aString : String , aRegExp : String ) : Boolean =
+    aString.replaceAll(aRegExp, '') <> aString
 /]
 
 
@@ -68,7 +76,7 @@
 [query private getInterfaceNamespace( aPackage : EPackage ) : String = if hasKey('interfaceNamespace') then valueKey('interfaceNamespace') else '' endif/]
 [query private getImplementationNamespace( aPackage : EPackage ) : String = if hasKey('implementationNamespace') then valueKey('implementationNamespace') else 'impl' endif/]
 [query private getQualifiedNamespaceName( aPackage : EPackage , aSuffix : String  ) : String = 
-    if ( findMatches(aSuffix,'\\{\\d+\\}') ) then
+    if ( matches(aSuffix,'\\{\\d+\\}') ) then
         addNamespacePrefix(aPackage.getBaseNamespace(),format(aSuffix,aPackage.getNamespaceNameSubstitutions()))
     else 
         addNamespaceSuffix(aPackage.getQualifiedNamespaceName(),aSuffix) endif
@@ -91,8 +99,6 @@
         aPackage.eSuperPackage.getNamespaceNames()->append( aPackage.name )
     endif
 /]
-[query private format( aUnused : OclAny, aString : String ,aStringCollection : Sequence(String) ) : String = invoke('soft.generator.cpp.utils.GenerateUtils','format(java.lang.String,java.util.Collection)',Sequence{aString,aStringCollection})/]
-[query private findMatches( aUnused : OclAny, aString : String ,aPattern : String ) : Boolean = invoke('soft.generator.cpp.utils.GenerateUtils','findMatches(java.lang.String,java.lang.String)',Sequence{aString,aPattern})/]
 
 [**
  * Output folders
