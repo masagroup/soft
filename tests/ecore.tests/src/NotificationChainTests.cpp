@@ -1,11 +1,12 @@
 #include <boost/test/auto_unit_test.hpp>
 
-#include "ecore/NotificationChain.hpp"
+#include "ecore/impl/NotificationChain.hpp"
 #include "ecore/MockNotification.hpp"
 #include "ecore/MockNotifier.hpp"
 #include "ecore/MockStructuralFeature.hpp"
 
 using namespace ecore;
+using namespace ecore::impl;
 
 BOOST_AUTO_TEST_SUITE( NotificationChainTests )
 

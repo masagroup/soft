@@ -1,11 +1,12 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
 
-#include "ecore/BasicEList.hpp"
-#include "ecore/ImmutableEList.hpp"
+#include "ecore/impl/BasicEList.hpp"
+#include "ecore/impl/ImmutableEList.hpp"
 #include <Windows.h>
 
 using namespace ecore;
+using namespace ecore::impl;
 
 namespace
 {

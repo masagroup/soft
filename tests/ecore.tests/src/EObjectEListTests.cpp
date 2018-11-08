@@ -1,7 +1,7 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
 
-#include "ecore/EObjectEList.hpp"
+#include "ecore/impl/EObjectEList.hpp"
 #include "ecore/EAdapter.hpp"
 #include "ecore/MockAdapter.hpp"
 #include "ecore/MockObject.hpp"
@@ -10,6 +10,7 @@
 #include "ecore/MockStructuralFeature.hpp"
 
 using namespace ecore;
+using namespace ecore::impl;
 
 namespace
 {

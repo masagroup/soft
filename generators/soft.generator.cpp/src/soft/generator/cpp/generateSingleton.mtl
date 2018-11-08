@@ -11,14 +11,17 @@ public:
 [template public generateSingletonImplementation(interfaceName : String, implementationName : String , callInit : Boolean)]
 std::shared_ptr<[interfaceName/]> [interfaceName/]::instance;
 
-std::shared_ptr<[interfaceName/]>[interfaceName/]::eInstance()
+std::shared_ptr<[interfaceName/]> [interfaceName/]::eInstance()
 {
     if(!instance)
     {
-        //create a new Factoryimplementation
-        instance.reset([implementationName/]::create());
+        //create a new implementation
 [if (callInit)]
-        instance->init(instance);
+        auto impl = std::shared_ptr<[implementationName/]>( [implementationName/]::create() );
+        instance = impl;
+        impl->init(impl);
+[else]
+        instance.reset( [implementationName/]::create() );
 [/if]
     }   
     return instance;

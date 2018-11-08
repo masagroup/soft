@@ -112,7 +112,14 @@
     ) in
     shortQualifiedNames->join('::')
 /]
-
+[query public removeNamespace( aQualifiedName : String ) : String = 
+    let index : Integer = aQualifiedName.lastIndexOf( '::') in
+    if ( index = -1 ) then
+        aQualifiedName
+    else
+        aQualifiedName.substring( index + 2)
+    endif
+/]
 [**
  * Output folders
 */]
@@ -412,16 +419,7 @@ namespace ecore
 /]
 
 
-[query public getClassImplements(aClass : EClass ) : Sequence(String) = 
-    let qualifiedInterfaces : Sequence(String) = aClass.getInterfaceExtends()->prepend(aClass.getQualifiedInterfaceName()) in
-    let extendsClass : EClass = aClass.getClassExtendsClass() in
-    if ( extendsClass.oclIsUndefined() ) then
-        qualifiedInterfaces
-    else
-        qualifiedInterfaces->removeAll( extendsClass.getClassImplements() )
-    endif
-/]
-
+[query public getClassImplements(aClass : EClass ) : Sequence(String) = Sequence{ aClass.getQualifiedInterfaceName() }/]
 
 [query private getClassExtendsClass( aClass : EClass ) : EClass = getClassExtendsClass( aClass , aClass.getBaseClass() )/]
 [query private getClassExtendsClass( aClass : EClass , aBaseClass : EClass ) : EClass =
