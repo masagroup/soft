@@ -32,33 +32,36 @@ set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.68.0 REQUIRED)
 
 # Generated sources
-set(GENERATED_SOURCE_FILES
-    src-gen/[packageName/]/[packageName.toUpperFirst()/]Factory.cpp	
-    src-gen/[packageName/]/[packageName.toUpperFirst()/]Package.cpp
-)
-set(GENERATED_SOURCE_IMPLEMENTATION_FILES
-    src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]FactoryImpl.cpp
-	src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]PackageImpl.cpp
-	src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]PackageImpl_Creation.cpp
-	src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]PackageImpl_Initialization.cpp
-[for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
-    src-gen/[packageName/]/impl/[aClass.name.toUpperFirst()/]Impl.cpp
-[/for] 
-)
 set(GENERATED_HEADER_INTERFACE_FILES
-    src-gen/[packageName/]/[packageName.toUpperFirst()/]Factory.hpp
-	src-gen/[packageName/]/[packageName.toUpperFirst()/]Package.hpp 
+    src-gen/[namespaceToFolder(aPackage.getFactoryQualifiedInterfaceName())/].hpp
+    src-gen/[namespaceToFolder(aPackage.getQualifiedInterfaceName())/].hpp
 [for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
-    src-gen/[packageName/]/[aClass.name.toUpperFirst()/].hpp
+    src-gen/[namespaceToFolder(aClass.getQualifiedInterfaceName())/].hpp
 [/for]
 )
+set(GENERATED_SOURCE_INTERFACE_FILES
+    src-gen/[namespaceToFolder(aPackage.getFactoryQualifiedInterfaceName())/].cpp
+    src-gen/[namespaceToFolder(aPackage.getQualifiedInterfaceName())/].cpp
+)
 set(GENERATED_HEADER_IMPLEMENTATION_FILES
-    src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]FactoryImpl.hpp
-	src-gen/[packageName/]/impl/[packageName.toUpperFirst()/]PackageImpl.hpp
+    src-gen/[namespaceToFolder(aPackage.getFactoryQualifiedImplementationName())/].hpp
+    src-gen/[namespaceToFolder(aPackage.getQualifiedImplementationName())/].hpp
 [for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
-    src-gen/[packageName/]/impl/[aClass.name.toUpperFirst()/]Impl.hpp
+    src-gen/[namespaceToFolder(aClass.getQualifiedImplementationName())/].hpp
 [/for] 
 )
+set(GENERATED_SOURCE_IMPLEMENTATION_FILES
+    src-gen/[namespaceToFolder(aPackage.getFactoryQualifiedImplementationName())/].cpp
+[let packageImpl : String = namespaceToFolder(aPackage.getQualifiedImplementationName())]
+	src-gen/[packageImpl/].cpp
+	src-gen/[packageImpl/]_Creation.cpp
+	src-gen/[packageImpl/]_Initialization.cpp
+[/let]
+[for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
+    src-gen/[namespaceToFolder(aClass.getQualifiedImplementationName())/].cpp
+[/for] 
+)
+
 
 set(CMAKE_FILES
     CMakeLists.txt
@@ -74,7 +77,7 @@ add_library(${PROJECT_NAME} STATIC  ${CMAKE_FILES}
                                     ${SOURCE_IMPLEMENTATION_FILES} 
                                     ${GENERATED_HEADER_INTERFACE_FILES} 
                                     ${GENERATED_HEADER_IMPLEMENTATION_FILES} 
-                                    ${GENERATED_SOURCE_FILES} 
+                                    ${GENERATED_SOURCE_INTERFACE_FILES} 
                                     ${GENERATED_SOURCE_IMPLEMENTATION_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC src)
 target_include_directories(${PROJECT_NAME} PUBLIC src-gen)
@@ -87,7 +90,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 source_group(cmake FILES ${CMAKE_FILES})
 source_group(src\\[packageName/] FILES ${SOURCE_FILES} ${HEADER_FILES})
 source_group(src\\[packageName/]\\impl FILES ${SOURCE_IMPLEMENTATION_FILES} ${HEADER_IMPLEMENTATION_FILES})
-source_group(src-gen\\[packageName/] FILES ${GENERATED_HEADER_INTERFACE_FILES} ${GENERATED_SOURCE_FILES})
+source_group(src-gen\\[packageName/] FILES ${GENERATED_HEADER_INTERFACE_FILES} ${GENERATED_SOURCE_INTERFACE_FILES})
 source_group(src-gen\\[packageName/]\\impl FILES ${GENERATED_HEADER_IMPLEMENTATION_FILES} ${GENERATED_SOURCE_IMPLEMENTATION_FILES})
 
 #-----------------------------------------------------
