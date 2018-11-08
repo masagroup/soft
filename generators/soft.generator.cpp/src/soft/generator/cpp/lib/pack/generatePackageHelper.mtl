@@ -22,12 +22,12 @@
 /**
  * Returns the meta object for the [anENamedElement.name.toUpperFirst()/]
  */
-virtual std::shared_ptr<[getMetaModelTypeString(anENamedElement, anEPackage)/]> get[anENamedElement.getElementAccessorName()/]() const [abstractSufix(impl)/];
+virtual std::shared_ptr<[getMetaType(anENamedElement, anEPackage)/]> get[anENamedElement.getElementAccessorName()/]() const [abstractSufix(impl)/];
 
 [/template]
 
 [template public generateModelElementGetterImpl(anENamedElement : ENamedElement, anEPackage : EPackage)]
-std::shared_ptr<[getMetaModelTypeString(anENamedElement, anEPackage)/]> [anEPackage.name.toUpperFirst()/]PackageImpl::get[anENamedElement.getElementAccessorName()/]() const
+std::shared_ptr<[getMetaType(anENamedElement, anEPackage)/]> [anEPackage.getImplementationName()/]::get[anENamedElement.getElementAccessorName()/]() const
 {
     return [anENamedElement.getElementInstanceName()/];
 }
@@ -35,6 +35,6 @@ std::shared_ptr<[getMetaModelTypeString(anENamedElement, anEPackage)/]> [anEPack
 [/template]
 
 [template public generatePrivatePackageMember(anENamedElement : ENamedElement, anEPackage : EPackage)] 
-std::shared_ptr<[getMetaModelTypeString(anENamedElement, anEPackage)/]> [anENamedElement.getElementInstanceName()/] = nullptr;
+std::shared_ptr<[getMetaType(anENamedElement, anEPackage)/]> [anENamedElement.getElementInstanceName()/] = nullptr;
 
 [/template]

@@ -5,11 +5,11 @@
 [import soft::generator::cpp::generateCommon/]
 
 [template public generateClassCreate(aEClass : EClass,impl : Boolean) ? (aEClass.abstract=false)]
-virtual std::shared_ptr<[aEClass.generateTypeClass()/]> create[aEClass.name/]() const [abstractSufix(impl)/];
+virtual std::shared_ptr<[aEClass.getInterfaceName()/]> create[aEClass.name/]() const [abstractSufix(impl)/];
 [let ref:OrderedSet(EReference) = aEClass.getAllContainers()]
 [for(aReference:EReference | ref->sortedBy(name))]
-virtual std::shared_ptr<[aEClass.generateTypeClass()/]> create[aEClass.name/]([aReference.generateParameterType()/] eContainer) const [abstractSufix(impl)/];
-[if(aEClass.getElementIDAccessorName().size() > 0)]virtual std::shared_ptr<[aEClass.generateTypeClass()/]> create[aEClass.name/]([aReference.generateParameterType()/] eContainer, const unsigned int classID) const [abstractSufix(impl)/];[/if]
+virtual std::shared_ptr<[aEClass.getInterfaceName()/]> create[aEClass.name/]([aReference.generateParameterType()/] eContainer) const [abstractSufix(impl)/];
+[if(aEClass.getElementIDAccessorName().size() > 0)]virtual std::shared_ptr<[aEClass.getInterfaceName()/]> create[aEClass.name/]([aReference.generateParameterType()/] eContainer, const unsigned int classID) const [abstractSufix(impl)/];[/if]
 [/for]
 
 [/let]

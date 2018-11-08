@@ -147,9 +147,6 @@
 [query public getFactoryQualifiedInterfaceName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getInterfaceNamespaceName() , aPackage.getFactoryInterfaceName() )/]
 [query public getFactoryQualifiedImplementationName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getImplementationNamespaceName() , aPackage.getFactoryImplementationName() )/]
 
-[query public needNamespace(anPackage : EPackage,str :String) : String = if not( anPackage.name = 'ecore') then 'ecore::'.concat(str) else str endif /]
-[query public getClassWithNamespace(aClass : EClass, base : EClass) : String = if aClass.ePackage = base.ePackage then base.name else base.ePackage.name.concat('::').concat(base.name) endif /]
-
 [query public hasContainerAttribute(aClass : EClass) : Boolean =  getContainerAttribute()->notEmpty() /]
 [query public getContainerAttribute(aClass : EClass) : OrderedSet(EReference) =  aClass.eReferences->select(isContainerAttribute())->sortedBy(name) /]
 [query public isContainerAttribute(aRef : EReference) : Boolean =  aRef.container/]
@@ -242,15 +239,9 @@ namespace ecore
     endif endif endif/]
 
 
-[template public generateTypeClass(anEDataType : EClass)]
-[anEDataType.name/]
-[/template]
 
-[query public getMetaModelTypedElementString(aStructuralFeature : EStructuralFeature) : String = if aStructuralFeature.eContainingClass.ePackage = aStructuralFeature.eClass().ePackage then aStructuralFeature.eClass().generateTypeClass() else aStructuralFeature.eClass().ePackage.name.concat('::').concat(aStructuralFeature.eClass().generateTypeClass()) endif /]
-[query public getMetaModelTypedElementString(aOperation : EOperation) : String = if aOperation.eContainingClass.ePackage = aOperation.eClass().ePackage then aOperation.eClass().generateTypeClass() else aOperation.eClass().ePackage.name.concat('::').concat(aOperation.eClass().generateTypeClass()) endif /]
-
-[query public getMetaModelTypeString(aClass : EClassifier) : String = getMetaModelTypeString(aClass, aClass.ePackage) /]
-[query public getMetaModelTypeString(anENamedElement : ENamedElement, anEPackage : EPackage) : String = if anEPackage = anENamedElement.eClass().ePackage then anENamedElement.eClass().generateTypeClass() else anENamedElement.eClass().ePackage.name.concat('::').concat(anENamedElement.eClass().generateTypeClass()) endif /]
+[query public getMetaType(aClass : EClassifier) : String = getMetaType(aClass, aClass.ePackage) /]
+[query public getMetaType(anENamedElement : ENamedElement, anEPackage : EPackage) : String = if anEPackage = anENamedElement.eClass().ePackage then anENamedElement.eClass().getInterfaceName() else anENamedElement.eClass().getQualifiedInterfaceName() endif /]
 
 [query public getPackageGetter(aReference : EReference) : String = if oclIsUndefined() then 'nullptr' else getterPrefix().concat(getElementAccessorName()).concat('()') endif/]
 [query public getPackageGetter(aAttribute : EAttribute) : String = 'get'.concat(getElementAccessorName()).concat('()') /]

@@ -47,7 +47,7 @@ virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shar
 
 
 [template public generateGetImplementation(aClass : EClass) ? (aClass.getEGetFeatures()->notEmpty()) post (trim())]
-boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, bool resolve, bool coreType) const
+boost::any [aClass.getImplementationName()/]::eGet(int featureID, bool resolve, bool coreType) const
 {
     switch(featureID)
     {
@@ -56,23 +56,7 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eGet(int featureID, boo
             return [anStructFeature.getGetterName()/]();
     [/for]
     }
-[if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
-    return ecore::EObjectImpl::eGet(featureID, resolve, coreType);
-[elseif (aClass.eSuperTypes->size() = 1)]
-    return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::eGet(featureID, resolve, coreType);
-[else]
-    boost::any result;
-    [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]
-    [for (sClass : EClass | eClasses)]
-    result = [getClassWithNamespace(aClass,sClass)/]Impl::eGet(featureID, resolve, coreType);
-    [if (sClass <> eClasses->last())]
-    if (!result->isEmpty())
-        return result;
-    [/if]
-    [/for]
-    return result;
-    [/let]
-[/if]
+    return [aClass.getClassExtends()/]::eGet(featureID, resolve, coreType);
 }
 [/template]
 
@@ -85,7 +69,7 @@ bool is_uninitialized(std::weak_ptr<T> const& weak) {
 }
 
 [/if]
-bool [aClass.name.toUpperFirst().concat('Impl')/]::eIsSet(int featureID) const
+bool [aClass.getImplementationName()/]::eIsSet(int featureID) const
 {
     switch(featureID)
     {
@@ -94,29 +78,13 @@ bool [aClass.name.toUpperFirst().concat('Impl')/]::eIsSet(int featureID) const
             return [anStructFeature.generateComparison()/];
     [/for]
     }
-[if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
-    return ecore::EObjectImpl::eIsSet(featureID);
-[elseif (aClass.eSuperTypes->size() = 1)]
-    return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::eIsSet(featureID);
-[else]
-    bool result = false;
-    [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]
-    [for (sClass : EClass | eClasses)]
-    result = [getClassWithNamespace(aClass,sClass)/]Impl::eIsSet(featureID);
-    [if (sClass <> eClasses->last())]
-    if (result)
-        return result;
-    [/if]
-    [/for]
-    return result;
-    [/let]
-[/if]
+    return [aClass.getClassExtends()/]::eIsSet(featureID);
 }
 [/template]
 
 
 [template public generateSetImplementation(aClass : EClass) ? (aClass.getESetFeatures()->notEmpty()) post (trim())]
-void [aClass.name.toUpperFirst().concat('Impl')/]::eSet(int featureID, const boost::any& newValue)
+void [aClass.getImplementationName()/]::eSet(int featureID, const boost::any& newValue)
 {
     switch(featureID)
     {
@@ -129,22 +97,12 @@ void [aClass.name.toUpperFirst().concat('Impl')/]::eSet(int featureID, const boo
         }
 [/for]
     }
-[if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
-    ecore::EObjectImpl::eSet(featureID, newValue);
-[elseif (aClass.eSuperTypes->size() = 1)]
-    [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::eSet(featureID, newValue);
-[else]
-    [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]
-    [for (sClass : EClass | eClasses)]
-    [getClassWithNamespace(aClass,sClass)/]Impl::eSet(featureID, newValue);
-    [/for]
-    [/let]
-[/if]
+    return [aClass.getClassExtends()/]::eSet(featureID, newValue);
 }
 [/template]
 
 [template public generateUnSetImplementation(aClass : EClass) ? (aClass.getEUnSetFeatures()->notEmpty())]
-void [aClass.name.toUpperFirst().concat('Impl')/]::eUnSet(int featureID)
+void [aClass.getImplementationName()/]::eUnSet(int featureID)
 {
     // [protected (aClass.name.concat('Impl::eUnset'))]
     std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
@@ -154,7 +112,7 @@ void [aClass.name.toUpperFirst().concat('Impl')/]::eUnSet(int featureID)
 [/template]
 
 [template public generateInvokeImplementation(aClass : EClass) ? (aClass.eOperations->notEmpty()) ]
-boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eInvoke(int operationID, const std::shared_ptr<EList<boost::any>>& arguments)
+boost::any [aClass.getImplementationName()/]::eInvoke(int operationID, const std::shared_ptr<EList<boost::any>>& arguments)
 {
     // [protected (aClass.name.concat('Impl::eInvoke'))]
     switch( operationID )
@@ -164,7 +122,7 @@ boost::any [aClass.name.toUpperFirst().concat('Impl')/]::eInvoke(int operationID
         {
             [if eOperation.isVoid() ]
             [eOperation.generateOperationInvoke()/]
-            return nullptr;
+            return boost::any();
             [else]
             return [eOperation.generateOperationInvoke()/] 
             [/if]
@@ -222,7 +180,7 @@ static const int [anEClass.getFeatureCountID()/] = [anEClass.getFeatureCountValu
 
 
 [template public generateInverseAddImplementation(aClass : EClass) ? (aClass.getEInverseAddFeatures()->notEmpty()) ]
-std::shared_ptr<ENotificationChain> [aClass.name.toUpperFirst().concat('Impl')/]::eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
+std::shared_ptr<ENotificationChain> [aClass.getImplementationName()/]::eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
 {
     // [protected (aClass.name.concat('Impl::eBasicInverseAdd'))]
     switch( featureID )
@@ -247,25 +205,13 @@ std::shared_ptr<ENotificationChain> [aClass.name.toUpperFirst().concat('Impl')/]
         }
 [/for]
     }
-[if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
-    return ecore::EObjectImpl::eBasicInverseAdd(otherEnd, featureID, notifications);
-[elseif (aClass.eSuperTypes->size() = 1)]
-    return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::eBasicInverseAdd(otherEnd, featureID, notifications);
-[else]
-    auto msgs = notifications;
-    [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]
-    [for (sClass : EClass | eClasses)]
-    msgs = [getClassWithNamespace(aClass,sClass)/]Impl::eBasicInverseAdd(otherEnd, featureID, msgs);
-    [/for]
-    [/let]
-    return msgs;
-[/if]
+    return [aClass.getClassExtends()/]::eBasicInverseAdd(otherEnd, featureID, notifications);
     // [/protected]
 }
 [/template]
 
 [template public generateInverseRemoveImplementation(aClass : EClass) ? (aClass.getEInverseRemoveFeatures()->notEmpty()) ]
-std::shared_ptr<ENotificationChain> [aClass.name.toUpperFirst().concat('Impl')/]::eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
+std::shared_ptr<ENotificationChain> [aClass.getImplementationName()/]::eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
 {
     // [protected (aClass.name.concat('Impl::eBasicInverseRemove'))]
     switch( featureID )
@@ -287,19 +233,7 @@ std::shared_ptr<ENotificationChain> [aClass.name.toUpperFirst().concat('Impl')/]
         }
 [/for]
     }
-[if (aClass.eSuperTypes->isEmpty() and not (aClass.name ='EObject'))]
-    return ecore::EObjectImpl::eBasicInverseRemove(otherEnd, featureID, notifications);
-[elseif (aClass.eSuperTypes->size() = 1)]
-    return [getClassWithNamespace(aClass, aClass.eSuperTypes->first())/]Impl::eBasicInverseRemove(otherEnd, featureID, notifications);
-[else]
-    auto msgs = notifications;
-    [let eClasses : OrderedSet(EClass) = aClass.eSuperTypes->asOrderedSet()->sortedBy(name)]
-    [for (sClass : EClass | eClasses)]
-    msgs = [getClassWithNamespace(aClass,sClass)/]Impl::eBasicInverseRemove(otherEnd, featureID, msgs);
-    [/for]
-    [/let]
-    return msgs;
-[/if]
+    return [aClass.getClassExtends()/]::eBasicInverseRemove(otherEnd, featureID, notifications);
     // [/protected]
 }
 [/template]

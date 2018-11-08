@@ -12,36 +12,34 @@
 [import soft::generator::cpp::lib::generateCommon /]
 [import soft::generator::cpp::lib::pack::generatePackageHelper /]
 
-[template public generatePackageInterfaceHeader(anEPackage : EPackage) { packageName : String = anEPackage.name.toUpperFirst().concat('Package'); }]
-[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/').concat(packageName).concat('.hpp'), false, 'UTF-8')]
+[template public generatePackageInterfaceHeader(anEPackage : EPackage) { className : String = anEPackage.getInterfaceName() ; namespaceName : String = anEPackage.getInterfaceNamespaceName(); }]
+[file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getInterfaceFolder() + '/' + className +'.hpp', false, 'UTF-8')]
 [startGuard(anEPackage,'Package')/]
 
 #include "ecore/EPackage.hpp"
 
-namespace [anEPackage.eClass().ePackage.name/] 
+namespace [namespaceName/] 
 {
-[for (elements : EClassifier| anEPackage.getMetaMetaModelClasses())]
-    class [elements.name/];
+[for (elements : EClass| anEPackage.getMetaMetaModelClasses()->selectByKind(EClass)->asOrderedSet()->sortedBy(name))]
+    class [elements.getInterfaceName()/];
 [/for]
 }
 
 [comment namespace /]
 namespace [anEPackage.name/] 
 {
-    class [packageName/]Impl;
-
     /*!
     The Metamodel Package for the [anEPackage.name/] metamodel. This package is used to enable the reflection of model elements. It contains all model elements
     which were described in an ecore file.
     */
-    class [packageName/] : virtual public [needNamespace(anEPackage, 'EPackage')/] 
+    class [className/] : virtual public [getShortQualifiedName('ecore::EPackage',namespaceName)/] 
     {
         private:    
-            [packageName/]([packageName/] const&) = delete;
-            [packageName/]& operator=([packageName/] const&) = delete;
+            [className/]([className/] const&) = delete;
+            [className/]& operator=([className/] const&) = delete;
 
         protected:
-            [packageName/](){}
+            [className/](){}
 
         public:
             /** 
@@ -76,12 +74,7 @@ namespace [anEPackage.name/]
 [/for]
             [anEPackage.eAllContents(EDataType)->sortedBy(name).generateModelElementGetter(anEPackage, false)/]
 
-            [comment generateSingletonDeclaration(packageName)/]
-[if anEPackage.name.equalsIgnoreCase('ecore')]
-            //prevent from hiding functions
-            using EPackage::getEAnnotation;
-            using EPackage::getEClassifier;
-[/if]
+    [generateSingletonDeclaration(className)/]
     };
 }
 [endGuard(anEPackage,'Package')/]

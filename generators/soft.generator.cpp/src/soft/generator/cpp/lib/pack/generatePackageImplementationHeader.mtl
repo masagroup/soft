@@ -10,23 +10,18 @@
 [import soft::generator::cpp::lib::generateCommon /]
 [import soft::generator::cpp::lib::pack::generatePackageHelper /]
 
-[template public generatePackageImplHeader(anEPackage : EPackage) { packageName : String = anEPackage.name.toUpperFirst().concat('PackageImpl'); }]
-[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/impl/').concat(packageName).concat('.hpp'), false, 'UTF-8')]
+[template public generatePackageImplHeader(anEPackage : EPackage) { className : String = anEPackage.getImplementationName() ; namespaceName : String = anEPackage.getImplementationNamespaceName(); }]
+[file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getImplementationFolder() + '/' + className + '.hpp', false, 'UTF-8')]
 [startGuard(anEPackage,'PackageImpl')/]
 
-[comment  Generate Includes for the Factory/]
-#include "ecore/EcorePackage.hpp"
+#include "[namespaceToFolder(anEPackage.getQualifiedInterfaceName())/].hpp"
 #include "ecore/impl/EPackageImpl.hpp"
 
-[if (not(anEPackage.name = 'ecore') )]
-#include "[anEPackage.name/]/[anEPackage.name.toUpperFirst().concat('Package')/].hpp"
-[/if]
-
-namespace [anEPackage.name/] 
+namespace [anEPackage.getInterfaceNamespaceName()/] 
 {
-[for (elements : EClassifier| OrderedSet{anEPackage.eClassifiers}->flatten()->selectByKind(EClass)->sortedBy(name)) separator ('\r\n')]
-    class [elements.name/];[/for]
-
+[for (elements : EClassifier| OrderedSet{anEPackage.eClassifiers}->flatten()->selectByKind(EClass)->sortedBy(name))]
+    class [elements.name/];
+[/for]
 }
 
 namespace ecore
@@ -35,19 +30,19 @@ namespace ecore
 }
 
 
-namespace [anEPackage.name/]
+namespace [namespaceName/]
 {
-    class [packageName/] : public [anEPackage.needNamespace('EPackageImpl')/] ,virtual public [anEPackage.name.toUpperFirst().concat('Package')/]
+    class [className/] : public [getShortQualifiedName('ecore::impl::EPackageImpl' ,namespaceName)/], virtual public [anEPackage.getInterfaceName()/]
     {
-        private:    
-            [packageName/]([packageName/] const&) = delete;
-            [packageName/]& operator=([packageName/] const&) = delete;
+        private:
+            [className/]([className/] const&) = delete;
+            [className/]& operator=([className/] const&) = delete;
 
         protected:
-            [packageName/]();
+            [className/]();
 
         public:
-            virtual ~[packageName/]();
+            virtual ~[className/]();
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
             // Begin Class [aClass.name.toUpperFirst()/]
@@ -68,35 +63,26 @@ namespace [anEPackage.name/]
             [anEPackage.eAllContents(EClass).eReferences->sortedBy(name).generatePrivatePackageMember(anEPackage)/]
             [anEPackage.eAllContents(EClass).eOperations->sortedBy(name).generatePrivatePackageMember(anEPackage)/]
 
-            friend class [anEPackage.name.concat('Package').toUpperFirst()/];
+            friend class [anEPackage.getInterfaceName()/];
 
-            static [packageName/]* create();
+            static [className/]* create();
             bool isInitialized = false;
             bool isCreated = false;
 
-            void init(const std::shared_ptr<[packageName/]>& package);
-            void createPackageContents(const std::shared_ptr<[packageName/]>& package);
+            void init(const std::shared_ptr<[className/]>& package);
+            void createPackageContents(const std::shared_ptr<[className/]>& package);
             void initializePackageContents();
 
         private:
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
-            void create[aClass.name.toUpperFirst()/]Content(const std::shared_ptr<[needNamespace(anEPackage,'EPackage')/]>& package, const std::shared_ptr<[needNamespace(anEPackage,'EcoreFactory')/]>& factory);
+            void create[aClass.name.toUpperFirst()/]Content(const std::shared_ptr<[getShortQualifiedName('ecore::EPackage' ,namespaceName)/]>& package, const std::shared_ptr<[getShortQualifiedName('ecore::EcoreFactory' ,namespaceName)/]>& factory);
 [/for]
-            void createPackageEDataTypes(const std::shared_ptr<[needNamespace(anEPackage,'EPackage')/]>& package, const std::shared_ptr<[needNamespace(anEPackage,'EcoreFactory')/]>& factory);
+            void createPackageEDataTypes(const std::shared_ptr<[getShortQualifiedName('ecore::EPackage' ,namespaceName)/]>& package, const std::shared_ptr<[getShortQualifiedName('ecore::EcoreFactory' ,namespaceName)/]>& factory);
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
             void initialize[aClass.name.toUpperFirst()/]Content();
 [/for]
             void initializePackageEDataTypes();
-
-
-
-[if anEPackage.name.equalsIgnoreCase('ecore')]
-    
-    //prevent from hiding functions
-    using EPackageImpl::getEAnnotation;
-    using EPackageImpl::getEClassifier;
-[/if]
     };
 }
 [endGuard(anEPackage,'PackageImpl')/]

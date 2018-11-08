@@ -6,17 +6,24 @@
 [import soft::generator::cpp::lib::generateCommon /]
 [import soft::generator::cpp::lib::pack::generatePackageHelper /]
 
-[template public generatePackageInterfaceSource(anEPackage : EPackage) {packageName : String = anEPackage.name.toUpperFirst().concat('Package').toUpperFirst(); }]
-[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/').concat(packageName).concat('.cpp'), false, 'UTF-8')]
-#include "[anEPackage.name/]/[packageName/].hpp"
-#include "[anEPackage.name/]/impl/[packageName.concat('Impl')/].hpp"
+[template public generatePackageInterfaceSource(anEPackage : EPackage) {className : String = anEPackage.getInterfaceName() ; }]
+[file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getInterfaceFolder() + '/' + className +'.cpp', false, 'UTF-8')]
+[let includes : OrderedSet(String) = OrderedSet{ anEPackage.getQualifiedInterfaceName() , anEPackage.getQualifiedImplementationName() }]
+[for (include:String | includes )]
+#include "[namespaceToFolder(include)/].hpp"
+[/for]
+[/let]
 
-using namespace [anEPackage.name/];
+[let namespaces : OrderedSet(String) = OrderedSet{ anEPackage.getInterfaceNamespaceName() , anEPackage.getImplementationNamespaceName()}]
+[for (namespace : String | namespaces )]
+using namespace [namespace/];
+[/for]
+[/let]
 
 //static initialisation
-const std::string [packageName/]::eNAME ="[anEPackage.name/]";
-const std::string [packageName/]::eNS_URI ="[anEPackage.nsURI/]";
-const std::string [packageName/]::eNS_PREFIX ="[anEPackage.nsPrefix/]";
+const std::string [className/]::eNAME ="[anEPackage.name/]";
+const std::string [className/]::eNS_URI ="[anEPackage.nsURI/]";
+const std::string [className/]::eNS_PREFIX ="[anEPackage.nsPrefix/]";
 
 //Singleton 
 [comment generateSingletonImplementation(packageName, true)/]

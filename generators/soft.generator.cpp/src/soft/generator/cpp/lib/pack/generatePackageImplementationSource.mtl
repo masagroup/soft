@@ -12,46 +12,48 @@
 
 [query public metaModelIncludes(anEPackage : EPackage) : Set(EPackage) = OrderedSet{anEPackage.eAllContents(EClass).eAllSuperTypes.ePackage,anEPackage.eAllContents(EStructuralFeature).eType.ePackage,anEPackage.eAllContents(EParameter).eType.ePackage}->flatten() /]
 
-[template public generatePackageImplSource(anEPackage : EPackage) { packageName : String = anEPackage.name.toUpperFirst().concat('PackageImpl');}]
-[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/impl/').concat(packageName).concat('.cpp'), false, 'UTF-8')]
-#include "[anEPackage.name/]/impl/[packageName/].hpp"
-
-#include "ecore/EList.hpp"
-
-[if (anEPackage.getMetaMetaModelClasses()->notEmpty())]
-//metamodel classes
-[for (elements : EClassifier| anEPackage.getMetaMetaModelClasses())]
-#include "[elements.ePackage.name/]/[elements.name.toUpperFirst()/].hpp"
+[template private generatePackageImplementationIncludes( aPackage : EPackage )]
+#include "[namespaceToFolder(aPackage.getQualifiedImplementationName())/].hpp"
+[let includes : OrderedSet(String) = Set{ aPackage.getMetaMetaModelClasses()->selectByKind(EClass)->collect( c | c.getQualifiedInterfaceName())->asSet()
+                                        , aPackage.metaModelIncludes()->collect( p | p.getQualifiedInterfaceName())->asSet()
+                                        , Set {
+                                                    aPackage.getFactoryQualifiedInterfaceName(),
+                                                    'ecore::EList'
+                                              }
+                                        }->flatten()->asOrderedSet()->sortedBy( s | s)]
+[for ( include : String | includes )]
+#include "[namespaceToFolder(include)/].hpp"
 [/for]
-[/if]
+[/let]
 
-// factory
-#include "[anEPackage.name/]/[anEPackage.name.toUpperFirst().concat('Factory')/].hpp"
+#include <cassert>
 
-[if (anEPackage.metaModelIncludes()->notEmpty())]
-//depending model packages
-[for (pack : EPackage | anEPackage.metaModelIncludes()->asOrderedSet()->sortedBy(name)) ? (not ( pack=anEPackage))]
-#include "[pack.name/]/[pack.name.concat('Package').toUpperFirst()/].hpp"
+[let namespaces : OrderedSet(String) = OrderedSet{ 'ecore' , aPackage.getInterfaceNamespaceName() , aPackage.getImplementationNamespaceName()}]
+[for (namespace : String | namespaces )]
+using namespace [namespace/];
 [/for]
-[/if]
+[/let]
+[/template]
 
-using namespace [anEPackage.name/];
+[template public generatePackageImplSource(anEPackage : EPackage) { className : String = anEPackage.getImplementationName(); }]
+[file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getImplementationFolder() + '/' + className + '.cpp', false, 'UTF-8')]
+[generatePackageImplementationIncludes()/]
 
-[packageName/]::[packageName/]()
+[className/]::[className/]()
 {
-    setEFactoryInstance(std::shared_ptr<ecore::EFactory >( [anEPackage.name.concat('Factory').toUpperFirst()/]::eInstance()));
+    setEFactoryInstance(std::shared_ptr<ecore::EFactory >( [anEPackage.getFactoryInterfaceName()/]::eInstance()));
 }
 
-[packageName/]::~[packageName/]()
+[className/]::~[className/]()
 {
 }
 
-[packageName/]* [packageName/]::create()
+[className/]* [className/]::create()
 {
-    return new [packageName/]();
+    return new [className/]();
 }
 
-void [packageName/]::init(const std::shared_ptr<[packageName/]>& package)
+void [className/]::init(const std::shared_ptr<[className/]>& package)
 {
     setThisPtr(package);
     createPackageContents(package);
@@ -71,31 +73,10 @@ void [packageName/]::init(const std::shared_ptr<[packageName/]>& package)
 
 [comment] create additional file for create function to reduce comiling time
 [/comment]
-[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/impl/').concat(packageName).concat('_Creation.cpp'), false, 'UTF-8')]
-#include "[anEPackage.name/]/impl/[packageName/].hpp"
+[file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getImplementationFolder() + '/' + className + '_Creation.cpp', false, 'UTF-8')]
+[generatePackageImplementationIncludes()/]
 
-// metamodel factory
-#include "[anEPackage.eClass().ePackage.name/]/[anEPackage.eClass().ePackage.name.toUpperFirst().concat('Factory')/].hpp"
-
-#include <cassert>
-
-[if (anEPackage.getMetaMetaModelClasses()->notEmpty())]
-// metamodel classes
-[for (elements : EClassifier| anEPackage.getMetaMetaModelClasses())]
-#include "[elements.ePackage.name/]/[elements.name.toUpperFirst()/].hpp"
-[/for]
-[/if]
-
-[if (anEPackage.metaModelIncludes()->notEmpty())]
-// depending model packages
-[for (pack : EPackage | anEPackage.metaModelIncludes()->asOrderedSet()->sortedBy(name)) ? (not ( pack=anEPackage))]
-#include "[pack.name/]/[pack.name.concat('Package').toUpperFirst()/].hpp"
-[/for]
-[/if]
-
-using namespace [anEPackage.name/];
-
-void [packageName/]::createPackageContents(const std::shared_ptr<[packageName/]>& package)
+void [className/]::createPackageContents(const std::shared_ptr<[className/]>& package)
 {
     if (isCreated) 
         return;
@@ -111,7 +92,7 @@ void [packageName/]::createPackageContents(const std::shared_ptr<[packageName/]>
 }
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-void [packageName/]::create[aClass.name.toUpperFirst()/]Content(const std::shared_ptr<[needNamespace(anEPackage,'EPackage')/]>& package, const std::shared_ptr<[needNamespace(anEPackage,'EcoreFactory')/]>& factory)
+void [className/]::create[aClass.name.toUpperFirst()/]Content(const std::shared_ptr<EPackage>& package, const std::shared_ptr<EcoreFactory>& factory)
 {
     [aClass.generateClassCreation()/]
     [aClass.eAttributes->sortedBy(name).generateAttributeCreation()/]
@@ -120,7 +101,7 @@ void [packageName/]::create[aClass.name.toUpperFirst()/]Content(const std::share
 }
 [/for]
 
-void [packageName/]::createPackageEDataTypes(const std::shared_ptr<[needNamespace(anEPackage,'EPackage')/]>& package, const std::shared_ptr<[needNamespace(anEPackage,'EcoreFactory')/]>& factory)
+void [className/]::createPackageEDataTypes(const std::shared_ptr<EPackage>& package, const std::shared_ptr<EcoreFactory>& factory)
 {
     [anEPackage.eAllContents(EDataType)->sortedBy(name).generateEDatatypeCreation()/]
 }
@@ -128,27 +109,10 @@ void [packageName/]::createPackageEDataTypes(const std::shared_ptr<[needNamespac
 
 [comment] create additional file for initialize function to reduce comiling time
 [/comment]
-[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/impl/').concat(packageName).concat('_Initialization.cpp'), false, 'UTF-8')]
-#include "[anEPackage.name/]/impl/[packageName/].hpp"
+[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/impl/').concat(className).concat('_Initialization.cpp'), false, 'UTF-8')]
+[generatePackageImplementationIncludes()/]
 
-#include "ecore/EList.hpp"
-
-//metametamodel classes
-[for (elements : EClassifier| anEPackage.getMetaMetaModelClasses())]
-#include "[elements.ePackage.name/]/[elements.name.toUpperFirst()/].hpp"
-[/for]
-
-// metametamodel factory
-#include "[anEPackage.eClass().ePackage.name/]/[anEPackage.eClass().ePackage.name.toUpperFirst().concat('Factory')/].hpp"
-
-//depending model packages
-[for (pack : EPackage | anEPackage.metaModelIncludes()->asOrderedSet()->sortedBy(name)) ? (not ( pack=anEPackage))]
-#include "[pack.name/]/[pack.name.concat('Package').toUpperFirst()/].hpp"
-[/for]
-
-using namespace [anEPackage.name/];
-
-void [packageName/]::initializePackageContents()
+void [className/]::initializePackageContents()
 {
     if (isInitialized)
         return;
@@ -171,7 +135,7 @@ void [packageName/]::initializePackageContents()
 }
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-void [packageName/]::initialize[aClass.name.toUpperFirst()/]Content()
+void [className/]::initialize[aClass.name.toUpperFirst()/]Content()
 {
     [aClass.generateClassInit()/]
     [aClass.eAttributes->sortedBy(name).generateAttributeInitialization()/]
@@ -180,7 +144,7 @@ void [packageName/]::initialize[aClass.name.toUpperFirst()/]Content()
 }
 [/for]
 
-void [packageName/]::initializePackageEDataTypes()
+void [className/]::initializePackageEDataTypes()
 {
     [anEPackage.eAllContents(EDataType)->sortedBy(name).generateEDatatypeInitialization()/]
 }

@@ -15,22 +15,22 @@
 [template public generateImplementationSource(aClass : EClass) { className : String = aClass.getImplementationName(); namespaceName : String = aClass.ePackage.getImplementationNamespaceName();}]
 [file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getImplementationFolder() + '/' + className + '.cpp', false, 'UTF-8')]
 #include "[namespaceToFolder(aClass.getQualifiedImplementationName())/].hpp"
-[let classIncludes : OrderedSet(String) = aClass.getClassIncludes()->selectByKind(EClass)->collect( c | c.getQualifiedInterfaceName())->asOrderedSet()->sortedBy( s | s)]
-[let allIncludes : OrderedSet(String) = classIncludes->addAll( OrderedSet {
-                                             aClass.ePackage.getQualifiedInterfaceName(),
-                                             aClass.ePackage.getFactoryQualifiedInterfaceName(),
-                                             aClass.eClass().ePackage.getQualifiedInterfaceName(),
-                                             aClass.eClass().ePackage.getFactoryQualifiedInterfaceName(),
-                                             'ecore::EAnnotation',
-                                             'ecore::EClass',
-                                             'ecore::EAttribute',
-                                             'ecore::EStructuralFeature',
-                                             'ecore::impl::EObjectEList'
-                                            })]
-[for ( include : String | allIncludes )]
+[let includes : OrderedSet(String) = Set{ aClass.getClassIncludes()->selectByKind(EClass)->collect( c | c.getQualifiedInterfaceName())->asSet()
+                                        , Set {
+                                                    aClass.ePackage.getQualifiedInterfaceName(),
+                                                    aClass.ePackage.getFactoryQualifiedInterfaceName(),
+                                                    aClass.eClass().ePackage.getQualifiedInterfaceName(),
+                                                    aClass.eClass().ePackage.getFactoryQualifiedInterfaceName(),
+                                                    'ecore::EAnnotation',
+                                                    'ecore::EClass',
+                                                    'ecore::EAttribute',
+                                                    'ecore::EStructuralFeature',
+                                                    'ecore::impl::EObjectEList'
+                                              }
+                                        }->flatten()->asOrderedSet()->sortedBy( s | s)]
+[for ( include : String | includes )]
 #include "[namespaceToFolder(include)/].hpp"
 [/for]
-[/let]
 [/let]
 [generateAbstractDataTypesIncludes()/]
 
