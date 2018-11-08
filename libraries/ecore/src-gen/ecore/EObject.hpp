@@ -61,7 +61,6 @@ namespace ecore
 }
 // End of user code
 
-
 namespace ecore 
 {
     class EObject  : virtual public ENotifier

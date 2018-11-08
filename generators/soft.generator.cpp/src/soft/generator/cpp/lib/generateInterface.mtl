@@ -9,17 +9,16 @@
 [import soft::generator::cpp::generateCommon/]
 [import soft::generator::cpp::lib::generateCommon/]
 
-[query public includes(aClass : EClass) : Set(EClassifier) =OrderedSet{aClass.eSuperTypes,aClass.eAllStructuralFeatures.eType,aClass.eOperations.eType,aClass.eOperations.eParameters.eType}->flatten() /]
 
 [template public generateInterface(aClass : EClass) { className : String = aClass.getInterfaceName(); classNamespace : String = aClass.ePackage.getInterfaceNamespaceName(); } ]
 [file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getInterfaceFolder() + '/' + className +'.hpp', false, 'UTF-8')]
 [startGuard(aClass)/]
 
 [for ( baseInclude : String | aClass.getInterfaceExtends()->asOrderedSet()->sortedBy( str | str ) ) separator ('\r\n')]
-#include "[baseInclude.substitute('::', '/').concat('.hpp')/]"
+#include "[namespaceToFolder(baseInclude)/].hpp"
 [/for]
-[for (enumInclude : EEnum| aClass.includes()->selectByKind(EEnum)->asOrderedSet()->sortedBy(name) ) separator ('\r\n')]
-#include "[enumInclude.ePackage.name/]/[enumInclude.name.toUpperFirst().concat('.hpp')/]"
+[for (enumInclude : EEnum| aClass.getClassIncludes()->selectByKind(EEnum)->asOrderedSet()->sortedBy(name) ) separator ('\r\n')]
+#include "[enumInclude.ePackage.name/]/[enumInclude.name.toUpperFirst()/].hpp"
 [/for]
 
 [if (aClass.eOperations.eParameters.eType->select(name = 'EMap')->size() > 0 or aClass.eAttributes.eType->select(name = 'EMap')->size() > 0)]
@@ -34,7 +33,7 @@
 
 //forward declarations
 [generateTypesForwardDeclaration()/]
-[for (aCls : EClass| aClass.includes()->selectByKind(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
+[for (aCls : EClass| aClass.getClassIncludes()->selectByKind(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
 namespace [aCls.ePackage.getInterfaceNamespaceName()/] 
 {
     class [aCls.getInterfaceName()/];
@@ -44,10 +43,9 @@ namespace [aCls.ePackage.getInterfaceNamespaceName()/]
 // [protected ('forward declarations for '.concat(aClass.name))]
 // [/protected]
 
-
 namespace [classNamespace/] 
 {
-    class [className/] [for ( extend : String | aClass.getInterfaceExtends()->collect( s | getShortNamespace(s, classNamespace))->sortedBy( s | s )) before (' : ') separator (', ')]virtual public [extend/][/for]
+    class [className/] [for ( extend : String | aClass.getInterfaceExtends()->collect( s | getShortQualifiedName(s, classNamespace))->sortedBy( s | s )) before (' : ') separator (', ')]virtual public [extend/][/for]
     {
         public:
             [className/](const [className/] &) = delete;

@@ -12,40 +12,39 @@
 [import soft::generator::cpp::lib::generateInterface /]
 
 
-[template public generateImplementationSource(aClass : EClass) { className : String = aClass.name.toUpperFirst().concat('Impl'); }]
-[file (aClass.ePackage.getOutputDirectory().concat('/src-gen/').concat(aClass.ePackage.name).concat('/impl/').concat(className).concat('.cpp'), false, 'UTF-8')]
-#include "[aClass.ePackage.name/]/impl/[className.concat('.hpp')/]"
+[template public generateImplementationSource(aClass : EClass) { className : String = aClass.getImplementationName(); namespaceName : String = aClass.ePackage.getImplementationNamespaceName();}]
+[file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getImplementationFolder() + '/' + className + '.cpp', false, 'UTF-8')]
+#include "[namespaceToFolder(aClass.getQualifiedImplementationName())/].hpp"
+[let classIncludes : Set(String) = aClass.getClassIncludes()->selectByKind(EClass)->collect( c | c.getQualifiedInterfaceName())->asSet()]
+[let allIncludes : OrderedSet(String) = classIncludes->addAll( OrderedSet {
+                                             aClass.ePackage.getQualifiedInterfaceName(),
+                                             aClass.ePackage.getFactoryQualifiedInterfaceName(),
+                                             aClass.eClass().ePackage.getQualifiedInterfaceName(),
+                                             aClass.eClass().ePackage.getFactoryQualifiedInterfaceName(),
+                                             'ecore::EAnnotation',
+                                             'ecore::EClass',
+                                             'ecore::EAttribute',
+                                             'ecore::EStructuralFeature',
+                                             'ecore::EObjectEList'
+                                            })]
+[for ( include : String | classIncludes )]
+#include "[namespaceToFolder(include)/].hpp"
+[/for]
+[/let]
+[/let]
+[generateAbstractDataTypesIncludes()/]
 
 #include <cassert>
 #include <iostream>
 #include <sstream>
-
-[generateAbstractDataTypesIncludes()/]
 [if (aClass.eAttributes.eType->select(isAny())->size() = 0 and aClass.eOperations.eParameters.eType->select(isAny())->size() > 0)]
 #include <boost/any.hpp>
 [/if]
-#include "ecore/EAnnotation.hpp"
-#include "ecore/EClass.hpp"
-#include "[aClass.ePackage.name/]/impl/[aClass.ePackage.name.toUpperFirst().concat('PackageImpl')/].hpp"
-[if (aClass.hasKey('includes'))]
-[aClass.valueKey('includes')/]
-[/if]
 
-
-[for (element : EClassifier| aClass.includes()->selectByKind(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-#include "[element.ePackage.name/]/[element.name.toUpperFirst()/].hpp"
-[/for]
-
-#include "[aClass.eClass().ePackage.name/]/[aClass.eClass().ePackage.name.toUpperFirst()/]Package.hpp"
-#include "[aClass.eClass().ePackage.name/]/[aClass.eClass().ePackage.name.toUpperFirst()/]Factory.hpp"
-#include "[aClass.ePackage.name/]/[aClass.ePackage.name.toUpperFirst()/]Package.hpp"
-#include "[aClass.ePackage.name/]/[aClass.ePackage.name.toUpperFirst()/]Factory.hpp"
-#include "ecore/EAttribute.hpp"
-#include "ecore/EStructuralFeature.hpp"
-#include "ecore/EObjectEList.hpp"
 
 [comment namespace /]
-using namespace [aClass.ePackage.name/];
+using namespace [aClass.ePackage.getInterfaceNamespaceName()/];
+using namespace [aClass.ePackage.getImplementationNamespaceName()/];
 
 //*********************************
 // Constructor / Destructor

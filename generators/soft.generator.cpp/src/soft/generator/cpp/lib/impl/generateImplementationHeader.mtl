@@ -10,38 +10,25 @@
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::lib::generateCommon /]
 
-[template public generateImplementationHeader(aClass : EClass){ className : String = aClass.name.toUpperFirst().concat('Impl'); guardName : String = '_'.concat(className); }]
-[file (aClass.ePackage.getOutputDirectory().concat('/src-gen/').concat(aClass.ePackage.name).concat('/impl/').concat(className).concat('.hpp'), false, 'UTF-8')]
+[template public generateImplementationHeader(aClass : EClass){ className : String = aClass.getImplementationName(); namespaceName : String = aClass.ePackage.getImplementationNamespaceName(); guardName : String = '_'.concat(className); }]
+[file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getImplementationFolder() + '/' + className +'.hpp', false, 'UTF-8')]
 [startGuard(guardName)/]
 
-//*********************************
-// generated Includes
+[for (implInclude : String | aClass.getClassImplements()->asOrderedSet()->sortedBy(s | s)) separator ('\r\n')]
+#include "[namespaceToFolder(implInclude)/].hpp"
+[/for]
+#include "[namespaceToFolder(aClass.getClassExtends())/].hpp"
 
-//Model includes
-#include "[aClass.ePackage.name/]/[aClass.name.toUpperFirst().concat('.hpp')/]"
-
-[for (aEClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-#include "[aEClass.ePackage.name/]/impl/[aEClass.name.toUpperFirst()/]Impl.hpp"[/for]
-
-[if aClass.eSuperTypes->isEmpty()]
-[if aClass.name='EObject']
-#include "ecore/BasicEObject.hpp"
-[else]
-#include "ecore/impl/EObjectImpl.hpp"
-[/if]
-[/if]
-
-//*********************************
 [comment namespace /]
-namespace [aClass.ePackage.name/] 
+namespace [namespaceName/] 
 {
-    class [className/] :[for (sClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator (', ') after (', ')] virtual public [getClassWithNamespace(aClass, sClass)/]Impl[/for][if (aClass.eSuperTypes->isEmpty())][if aClass.name='EObject']virtual public ecore::BasicEObject,[else]virtual public ecore::EObjectImpl,[/if] [/if]virtual public [aClass.name.toUpperFirst()/] 
+    class [className/] : virtual public [getShortQualifiedName(aClass.getClassExtends(),namespaceName)/][for ( implClass : String | aClass.getClassImplements()->asOrderedSet()->sortedBy(s | s)) separator (', ') after (', ')] virtual public [getShortQualifiedName(implClass, namespaceName)/][/for] 
     {
         private:    
             [className/]& operator=([className/] const&) = delete;
 
         protected:
-            friend class [aClass.ePackage.name.concat('FactoryImpl').toUpperFirst()/];
+            friend class [ getShortQualifiedName( aClass.ePackage.getFactoryQualifiedImplementationName(), namespaceName) /];
             [className/]();
             [aClass.generateGetThisPtr()/]
 
@@ -72,7 +59,7 @@ namespace [aClass.ePackage.name/]
             [/if]
             
         protected:
-            virtual std::shared_ptr<[needNamespace(aClass.ePackage, 'EClass')/]> eStaticClass() const;
+            virtual std::shared_ptr<[getShortQualifiedName('ecore::EClass',namespaceName)/]> eStaticClass() const;
             [aClass.generateGetDeclaration(true)/]
             [aClass.generateSetDeclaration(true)/]
             [aClass.generateUnSetDeclaration(true)/]
