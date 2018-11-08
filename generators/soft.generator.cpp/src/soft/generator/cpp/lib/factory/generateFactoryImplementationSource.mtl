@@ -6,66 +6,72 @@
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::lib::generateCommon /]
 
-[template public generateFactoryImplSource(anEPackage : EPackage) {factoryName : String = anEPackage.name.toUpperFirst().concat('FactoryImpl');}]
-[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/impl/').concat(factoryName).concat('.cpp'), false, 'UTF-8')]
-#include "[anEPackage.name/]/impl/[factoryName/].hpp"
+[template public generateFactoryImplementationSource(anEPackage : EPackage) { className : String = anEPackage.getFactoryImplementationName() ; namespaceName : String = anEPackage.getImplementationNamespaceName(); }]
+[file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getImplementationFolder() + '/' + className + '.cpp', false, 'UTF-8')]
+#include "[namespaceToFolder(anEPackage.getFactoryQualifiedImplementationName())/].hpp"
+[let classIncludes : OrderedSet(String) = anEPackage.eAllContents(EClass)->collect( c | c.getQualifiedImplementationName())->asOrderedSet()->sortedBy( s | s)]
+[let allIncludes : OrderedSet(String) = classIncludes->addAll( OrderedSet {
+                                             anEPackage.getQualifiedInterfaceName(),
+                                             anEPackage.getFactoryQualifiedInterfaceName(),
+                                             'ecore::EList',
+                                             'ecore::EClass'
+                                            })]
+[for ( include : String | allIncludes )]
+#include "[namespaceToFolder(include)/].hpp"
+[/for]
+[/let]
+[/let]
+
 
 #include <iostream>
 #include <boost/current_function.hpp>
 
-#include "[anEPackage.name/]/[anEPackage.name.toUpperFirst().concat('Package')/].hpp"
-
-#include "ecore/EList.hpp"
-[if (not(anEPackage.name = 'ecore'))]
-#include "ecore/EClass.hpp"
-[/if]
-
-
-[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
-#include "[anEPackage.name/]/impl/[aClass.name.toUpperFirst().concat('Impl.hpp')/]"
-[/for]
 
 [comment namespace /]
-using namespace [anEPackage.name/];
+[let namespaces : OrderedSet(String) = OrderedSet{ 'ecore' , anEPackage.getInterfaceNamespaceName() , anEPackage.getImplementationNamespaceName()}]
+[for (namespace : String | namespaces )]
+using namespace [namespace/];
+[/for]
+[/let]
 
 //*********************************
 // Constructor / Destructor
 //*********************************
 
-[factoryName/]::[factoryName/]()
+[className/]::[className/]()
 {
 }
 
-[factoryName/]::~[factoryName/]()
+[className/]::~[className/]()
 {
 }
 
-[factoryName/]* [factoryName/]::create()
+[className/]* [className/]::create()
 {
-	return new [factoryName/]();
+    return new [className/]();
 }
 
 //*********************************
 // creators
 //*********************************
 
-std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> [factoryName/]::create(const std::shared_ptr<[needNamespace(anEPackage, 'EClass')/]>&  eClass) const
+std::shared_ptr<[getShortQualifiedName('ecore::EObject',namespaceName)/]> [className/]::create(const std::shared_ptr<[getShortQualifiedName('ecore::EClass',namespaceName)/]>&  eClass) const
 {
     int classID = eClass->getClassifierID();
-	switch(classID)
-	{
-	[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
-		case [anEPackage.name.toUpperFirst()/]Package::[aClass.getClassifierIDName()/]:
+    switch(classID)
+    {
+    [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
+        case [anEPackage.name.toUpperFirst()/]Package::[aClass.getClassifierIDName()/]:
             return this->create[aClass.name/]();
-	[/for]
-	default:
-	   	    std::cerr << BOOST_CURRENT_FUNCTION << " ID " << classID <<" not found" << std::endl;
-	}
-	return nullptr;
+    [/for]
+    default:
+            std::cerr << BOOST_CURRENT_FUNCTION << " ID " << classID <<" not found" << std::endl;
+    }
+    return nullptr;
 }
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
-std::shared_ptr<[aClass.generateTypeClass()/]> [factoryName/]::create[aClass.name/]() const
+std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]() const
 {
     std::shared_ptr<[aClass.name.toUpperFirst()/]Impl> element(new [aClass.name.toUpperFirst()/]Impl());
     element->[generateGetThisPtrPropertySetterName()/](element);
@@ -74,12 +80,12 @@ std::shared_ptr<[aClass.generateTypeClass()/]> [factoryName/]::create[aClass.nam
 
 [let ref : OrderedSet(EReference) = aClass.getAllContainers()]
 [for(aReference:EReference | ref->sortedBy(name))]
-std::shared_ptr<[aClass.generateTypeClass()/]> [factoryName/]::create[aClass.name/]([aReference.generateParameterType()/] eContainer) const
+std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]([aReference.generateParameterType()/] eContainer) const
 {
     [generateCreateFunctionContent(aClass, ref, aReference, anEPackage, false)/]
 }
 [if(aClass.getElementIDAccessorName().size() > 0)]
-std::shared_ptr<[aClass.generateTypeClass()/]> [factoryName/]::create[aClass.name/]([aReference.generateParameterType()/] eContainer, const unsigned int classID) const
+std::shared_ptr<[aClass.generateTypeClass()/]> [className/]::create[aClass.name/]([aReference.generateParameterType()/] eContainer, const unsigned int classID) const
 {
     [generateCreateFunctionContent(aClass, ref, aReference, anEPackage, true)/]
 }[/if]
@@ -88,21 +94,21 @@ std::shared_ptr<[aClass.generateTypeClass()/]> [factoryName/]::create[aClass.nam
 [/let]
 [/for]
 
-std::shared_ptr<[anEPackage.name.toUpperFirst().concat('Package')/]> [factoryName/]::get[anEPackage.name.toUpperFirst().concat('Package')/]() const
+std::shared_ptr<[anEPackage.getInterfaceName()/]> [className/]::get[anEPackage.getInterfaceName()/]() const
 {
-	return [anEPackage.name.toUpperFirst().concat('Package')/]::eInstance();
+    return [anEPackage.getInterfaceName()/]::eInstance();
 }
 [/file]
 [/template]
 
 [template public generateCreateFunctionContent(anEClass : EClass, ref : OrderedSet(EReference), aReference : EReference, anEPackage : EPackage, addID : Boolean)]
-std::shared_ptr<[anEClass.name.toUpperFirst()/]Impl> element(new [anEClass.name.toUpperFirst()/]Impl());
+auto element = std::make_shared<[anEClass.getImplementationName()/]>();
 element->[generateGetThisPtrPropertySetterName()/](element);
 [if(addID)]
 element->set[anEClass.getElementIDAccessorName()/]ID(classID);
 [/if]
 [if(not aReference.eOpposite.name.oclIsUndefined())]
-if(nullptr != eContainer)
+if( eContainer)
 [if(aReference.eOpposite.upperBound <> 1)]
     eContainer->get[aReference.eOpposite.name.toUpperFirst()/]()->add(element);
 [else]

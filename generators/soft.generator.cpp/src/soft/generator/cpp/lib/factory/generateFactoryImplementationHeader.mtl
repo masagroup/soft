@@ -5,49 +5,48 @@
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::lib::generateCommon/]
 
-[template public generateFactoryImplHeader(anEPackage : EPackage) { factoryName : String = anEPackage.name.toUpperFirst().concat('FactoryImpl'); } ]
-[file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/impl/').concat(factoryName).concat('.hpp'), false, 'UTF-8')]
+[template public generateFactoryImplementationHeader(anEPackage : EPackage) { className : String = anEPackage.getFactoryImplementationName() ; namespaceName : String = anEPackage.getImplementationNamespaceName(); } ]
+[file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getImplementationFolder() + '/' + className + '.hpp', false, 'UTF-8')]
 [startGuard(anEPackage,'FactoryImpl')/]
 
+#include "[namespaceToFolder(anEPackage.getFactoryQualifiedInterfaceName())/].hpp"
 #include "ecore/impl/EFactoryImpl.hpp"
 
-[comment  Generate Includes for the Factory/]
-#include "[anEPackage.name/]/[anEPackage.name.toUpperFirst().concat('Factory')/].hpp"
-
-namespace [anEPackage.name/] 
-{[for (elements : EClassifier| OrderedSet{anEPackage.eClassifiers}->flatten()->selectByKind(EClass)->sortedBy(name)) separator ('\r\n')]
-	class [elements.name/];[/for]
+namespace [anEPackage.getInterfaceNamespaceName()/] 
+{
+[for (elements : EClassifier| OrderedSet{anEPackage.eClassifiers}->flatten()->selectByKind(EClass)->sortedBy(name)) separator ('\r\n')]
+    class [elements.name/];[/for]
 
 }
 
 [comment namespace /]
-namespace [anEPackage.name/] 
+namespace [namespaceName/] 
 {
-	class [factoryName/] : virtual public [needNamespace(anEPackage, 'EFactoryImpl')/] , virtual public [anEPackage.name.toUpperFirst().concat('Factory')/] 
-	{
-		private:    
-			[factoryName/]([factoryName/] const&) = delete;
-			[factoryName/]& operator=([factoryName/] const&) = delete;
+    class [className/] : virtual public [getShortQualifiedName('ecore::impl::EFactoryImpl' ,namespaceName)/] , virtual public [anEPackage.getFactoryInterfaceName()/] 
+    {
+        private:    
+            [className/]([className/] const&) = delete;
+            [className/]& operator=([className/] const&) = delete;
 
-		protected:
-			friend class [anEPackage.name.toUpperFirst().concat('Factory')/];
-			// Constructor
-			[factoryName/]();
+        protected:
+            friend class [anEPackage.getFactoryInterfaceName()/];
+            // Constructor
+            [className/]();
 
-		public:
-			virtual ~[factoryName/]();
+        public:
+            virtual ~[className/]();
 
-            virtual std::shared_ptr<[needNamespace(anEPackage, 'EObject')/]> create(const std::shared_ptr<[needNamespace(anEPackage, 'EClass')/]>&  eClass) const;
+            virtual std::shared_ptr<[getShortQualifiedName('ecore::EObject',namespaceName)/]> create(const std::shared_ptr<[getShortQualifiedName('ecore::EClass',namespaceName)/]>&  eClass) const;
             
-			//Creator functions
-			[anEPackage.eAllContents(EClass)->sortedBy(name).generateClassCreate(true)/]
+            //Creator functions
+            [anEPackage.eAllContents(EClass)->sortedBy(name).generateClassCreate(true)/]
 
-			//Package
-			virtual std::shared_ptr<[anEPackage.name.toUpperFirst()/]Package> get[anEPackage.name.toUpperFirst()/]Package() const;
+            //Package
+            virtual std::shared_ptr<[anEPackage.getInterfaceName()/]> get[anEPackage.getInterfaceName()/]() const;
 
-		private:
-			static [factoryName/]* create();
-	};
+        private:
+            static [className/]* create();
+    };
 }
 [endGuard(anEPackage,'FactoryImpl')/]
 [/file]

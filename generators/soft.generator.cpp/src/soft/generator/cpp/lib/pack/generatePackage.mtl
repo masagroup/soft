@@ -3,11 +3,11 @@
 
 [import soft::generator::cpp::lib::pack::generatePackageImplementationHeader /]
 [import soft::generator::cpp::lib::pack::generatePackageImplementationSource /]
-[import soft::generator::cpp::lib::pack::generatePackageInterface /]
+[import soft::generator::cpp::lib::pack::generatePackageInterfaceHeader /]
 [import soft::generator::cpp::lib::pack::generatePackageInterfaceSource /]
 
 [template public generatePackage(anEPackage : EPackage)]
-[anEPackage.generatePackageInterface()/]
+[anEPackage.generatePackageInterfaceHeader()/]
 [anEPackage.generatePackageInterfaceSource()/]
 [anEPackage.generatePackageImplHeader()/]
 [anEPackage.generatePackageImplSource()/]

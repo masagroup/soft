@@ -3,12 +3,12 @@
 
 [import soft::generator::cpp::lib::factory::generateFactoryImplementationHeader /]
 [import soft::generator::cpp::lib::factory::generateFactoryImplementationSource /]
-[import soft::generator::cpp::lib::factory::generateFactoryInterface /]
+[import soft::generator::cpp::lib::factory::generateFactoryInterfaceHeader /]
 [import soft::generator::cpp::lib::factory::generateFactoryInterfaceSource /]
 
 [template public generateFactory(anEPackage : EPackage)]
-[anEPackage.generateFactoryInterface()/]
-[anEPackage.generateFactoryCpp()/]
-[anEPackage.generateFactoryImplHeader()/]
-[anEPackage.generateFactoryImplSource()/]
+[anEPackage.generateFactoryInterfaceHeader()/]
+[anEPackage.generateFactoryInterfaceSource()/]
+[anEPackage.generateFactoryImplementationHeader()/]
+[anEPackage.generateFactoryImplementationSource()/]
 [/template]

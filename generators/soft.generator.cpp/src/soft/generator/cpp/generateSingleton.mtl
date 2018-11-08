@@ -1,26 +1,26 @@
 [comment encoding = UTF-8 /]
 [module generateSingleton('http://www.eclipse.org/emf/2002/Ecore')/]
 
-[template public generateSingletonDeclaration(packageName : String)]
+[template public generateSingletonDeclaration(interfaceName : String)]
 private:
-	static std::shared_ptr<[packageName/]Impl> instance;
+    static std::shared_ptr<[interfaceName/]> instance;
 public:
-	static std::shared_ptr<[packageName/]> eInstance();
+    static std::shared_ptr<[interfaceName/]> eInstance();
 [/template]
 
-[template public generateSingletonImplementation(packageName : String, callInit : Boolean)]
-std::shared_ptr<[packageName/]Impl> [packageName/]::instance;
+[template public generateSingletonImplementation(interfaceName : String, implementationName : String , callInit : Boolean)]
+std::shared_ptr<[interfaceName/]> [interfaceName/]::instance;
 
-std::shared_ptr<[packageName/]>[packageName/]::eInstance()
+std::shared_ptr<[interfaceName/]>[interfaceName/]::eInstance()
 {
-	if(!instance)
-	{
-		//create a new Factoryimplementation
-		instance.reset([packageName/]Impl::create());
+    if(!instance)
+    {
+        //create a new Factoryimplementation
+        instance.reset([implementationName/]::create());
 [if (callInit)]
         instance->init(instance);
 [/if]
-	}	
-	return instance;
+    }   
+    return instance;
 }
 [/template]

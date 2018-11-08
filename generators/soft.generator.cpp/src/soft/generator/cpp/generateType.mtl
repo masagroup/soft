@@ -162,8 +162,8 @@ boost::any
 std::string
 [/template]
 
-[template public generateType(anEClassifier : EClassifier) ? (not oclIsKindOf(EDataType))]
-[anEClassifier.ePackage.name/]::[anEClassifier.name/]
+[template public generateType(anEClassifier : EClassifier) ? (oclIsKindOf(EClass))]
+[anEClassifier.oclAsType(EClass).getQualifiedInterfaceName()/]
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? (oclIsKindOf(EEnum))]
