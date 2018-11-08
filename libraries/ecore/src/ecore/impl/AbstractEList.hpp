@@ -11,12 +11,12 @@
 #define ECORE_ABSTRACTELIST_HPP_
 
 #include "ecore/EList.hpp"
-#include "ecore/ImmutableEList.hpp"
+#include "ecore/impl/ImmutableEList.hpp"
 
 #include <vector>
 #include<unordered_set>
 
-namespace ecore
+namespace ecore::impl
 {
 
     template<typename T , bool unique = false >

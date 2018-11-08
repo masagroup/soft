@@ -7,11 +7,12 @@
 //
 // *****************************************************************************
 
-#include "ecore/NotificationChain.hpp"
+#include "ecore/impl/NotificationChain.hpp"
 #include "ecore/ENotification.hpp"
 #include "ecore/ENotifier.hpp"
 
 using namespace ecore;
+using namespace ecore::impl;
 
 bool NotificationChain::add( const std::shared_ptr<ENotification>& notification )
 {

@@ -10,19 +10,19 @@
 #ifndef ECORE_EOBJECTELIST_HPP_
 #define ECORE_EOBJECTELIST_HPP_
 
-#include "ecore/BasicElist.hpp"
 #include "ecore/Constants.hpp"
-#include "ecore/NotifyingElist.hpp"
 #include "ecore/EObject.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/EReference.hpp"
-#include "ecore/Notification.hpp"
-#include "ecore/NotificationChain.hpp"
+#include "ecore/impl/BasicElist.hpp"
+#include "ecore/impl/NotifyingElist.hpp"
+#include "ecore/impl/Notification.hpp"
+#include "ecore/impl/NotificationChain.hpp"
 
 #include <memory>
 #include <algorithm>
 
-namespace ecore
+namespace ecore::impl
 {
     
     template <typename T, bool containement = false, bool inverse = false, bool opposite = false >

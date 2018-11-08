@@ -14,7 +14,7 @@
 
 #include <vector>
 
-namespace ecore {
+namespace ecore::impl {
 
     template <typename T>
     class ImmutableEList : public EList<T> {

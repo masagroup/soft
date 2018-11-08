@@ -1,18 +1,19 @@
-#include "BasicEObject.hpp"
-#include "ecore/BasicEList.hpp"
+#include "ecore/impl/BasicEObject.hpp"
+#include "ecore/impl/BasicEList.hpp"
+#include "ecore/impl/Notification.hpp"
 #include "ecore/Constants.hpp"
 #include "ecore/EAdapter.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/EOperation.hpp"
 #include "ecore/EReference.hpp"
 #include "ecore/EStructuralFeature.hpp"
-#include "ecore/Notification.hpp"
 
 #include <boost/assert.hpp>
 #include <string>
 #include <sstream>
 
 using namespace ecore;
+using namespace ecore::impl;
 
 BasicEObject::BasicEObject()
     : eDeliver_( false )

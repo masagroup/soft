@@ -15,7 +15,7 @@
 #include <memory>
 #include <vector>
 
-namespace ecore
+namespace ecore::impl
 {
     class NotificationChain : public ENotificationChain , public std::enable_shared_from_this<NotificationChain>
     {

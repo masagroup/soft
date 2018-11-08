@@ -7,12 +7,13 @@
 //
 // *****************************************************************************
 
-#include "ecore/Notification.hpp"
-#include "ecore/NotificationChain.hpp"
+#include "ecore/impl/Notification.hpp"
+#include "ecore/impl/NotificationChain.hpp"
+#include "ecore/impl/BasicEList.hpp"
 #include "ecore/ENotifier.hpp"
-#include "ecore/BasicEList.hpp"
 
 using namespace ecore;
+using namespace ecore::impl;
 
 bool Notification::merge( const std::shared_ptr<ENotification>& notification )
 {

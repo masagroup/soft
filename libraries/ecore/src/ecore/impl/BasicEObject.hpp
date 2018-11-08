@@ -15,8 +15,12 @@
 namespace ecore
 {
     class ENotificationChain;
+}
 
-    class BasicEObject : public virtual ecore::EObject
+namespace ecore::impl
+{
+
+    class BasicEObject : public virtual EObject
     {
     public:
         BasicEObject();

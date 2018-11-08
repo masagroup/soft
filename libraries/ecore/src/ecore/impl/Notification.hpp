@@ -13,9 +13,8 @@
 #include "ecore/ENotification.hpp"
 #include "ecore/ENotificationChain.hpp"
 
-namespace ecore
+namespace ecore::impl
 {
-    
     class Notification : public ENotification , public ENotificationChain , public std::enable_shared_from_this<Notification>
     {
     public:

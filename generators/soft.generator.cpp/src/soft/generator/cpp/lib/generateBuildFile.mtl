@@ -25,7 +25,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 set(CMAKE_DEBUG_POSTFIX d)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 # Boost
 set(Boost_USE_STATIC_LIBS ON)
@@ -67,7 +67,15 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles.txt")
    list(APPEND CMAKE_FILES "CMakeFiles.txt")
 endif()
 
-add_library(${PROJECT_NAME} STATIC  ${CMAKE_FILES} ${HEADER_FILES} ${SOURCE_FILES} ${GENERATED_HEADER_INTERFACE_FILES} ${GENERATED_HEADER_IMPLEMENTATION_FILES} ${GENERATED_SOURCE_FILES} ${GENERATED_SOURCE_IMPLEMENTATION_FILES})
+add_library(${PROJECT_NAME} STATIC  ${CMAKE_FILES} 
+                                    ${HEADER_FILES} 
+                                    ${SOURCE_FILES} 
+                                    ${HEADER_IMPLEMENTATION_FILES} 
+                                    ${SOURCE_IMPLEMENTATION_FILES} 
+                                    ${GENERATED_HEADER_INTERFACE_FILES} 
+                                    ${GENERATED_HEADER_IMPLEMENTATION_FILES} 
+                                    ${GENERATED_SOURCE_FILES} 
+                                    ${GENERATED_SOURCE_IMPLEMENTATION_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC src)
 target_include_directories(${PROJECT_NAME} PUBLIC src-gen)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
@@ -78,6 +86,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 # Visual studio specific project layout
 source_group(cmake FILES ${CMAKE_FILES})
 source_group(src\\[packageName/] FILES ${SOURCE_FILES} ${HEADER_FILES})
+source_group(src\\[packageName/]\\impl FILES ${SOURCE_IMPLEMENTATION_FILES} ${HEADER_IMPLEMENTATION_FILES})
 source_group(src-gen\\[packageName/] FILES ${GENERATED_HEADER_INTERFACE_FILES} ${GENERATED_SOURCE_FILES})
 source_group(src-gen\\[packageName/]\\impl FILES ${GENERATED_HEADER_IMPLEMENTATION_FILES} ${GENERATED_SOURCE_IMPLEMENTATION_FILES})
 

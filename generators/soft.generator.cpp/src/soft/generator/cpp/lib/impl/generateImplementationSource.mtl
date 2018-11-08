@@ -15,7 +15,7 @@
 [template public generateImplementationSource(aClass : EClass) { className : String = aClass.getImplementationName(); namespaceName : String = aClass.ePackage.getImplementationNamespaceName();}]
 [file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getImplementationFolder() + '/' + className + '.cpp', false, 'UTF-8')]
 #include "[namespaceToFolder(aClass.getQualifiedImplementationName())/].hpp"
-[let classIncludes : Set(String) = aClass.getClassIncludes()->selectByKind(EClass)->collect( c | c.getQualifiedInterfaceName())->asSet()]
+[let classIncludes : OrderedSet(String) = aClass.getClassIncludes()->selectByKind(EClass)->collect( c | c.getQualifiedInterfaceName())->asOrderedSet()->sortedBy( s | s)]
 [let allIncludes : OrderedSet(String) = classIncludes->addAll( OrderedSet {
                                              aClass.ePackage.getQualifiedInterfaceName(),
                                              aClass.ePackage.getFactoryQualifiedInterfaceName(),
@@ -25,9 +25,9 @@
                                              'ecore::EClass',
                                              'ecore::EAttribute',
                                              'ecore::EStructuralFeature',
-                                             'ecore::EObjectEList'
+                                             'ecore::impl::EObjectEList'
                                             })]
-[for ( include : String | classIncludes )]
+[for ( include : String | allIncludes )]
 #include "[namespaceToFolder(include)/].hpp"
 [/for]
 [/let]
@@ -60,9 +60,9 @@ using namespace [aClass.ePackage.getImplementationNamespaceName()/];
 #endif
 }
 
-std::shared_ptr<[needNamespace(aClass.ePackage, 'EClass')/]> [className/]::eStaticClass() const
+std::shared_ptr<[ getShortQualifiedName('ecore::EClass',namespaceName)/]> [className/]::eStaticClass() const
 {
-    return [aClass.ePackage.name.concat('PackageImpl').toUpperFirst()/]::eInstance()->get[aClass.getElementAccessorName()/]();
+    return [aClass.ePackage.getInterfaceName()/]::eInstance()->get[aClass.getElementAccessorName()/]();
 }
 
 [if aClass.eAttributes->notEmpty()]

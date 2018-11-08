@@ -10,14 +10,13 @@
 #ifndef ECORE_NOTIFICATIONELIST_HPP_
 #define ECORE_NOTIFICATIONELIST_HPP_
 
-#include "ecore/BasicEList.hpp"
-
-
 namespace ecore
 {
-
     class ENotificationChain;
+}
 
+namespace ecore::impl
+{
     template <typename T>
     class NotifyingEList
     {

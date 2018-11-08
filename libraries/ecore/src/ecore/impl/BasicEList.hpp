@@ -10,12 +10,12 @@
 #ifndef ECORE_BASICELIST_HPP_
 #define ECORE_BASICELIST_HPP_
 
-#include "ecore/AbstractEList.hpp"
+#include "ecore/impl/AbstractEList.hpp"
 
 #include <vector>
 
 
-namespace ecore
+namespace ecore::impl
 {
 
     template <typename T, bool unique = false>
