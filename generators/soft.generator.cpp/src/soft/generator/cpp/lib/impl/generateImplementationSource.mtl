@@ -43,8 +43,11 @@
 
 
 [comment namespace /]
-using namespace [aClass.ePackage.getInterfaceNamespaceName()/];
-using namespace [aClass.ePackage.getImplementationNamespaceName()/];
+[let namespaces : OrderedSet(String) = OrderedSet{ 'ecore' , aClass.ePackage.getInterfaceNamespaceName() , aClass.ePackage.getImplementationNamespaceName()}]
+[ for (namespace : String | namespaces ) ]
+using namespace [namespace/];
+[/for]
+[/let]
 
 //*********************************
 // Constructor / Destructor
@@ -60,7 +63,7 @@ using namespace [aClass.ePackage.getImplementationNamespaceName()/];
 #endif
 }
 
-std::shared_ptr<[ getShortQualifiedName('ecore::EClass',namespaceName)/]> [className/]::eStaticClass() const
+std::shared_ptr<EClass> [className/]::eStaticClass() const
 {
     return [aClass.ePackage.getInterfaceName()/]::eInstance()->get[aClass.getElementAccessorName()/]();
 }
