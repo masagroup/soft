@@ -99,7 +99,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 install(TARGETS ${PROJECT_NAME} DESTINATION dist/lib )
 [for ( namespace : String | namespaces )]
 [let namespaceVar : String = getVarName(namespace)]
-install(FILES [getVarName('HEADER',namespaceVar,'FILES')/] [getVarName('GENERATED_HEADER',namespaceVar,'FILES')/] DESTINATION dist/include[if namespace<>'']/[namespace/][/if])
+install(FILES [getVarName('HEADER',namespaceVar,'FILES')/] [getVarName('GENERATED_HEADER',namespaceVar,'FILES')/] DESTINATION dist/include[if namespace<>'']/[namespaceToFolder(namespace)/][/if])
 [/let]
 [/for]
 [/let]
