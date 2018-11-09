@@ -8,6 +8,7 @@
 
 [template public generatePackageInterfaceSource(anEPackage : EPackage) {className : String = anEPackage.getInterfaceName() ; }]
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getInterfaceFolder() + '/' + className +'.cpp', false, 'UTF-8')]
+[fileComment()/]
 [let includes : OrderedSet(String) = OrderedSet{ anEPackage.getQualifiedInterfaceName() , anEPackage.getQualifiedImplementationName() }]
 [for (include:String | includes )]
 #include "[namespaceToFolder(include)/].hpp"

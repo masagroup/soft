@@ -12,6 +12,7 @@
 
 [template public generatePackageImplHeader(anEPackage : EPackage) { className : String = anEPackage.getImplementationName() ; namespaceName : String = anEPackage.getImplementationNamespaceName(); }]
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getImplementationFolder() + '/' + className + '.hpp', false, 'UTF-8')]
+[fileComment()/]
 [startGuard(anEPackage,'PackageImpl')/]
 
 #include "[namespaceToFolder(anEPackage.getQualifiedInterfaceName())/].hpp"

@@ -14,6 +14,7 @@
 
 [template public generateImplementationSource(aClass : EClass) { className : String = aClass.getImplementationName(); namespaceName : String = aClass.ePackage.getImplementationNamespaceName();}]
 [file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getImplementationFolder() + '/' + className + '.cpp', false, 'UTF-8')]
+[fileComment()/]
 #include "[namespaceToFolder(aClass.getQualifiedImplementationName())/].hpp"
 [let includes : OrderedSet(String) = Set{ aClass.getClassIncludes()->selectByKind(EClass)->collect( c | c.getQualifiedInterfaceName())->asSet()
                                         , Set {

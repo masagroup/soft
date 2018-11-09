@@ -12,6 +12,7 @@
 
 [template public generateImplementationHeader(aClass : EClass){ className : String = aClass.getImplementationName(); namespaceName : String = aClass.ePackage.getImplementationNamespaceName(); guardName : String = '_'.concat(className); }]
 [file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getImplementationFolder() + '/' + className +'.hpp', false, 'UTF-8')]
+[fileComment()/]
 [startGuard(guardName)/]
 
 [for (implInclude : String | aClass.getClassImplements()->asOrderedSet()->sortedBy(s | s)) separator ('\r\n')]#include "[namespaceToFolder(implInclude)/].hpp"[/for]

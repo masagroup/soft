@@ -14,6 +14,7 @@
 
 [template public generatePackageInterfaceHeader(anEPackage : EPackage) { className : String = anEPackage.getInterfaceName() ; namespaceName : String = anEPackage.getInterfaceNamespaceName(); }]
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getInterfaceFolder() + '/' + className +'.hpp', false, 'UTF-8')]
+[fileComment()/]
 [startGuard(anEPackage,'Package')/]
 
 #include "ecore/EPackage.hpp"

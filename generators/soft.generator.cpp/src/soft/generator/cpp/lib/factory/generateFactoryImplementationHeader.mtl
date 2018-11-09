@@ -7,6 +7,7 @@
 
 [template public generateFactoryImplementationHeader(anEPackage : EPackage) { className : String = anEPackage.getFactoryImplementationName() ; namespaceName : String = anEPackage.getImplementationNamespaceName(); } ]
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getImplementationFolder() + '/' + className + '.hpp', false, 'UTF-8')]
+[fileComment()/]
 [startGuard(anEPackage,'FactoryImpl')/]
 
 #include "[namespaceToFolder(anEPackage.getFactoryQualifiedInterfaceName())/].hpp"

@@ -8,6 +8,7 @@
 
 [template public generateFactoryInterfaceHeader(anEPackage : EPackage) { className : String = anEPackage.getFactoryInterfaceName() ; namespaceName : String = anEPackage.getInterfaceNamespaceName(); }]
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getInterfaceFolder() + '/' + className +'.hpp', false, 'UTF-8')]
+[fileComment()/]
 [startGuard(anEPackage,'Factory')/]
 
 #include "ecore/EFactory.hpp"

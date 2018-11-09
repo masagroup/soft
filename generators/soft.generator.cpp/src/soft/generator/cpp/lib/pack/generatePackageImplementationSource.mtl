@@ -37,6 +37,7 @@ using namespace [namespace/];
 
 [template public generatePackageImplSource(anEPackage : EPackage) { className : String = anEPackage.getImplementationName(); }]
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getImplementationFolder() + '/' + className + '.cpp', false, 'UTF-8')]
+[fileComment()/]
 [generatePackageImplementationIncludes()/]
 
 [className/]::[className/]()
@@ -74,6 +75,7 @@ void [className/]::init(const std::shared_ptr<[className/]>& package)
 [comment] create additional file for create function to reduce comiling time
 [/comment]
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getImplementationFolder() + '/' + className + '_Creation.cpp', false, 'UTF-8')]
+[fileComment()/]
 [generatePackageImplementationIncludes()/]
 
 void [className/]::createPackageContents(const std::shared_ptr<[className/]>& package)
@@ -110,6 +112,7 @@ void [className/]::createPackageEDataTypes(const std::shared_ptr<EPackage>& pack
 [comment] create additional file for initialize function to reduce comiling time
 [/comment]
 [file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/impl/').concat(className).concat('_Initialization.cpp'), false, 'UTF-8')]
+[fileComment()/]
 [generatePackageImplementationIncludes()/]
 
 void [className/]::initializePackageContents()

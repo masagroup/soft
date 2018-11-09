@@ -9,6 +9,7 @@
 
 [template public generateMock(aClass : EClass) { mockName : String = aClass.getMockName(); guardName : String = '_'.concat(mockName); }  ]
 [file (aClass.ePackage.getOutputDirectory().concat('/src-gen/').concat(aClass.ePackage.name).concat('/').concat(mockName).concat('.hpp'), false, 'UTF-8')]
+[fileComment()/]
 [startGuard(guardName)/]
 
 #include "[aClass.ePackage.name/]/[aClass.name.toUpperFirst().concat('.hpp')/]"

@@ -8,6 +8,7 @@
 
 [template public generateFactoryImplementationSource(anEPackage : EPackage) { className : String = anEPackage.getFactoryImplementationName() ; namespaceName : String = anEPackage.getImplementationNamespaceName(); }]
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getImplementationFolder() + '/' + className + '.cpp', false, 'UTF-8')]
+[fileComment()/]
 #include "[namespaceToFolder(anEPackage.getFactoryQualifiedImplementationName())/].hpp"
 [let includes : OrderedSet(String) = Set{ anEPackage.eAllContents(EClass)->collect( c | c.getQualifiedImplementationName())->asSet()
                                         , Set {
