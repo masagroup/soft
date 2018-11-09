@@ -36,7 +36,14 @@ namespace ecore::impl
         virtual void eNotify( const std::shared_ptr<ENotification>& notification );
         bool eNotificationRequired();
 
-        // Getter/ Setter
+        // Operations
+        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eAllContents() const;
+        virtual std::shared_ptr<ecore::EClass> eClass() const;
+        virtual std::shared_ptr<ecore::EObject> eContainer() const;
+        virtual std::shared_ptr<ecore::EStructuralFeature> eContainingFeature() const;
+        virtual std::shared_ptr<ecore::EReference> eContainmentFeature() const;
+        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eContents() const;
+        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eCrossReferences() const;
         virtual boost::any eGet( const std::shared_ptr<ecore::EStructuralFeature>& feature ) const;
         virtual boost::any eGet( const std::shared_ptr<ecore::EStructuralFeature>& feature, bool resolve ) const;
         virtual boost::any eGet( const std::shared_ptr<ecore::EStructuralFeature>& feature, bool resolve, bool coreType ) const;
@@ -44,12 +51,15 @@ namespace ecore::impl
         virtual void eSet( const std::shared_ptr<ecore::EStructuralFeature>& feature, const boost::any& newValue );
         virtual void eUnset( const std::shared_ptr<ecore::EStructuralFeature>& feature );
         virtual boost::any eInvoke( const std::shared_ptr<ecore::EOperation>& operation, const std::shared_ptr<EList<boost::any>>& arguments );
+        virtual bool eIsProxy() const;
+        virtual int eResource() const;
 
         // Container
         std::shared_ptr<ENotificationChain> eInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID , const std::shared_ptr<ENotificationChain>& notifications  );
         std::shared_ptr<ENotificationChain> eInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
 
     protected:
+        virtual std::shared_ptr<EClass> eStaticClass() const;
         virtual int eDerivedStructuralFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;
         virtual int eDerivedOperationID( const std::shared_ptr<EOperation>& eOperation ) const;
 

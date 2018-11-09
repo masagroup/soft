@@ -216,37 +216,43 @@
     <eOperations name="eClass" eType="#//EClass">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
-        <details key="body" value="return this->eStaticClass();"/>
+        <details key="visibility" value="public:no"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eIsProxy" eType="#//EBoolean">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
+        <details key="visibility" value="public:no"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eResource" eType="#//EResource">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
+        <details key="visibility" value="public:no"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eContainer" eType="#//EObject">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
+        <details key="visibility" value="public:no"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eContainingFeature" eType="#//EStructuralFeature">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
+        <details key="visibility" value="public:no"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eContainmentFeature" eType="#//EReference">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
+        <details key="visibility" value="public:no"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eContents">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
+        <details key="visibility" value="public:no"/>
       </eAnnotations>
       <eGenericType eClassifier="#//EEList">
         <eTypeArguments eClassifier="#//EObject"/>
@@ -255,6 +261,7 @@
     <eOperations name="eAllContents">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
+        <details key="visibility" value="public:no"/>
       </eAnnotations>
       <eGenericType eClassifier="#//ETreeIterator">
         <eTypeArguments eClassifier="#//EObject"/>
@@ -263,6 +270,7 @@
     <eOperations name="eCrossReferences">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
+        <details key="visibility" value="public:no"/>
       </eAnnotations>
       <eGenericType eClassifier="#//EEList">
         <eTypeArguments eClassifier="#//EObject"/>

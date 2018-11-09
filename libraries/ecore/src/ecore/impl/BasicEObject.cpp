@@ -67,6 +67,46 @@ bool BasicEObject::eNotificationRequired()
     return eDeliver_ && eAdapters_->size() > 0;
 }
 
+std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eAllContents() const
+{
+    return std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>>();
+}
+
+std::shared_ptr<ecore::EClass> BasicEObject::eClass() const
+{
+    return eStaticClass();
+}
+
+std::shared_ptr<EClass> BasicEObject::eStaticClass() const
+{
+    return std::shared_ptr<EClass>();
+}
+
+std::shared_ptr<ecore::EObject> BasicEObject::eContainer() const
+{
+    return std::shared_ptr<ecore::EObject>();
+}
+
+std::shared_ptr<ecore::EStructuralFeature> BasicEObject::eContainingFeature() const
+{
+    return std::shared_ptr<ecore::EStructuralFeature>();
+}
+
+std::shared_ptr<ecore::EReference> BasicEObject::eContainmentFeature() const
+{
+    return std::shared_ptr<ecore::EReference>();
+}
+
+std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eContents() const
+{
+    return std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>>();
+}
+
+std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eCrossReferences() const
+{
+    return std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>>();
+}
+
 boost::any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& feature ) const
 {
     return eGet( feature, true );
@@ -75,6 +115,17 @@ boost::any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& featur
 boost::any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& feature, bool resolve ) const
 {
     return eGet( feature, true );
+}
+
+
+bool BasicEObject::eIsProxy() const
+{
+    return false;
+}
+
+int BasicEObject::eResource() const
+{
+    return 0;
 }
 
 int BasicEObject::eDerivedStructuralFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
