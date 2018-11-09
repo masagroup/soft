@@ -54,6 +54,8 @@ namespace ecore::impl
         virtual bool eIsProxy() const;
         virtual int eResource() const;
 
+        int eContainerFeatureID() const;
+
         // Container
         std::shared_ptr<ENotificationChain> eInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID , const std::shared_ptr<ENotificationChain>& notifications  );
         std::shared_ptr<ENotificationChain> eInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
@@ -74,7 +76,7 @@ namespace ecore::impl
         std::shared_ptr<ENotificationChain> eBasicSetContainer( const std::shared_ptr<EObject>& newContainer, int newContainerFeatureID, const std::shared_ptr<ENotificationChain>& notifications );
         std::shared_ptr<ENotificationChain> eBasicRemoveFromContainer( const std::shared_ptr<ENotificationChain>& notifications );
         std::shared_ptr<ENotificationChain> eBasicRemoveFromContainerFeature( const std::shared_ptr<ENotificationChain>& notifications );
-
+        static std::shared_ptr<EReference> eContainmentFeature( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EObject>& eContainer, int eContainerFeatureID );
     protected:
         std::shared_ptr< EList<EAdapter*> > eAdapters_;
         bool eDeliver_;
