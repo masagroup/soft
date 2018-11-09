@@ -206,7 +206,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
         if (oldContainer  && oldContainerFeatureID >= 0 && oldContainerFeatureID != newContainerFeatureID)
         {
             auto notification = std::make_shared<Notification>( ENotification::SET,
-                                                                std::dynamic_pointer_cast<ENotifier>( getThisPtr() ),
+                                                                getThisPtr(),
                                                                 oldContainer->eClass()->getEStructuralFeature( oldContainerFeatureID ),
                                                                 oldContainer,
                                                                 std::shared_ptr<EObject>() );
@@ -237,7 +237,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicRemoveFromContainer( con
         return eBasicRemoveFromContainerFeature( notifications  );
     else
     {
-        auto eContainer = std::dynamic_pointer_cast<BasicEObject>(eContainer_.lock());
+        auto eContainer = eContainer_.lock();
         if( eContainer )
             return eContainer->eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - eContainerFeatureID_ , notifications );
     }
@@ -250,7 +250,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicRemoveFromContainerFeatu
     if (reference)
     {
         auto inverseFeature = reference->getEOpposite();
-        auto container = std::dynamic_pointer_cast<BasicEObject>(eContainer_.lock());
+        auto container = eContainer_.lock();
         if (container && inverseFeature)
             return container->eInverseRemove( getThisPtr(), inverseFeature->getFeatureID() , notifications );
     }
