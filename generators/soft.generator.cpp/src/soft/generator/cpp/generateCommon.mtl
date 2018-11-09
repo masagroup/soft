@@ -220,8 +220,8 @@ namespace ecore
 
 [query public requiresList(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else (name = 'ETreeIterator' or name = 'EEList') endif/]
 
-[query public getMetaModelPackageNameForEStructuralFeature(aStructural : EStructuralFeature,aClass: EClass) : String = if( aStructural.eContainingClass.ePackage = aClass.ePackage  ) then aStructural.eContainingClass.ePackage.name.concat('Package').toUpperFirst() else aStructural.eContainingClass.ePackage.name.concat('::').concat(aStructural.eContainingClass.ePackage.name.concat('Package').toUpperFirst()) endif/]
-[query public getMetaModelPackageNameForOperation(aOperation : EOperation,aClass: EClass) : String = if( aOperation.eContainingClass.ePackage = aClass.ePackage  ) then aOperation.eContainingClass.ePackage.name.concat('Package').toUpperFirst() else aOperation.eContainingClass.ePackage.name.concat('::').concat(aOperation.eContainingClass.ePackage.name.concat('Package').toUpperFirst()) endif/]
+[query public getMetaModelPackageNameForEStructuralFeature(aStructural : EStructuralFeature,aClass: EClass) : String = if( aStructural.eContainingClass.ePackage = aClass.ePackage  ) then aStructural.eContainingClass.ePackage.getInterfaceName() else aStructural.eContainingClass.ePackage.getQualifiedInterfaceName() endif/]
+[query public getMetaModelPackageNameForOperation(aOperation : EOperation,aClass: EClass) : String = if( aOperation.eContainingClass.ePackage = aClass.ePackage  ) then aOperation.eContainingClass.ePackage.getInterfaceName() else aOperation.eContainingClass.ePackage.getQualifiedInterfaceName() endif/]
 
 
 [query private getMemberName(anENamedElement : ENamedElement) : String = 
