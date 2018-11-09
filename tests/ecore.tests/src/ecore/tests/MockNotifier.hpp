@@ -13,7 +13,7 @@
 #include "ecore/ENotifier.hpp"
 #include "turtle/mock.hpp"
 
-namespace ecore
+namespace ecore::tests
 {
     class MockNotifier : public virtual ENotifier, public mock::object
     {

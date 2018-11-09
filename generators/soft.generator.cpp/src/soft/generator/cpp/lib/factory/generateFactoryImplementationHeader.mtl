@@ -23,7 +23,7 @@ namespace [anEPackage.getInterfaceNamespaceName()/]
 [comment namespace /]
 namespace [namespaceName/] 
 {
-    class [className/] : virtual public [getShortQualifiedName('ecore::impl::EFactoryImpl' ,namespaceName)/] , virtual public [anEPackage.getFactoryInterfaceName()/] 
+    class [className/] : public virtual [getShortQualifiedName('ecore::impl::EFactoryImpl' ,namespaceName)/] , public virtual [anEPackage.getFactoryInterfaceName()/] 
     {
         private:    
             [className/]([className/] const&) = delete;

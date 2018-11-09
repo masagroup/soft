@@ -13,7 +13,7 @@
 #include "ecore/EAdapter.hpp"
 #include "turtle/mock.hpp"
 
-namespace ecore
+namespace ecore::tests
 {
     MOCK_BASE_CLASS( MockAdapter , EAdapter )
     {

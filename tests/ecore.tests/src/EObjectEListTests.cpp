@@ -1,16 +1,17 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
 
-#include "ecore/impl/EObjectEList.hpp"
 #include "ecore/EAdapter.hpp"
-#include "ecore/MockAdapter.hpp"
-#include "ecore/MockObject.hpp"
-#include "ecore/MockClass.hpp"
-#include "ecore/MockList.hpp"
-#include "ecore/MockStructuralFeature.hpp"
+#include "ecore/impl/EObjectEList.hpp"
+#include "ecore/tests/MockAdapter.hpp"
+#include "ecore/tests/MockObject.hpp"
+#include "ecore/tests/MockClass.hpp"
+#include "ecore/tests/MockList.hpp"
+#include "ecore/tests/MockStructuralFeature.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
+using namespace ecore::tests;
 
 namespace
 {

@@ -2,6 +2,7 @@
 [module generateBuildFile('http://www.eclipse.org/emf/2002/Ecore')/]
 
 [import soft::generator::cpp::generateCommon/]
+[import soft::generator::cpp::generateBuildFile/]
 [import soft::generator::cpp::tests::generateCommon/]
 
 [template public generateTestsBuildFile(aPackage : EPackage) { packageName : String = aPackage.name ; testName : String = packageName.concat('.tests'); }]
@@ -31,11 +32,13 @@ set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.68.0 REQUIRED COMPONENTS unit_test_framework)
 find_package(Turtle 2.3.0)
 
-set(GENERATED_SOURCE_FILES
+[let namespaceVar : String = getVarName( aPackage.getMockNamespaceName() )]
+set(GENERATED_HEADER_[namespaceVar/]_FILES
 [for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
-    src-gen/[packageName/]/[aClass.getMockName()/].hpp
+    src-gen/[namespaceToFolder(aClass.getQualifiedMockName())/].hpp
 [/for] 
 )
+[/let]
 
 set(CMAKE_FILES
     CMakeLists.txt
@@ -44,7 +47,12 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles.txt")
    list(APPEND CMAKE_FILES "CMakeFiles.txt")
 endif()
 
-add_executable(${PROJECT_NAME} ${CMAKE_FILES} ${SOURCE_FILES} ${SOURCE_[packageName.toUpper()/]_FILES} ${GENERATED_SOURCE_FILES})
+[let namespaces : OrderedSet(String) = getAllNamespaces( aPackage.getMockNamespaceName())->asOrderedSet()->sortedBy( s|s)]
+add_executable(${PROJECT_NAME} ${CMAKE_FILES} 
+[for (variable : String | namespaces->getAllVariables())]
+                               [variable/]
+[/for]
+)
 target_include_directories(${PROJECT_NAME} PUBLIC src)
 target_include_directories(${PROJECT_NAME} PUBLIC src-gen)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
@@ -53,11 +61,8 @@ target_compile_options(${PROJECT_NAME} PRIVATE /wd4250 /bigobj)
 target_link_libraries(${PROJECT_NAME} [packageName/])
 target_link_libraries(${PROJECT_NAME} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
-source_group(cmake FILES ${CMAKE_FILES})
-source_group(src FILES ${SOURCE_FILES})
-source_group(src\\[packageName/] FILES ${SOURCE_[packageName.toUpper()/]_FILES})
-source_group(src-gen\\[packageName/] FILES ${GENERATED_SOURCE_FILES})
-
+[generateSourceGroup(namespaces)/]
+[/let]
 [/file]
 [/template]
 

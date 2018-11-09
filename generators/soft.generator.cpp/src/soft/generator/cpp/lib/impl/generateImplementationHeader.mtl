@@ -15,13 +15,15 @@
 [fileComment()/]
 [startGuard(guardName)/]
 
-[for (implInclude : String | aClass.getClassImplements()->asOrderedSet()->sortedBy(s | s)) separator ('\r\n')]#include "[namespaceToFolder(implInclude)/].hpp"[/for]
+[for (implInclude : String | aClass.getClassImplements()->asOrderedSet()->sortedBy(s | s))]
+#include "[namespaceToFolder(implInclude)/].hpp"
+[/for]
 #include "[namespaceToFolder(aClass.getClassExtends())/].hpp"
 
 [comment namespace /]
 namespace [namespaceName/] 
 {
-    class [className/] : virtual public [getShortQualifiedName(aClass.getClassExtends(),namespaceName)/],[for ( implClass : String | aClass.getClassImplements()->asOrderedSet()->sortedBy(s | s)) separator (', ')] virtual public [getShortQualifiedName(implClass, namespaceName)/][/for] 
+    class [className/] : public virtual [getShortQualifiedName(aClass.getClassExtends(),namespaceName)/],[for ( implClass : String | aClass.getClassImplements()->asOrderedSet()->sortedBy(s | s)) separator (', ')] public virtual [getShortQualifiedName(implClass, namespaceName)/][/for] 
     {
         private:    
             [className/]& operator=([className/] const&) = delete;

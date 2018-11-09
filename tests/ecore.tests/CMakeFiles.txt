@@ -10,10 +10,10 @@ set(SOURCE_FILES
     src/NotificationChainTests.cpp
 )
 
-set(SOURCE_ECORE_FILES
-    src/ecore/MockAdapter.hpp
-    src/ecore/MockList.hpp
-    src/ecore/MockNotifier.hpp
-    src/ecore/MockNotification.hpp
+set(SOURCE_ECORE_TESTS_FILES
+    src/ecore/tests/MockAdapter.hpp
+    src/ecore/tests/MockList.hpp
+    src/ecore/tests/MockNotifier.hpp
+    src/ecore/tests/MockNotification.hpp
 )
 

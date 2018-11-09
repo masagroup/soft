@@ -33,7 +33,7 @@ namespace [anEPackage.name/]
     The Metamodel Package for the [anEPackage.name/] metamodel. This package is used to enable the reflection of model elements. It contains all model elements
     which were described in an ecore file.
     */
-    class [className/] : virtual public [getShortQualifiedName('ecore::EPackage',namespaceName)/] 
+    class [className/] : public virtual [getShortQualifiedName('ecore::EPackage',namespaceName)/] 
     {
         private:    
             [className/]([className/] const&) = delete;

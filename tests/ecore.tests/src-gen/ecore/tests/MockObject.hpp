@@ -16,10 +16,9 @@
 #define ECORE_EOBJECT_MOCKOBJECT_HPP
 
 #include "ecore/EObject.hpp"
-#include "ecore/MockNotifier.hpp"
+#include "ecore/tests/MockNotifier.hpp"
 
-
-namespace ecore
+namespace ecore::tests
 {
 
     class MockObject : public virtual MockNotifier, public virtual EObject 

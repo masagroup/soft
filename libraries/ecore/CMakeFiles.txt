@@ -1,10 +1,10 @@
 
 # Sources
-set(SOURCE_FILES
+set(SOURCE_ECORE_FILES
     src/ecore/EAdapter.cpp
 )
 
-set(HEADER_FILES 
+set(HEADER_ECORE_FILES 
     src/ecore/EList.hpp
     src/ecore/Constants.hpp
     src/ecore/EAdapter.hpp
@@ -13,7 +13,7 @@ set(HEADER_FILES
     src/ecore/ENotifier.hpp
 )
 
-set(HEADER_IMPLEMENTATION_FILES 
+set(HEADER_ECORE_IMPL_FILES 
     src/ecore/impl/AbstractEList.hpp
     src/ecore/impl/BasicEList.hpp
     src/ecore/impl/BasicEObject.hpp
@@ -24,7 +24,7 @@ set(HEADER_IMPLEMENTATION_FILES
     src/ecore/impl/NotifyingEList.hpp
 )
 
-set(SOURCE_IMPLEMENTATION_FILES 
+set(SOURCE_ECORE_IMPL_FILES 
     src/ecore/impl/BasicEObject.cpp
     src/ecore/impl/Notification.cpp
     src/ecore/impl/NotificationChain.cpp

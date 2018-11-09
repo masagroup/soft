@@ -27,7 +27,7 @@ namespace [namespaceName/]
 [comment namespace /]
 namespace [namespaceName/] 
 {
-    class [className/] : virtual public [getShortQualifiedName('ecore::EFactory',namespaceName)/] 
+    class [className/] : public virtual [getShortQualifiedName('ecore::EFactory',namespaceName)/] 
     {
         private:
             [className/]([className/] const&) = delete;

@@ -13,7 +13,7 @@
 #include "ecore/ENotification.hpp"
 #include "turtle/mock.hpp"
 
-namespace ecore
+namespace ecore::tests
 {
     MOCK_BASE_CLASS( MockNotification , ENotification )
     {

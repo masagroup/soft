@@ -9,5 +9,3 @@
         property 
     endif
 /]
-
-[query public getMockName( aClass : EClass ) : String =  'Mock'.concat( if ( aClass.name.first(1) = 'I' or aClass.name.first(1) = 'E' ) then aClass.name.substring(2) else aClass.name endif )/]

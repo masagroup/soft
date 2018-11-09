@@ -79,9 +79,11 @@
 */]
 [query public getInterfaceNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getInterfaceNamespace() ) /]
 [query public getImplementationNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getImplementationNamespace() )/]
+[query public getMockNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getMockNamespace() )/]
 [query private getBaseNamespace( aPackage : EPackage ) : String = if hasKey('baseNamespace') then valueKey('baseNamespace') else '' endif/]
 [query private getInterfaceNamespace( aPackage : EPackage ) : String = if hasKey('interfaceNamespace') then valueKey('interfaceNamespace') else '' endif/]
 [query private getImplementationNamespace( aPackage : EPackage ) : String = if hasKey('implementationNamespace') then valueKey('implementationNamespace') else 'impl' endif/]
+[query private getMockNamespace( aPackage : EPackage ) : String = if hasKey('mockNamespace') then valueKey('mockNamespace') else 'tests' endif/]
 [query private getQualifiedNamespaceName( aPackage : EPackage , aSuffix : String  ) : String = 
     if ( matches(aSuffix,'\\{\\d+\\}') ) then
         addNamespacePrefix(aPackage.getBaseNamespace(),aSuffix.format(aPackage.getNamespaceNameSubstitutions()))
@@ -133,6 +135,7 @@
 [query public namespaceToFolder( aQualified : String  ) : String = aQualified.substituteAll('::', '/')/]
 [query public getImplementationFolder( aPackage : EPackage ) : String = namespaceToFolder(aPackage.getImplementationNamespaceName())/]
 [query public getInterfaceFolder( aPackage : EPackage ) : String = namespaceToFolder(aPackage.getInterfaceNamespaceName())/]
+[query public getMockFolder( aPackage : EPackage ) : String = namespaceToFolder(aPackage.getMockNamespaceName())/]
 
 [**
  * Classes names
@@ -147,6 +150,14 @@
 [query private getImplementationName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getImplementationNamePattern() in if pattern ='' then aElementName + 'Impl' else pattern.format(Sequence{aElementName}) endif /]
 [query private getImplementationNamePattern( aPackage : EPackage ) : String = if hasKey('implementationNamePattern') then valueKey('implementationNamePattern') else '' endif/]
 
+[query public getMockName( aClass : EClass ) : String = getMockName(aClass.name, aClass.ePackage)/]
+[query private getMockName( aElementName : String , aPackage : EPackage ) : String = 
+    let name : String = if aElementName.first(1) = 'I' or aElementName.first(1) = 'E' then aElementName.substring(2) else aElementName endif in
+    let pattern : String = aPackage.getMockNamePattern() in 
+    if pattern ='' then 'Mock' + name else pattern.format(Sequence{name}) endif 
+/]
+[query private getMockNamePattern( aPackage : EPackage ) : String = if hasKey('mockNamePattern') then valueKey('mockNamePattern') else '' endif/]
+
 [query public getFactoryInterfaceName( aPackage : EPackage ) : String = getInterfaceName( getFactoryName() , aPackage )/]
 [query public getFactoryImplementationName( aPackage : EPackage ) : String = getImplementationName( getFactoryName() , aPackage )/] 
 [query private getFactoryName( aPackage : EPackage ) : String = aPackage.name.toUpperFirst() + 'Factory'/]
@@ -157,6 +168,8 @@
 
 [query public getQualifiedImplementationName( aClass : EClass ) : String = addNamespacePrefix( aClass.ePackage.getImplementationNamespaceName() , aClass.getImplementationName())/]
 [query public getQualifiedImplementationName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getImplementationNamespaceName() , aPackage.getImplementationName())/]
+
+[query public getQualifiedMockName( aClass : EClass ) : String = addNamespacePrefix( aClass.ePackage.getMockNamespaceName() , aClass.getMockName())/]
 
 [query public getFactoryQualifiedInterfaceName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getInterfaceNamespaceName() , aPackage.getFactoryInterfaceName() )/]
 [query public getFactoryQualifiedImplementationName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getImplementationNamespaceName() , aPackage.getFactoryImplementationName() )/]
@@ -425,7 +438,6 @@ namespace ecore
     endif
 /]
 
-
 [query public getClassImplements(aClass : EClass ) : Sequence(String) = Sequence{ aClass.getQualifiedInterfaceName() }/]
 
 [query private getClassExtendsClass( aClass : EClass ) : EClass = getClassExtendsClass( aClass , aClass.getBaseClass() )/]
@@ -443,6 +455,17 @@ namespace ecore
 
 [query public getClassIncludes(aClass : EClass) : Set(EClassifier) = OrderedSet{aClass.eSuperTypes,aClass.eAllStructuralFeatures.eType,aClass.eOperations.eType,aClass.eOperations.eParameters.eType}->flatten() /]
 
+[query public getMockExtends(aClass : EClass ) : String =
+    let extendsClass : EClass = aClass.getClassExtendsClass() in
+    if ( extendsClass.oclIsUndefined() ) then
+        if ( aClass.name = 'EObject' ) then
+            'ecore::tests::MockNotifier'
+        else
+            'ecore::tests::MockObject'
+        endif
+    else
+        extendsClass.getQualifiedMockName()
+    endif 
+/]
 
-
-
+[query public getMockImplements(aClass : EClass ) : Sequence(String) = Sequence{ aClass.getQualifiedInterfaceName() }/]

@@ -7,34 +7,27 @@
 [import soft::generator::cpp::generateReference/]
 [import soft::generator::cpp::tests::generateCommon/]
 
-[template public generateMock(aClass : EClass) { mockName : String = aClass.getMockName(); guardName : String = '_'.concat(mockName); }  ]
-[file (aClass.ePackage.getOutputDirectory().concat('/src-gen/').concat(aClass.ePackage.name).concat('/').concat(mockName).concat('.hpp'), false, 'UTF-8')]
+[template public generateMock(aClass : EClass) { className : String = aClass.getMockName(); namespaceName : String = aClass.ePackage.getMockNamespaceName();guardName : String = '_'.concat(className); }  ]
+[file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getMockFolder() + '/' + className +'.hpp', false, 'UTF-8')]
 [fileComment()/]
 [startGuard(guardName)/]
 
-#include "[aClass.ePackage.name/]/[aClass.name.toUpperFirst().concat('.hpp')/]"
-[for (aClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-#include "[aClass.ePackage.name/]/[aClass.getMockName()/].hpp"[/for]
-[if aClass.eSuperTypes->isEmpty()]
-[if aClass.name='EObject']
-#include "ecore/MockNotifier.hpp"
-[else]
-#include "ecore/MockObject.hpp"
-[/if]
-[/if]
+[for (implInclude : String | aClass.getMockImplements()->asOrderedSet()->sortedBy(s | s))]
+#include "[namespaceToFolder(implInclude)/].hpp"
+[/for]
+#include "[namespaceToFolder(aClass.getMockExtends())/].hpp"
 
-
-namespace [aClass.ePackage.name/]
+namespace [namespaceName/]
 {
 
-    class [mockName/] : public virtual [if (aClass.eSuperTypes->isEmpty())][if aClass.name='EObject']MockNotifier[else]MockObject[/if][else][aClass.eSuperTypes->first().getMockName()/][/if], public virtual [aClass.name.toUpperFirst()/] 
+    class [className/] : public virtual [getShortQualifiedName(aClass.getMockExtends(),namespaceName)/],[for ( implClass : String | aClass.getMockImplements()->asOrderedSet()->sortedBy(s | s)) separator (', ')] public virtual [getShortQualifiedName(implClass, namespaceName)/][/for] 
     {
     public:
         typedef [aClass.name.toUpperFirst()/] base_type;
         [aClass.eOperations->sortedBy(name).generateOperationMock()/]
         [aClass.eAttributes->sortedBy(name).generateAttributeMock()/]
         [aClass.eReferences->sortedBy(name).generateReferenceMock()/]
-        // [protected (mockName)]
+        // [protected (className)]
         // [/protected]
     };
 } 

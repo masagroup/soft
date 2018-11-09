@@ -13,7 +13,7 @@
 #include "ecore/EList.hpp"
 #include "turtle/mock.hpp"
 
-namespace ecore
+namespace ecore::tests
 {
     template <typename T>
     MOCK_BASE_CLASS( MockList, EList<T> )
