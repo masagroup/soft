@@ -32,7 +32,7 @@ set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.68.0 REQUIRED COMPONENTS unit_test_framework)
 find_package(Turtle 2.3.0)
 
-[let namespaceVar : String = getVarName( aPackage.getMockNamespaceName() )]
+[let namespaceVar : String = getVarName( aPackage.getTestsNamespaceName() )]
 set(GENERATED_HEADER_[namespaceVar/]_FILES
 [for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
     src-gen/[namespaceToFolder(aClass.getQualifiedMockName())/].hpp
@@ -47,7 +47,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles.txt")
    list(APPEND CMAKE_FILES "CMakeFiles.txt")
 endif()
 
-[let namespaces : OrderedSet(String) = getAllNamespaces( aPackage.getMockNamespaceName())->asOrderedSet()->sortedBy( s|s)]
+[let namespaces : OrderedSet(String) = getAllNamespaces( aPackage.getTestsNamespaceName())->asOrderedSet()->sortedBy( s|s)]
 add_executable(${PROJECT_NAME} ${CMAKE_FILES} 
 [for (variable : String | namespaces->getAllVariables())]
                                [variable/]

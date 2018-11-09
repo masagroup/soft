@@ -79,11 +79,11 @@
 */]
 [query public getInterfaceNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getInterfaceNamespace() ) /]
 [query public getImplementationNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getImplementationNamespace() )/]
-[query public getMockNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getMockNamespace() )/]
+[query public getTestsNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getTestsNamespace() )/]
 [query private getBaseNamespace( aPackage : EPackage ) : String = if hasKey('baseNamespace') then valueKey('baseNamespace') else '' endif/]
 [query private getInterfaceNamespace( aPackage : EPackage ) : String = if hasKey('interfaceNamespace') then valueKey('interfaceNamespace') else '' endif/]
 [query private getImplementationNamespace( aPackage : EPackage ) : String = if hasKey('implementationNamespace') then valueKey('implementationNamespace') else 'impl' endif/]
-[query private getMockNamespace( aPackage : EPackage ) : String = if hasKey('mockNamespace') then valueKey('mockNamespace') else 'tests' endif/]
+[query private getTestsNamespace( aPackage : EPackage ) : String = if hasKey('testsNamespace') then valueKey('testsNamespace') else 'tests' endif/]
 [query private getQualifiedNamespaceName( aPackage : EPackage , aSuffix : String  ) : String = 
     if ( matches(aSuffix,'\\{\\d+\\}') ) then
         addNamespacePrefix(aPackage.getBaseNamespace(),aSuffix.format(aPackage.getNamespaceNameSubstitutions()))
@@ -135,7 +135,7 @@
 [query public namespaceToFolder( aQualified : String  ) : String = aQualified.substituteAll('::', '/')/]
 [query public getImplementationFolder( aPackage : EPackage ) : String = namespaceToFolder(aPackage.getImplementationNamespaceName())/]
 [query public getInterfaceFolder( aPackage : EPackage ) : String = namespaceToFolder(aPackage.getInterfaceNamespaceName())/]
-[query public getMockFolder( aPackage : EPackage ) : String = namespaceToFolder(aPackage.getMockNamespaceName())/]
+[query public getTestsFolder( aPackage : EPackage ) : String = namespaceToFolder(aPackage.getTestsNamespaceName())/]
 
 [**
  * Classes names
@@ -169,7 +169,7 @@
 [query public getQualifiedImplementationName( aClass : EClass ) : String = addNamespacePrefix( aClass.ePackage.getImplementationNamespaceName() , aClass.getImplementationName())/]
 [query public getQualifiedImplementationName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getImplementationNamespaceName() , aPackage.getImplementationName())/]
 
-[query public getQualifiedMockName( aClass : EClass ) : String = addNamespacePrefix( aClass.ePackage.getMockNamespaceName() , aClass.getMockName())/]
+[query public getQualifiedMockName( aClass : EClass ) : String = addNamespacePrefix( aClass.ePackage.getTestsNamespaceName() , aClass.getMockName())/]
 
 [query public getFactoryQualifiedInterfaceName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getInterfaceNamespaceName() , aPackage.getFactoryInterfaceName() )/]
 [query public getFactoryQualifiedImplementationName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getImplementationNamespaceName() , aPackage.getFactoryImplementationName() )/]

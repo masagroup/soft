@@ -7,8 +7,8 @@
 [import soft::generator::cpp::generateReference/]
 [import soft::generator::cpp::tests::generateCommon/]
 
-[template public generateMock(aClass : EClass) { className : String = aClass.getMockName(); namespaceName : String = aClass.ePackage.getMockNamespaceName();guardName : String = '_'.concat(className); }  ]
-[file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getMockFolder() + '/' + className +'.hpp', false, 'UTF-8')]
+[template public generateMock(aClass : EClass) { className : String = aClass.getMockName(); namespaceName : String = aClass.ePackage.getTestsNamespaceName();guardName : String = '_'.concat(className); }  ]
+[file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getTestsFolder() + '/' + className +'.hpp', false, 'UTF-8')]
 [fileComment()/]
 [startGuard(guardName)/]
 
