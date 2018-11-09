@@ -7,6 +7,7 @@
 #include "ecore/EOperation.hpp"
 #include "ecore/EReference.hpp"
 #include "ecore/EStructuralFeature.hpp"
+#include "ecore/EcorePackage.hpp"
 
 #include <boost/assert.hpp>
 #include <string>
@@ -79,12 +80,12 @@ std::shared_ptr<ecore::EClass> BasicEObject::eClass() const
 
 std::shared_ptr<EClass> BasicEObject::eStaticClass() const
 {
-    return std::shared_ptr<EClass>();
+    return EcorePackage::eInstance()->getEObject();
 }
 
 std::shared_ptr<ecore::EObject> BasicEObject::eContainer() const
 {
-    return std::shared_ptr<ecore::EObject>();
+    return eContainer_.lock();
 }
 
 std::shared_ptr<ecore::EStructuralFeature> BasicEObject::eContainingFeature() const
@@ -107,6 +108,16 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eCrossRefe
     return std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>>();
 }
 
+bool BasicEObject::eIsProxy() const
+{
+    return false;
+}
+
+int BasicEObject::eResource() const
+{
+    return 0;
+}
+
 boost::any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& feature ) const
 {
     return eGet( feature, true );
@@ -117,16 +128,6 @@ boost::any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& featur
     return eGet( feature, true );
 }
 
-
-bool BasicEObject::eIsProxy() const
-{
-    return false;
-}
-
-int BasicEObject::eResource() const
-{
-    return 0;
-}
 
 int BasicEObject::eDerivedStructuralFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
 {
