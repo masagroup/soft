@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <project name="soft" default="all">
+
     <property name="root.dir" value=".."/>
     <property name="bin.dir" value="bin"/>
+    <property name="build.dir" value="build"/>
     <property name="out.dir" value="out"/>
     <property name="dist.dir" value="dist"/>
     <property name="libraries.dir" value="libraries"/>
@@ -9,7 +11,7 @@
     <property name="models.dir" value="models"/>
     <property name="tests.dir" value="tests"/>
     
-    <target name="generator.cpp.build">
+    <target name="generators.build.cpp">
         <exec executable="cmd" dir="${root.dir}/${generators.dir}/soft.generator.cpp" failonerror="true">
             <arg value="/C"/>
             <arg value="mvn.cmd"/>
@@ -18,7 +20,7 @@
         </exec>
     </target>
     
-    <target name="generator.cpp.clean">
+    <target name="generators.clean.cpp">
         <exec executable="cmd" dir="${root.dir}/${generators.dir}/soft.generator.cpp" failonerror="true">
             <arg value="/C"/>
             <arg value="mvn.cmd"/>
@@ -27,15 +29,18 @@
         </exec>
     </target>
     
-    <target name="generator.cpp.install">
+    <target name="generators.install.cpp">
         <unzip src="${root.dir}/${out.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" dest="${root.dir}/${bin.dir}/soft.generator.cpp"/>
     </target>
     
-    <target name="generator.cpp.dist">
+    <target name="generators.dist.cpp">
         <copy file="${root.dir}/${out.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" todir="${root.dir}/${dist.dir}"/>
     </target>
     
-    <target name="generators" depends="generator.cpp.build,generator.cpp.dist,generator.cpp.install"/>
+    <target name="generators.build" depends="generators.build.cpp"/>
+    <target name="generators.clean" depends="generators.clean.cpp"/>
+    <target name="generators.install" depends="generators.install.cpp"/>
+    <target name="generators.dist" depends="generators.dist.cpp"/>
     
     <macrodef name="generator.cpp">
         <attribute name="input"/>
@@ -53,11 +58,11 @@
         </sequential>
     </macrodef>
     
-    <target name="ecore.sources.generate">
+    <target name="sources.generate.ecore">
         <generator.cpp input="${root.dir}/${models.dir}/ecore.ecore" output="${root.dir}"/>
     </target>
     
-    <target name="ecore.sources.clean">
+    <target name="sources.clean.ecore">
         <exec executable="git" dir="${root.dir}/${libraries.dir}/ecore" failonerror="true">
             <arg line="clean -xfd" />
         </exec>
@@ -66,15 +71,30 @@
         </exec>
     </target>
     
-    <target name="ecore.build.generate">
+    <target name = "sources.generate" depends="sources.generate.ecore"/>
+    <target name = "sources.clean" depends="sources.clean.ecore"/> 
+    
+    <target name="build.generate">
+        <exec taskname="cmake" executable="cmake.exe" dir="${root.dir}/${build.dir}/cmake" failonerror="true">
+            <arg value="-G"/>
+            <arg value="Visual Studio 14 2015 Win64"/>
+            <arg value="-B../vs2015"/>
+            <arg value="-H."/>
+        </exec>
     </target>
     
-    <target name="ecore.build.clean">
+    <target name="build.clean">
+        <exec executable="git" dir="${root.dir}/${build.dir}" failonerror="true">
+            <arg line="clean -xfd" />
+        </exec>
     </target>
     
-    <target name="ecore" depends="ecore.sources.generate,ecore.build.generate"/>
+    <target name="generators" depends="generators.build,generators.dist,generators.install"/>
     
-    <target name="clean" depends="generator.cpp.clean,ecore.sources.clean"/>
+    <target name="generates" depends="sources.generate,build.generate"/>
     
-    <target name="all" depends="generators,ecore"/>
+    <target name="clean" depends="generators.clean,sources.clean,build.clean"/>
+    
+    <target name="all" depends="generators,generates"/>
+    
 </project>
