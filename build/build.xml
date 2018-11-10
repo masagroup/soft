@@ -45,8 +45,10 @@
                   fork="true"
                   failonerror="true"
                   maxmemory="128m">
-                  <arg value="-m@{input}"/>
-                  <arg value="-o@{output}"/>
+                  <arg value="-m"/>
+                  <arg value="@{input}"/>
+                  <arg value="-o"/>
+                  <arg value="@{output}"/>
             </java>
         </sequential>
     </macrodef>
