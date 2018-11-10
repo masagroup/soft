@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<project name="soft" default="all">
+    <property name="root.dir" value=".."/>
+    <property name="bin.dir" value="bin"/>
+    <property name="out.dir" value="out"/>
+    <property name="dist.dir" value="dist"/>
+    <property name="libraries.dir" value="libraries"/>
+    <property name="generators.dir" value="generators"/>
+    <property name="models.dir" value="models"/>
+    <property name="tests.dir" value="tests"/>
+    
+    <target name="generator.cpp.build">
+        <exec executable="cmd" dir="${root.dir}/${generators.dir}/soft.generator.cpp" failonerror="true">
+            <arg value="/C"/>
+            <arg value="mvn.cmd"/>
+            <arg value="-Dproject.target=../../${out.dir}/soft.generator.cpp"/>
+            <arg line="clean verify" />
+        </exec>
+    </target>
+    
+    <target name="generator.cpp.clean">
+        <exec executable="cmd" dir="${root.dir}/${generators.dir}/soft.generator.cpp" failonerror="true">
+            <arg value="/C"/>
+            <arg value="mvn.cmd"/>
+            <arg value="-Dproject.target=../../${out.dir}/soft.generator.cpp"/>
+            <arg line="clean" />
+        </exec>
+    </target>
+    
+    <target name="generator.cpp.install">
+        <unzip src="${root.dir}/${out.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" dest="${root.dir}/${bin.dir}/soft.generator.cpp"/>
+    </target>
+    
+    <target name="generator.cpp.dist">
+        <copy file="${root.dir}/${out.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" todir="${root.dir}/${dist.dir}"/>
+    </target>
+    
+    <target name="generators" depends="generator.cpp.build,generator.cpp.dist,generator.cpp.install"/>
+    
+    <macrodef name="generator.cpp">
+        <attribute name="input"/>
+        <attribute name="output"/>
+        <sequential>
+            <java jar="${root.dir}/${bin.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.jar"
+                  fork="true"
+                  failonerror="true"
+                  maxmemory="128m">
+                  <arg value="-m@{input}"/>
+                  <arg value="-o@{output}"/>
+            </java>
+        </sequential>
+    </macrodef>
+    
+    <target name="ecore.sources.generate">
+        <generator.cpp input="${root.dir}/${models.dir}/ecore.ecore" output="${root.dir}"/>
+    </target>
+    
+    <target name="ecore.sources.clean">
+        <exec executable="git" dir="${root.dir}/${libraries.dir}/ecore" failonerror="true">
+            <arg line="clean -xfd" />
+        </exec>
+        <exec executable="git" dir="${root.dir}/${tests.dir}/ecore.tests" failonerror="true">
+            <arg line="clean -xfd" />
+        </exec>
+    </target>
+    
+    <target name="ecore.build.generate">
+    </target>
+    
+    <target name="ecore.build.clean">
+    </target>
+    
+    <target name="ecore" depends="ecore.sources.generate,ecore.build.generate"/>
+    
+    <target name="clean" depends="generator.cpp.clean,ecore.sources.clean"/>
+    
+    <target name="all" depends="generators,ecore"/>
+</project>

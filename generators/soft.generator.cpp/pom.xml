@@ -7,6 +7,7 @@
     <version>1.0.0</version>
 
     <properties>
+        <project.target>.target</project.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -120,7 +121,7 @@
 
     <build>
         <sourceDirectory>src</sourceDirectory>
-        <directory>.target</directory>
+        <directory>${project.target}</directory>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -150,7 +151,7 @@
                         <entries>
                             <entry>
                                 <input>src</input>
-                                <output>.target/classes</output>
+                                <output>${project.target}/classes</output>
                             </entry>
                         </entries>
                     </acceleoProject>
@@ -172,7 +173,6 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <excludeTransitive>true</excludeTransitive>
                         </configuration>
                     </execution>
                 </executions>
