@@ -6,9 +6,6 @@ if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
       CACHE STRING "")
 endif()
 
-
-
-
 # soft root dir
 get_filename_component(SOFT_ROOT_DIR ${CMAKE_SOURCE_DIR}/../.. ABSOLUTE)
 
