@@ -12,6 +12,8 @@ package soft.generator.cpp;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,6 +28,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.eclipse.acceleo.engine.event.AcceleoTextGenerationEvent;
 import org.eclipse.acceleo.engine.event.IAcceleoTextGenerationListener;
 import org.eclipse.acceleo.engine.service.AbstractAcceleoGenerator;
 import org.eclipse.acceleo.engine.service.AcceleoService;
@@ -67,6 +70,7 @@ public class Generate extends AbstractAcceleoGenerator {
     private List<String> propertiesFiles = new ArrayList<String>();
     private List<String> templates = new ArrayList<String>(Arrays.asList(TEMPLATE_NAMES));
     private Properties properties = new Properties();
+    private boolean silent = false;
 
     /**
      * Allows the public constructor to be used. Note that a generator created this
@@ -141,6 +145,8 @@ public class Generate extends AbstractAcceleoGenerator {
         this.templates = templates.isEmpty() ? Arrays.asList(TEMPLATE_NAMES) : templates;
         Properties properties = (Properties) arguments.get(1);
         this.properties = properties;
+        Boolean silent = (Boolean) arguments.get(2);
+        this.silent = silent;
     }
 
     protected AcceleoService createAcceleoService() {
@@ -168,12 +174,15 @@ public class Generate extends AbstractAcceleoGenerator {
                 .desc("the output folder").build();
         Option propertyOption = Option.builder("p").argName("property=value").desc("a property").valueSeparator('=')
                 .numberOfArgs(2).build();
+        Option silentOption = Option.builder("s").longOpt("silent").hasArg(false).desc("print nothing but failures")
+                .build();
 
         generateOptions.addOption(helpOption);
         generateOptions.addOption(templateOption);
         generateOptions.addOption(modelOption);
         generateOptions.addOption(outputOption);
         generateOptions.addOption(propertyOption);
+        generateOptions.addOption(silentOption);
 
         HelpFormatter help = new HelpFormatter();
         CommandLineParser parser = new DefaultParser();
@@ -191,8 +200,11 @@ public class Generate extends AbstractAcceleoGenerator {
             Properties properties = new Properties();
             if (line.hasOption("p"))
                 properties = line.getOptionProperties("p");
+            boolean silentMode = false;
+            if (line.hasOption("s"))
+                silentMode = true;
 
-            Generate generator = new Generate(model, output, Arrays.asList(templates, properties));
+            Generate generator = new Generate(model, output, Arrays.asList(templates, properties, silentMode));
             generator.doGenerate(new BasicMonitor());
 
         } catch (ParseException e) {
@@ -250,19 +262,37 @@ public class Generate extends AbstractAcceleoGenerator {
      * 
      * @return List of listeners that are to be notified when text is generated
      *         through this launch.
-     * @generated
+     * @generated NOT
      */
     @Override
     public List<IAcceleoTextGenerationListener> getGenerationListeners() {
         List<IAcceleoTextGenerationListener> listeners = super.getGenerationListeners();
-        /*
-         * TODO if you need to listen to generation event, add listeners to the list
-         * here. If you want to change the content of this method, do NOT forget to
-         * change the "@generated" tag in the Javadoc of this method to
-         * "@generated NOT". Without this new tag, any compilation of the Acceleo module
-         * with the main template that has caused the creation of this class will revert
-         * your modifications.
-         */
+        if (!silent)
+            listeners.add(new IAcceleoTextGenerationListener() {
+
+                @Override
+                public void textGenerated(AcceleoTextGenerationEvent event) {
+                }
+
+                @Override
+                public boolean listensToGenerationEnd() {
+                    return false;
+                }
+
+                @Override
+                public void generationEnd(AcceleoTextGenerationEvent event) {
+                }
+
+                @Override
+                public void filePathComputed(AcceleoTextGenerationEvent event) {
+                }
+
+                @Override
+                public void fileGenerated(AcceleoTextGenerationEvent event) {
+                    Path path = FileSystems.getDefault().getPath((String) event.getText());
+                    System.out.println("file generated: " + path.normalize());
+                }
+            });
         return listeners;
     }
 
