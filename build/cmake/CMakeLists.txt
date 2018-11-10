@@ -17,6 +17,8 @@ set( CMAKE_INSTALL_PREFIX "${SOFT_ROOT_DIR}")
 
 project(soft CXX)
 
+enable_testing()
+
 #ecore
 add_subdirectory(${SOFT_ROOT_DIR}/libraries/ecore ${CMAKE_CURRENT_BINARY_DIR}/ecore)
 add_subdirectory(${SOFT_ROOT_DIR}/tests/ecore.tests ${CMAKE_CURRENT_BINARY_DIR}/ecore.tests)

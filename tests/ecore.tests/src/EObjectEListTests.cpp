@@ -75,7 +75,7 @@ BOOST_AUTO_TEST_CASE( Constructor )
     }
 }
 
-BOOST_FIXTURE_TEST_CASE( Add_SimpleNoNotifications , AddFixture)
+BOOST_FIXTURE_TEST_CASE( Add_SimpleNoNotifications , AddFixture )
 {
     std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>>>( owner, 1, 2 );
     BOOST_CHECK( list->add( object ) );
