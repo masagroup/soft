@@ -4,6 +4,7 @@
 set(SOURCE_FILES
     src/main.cpp
     src/BasicEListTests.cpp
+    src/DiamondVsMixinsTests.cpp
     src/EcoreFactoryTests.cpp
     src/EObjectEListTests.cpp
     src/NotificationTests.cpp
