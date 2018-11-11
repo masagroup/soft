@@ -2,10 +2,14 @@
 #include <boost/test/execution_monitor.hpp>
 #include <boost/timer/timer.hpp>
 #include <memory>
+#include <iostream>
 
 using namespace boost::timer;
 
 const int NB_ITERATIONS = 1000000;
+
+#define LOG 0
+
 
 namespace diamond
 {
@@ -195,53 +199,82 @@ BOOST_AUTO_TEST_SUITE( DiamondVsMixinsTests )
 
 BOOST_AUTO_TEST_CASE( Performance )
 {
+    cpu_timer timer;
+    cpu_times diamondTimes , mixinTimes;
     {
-        auto_cpu_timer timer;
+        timer.start();
         std::shared_ptr<diamond::IA> a = std::make_shared<diamond::D>();
         for (int i = 0; i < NB_ITERATIONS; ++i)
         {
             auto d = std::dynamic_pointer_cast<diamond::ID>(a);
             BOOST_CHECK( d );
         }
+        diamondTimes = timer.elapsed();
+        timer.stop();
+#if LOG
+        std::cout << format( diamondTimes );
+#endif
     }
     {
-        auto_cpu_timer timer;
+        timer.start();
         std::shared_ptr<mixins::IA> a = std::make_shared<mixins::D>();
         for (int i = 0; i < NB_ITERATIONS; ++i)
         {
             auto d = std::static_pointer_cast<mixins::ID>(a);
             BOOST_CHECK( d );
         }
+        mixinTimes = timer.elapsed();
+        timer.stop();
+#if LOG
+        std::cout << format( mixinTimes );
+#endif
     }
+    BOOST_CHECK_GE( diamondTimes.user, mixinTimes.user );
     {
-        auto_cpu_timer timer;
+        timer.start();
         std::shared_ptr<diamond::IA> a = std::make_shared<diamond::D>();
         for (int i = 0; i < NB_ITERATIONS; ++i)
         {
             auto d = std::dynamic_pointer_cast<diamond::D>(a);
             BOOST_CHECK( d );
         }
+        diamondTimes = timer.elapsed();
+        timer.stop();
+#if LOG
+        std::cout << format( diamondTimes );
+#endif
     }
     {
-        auto_cpu_timer timer;
+        timer.start();
         std::shared_ptr<mixins::IA> a = std::make_shared<mixins::D>();
         for (int i = 0; i < NB_ITERATIONS; ++i)
         {
             auto d = std::static_pointer_cast<mixins::D>(a);
             BOOST_CHECK( d );
         }
+        mixinTimes = timer.elapsed();
+        timer.stop();
+#if LOG
+        std::cout << format( mixinTimes );
+#endif
     }
+    BOOST_CHECK_GE( diamondTimes.user, mixinTimes.user );
     {
-        auto_cpu_timer timer;
+        timer.start();
         std::shared_ptr<diamond::IA> a = std::make_shared<diamond::E>();
         for (int i = 0; i < NB_ITERATIONS; ++i)
         {
             auto ie = std::dynamic_pointer_cast<diamond::IE>(a);
             BOOST_CHECK( ie );
         }
+        diamondTimes = timer.elapsed();
+        timer.stop();
+#if LOG
+        std::cout << format( diamondTimes );
+#endif
     }
     {
-        auto_cpu_timer timer;
+        timer.start();
         std::shared_ptr<mixins::IA> a = std::make_shared<mixins::E>();
         for (int i = 0; i < NB_ITERATIONS; ++i)
         {
@@ -249,7 +282,13 @@ BOOST_AUTO_TEST_CASE( Performance )
             auto ie = std::static_pointer_cast<mixins::IE>(e);
             BOOST_CHECK( ie );
         }
+        mixinTimes = timer.elapsed();
+        timer.stop();
+#if LOG
+        std::cout << format( mixinTimes );
+#endif
     }
+    BOOST_CHECK_GE( diamondTimes.user, mixinTimes.user );
 }
 
 BOOST_AUTO_TEST_SUITE_END()
