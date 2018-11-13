@@ -396,9 +396,7 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> EClassImpl::getEAllSuperT
 std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> EClassImpl::getEAttributes() const
 {
     // Start of user code EClassImpl::getEAttributes
-    if( !eAttributes_ )
-        const_cast<EClassImpl*>( this )->eAttributes_.reset( new EObjectEList<std::shared_ptr<ecore::EAttribute>, false, false, false>( getThisPtr(), EcorePackage::ECLASS__EATTRIBUTES ) );
-    return eAttributes_;
+    return const_cast<EClassImpl*>( this )->getEAttributes();
     // End of user code
 }
 
@@ -750,52 +748,27 @@ void EClassImpl::setModified( int featureID )
 
 std::shared_ptr<EList<std::shared_ptr<EStructuralFeature>>> EClassImpl::getEAllStructuralFeatures()
 {
-    if( !eAllStructuralFeatures_ )
-    {
-        std::vector< std::shared_ptr< EStructuralFeature > > allFeatures;
-        for( const auto& eClass : *getESuperTypes() )
-        {
-            auto features = eClass->getEAllStructuralFeatures();
-            allFeatures.insert( std::end( allFeatures ), features->begin(), features->end() );
-        }
-        int featureID = static_cast<int>(allFeatures.size());
-        for( const auto& feature : *getEStructuralFeatures() )
-        {
-            auto featureImpl = std::dynamic_pointer_cast<EStructuralFeatureImpl>( feature );
-            featureImpl->setFeatureID( featureID++ );
-        }
-        auto features = getEStructuralFeatures();
-        allFeatures.insert( std::end( allFeatures ), features->begin(), features->end() );
-        eAllStructuralFeatures_ = std::make_shared< ImmutableEList<std::shared_ptr<EStructuralFeature>>>( std::move( allFeatures ) );
-        containments_.reset();
-        crossReferences_.reset();
-    }
+    initStructuralFeatures();
     return eAllStructuralFeatures_;
 }
 
-std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> EClassImpl::getEAllAttributes()
+std::shared_ptr<EList<std::shared_ptr<EAttribute>>> EClassImpl::getEAllAttributes()
 {
-    if( !eAllAttributes_ )
-    {
-        std::vector<std::shared_ptr<EAttribute>> allAttributes;
-        for( const auto& eClass : *getESuperTypes() )
-        {
-            auto attributes = eClass->getEAllAttributes();
-            allAttributes.insert( std::end( allAttributes ), attributes->begin(), attributes->end() );
-        }
-        auto features = getEStructuralFeatures();
-        for( const auto& feature : *features )
-        {
-            if( auto attribute = std::dynamic_pointer_cast<EAttribute>( feature ) )
-                allAttributes.push_back( attribute );
-        }
-        eAllAttributes_ = std::make_shared< ImmutableEList<std::shared_ptr<EAttribute>>>( std::move( allAttributes ) );
-    }
+    initAttributes();
     return eAllAttributes_;
+}
+
+std::shared_ptr<EList<std::shared_ptr<EAttribute>>> EClassImpl::getEAttributes()
+{
+    initAttributes();
+    return eAttributes_;
 }
 
 void EClassImpl::initFeaturesSubSet()
 {
+    if( containments_ )
+        return;
+
     auto eAllFeatures = getEAllStructuralFeatures();
     containments_ = std::make_shared<BasicEList<std::shared_ptr<EStructuralFeature>, true>>();
     crossReferences_ = std::make_shared<BasicEList<std::shared_ptr<EStructuralFeature>, true>>();
@@ -817,17 +790,65 @@ void EClassImpl::initFeaturesSubSet()
     }
 }
 
+void ecore::impl::EClassImpl::initStructuralFeatures()
+{
+    if( eAllStructuralFeatures_ )
+        return;
+
+    containments_.reset();
+    crossReferences_.reset();
+
+    std::vector< std::shared_ptr< EStructuralFeature > > allFeatures;
+    for( const auto& eClass : *getESuperTypes() )
+    {
+        auto features = eClass->getEAllStructuralFeatures();
+        allFeatures.insert( std::end( allFeatures ), features->begin(), features->end() );
+    }
+    int featureID = static_cast<int>( allFeatures.size() );
+    for( const auto& feature : *getEStructuralFeatures() )
+    {
+        auto featureImpl = std::dynamic_pointer_cast<EStructuralFeatureImpl>( feature );
+        featureImpl->setFeatureID( featureID++ );
+    }
+    auto features = getEStructuralFeatures();
+    allFeatures.insert( std::end( allFeatures ), features->begin(), features->end() );
+    eAllStructuralFeatures_ = std::make_shared< ImmutableEList<std::shared_ptr<EStructuralFeature>>>( std::move( allFeatures ) );
+}
+
+void EClassImpl::initAttributes()
+{
+    if( eAllAttributes_ )
+        return;
+
+    std::vector<std::shared_ptr<EAttribute>> allAttributes , attributes;
+
+    for( const auto& eClass : *getESuperTypes() )
+    {
+        auto superAttributes = eClass->getEAllAttributes();
+        allAttributes.insert( std::end( allAttributes ), superAttributes->begin(), superAttributes->end() );
+    }
+    auto features = getEStructuralFeatures();
+    for( const auto& feature : *features )
+    {
+        if( auto attribute = std::dynamic_pointer_cast<EAttribute>( feature ) )
+        {
+            attributes.push_back( attribute );
+            allAttributes.push_back( attribute );
+        }
+    }
+    eAttributes_ = std::make_shared< ImmutableEList<std::shared_ptr<EAttribute>>>( std::move( attributes ) );
+    eAllAttributes_ = std::make_shared< ImmutableEList<std::shared_ptr<EAttribute>>>( std::move( allAttributes ) );
+}
+
 std::shared_ptr<EList<std::shared_ptr<EStructuralFeature>>> EClassImpl::getContainments()
 {
-    if( !containments_ )
-        initFeaturesSubSet();
+    initFeaturesSubSet();
     return containments_;
 }
 
 std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> EClassImpl::getCrossReferences()
 {
-    if (!crossReferences_ )
-        initFeaturesSubSet();
+    initFeaturesSubSet();
     return crossReferences_;
 }
 
