@@ -362,9 +362,7 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> EClassImpl::getEAllOp
 std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> EClassImpl::getEAllReferences() const
 {
     // Start of user code EClassImpl::getEAllReferences
-    if( !eAllReferences_ )
-        const_cast<EClassImpl*>( this )->eAllReferences_.reset( new EObjectEList<std::shared_ptr<ecore::EReference>, false, false, false>( getThisPtr(), EcorePackage::ECLASS__EALL_REFERENCES ) );
-    return eAllReferences_;
+    return const_cast<EClassImpl*>( this )->getEAllReferences();
     // End of user code
 }
 
@@ -439,9 +437,7 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> EClassImpl::getEOpera
 std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> EClassImpl::getEReferences() const
 {
     // Start of user code EClassImpl::getEReferences
-    if( !eReferences_ )
-        const_cast<EClassImpl*>( this )->eReferences_.reset( new EObjectEList<std::shared_ptr<ecore::EReference>, false, false, false>( getThisPtr(), EcorePackage::ECLASS__EREFERENCES ) );
-    return eReferences_;
+    return const_cast<EClassImpl*>( this )->getEReferences();
     // End of user code
 }
 
@@ -764,6 +760,18 @@ std::shared_ptr<EList<std::shared_ptr<EAttribute>>> EClassImpl::getEAttributes()
     return eAttributes_;
 }
 
+std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> ecore::impl::EClassImpl::getEAllReferences()
+{
+    initReferences();
+    return eAllReferences_;
+}
+
+std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> ecore::impl::EClassImpl::getEReferences()
+{
+    initReferences();
+    return eReferences_;
+}
+
 void EClassImpl::initFeaturesSubSet()
 {
     if( containments_ )
@@ -838,6 +846,32 @@ void EClassImpl::initAttributes()
     }
     eAttributes_ = std::make_shared< ImmutableEList<std::shared_ptr<EAttribute>>>( std::move( attributes ) );
     eAllAttributes_ = std::make_shared< ImmutableEList<std::shared_ptr<EAttribute>>>( std::move( allAttributes ) );
+}
+
+void ecore::impl::EClassImpl::initReferences()
+{
+    if( eAllReferences_ )
+        return;
+
+    std::vector<std::shared_ptr<EReference>> allReferences, references;
+
+    for( const auto& eClass : *getESuperTypes() )
+    {
+        auto superReferences = eClass->getEAllReferences();
+        allReferences.insert( std::end( allReferences ), superReferences->begin(), superReferences->end() );
+    }
+    auto features = getEStructuralFeatures();
+    for( const auto& feature : *features )
+    {
+        if( auto reference = std::dynamic_pointer_cast<EReference>( feature ) )
+        {
+            references.push_back( reference );
+            allReferences.push_back( reference );
+        }
+    }
+    eReferences_ = std::make_shared< ImmutableEList<std::shared_ptr<EReference>>>( std::move( references ) );
+    eAllReferences_ = std::make_shared< ImmutableEList<std::shared_ptr<EReference>>>( std::move( allReferences ) );
+
 }
 
 std::shared_ptr<EList<std::shared_ptr<EStructuralFeature>>> EClassImpl::getContainments()
