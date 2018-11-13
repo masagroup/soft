@@ -163,7 +163,7 @@ namespace ecore::impl
             std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> getEReferences();
             std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> getEAllOperations();
             std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> getEOperations();
-
+            std::shared_ptr<ecore::EAttribute> getEIDAttribute();
 
         private:
             void initFeaturesSubSet();

@@ -781,6 +781,11 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> ecore::impl::EClassIm
     return eOperations_;
 }
 
+std::shared_ptr<ecore::EAttribute> ecore::impl::EClassImpl::getEIDAttribute()
+{
+    return std::shared_ptr<ecore::EAttribute>();
+}
+
 void EClassImpl::initFeaturesSubSet()
 {
     if( containments_ )
@@ -838,11 +843,15 @@ void EClassImpl::initAttributes()
         return;
 
     std::vector<std::shared_ptr<EAttribute>> allAttributes , attributes;
-
+    std::shared_ptr<EAttribute> eIDAttribute;
     for( const auto& eClass : *getESuperTypes() )
     {
         auto superAttributes = eClass->getEAllAttributes();
-        allAttributes.insert( std::end( allAttributes ), superAttributes->begin(), superAttributes->end() );
+        for( const auto& attribute : *superAttributes )
+        {
+            if( attribute->isID() && !eIDAttribute)
+                eIDAttribute = attribute;
+        }
     }
     auto features = getEStructuralFeatures();
     for( const auto& feature : *features )
@@ -851,8 +860,12 @@ void EClassImpl::initAttributes()
         {
             attributes.push_back( attribute );
             allAttributes.push_back( attribute );
+            if( attribute->isID() && !eIDAttribute )
+                eIDAttribute = attribute;
         }
     }
+
+    eIDAttribute_ = eIDAttribute;
     eAttributes_ = std::make_shared< ImmutableEList<std::shared_ptr<EAttribute>>>( std::move( attributes ) );
     eAllAttributes_ = std::make_shared< ImmutableEList<std::shared_ptr<EAttribute>>>( std::move( allAttributes ) );
 }
