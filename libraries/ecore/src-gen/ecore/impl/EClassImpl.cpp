@@ -36,7 +36,6 @@
 //Start of user code EClassImpl [declaration-includes]
 #include "ecore/EcorePackage.hpp"
 #include "ecore/EAdapter.hpp"
-#include "ecore/impl/BasicEList.hpp"
 #include "ecore/impl/EStructuralFeatureImpl.hpp"
 //End of user code
 
@@ -317,9 +316,7 @@ bool EClassImpl::isSuperTypeOf(const std::shared_ptr<ecore::EClass>& someClass)
 std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> EClassImpl::getEAllAttributes() const
 {
     // Start of user code EClassImpl::getEAllAttributes
-    if( !eAllAttributes_ )
-        const_cast<EClassImpl*>( this )->eAllAttributes_.reset( new EObjectEList<std::shared_ptr<ecore::EAttribute>, false, false, false>( getThisPtr(), EcorePackage::ECLASS__EALL_ATTRIBUTES ) );
-    return eAllAttributes_;
+    return const_cast<EClassImpl*>( this )->getEAllAttributes();
     // End of user code
 }
 
@@ -774,6 +771,27 @@ std::shared_ptr<EList<std::shared_ptr<EStructuralFeature>>> EClassImpl::getEAllS
         crossReferences_.reset();
     }
     return eAllStructuralFeatures_;
+}
+
+std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> EClassImpl::getEAllAttributes()
+{
+    if( !eAllAttributes_ )
+    {
+        std::vector<std::shared_ptr<EAttribute>> allAttributes;
+        for( const auto& eClass : *getESuperTypes() )
+        {
+            auto attributes = eClass->getEAllAttributes();
+            allAttributes.insert( std::end( allAttributes ), attributes->begin(), attributes->end() );
+        }
+        auto features = getEStructuralFeatures();
+        for( const auto& feature : *features )
+        {
+            if( auto attribute = std::dynamic_pointer_cast<EAttribute>( feature ) )
+                allAttributes.push_back( attribute );
+        }
+        eAllAttributes_ = std::make_shared< ImmutableEList<std::shared_ptr<EAttribute>>>( std::move( allAttributes ) );
+    }
+    return eAllAttributes_;
 }
 
 void EClassImpl::initFeaturesSubSet()

@@ -157,6 +157,7 @@ namespace ecore::impl
             
         protected:
             std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> getEAllStructuralFeatures();
+            std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> getEAllAttributes();
 
         private:
             void initFeaturesSubSet();
