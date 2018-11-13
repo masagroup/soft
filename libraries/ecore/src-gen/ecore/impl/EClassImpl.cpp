@@ -68,13 +68,84 @@ public:
     virtual void notifyChanged( const std::shared_ptr<ENotification>& notification )
     {
         int eventType = notification->getEventType();
+        auto eNotifier = std::dynamic_pointer_cast<EClassImpl>( notification->getNotifier() );
         if( eventType != ENotification::REMOVING_ADAPTER )
         {
             int featureID = notification->getFeature()->getFeatureID();
             if( featureID == EcorePackage::ECLASS__ESUPER_TYPES )
             {
-
-
+                switch( eventType )
+                {
+                    case ENotification::SET:
+                    case ENotification::RESOLVE:
+                    {
+                        boost::any oldValue = notification->getOldValue();
+                        if( !oldValue.empty() )
+                        {
+                            auto eClass = boost::any_cast<std::shared_ptr<EClass>>( oldValue );
+                            auto eClassImpl = std::dynamic_pointer_cast<EClassImpl>( eClass );
+                            eClassImpl->eSuperAdapter_->getSubClasses()->remove( eNotifier );
+                        }
+                        boost::any newValue = notification->getNewValue();
+                        if( !newValue.empty() )
+                        {
+                            auto eClass = boost::any_cast<std::shared_ptr<EClass>>( newValue );
+                            auto eClassImpl = std::dynamic_pointer_cast<EClassImpl>( eClass );
+                            eClassImpl->eSuperAdapter_->getSubClasses()->add( eNotifier );
+                        }
+                        break;
+                    }
+                    case ENotification::ADD:
+                    {
+                        boost::any newValue = notification->getNewValue();
+                        if( !newValue.empty() )
+                        {
+                            auto eClass = boost::any_cast<std::shared_ptr<EClass>>( newValue );
+                            auto eClassImpl = std::dynamic_pointer_cast<EClassImpl>( eClass );
+                            eClassImpl->eSuperAdapter_->getSubClasses()->add( eNotifier );
+                        }
+                        break;
+                    }
+                    case ENotification::ADD_MANY:
+                    {
+                        boost::any newValue = notification->getNewValue();
+                        if( !newValue.empty() )
+                        {
+                            auto eCollection = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<EClass>>>>( newValue );
+                            for( const auto& eClass : *eCollection )
+                            {
+                                auto eClassImpl = std::dynamic_pointer_cast<EClassImpl>( eClass );
+                                eClassImpl->eSuperAdapter_->getSubClasses()->add( eNotifier );
+                            }
+                        }
+                        break;
+                    }
+                    case ENotification::REMOVE:
+                    {
+                        boost::any oldValue = notification->getOldValue();
+                        if( !oldValue.empty() )
+                        {
+                            auto eClass = boost::any_cast<std::shared_ptr<EClass>>( oldValue );
+                            auto eClassImpl = std::dynamic_pointer_cast<EClassImpl>( eClass );
+                            eClassImpl->eSuperAdapter_->getSubClasses()->remove( eNotifier );
+                        }
+                        break;
+                    }
+                    case ENotification::REMOVE_MANY:
+                    {
+                        boost::any oldValue = notification->getOldValue();
+                        if( !oldValue.empty() )
+                        {
+                            auto eCollection = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<EClass>>>>( oldValue );
+                            for( const auto& eClass : *eCollection )
+                            {
+                                auto eClassImpl = std::dynamic_pointer_cast<EClassImpl>( eClass );
+                                eClassImpl->eSuperAdapter_->getSubClasses()->remove( eNotifier );
+                            }
+                        }
+                        break;
+                    }
+                }
             }
             eClassImpl_.setModified( featureID );
         }
