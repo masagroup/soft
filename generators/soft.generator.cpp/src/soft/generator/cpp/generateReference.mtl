@@ -56,43 +56,52 @@ const std::shared_ptr<EList<[anEReference.eGenericType.generateCppType()/]> >& [
 [/template]
 
 [template public generateReferenceSetterCpp(anEReference : EReference) ? (hasSetter('public',true))]
-void [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getSetterName()/]([generateReferenceParameter(anEReference)/])
+[let className : String = anEReference.eContainingClass.getImplementationName()]
+void [className/]::[anEReference.getSetterName()/]([generateReferenceParameter(anEReference)/])
 {
-[if (hasKey('setterbody'))]
-//generated from setterbody annotation
-[valueKey('setterbody')/] 
-//end of body
+    // [protected (className + '::' + anEReference.getSetterName())]
+[if (hasKey('setterBody'))]
+    [valueKey('setterBody')/] 
 [else]
     [anEReference.name/]_ = [anEReference.name/];
 [/if]
+    // [/protected]
 }
+[/let]
 [/template]
 
 [template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter('public',true) and anEReference.upperBound <> 1)]
-[anEReference.generateReturnType()/] [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getGetterName()/]() const
+[let className : String = anEReference.eContainingClass.getImplementationName()]
+[anEReference.generateReturnType()/] [className/]::[anEReference.getGetterName()/]() const
 {
-[if (hasKey('getterbody'))]
-    //generated from getterbody annotation
-    [valueKey('getterbody')/]
-    //end of body
+    // [protected (className + '::' + anEReference.getGetterName())]
+[if (hasKey('getterBody'))]
+    [valueKey('getterBody')/]
 [else]
+    
     if ( ![anEReference.name/]_ )
-        const_cast<[anEReference.eContainingClass.name.toUpperFirst()/]Impl*>(this)->[anEReference.name/]_.reset(new [getListConstructor()/]); 
+        const_cast<[className/]*>(this)->[anEReference.name/]_.reset(new [getListConstructor()/]); 
     return [anEReference.name/]_;
 [/if]
+    // [/protected]
 }
+[/let]
 [/template]
 
 [template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter('public',true))]
-[anEReference.generateReturnType()/] [anEReference.eContainingClass.name.toUpperFirst()/]Impl::[anEReference.getGetterName()/]() const
+[let className : String = anEReference.eContainingClass.getImplementationName()]
+[anEReference.generateReturnType()/] [className/]::[anEReference.getGetterName()/]() const
 {
-[if (hasKey('getterbody'))]
+    // [protected (className + '::' + anEReference.getGetterName())]
+[if (hasKey('getterBody'))]
     //generated from getterbody annotation
-    [valueKey('getterbody')/]
+    [valueKey('getterBody')/]
     //end of body
 [else][if(anEReference.lowerBound>0)]assert([anEReference.name/]_);[/if]
     return [anEReference.name/]_[if (anEReference.isBackReference())].lock()[/if];
 [/if]
+    // [/protected]
+[/let]
 }
 [/template]
 

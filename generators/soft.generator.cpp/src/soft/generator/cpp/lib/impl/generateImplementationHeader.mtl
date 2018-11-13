@@ -20,6 +20,9 @@
 [/for]
 #include "[namespaceToFolder(aClass.getClassExtends())/].hpp"
 
+// [protected (className + ' [definition-includes]')]
+// [/protected]
+
 [comment namespace /]
 namespace [namespaceName/] 
 {
@@ -58,7 +61,7 @@ namespace [namespaceName/]
             //*********************************
             [aClass.eReferences->sortedBy(name).generateReferenceDeclaration(true)/]
             [/if]
-            
+        
         protected:
             virtual std::shared_ptr<[getShortQualifiedName('ecore::EClass',namespaceName)/]> eStaticClass() const;
             [aClass.generateGetDeclaration(true)/]
@@ -84,8 +87,13 @@ namespace [namespaceName/]
             [aClass.eReferences->sortedBy(name).generateReferenceProtected()/]
             [/if]
         [/if]
+
         private:
             std::weak_ptr<[className/]> [generateGetThisPtrPropertyName()/]_;
+
+            // [protected (className + ' [definition-methods]')]
+            // [/protected]
+
     };
 }
 [endGuard(guardName)/]

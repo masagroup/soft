@@ -29,7 +29,7 @@ namespace ecore::impl
 
         }
 
-        BasicEList( std::initializer_list<T> init )
+        BasicEList( const std::initializer_list<T>& init )
             : AbstractEList<T, unique>()
             , v_( init )
         {
@@ -97,7 +97,7 @@ namespace ecore::impl
 
         virtual T setUnique( std::size_t pos, const T& e )
         {
-            T old = v_[ pos ];
+            auto old = v_[ pos ];
             v_[ pos ] = e;
             didSet( pos, e, old );
             didChange();
@@ -128,7 +128,7 @@ namespace ecore::impl
 
         virtual void clear()
         {
-            std::vector<T> oldObjects = v_;
+            auto oldObjects = std::move(v_);
             v_.clear();
             didClear( oldObjects );
         }
@@ -138,10 +138,15 @@ namespace ecore::impl
             return v_.empty();
         }
 
+        std::vector<T>& data()
+        {
+            return v_;
+        }
+
     protected:
         std::vector<T> v_;
     };
 
 }
 
-#endif /* ECORE_ELIST_HPP_ */
+#endif /* ECORE_BASICELIST_HPP_ */

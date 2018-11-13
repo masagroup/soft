@@ -1,5 +1,6 @@
 #include "ecore/impl/BasicEObject.hpp"
 #include "ecore/impl/BasicEList.hpp"
+#include "ecore/impl/EClassImpl.hpp"
 #include "ecore/impl/Notification.hpp"
 #include "ecore/Constants.hpp"
 #include "ecore/EAdapter.hpp"
@@ -75,12 +76,12 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eAllConten
 
 std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eContents() const
 {
-    return std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>>();
+    return std::dynamic_pointer_cast<EClassImpl>( eClass()  )->getContainments()->asEListOf<std::shared_ptr<EObject>>();
 }
 
 std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eCrossReferences() const
 {
-    return std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>>();
+    return std::dynamic_pointer_cast<EClassImpl>( eClass() )->getCrossReferences()->asEListOf<std::shared_ptr<EObject>>();
 }
 
 std::shared_ptr<ecore::EClass> BasicEObject::eClass() const

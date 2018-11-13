@@ -47,7 +47,8 @@ virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shar
 
 
 [template public generateGetImplementation(aClass : EClass) ? (aClass.getEGetFeatures()->notEmpty()) post (trim())]
-boost::any [aClass.getImplementationName()/]::eGet(int featureID, bool resolve, bool coreType) const
+[let className : String = aClass.getImplementationName()]
+boost::any [className/]::eGet(int featureID, bool resolve, bool coreType) const
 {
     switch(featureID)
     {
@@ -58,6 +59,7 @@ boost::any [aClass.getImplementationName()/]::eGet(int featureID, bool resolve, 
     }
     return [removeNamespace(aClass.getClassExtends())/]::eGet(featureID, resolve, coreType);
 }
+[/let]
 [/template]
 
 [template public generateIsSetImplementation(aClass : EClass) ? (aClass.getEIsSetFeatures()->notEmpty()) post (trim())]
@@ -102,19 +104,22 @@ void [aClass.getImplementationName()/]::eSet(int featureID, const boost::any& ne
 [/template]
 
 [template public generateUnSetImplementation(aClass : EClass) ? (aClass.getEUnSetFeatures()->notEmpty())]
-void [aClass.getImplementationName()/]::eUnSet(int featureID)
+[let className : String = aClass.getImplementationName()]
+void [className/]::eUnSet(int featureID)
 {
-    // [protected (aClass.name.concat('Impl::eUnset'))]
+    // [protected (className + '::eUnset')]
     std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
     throw "NotImplementedException";
     // [/protected]
 }
+[/let]
 [/template]
 
 [template public generateInvokeImplementation(aClass : EClass) ? (aClass.eOperations->notEmpty()) ]
-boost::any [aClass.getImplementationName()/]::eInvoke(int operationID, const std::shared_ptr<EList<boost::any>>& arguments)
+[let className : String = aClass.getImplementationName()]
+boost::any [className/]::eInvoke(int operationID, const std::shared_ptr<EList<boost::any>>& arguments)
 {
-    // [protected (aClass.name.concat('Impl::eInvoke'))]
+    // [protected ( className + '::eInvoke')]
     switch( operationID )
     {
     [for ( eOperation : EOperation | aClass.eOperations->sortedBy(name) )]
@@ -132,6 +137,7 @@ boost::any [aClass.getImplementationName()/]::eInvoke(int operationID, const std
     return boost::any();
     // [/protected]
 }
+[/let]
 [/template]
 
 [template private generateOperationInvoke(eOperation : EOperation )]
@@ -180,9 +186,10 @@ static const int [anEClass.getFeatureCountID()/] = [anEClass.getFeatureCountValu
 
 
 [template public generateInverseAddImplementation(aClass : EClass) ? (aClass.getEInverseAddFeatures()->notEmpty()) ]
-std::shared_ptr<ENotificationChain> [aClass.getImplementationName()/]::eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
+[let className : String = aClass.getImplementationName()]
+std::shared_ptr<ENotificationChain> [className/]::eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
 {
-    // [protected (aClass.name.concat('Impl::eBasicInverseAdd'))]
+    // [protected (className + '::eBasicInverseAdd')]
     switch( featureID )
     {
 [for ( eFeature : EStructuralFeature | aClass.getEInverseAddFeatures()->sortedBy(name) )]
@@ -208,12 +215,14 @@ std::shared_ptr<ENotificationChain> [aClass.getImplementationName()/]::eBasicInv
     return [removeNamespace(aClass.getClassExtends())/]::eBasicInverseAdd(otherEnd, featureID, notifications);
     // [/protected]
 }
+[/let]
 [/template]
 
 [template public generateInverseRemoveImplementation(aClass : EClass) ? (aClass.getEInverseRemoveFeatures()->notEmpty()) ]
-std::shared_ptr<ENotificationChain> [aClass.getImplementationName()/]::eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
+[let className : String = aClass.getImplementationName()]
+std::shared_ptr<ENotificationChain> [className/]::eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
 {
-    // [protected (aClass.name.concat('Impl::eBasicInverseRemove'))]
+    // [protected (className + '::eBasicInverseRemove')]
     switch( featureID )
     {
 [for ( eFeature : EStructuralFeature | aClass.getEInverseRemoveFeatures()->sortedBy(name) )]
@@ -236,5 +245,6 @@ std::shared_ptr<ENotificationChain> [aClass.getImplementationName()/]::eBasicInv
     return [removeNamespace(aClass.getClassExtends())/]::eBasicInverseRemove(otherEnd, featureID, notifications);
     // [/protected]
 }
+[/let]
 [/template]
 

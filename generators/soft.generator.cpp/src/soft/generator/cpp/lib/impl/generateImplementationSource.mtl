@@ -42,6 +42,9 @@
 #include <boost/any.hpp>
 [/if]
 
+//[protected (className + ' [declaration-includes]')]
+//[/protected]
+
 
 [comment namespace /]
 [let namespaces : OrderedSet(String) = OrderedSet{ 'ecore' , aClass.ePackage.getInterfaceNamespaceName() , aClass.ePackage.getImplementationNamespaceName()}]
@@ -50,19 +53,26 @@ using namespace [namespace/];
 [/for]
 [/let]
 
+//[protected (className + ' [declaration-begin]')]
+//[/protected]
+
 //*********************************
 // Constructor / Destructor
 //*********************************
+//[protected (className+ '::' + className)]
 [className/]::[className/]()
 {
 }
+//[/protected]
 
+//[protected (className+ '::~' + className)]
 [className/]::~[className/]()
 {
 #ifdef SHOW_DELETION
     std::cout << "-------------------------------------------------------------------------------------------------\r\ndelete [aClass.name.toUpperFirst()/] "<< this << "\r\n------------------------------------------------------------------------ " << std::endl;
 #endif
 }
+//[/protected]
 
 std::shared_ptr<EClass> [className/]::eStaticClass() const
 {
@@ -111,6 +121,9 @@ std::shared_ptr<EClass> [className/]::eStaticClass() const
 [aClass.generateInverseAddImplementation()/]
 
 [aClass.generateInverseRemoveImplementation()/]
+
+// [protected (className + ' [declaration-end]') ]
+// [/protected]
 
 [/file]
 [/template]

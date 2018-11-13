@@ -14,17 +14,20 @@ virtual [anEOperation.generateReturnType()/] [anEOperation.name/]([anEOperation.
 
 
 [template public generateOperationImplementation(anEOperation : EOperation) ? ( anEOperation.isPublic(true))]
-[anEOperation.generateReturnType()/] [anEOperation.eContainingClass.name.toUpperFirst()/]Impl::[anEOperation.name/]([anEOperation.generateParameterList()/])[if (hasKey('const'))] const[/if]
+[let className : String = anEOperation.eContainingClass.getImplementationName()]
+[anEOperation.generateReturnType()/] [className/]::[anEOperation.name/]([anEOperation.generateParameterList()/])[if (hasKey('const'))] const[/if]
 {
+    // [protected ( className+ '::' + anEOperation.name)]
 [if (hasKey('body'))]
     [valueKey('body')/]
 [else]
-    // [protected (anEOperation.name)]
+    
     std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
     throw "NotImplementedException";
-    // [/protected]
 [/if]
+    // [/protected]
 }
+[/let]
 [/template]
 
 [template public generateOperationMock(anEOperation : EOperation )  ? ( anEOperation.isPublic(false) ) ]

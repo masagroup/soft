@@ -1,0 +1,4 @@
+*
+!.gitignore
+!EClassImpl.hpp
+!EClassImpl.cpp

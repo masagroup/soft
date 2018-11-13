@@ -74,34 +74,60 @@ MOCK_METHOD([anEAttribute.getUnSetterName()/],0);
  * Section for the Attribute cpp implementation
 */]
 [template public generateAttributeGetterImplementationCpp(anEAttribute : EAttribute)? (hasGetter('public',true) and anEAttribute.upperBound <> 1)]
-[anEAttribute.generateReturnType()/] [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getGetterName()/]() const 
+[let className : String = anEAttribute.eContainingClass.getImplementationName()]
+[anEAttribute.generateReturnType()/] [className/]::[anEAttribute.getGetterName()/]() const 
 {
+    // [protected (className + '::' + anEAttribute.getGetterName()) ]
+[if (hasKey('getterBody'))]
+    [valueKey('getterBody')/]
+[else]
     if ( ![anEAttribute.name/]_ )
-         const_cast<[anEAttribute.eContainingClass.name.toUpperFirst()/]Impl*>(this)->[anEAttribute.name/]_.reset(new BasicEList<[anEAttribute.eGenericType.generateCppType()/]>());
+         const_cast<[className/]*>(this)->[anEAttribute.name/]_.reset(new BasicEList<[anEAttribute.eGenericType.generateCppType()/]>());
     return [anEAttribute.name/]_;
+[/if]
+    // [/protected]
 }
+[/let]
 [/template]
 
 [template public generateAttributeGetterImplementationCpp(anEAttribute : EAttribute)? (hasGetter('public',true))]
-[anEAttribute.generateReturnType()/] [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getGetterName()/]() const 
+[let className : String = anEAttribute.eContainingClass.getImplementationName()]
+[anEAttribute.generateReturnType()/] [className/]::[anEAttribute.getGetterName()/]() const 
 {
+    // [protected (className + '::' + anEAttribute.getGetterName())]
+[if (hasKey('getterBody'))]
+    [valueKey('getterBody')/]
+[else]
     return [anEAttribute.name/]_;
+[/if]
+    // [/protected]
 }
+[/let]
 [/template]
 
 
 [template public generateAttributeSetterImplementationCpp(anEAttribute : EAttribute, impl : Boolean) ? ( hasSetter('public',impl)) ]
-void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getSetterName()/]([anEAttribute.generateParameterType()/] [anEAttribute.getSafeVariableName()/])
+[let className : String = anEAttribute.eContainingClass.getImplementationName()]
+void [className/]::[anEAttribute.getSetterName()/]([anEAttribute.generateParameterType()/] [anEAttribute.getSafeVariableName()/])
 {
+    // [protected (className + '::' + anEAttribute.getSetterName())]
+[if (hasKey('setterBody'))]
+    [valueKey('setterBody')/] 
+[else]
     [anEAttribute.name/]_ = [anEAttribute.getSafeVariableName()/];
-} 
+[/if]
+    // [/protected]
+}
+[/let]
 [/template]
 
 [template public generateAttributeUnSetterImplementationCpp(anEAttribute : EAttribute)? (hasUnSetter('public',true))]
-void [anEAttribute.eContainingClass.name.toUpperFirst()/]Impl::[anEAttribute.getUnSetterName()/]()
+[let className : String = anEAttribute.eContainingClass.getImplementationName()]
+void [className/]::[anEAttribute.getUnSetterName()/]()
 {
     [anEAttribute.name/]_ [generateDefaultValue()/];
-} 
+}
+[/let] 
 [/template]
 
 

@@ -255,6 +255,16 @@ namespace ecore {
             delegate_.add( pos, cast< T, Q >::do_cast( e ) );
         }
 
+        virtual bool addAll( const std::shared_ptr<EList<T>>& l )
+        {
+            return delegate_.addAll( l->asEListOf<Q>() );
+        }
+
+        virtual bool addAll( std::size_t pos, const std::shared_ptr<EList<T>>& l )
+        {
+            return delegate_.addAll( pos, l->asEListOf<Q>() );
+        }
+
         virtual T get( std::size_t pos ) const {
             return cast< Q, T >::do_cast( delegate_.get( pos ) );
         }
@@ -284,6 +294,10 @@ namespace ecore {
             delegate_.clear();
         }
 
+        virtual bool empty() const
+        {
+            return delegate_.empty();
+        }
 
     protected:
 
