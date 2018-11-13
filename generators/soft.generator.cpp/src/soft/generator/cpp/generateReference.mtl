@@ -78,7 +78,6 @@ void [className/]::[anEReference.getSetterName()/]([generateReferenceParameter(a
 [if (hasKey('getterBody'))]
     [valueKey('getterBody')/]
 [else]
-    
     if ( ![anEReference.name/]_ )
         const_cast<[className/]*>(this)->[anEReference.name/]_.reset(new [getListConstructor()/]); 
     return [anEReference.name/]_;

@@ -97,7 +97,11 @@
         derived="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllOperations" upperBound="-1"
         eType="#//EOperation" changeable="false" volatile="true" transient="true"
-        derived="true"/>
+        derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="getterBody" value="return const_cast&lt;EClassImpl*>( this )->getEAllOperations();"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllStructuralFeatures"
         upperBound="-1" eType="#//EStructuralFeature" changeable="false" volatile="true"
         transient="true" derived="true">

@@ -161,12 +161,16 @@ namespace ecore::impl
             std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> getEAttributes();
             std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> getEAllReferences();
             std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> getEReferences();
+            std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> getEAllOperations();
+            std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> getEOperations();
+
 
         private:
             void initFeaturesSubSet();
             void initStructuralFeatures();
             void initAttributes();
             void initReferences();
+            void initOperations();
 
         private:
             class ESuperAdapter;

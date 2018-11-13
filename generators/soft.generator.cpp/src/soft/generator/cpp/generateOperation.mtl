@@ -21,7 +21,6 @@ virtual [anEOperation.generateReturnType()/] [anEOperation.name/]([anEOperation.
 [if (hasKey('body'))]
     [valueKey('body')/]
 [else]
-    
     std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
     throw "NotImplementedException";
 [/if]
