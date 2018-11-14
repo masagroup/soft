@@ -24,43 +24,40 @@
 // [protected (className + ' [definition-includes]')]
 // [/protected]
 
-[comment namespace /]
 namespace [namespaceName/] 
 {
     class [className/] : public virtual [getShortQualifiedName(aClass.getClassExtends(),namespaceName)/],[for ( implClass : String | aClass.getClassImplements()->asOrderedSet()->sortedBy(s | s)) separator (', ')] public virtual [getShortQualifiedName(implClass, namespaceName)/][/for] 
     {
-        private:    
-            [className/]& operator=([className/] const&) = delete;
+    private:    
+        [className/]& operator=([className/] const&) = delete;
+    
+    protected:
+        friend class [ aClass.ePackage.getFactoryImplementationName() /];
+        [className/]();
+        [aClass.generateGetThisPtr()/]
 
-        protected:
-            friend class [ aClass.ePackage.getFactoryImplementationName() /];
-            [className/]();
-            [aClass.generateGetThisPtr()/]
-
-        public:
-            //destructor
-            virtual ~[className/]();
-            
-            [aClass.eOperations->sortedBy(name).generateDeclaration(true)/]
-            [aClass.eAttributes->sortedBy(name).generateAttributeDeclaration(true)/]
-            [aClass.eReferences->sortedBy(name).generateReferenceDeclaration(true)/]
+    public:
+        virtual ~[className/]();
         
-        protected:
-            virtual std::shared_ptr<[getShortQualifiedName('ecore::EClass',namespaceName)/]> eStaticClass() const;
-            [aClass.generateReflectivesDeclaration()/]
+        [aClass.eOperations->sortedBy(name).generateDeclaration(true)/]
+        [aClass.eAttributes->sortedBy(name).generateAttributeDeclaration(true)/]
+        [aClass.eReferences->sortedBy(name).generateReferenceDeclaration(true)/]
+
+    protected:
+        virtual std::shared_ptr<[getShortQualifiedName('ecore::EClass',namespaceName)/]> eStaticClass() const;
+        [aClass.generateReflectivesDeclaration()/]
        
         [if aClass.eAttributes->notEmpty() or aClass.eReferences->notEmpty()]
-        protected:
-            [aClass.eAttributes->sortedBy(name).generateAttributeProtected()/]
-            [aClass.eReferences->sortedBy(name).generateReferenceProtected()/]
-        [/if]
-
-        private:
-            std::weak_ptr<[className/]> [generateGetThisPtrPropertyName()/]_;
-
-            // [protected (className + ' [definition-methods]')]
-            // [/protected]
-
+    protected:
+        [aClass.eAttributes->sortedBy(name).generateAttributeProtected()/]
+        [aClass.eReferences->sortedBy(name).generateReferenceProtected()/]
+    [/if]
+    
+    private:
+        std::weak_ptr<[className/]> [generateGetThisPtrPropertyName()/]_;
+    
+        // [protected (className + ' [definition-methods]')]
+        // [/protected]
     };
 }
 [endGuard(guardName)/]

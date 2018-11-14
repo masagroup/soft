@@ -39,7 +39,7 @@ namespace [aCls.ePackage.getInterfaceNamespaceName()/]
 }
 [/for]
 
-// [protected ('forward declarations for '.concat(aClass.name))]
+// [protected ('forward declarations for ' + className)]
 // [/protected]
 
 namespace [classNamespace/] 
@@ -52,14 +52,35 @@ namespace [classNamespace/]
 
     protected:
         [className/]() = default;
- 
+
     public:
-        //destructor
         virtual ~[className/]() = default;
 
-        [aClass.eOperations.generateDeclaration(false)/]
-        [aClass.eStructuralFeatures.generateDeclaration(false)/]
-        // [protected (aClass.name)]
+[let operations : OrderedSet(EOperation) = aClass.eOperations->select( isPublic(false) )]
+[if operations->notEmpty()]
+        //*********************************
+        // Operations
+        //*********************************
+        [operations.generateDeclaration(false)/]
+[/if]
+[/let]
+[let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( hasSetter('public',false) or hasGetter('public',false) )]
+[if attributes->notEmpty()]
+        //*********************************
+        // Attributes
+        //*********************************
+        [attributes.generateDeclaration(false)/]
+[/if]
+[/let]
+[let references : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EReference)->select( hasSetter('public',false) or hasGetter('public',false)  )]
+[if references->notEmpty()]
+        //*********************************
+        // References
+        //*********************************
+        [references.generateDeclaration(false)/]
+[/if]
+[/let]
+        // [protected (className)]
         // [/protected]
     };
 }

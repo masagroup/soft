@@ -70,11 +70,13 @@ namespace ecore
 
     protected:
         EObject() = default;
- 
+
     public:
-        //destructor
         virtual ~EObject() = default;
 
+        //*********************************
+        // Operations
+        //*********************************
         virtual std::shared_ptr<ecore::EClass> eClass() const = 0;
         
         virtual bool eIsProxy() const = 0;
@@ -106,14 +108,13 @@ namespace ecore
         virtual boost::any eInvoke(const std::shared_ptr<ecore::EOperation>& operation,const std::shared_ptr<EList<boost::any>>& arguments) = 0;
         
         
-        
         // Start of user code EObject
         virtual std::shared_ptr<ENotificationChain> eInverseAdd( const std::shared_ptr<EObject>& otherEnd
-                                                                , int featureID
-                                                                , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
+                                                               , int featureID
+                                                               , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
         virtual std::shared_ptr<ENotificationChain> eInverseRemove( const std::shared_ptr<EObject>& otherEnd
-                                                                    , int featureID
-                                                                    , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
+                                                                  , int featureID
+                                                                  , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
         // End of user code
     };
 }
