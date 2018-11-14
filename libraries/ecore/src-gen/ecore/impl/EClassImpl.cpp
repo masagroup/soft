@@ -311,8 +311,9 @@ int EClassImpl::getOperationID(const std::shared_ptr<EOperation>& operation)
 std::shared_ptr<EOperation> EClassImpl::getOverride(const std::shared_ptr<EOperation>& operation)
 {
     // Start of user code EClassImpl::getOverride
-    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
-    throw "NotImplementedException";
+    initOperationToOverrideMap();
+    auto it = operationToOverrideMap_->find( operation );
+    return it != operationToOverrideMap_->end() ? it->second : std::shared_ptr<EOperation>();
     // End of user code
 }
 
@@ -921,6 +922,8 @@ void EClassImpl::initOperations()
     if( eAllOperations_ )
         return;
 
+    operationToOverrideMap_.reset();
+
     std::vector< std::shared_ptr< EOperation > > allOperations;
     for( const auto& eClass : *getESuperTypes() )
     {
@@ -946,8 +949,29 @@ void EClassImpl::initNameToFeatureMap()
         return;
     
     nameToFeatureMap_ = std::make_unique< std::unordered_map< std::string, std::shared_ptr<EStructuralFeature>>>();
-    for (const auto& feature : *eAllStructuralFeatures_)
+    for (const auto& feature : *getEAllStructuralFeatures())
         nameToFeatureMap_->operator[](feature->getName()) = feature;
+}
+
+void EClassImpl::initOperationToOverrideMap()
+{
+    initOperations();
+
+    if (operationToOverrideMap_)
+        return;
+
+    operationToOverrideMap_ = std::make_unique< std::unordered_map< std::shared_ptr<EOperation>, std::shared_ptr<EOperation>>>();
+    auto& allOperations = *getEAllOperations();
+    for (int i = 0; i < allOperations.size(); ++i)
+    {
+        for (int j = allOperations.size() - 1; j > i; --j)
+        {
+            const auto& oi = allOperations.get( i );
+            const auto& oj = allOperations.get( j );
+            if ( oj->isOverrideOf( oi ))
+                operationToOverrideMap_->operator[]( oi ) = oj;
+        }
+    }
 }
 
 std::shared_ptr<EList<std::shared_ptr<EStructuralFeature>>> EClassImpl::getContainments()

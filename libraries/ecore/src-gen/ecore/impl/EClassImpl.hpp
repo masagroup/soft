@@ -173,6 +173,7 @@ namespace ecore::impl
             void initReferences();
             void initOperations();
             void initNameToFeatureMap();
+            void initOperationToOverrideMap();
 
         private:
             class ESuperAdapter;
@@ -180,7 +181,7 @@ namespace ecore::impl
             std::shared_ptr< EList<std::shared_ptr<EStructuralFeature>>> containments_;
             std::shared_ptr< EList<std::shared_ptr<EStructuralFeature>>> crossReferences_;
             std::unique_ptr< std::unordered_map< std::string, std::shared_ptr<EStructuralFeature>>> nameToFeatureMap_;
-            std::unique_ptr< std::unordered_map< std::string, std::shared_ptr<EStructuralFeature>>> operationToOverrideMap_;
+            std::unique_ptr< std::unordered_map< std::shared_ptr<EOperation>, std::shared_ptr<EOperation>>> operationToOverrideMap_;
             // End of user code
 
     };
