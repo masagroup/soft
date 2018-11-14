@@ -413,7 +413,7 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> EClassImpl::getEGen
 std::shared_ptr<ecore::EAttribute> EClassImpl::getEIDAttribute() const
 {
     // Start of user code EClassImpl::getEIDAttribute
-    return eIDAttribute_;
+    return const_cast<EClassImpl*>(this)->getEIDAttribute();
     // End of user code
 }
 
@@ -783,7 +783,8 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> ecore::impl::EClassIm
 
 std::shared_ptr<ecore::EAttribute> ecore::impl::EClassImpl::getEIDAttribute()
 {
-    return std::shared_ptr<ecore::EAttribute>();
+    initAttributes();
+    return eIDAttribute_;
 }
 
 void EClassImpl::initFeaturesSubSet()
