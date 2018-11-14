@@ -49,29 +49,37 @@ std::shared_ptr<[anEDataType.eClassifier.generateType()/]<[for (g : EGenericType
 [/template]
 
 [template public generateParameterType(eElement : ETypedElement) post (trim())]
-[if (not (eElement.upperBound = 1))]
-const std::shared_ptr<EList<[eElement.eGenericType.generateCppType()/]>>&[else]
-[if (eElement.eGenericType.needReference())]
-const [eElement.eGenericType.generateCppType()/]&[else]
-[eElement.eGenericType.generateCppType()/][/if][/if]
+[if (isListType())]
+const std::shared_ptr<EList<[eElement.eGenericType.generateCppType()/]>>&
+[elseif (eElement.eGenericType.needReference())]
+const [eElement.eGenericType.generateCppType()/]&
+[else]
+[eElement.eGenericType.generateCppType()/]
+[/if]
 [/template]
 
 [template public generateReturnType(eElement : ETypedElement) post(trim())]
-[if (not (eElement.upperBound = 1))]
-std::shared_ptr<EList<[eElement.eGenericType.generateCppType()/]>>[else]
-[eElement.eGenericType.generateCppType()/][/if]
+[if (isListType())]
+std::shared_ptr<EList<[eElement.eGenericType.generateCppType()/]>>
+[else]
+[eElement.eGenericType.generateCppType()/]
+[/if]
 [/template]
 
 [template public generateAttributeType(eAttribute : EAttribute) post (trim())]
 [if (not(eAttribute.upperBound = 1))]
-std::shared_ptr<EList<[eAttribute.eGenericType.generateCppType()/]>>[else]
-[eAttribute.eGenericType.generateCppType()/][/if]
+std::shared_ptr<EList<[eAttribute.eGenericType.generateCppType()/]>>
+[else]
+[eAttribute.eGenericType.generateCppType()/]
+[/if]
 [/template]
 
 [template public generateReferenceType(eReference : EReference) post (trim())]
-[if (eReference.upperBound = 1)]
-[eReference.pointerType()/]<[eReference.eGenericType.eClassifier.generateType()/]>[else]
-std::shared_ptr<EList<[eReference.eGenericType.generateCppType()/]>>[/if]
+[if isListType()]
+std::shared_ptr<EList<[eReference.eGenericType.generateCppType()/]>>
+[else]
+[eReference.pointerType()/]<[eReference.eGenericType.eClassifier.generateType()/]>
+[/if]
 [/template]
 
 
