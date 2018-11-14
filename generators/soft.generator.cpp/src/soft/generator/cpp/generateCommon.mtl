@@ -189,20 +189,26 @@
         false 
     endif
 /]
+[query public isBidirectional(aStructuralFeature : EStructuralFeature) : Boolean = if aStructuralFeature.oclIsKindOf(EReference) then not aStructuralFeature.oclAsType(EReference).eOpposite.oclIsUndefined() else false endif/]
 [query public isContains(aStructuralFeature : EStructuralFeature) : Boolean = aStructuralFeature.oclIsKindOf(EReference) and aStructuralFeature.oclAsType(EReference).containment/]
 [query public isChangeable(aStructuralFeature : EStructuralFeature) : Boolean = aStructuralFeature.changeable/]
 [query public isUnSettable(aStructuralFeature : EStructuralFeature) : Boolean = aStructuralFeature.unsettable and not aStructuralFeature.isContainer() /]
+[query public isVolatile(aStructuralFeature : EStructuralFeature) : Boolean = 
+    let eReverseFeature : EReference = if aStructuralFeature.oclIsKindOf(EReference) then aStructuralFeature.oclAsType(EReference).eOpposite else null endif in
+    aStructuralFeature.volatile or ( not eReverseFeature.oclIsUndefined() and eReverseFeature.volatile )
+/]
+[query public isListType(aTypedElement : ETypedElement ) : Boolean = (not aTypedElement.oclIsUndefined() ) and ( aTypedElement.many or aTypedElement.upperBound <> 1 )/]  
+[query public isResolveProxies(aStructuralFeature : EStructuralFeature) : Boolean = (not isContainer() and not isContains()) and aStructuralFeature.oclIsKindOf(EReference) and aStructuralFeature.oclAsType(EReference).resolveProxies/]  
+
 
 [query public isGet(aStructuralFeature : EStructuralFeature) : Boolean = true/]
 [query public isSet(aStructuralFeature : EStructuralFeature) : Boolean = isChangeable() and aStructuralFeature.upperBound = 1/]
 [query public isUnSet(aStructuralFeature : EStructuralFeature) : Boolean = isChangeable() and isUnSettable()/]
 [query public isIsSet(aStructuralFeature : EStructuralFeature) : Boolean = isUnSettable()/]
-[query public isVolatile(aStructuralFeature : EStructuralFeature) : Boolean = 
-    let eReverseFeature : EReference = if aStructuralFeature.oclIsKindOf(EReference) then aStructuralFeature.oclAsType(EReference).eOpposite else null endif in
-    aStructuralFeature.volatile or ( not eReverseFeature.oclIsUndefined() and eReverseFeature.volatile )
-/]
-[query public isBidirectional(aStructuralFeature : EStructuralFeature) : Boolean = if aStructuralFeature.oclIsKindOf(EReference) then not aStructuralFeature.oclAsType(EReference).eOpposite.oclIsUndefined() else false endif/]
 
+[query public isBasicSet(aStructuralFeature : EStructuralFeature) : Boolean = not isListType() and ( isChangeable() or not isContainer() ) and ( isBidirectional() and not isVolatile() or isContains() ) /]
+[query public isBasicGet(aStructuralFeature : EStructuralFeature) : Boolean = isResolveProxies() and not isListType()/]
+[query public isBasicUnSet(aStructuralFeature : EStructuralFeature) : Boolean = isUnSettable() and isChangeable() and not isListType() and aStructuralFeature.oclIsKindOf(EReference) and ( isBidirectional() or isContains() )/]
 
 [query private getSuperTypeContainers(aClass:EClass) : OrderedSet(EReference) = if not(aClass.eSuperTypes->isEmpty()) then aClass.eSuperTypes.getAllContainers()->flatten()->asOrderedSet() else OrderedSet{} endif /]
 [query public getAllContainers(aClass : EClass) : OrderedSet(EReference) =  if getContainerAttribute()->notEmpty() then if getSuperTypeContainers()->isEmpty() then getContainerAttribute() else OrderedSet{getContainerAttribute()}->append(getSuperTypeContainers()->flatten()->reject(oclIsUndefined())->asOrderedSet())->flatten()->asOrderedSet() endif else getSuperTypeContainers()->asOrderedSet() endif /]
@@ -402,7 +408,7 @@ namespace ecore
 
 [query public isVoid(aOperation : EOperation) : Boolean = aOperation.eType.oclIsUndefined() /]
 [query public isCppKeyWord( o : OclAny, s : String ) : Boolean = s = 'volatile' or s = 'class' /]
-[query public getSafeVariableName( anEAttribute : EAttribute ) : String = if isCppKeyWord(anEAttribute.name) then anEAttribute.name.first(1) else anEAttribute.name endif/]
+[query public getSafeName( anElement : ETypedElement ) : String = if isCppKeyWord(anElement.name) then anElement.name.first(1) else anElement.name endif/]
 
 
 [**

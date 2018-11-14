@@ -27,7 +27,7 @@ MOCK_METHOD([anEReference.getGetterName()/],0);
 
 [template public generateReferenceSetterDeclaration(anEReference : EReference, impl : EBoolean) ? ( hasSetter('public',impl) )]
 virtual void [anEReference.getSetterName()/]([if (not anEReference.eGenericType.oclIsKindOf(EDataType))]
-[generateReferenceParameter(anEReference)/][else]
+[anEReference.generateParameterType()/][else]
 [anEReference.eGenericType.generateCppType()/][/if]
 [anEReference.name/]) [abstractSufix(impl)/];
 
@@ -38,26 +38,20 @@ virtual void [anEReference.getSetterName()/]([if (not anEReference.eGenericType.
 MOCK_METHOD([anEReference.getSetterName()/],1);
 [/template]
 
-[template public generateReferenceParameter(anEReference : EReference)]
-[if(anEReference.upperBound = 1)]
-const [anEReference.eGenericType.generateCppType()/]& [anEReference.name/][else]
-const std::shared_ptr<EList<[anEReference.eGenericType.generateCppType()/]> >& [anEReference.name/][/if]
-[/template]
-
 [template public generateReferenceProtected(anEReference : EReference) ]
 [anEReference.generateReferenceType()/] [anEReference.name/]_;
 
 [/template]
 
-[template public generateReferenceCpp(anEReference : EReference)]
-[anEReference.generateReferenceGetterCpp()/]
+[template public generateReferenceDefinition(anEReference : EReference)]
+[anEReference.generateReferenceGetterDefinition()/]
 
-[anEReference.generateReferenceSetterCpp()/]
+[anEReference.generateReferenceSetterDefinition()/]
 [/template]
 
-[template public generateReferenceSetterCpp(anEReference : EReference) ? (hasSetter('public',true))]
+[template public generateReferenceSetterDefinition(anEReference : EReference) ? (hasSetter('public',true))]
 [let className : String = anEReference.eContainingClass.getImplementationName()]
-void [className/]::[anEReference.getSetterName()/]([generateReferenceParameter(anEReference)/])
+void [className/]::[anEReference.getSetterName()/]([anEReference.generateParameterType()/] [anEReference.getSafeName()/])
 {
     // [protected (className + '::' + anEReference.getSetterName())]
 [if (hasKey('setterBody'))]
@@ -70,7 +64,7 @@ void [className/]::[anEReference.getSetterName()/]([generateReferenceParameter(a
 [/let]
 [/template]
 
-[template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter('public',true) and anEReference.upperBound <> 1)]
+[template public generateReferenceGetterDefinition(anEReference : EReference) ? (hasGetter('public',true) and anEReference.upperBound <> 1)]
 [let className : String = anEReference.eContainingClass.getImplementationName()]
 [anEReference.generateReturnType()/] [className/]::[anEReference.getGetterName()/]() const
 {
@@ -87,7 +81,7 @@ void [className/]::[anEReference.getSetterName()/]([generateReferenceParameter(a
 [/let]
 [/template]
 
-[template public generateReferenceGetterCpp(anEReference : EReference) ? (hasGetter('public',true))]
+[template public generateReferenceGetterDefinition(anEReference : EReference) ? (hasGetter('public',true))]
 [let className : String = anEReference.eContainingClass.getImplementationName()]
 [anEReference.generateReturnType()/] [className/]::[anEReference.getGetterName()/]() const
 {

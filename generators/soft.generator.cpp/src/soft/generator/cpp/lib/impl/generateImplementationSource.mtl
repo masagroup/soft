@@ -84,9 +84,8 @@ std::shared_ptr<EClass> [className/]::eStaticClass() const
 // Attribute Setter Getter
 //*********************************
 [for (aAttribute : EAttribute | aClass.eAttributes->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-[aAttribute.generateAttributeSetterImplementationCpp()/]
-
-[aAttribute.generateAttributeGetterImplementationCpp()/]
+[aAttribute.generateAttributeSetterDefinition()/]
+[aAttribute.generateAttributeGetterDefinition()/]
 [/for]
 [/if]
 [if aClass.eOperations->notEmpty()]
@@ -102,7 +101,7 @@ std::shared_ptr<EClass> [className/]::eStaticClass() const
 // References
 //*********************************
 [for (aReference : EReference | aClass.eReferences->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-[aReference.generateReferenceCpp()/]
+[aReference.generateReferenceDefinition()/]
 [/for]
 [/if]
 
