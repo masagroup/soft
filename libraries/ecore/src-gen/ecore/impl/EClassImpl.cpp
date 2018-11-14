@@ -321,8 +321,7 @@ std::shared_ptr<EOperation> EClassImpl::getOverride(const std::shared_ptr<EOpera
 bool EClassImpl::isSuperTypeOf(const std::shared_ptr<EClass>& someClass)
 {
     // Start of user code EClassImpl::isSuperTypeOf
-    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
-    throw "NotImplementedException";
+    return someClass == getThisPtr() || someClass->getEAllSuperTypes()->contains( getThisPtr() );
     // End of user code
 }
 
