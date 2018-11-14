@@ -1,4 +1,4 @@
 *
 !.gitignore
-!EClassImpl.hpp
-!EClassImpl.cpp
+!EClassImpl.*
+!EModelElementImpl.cpp
