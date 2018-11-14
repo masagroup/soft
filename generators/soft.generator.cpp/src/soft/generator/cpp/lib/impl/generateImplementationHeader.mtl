@@ -39,20 +39,39 @@ namespace [namespaceName/]
     public:
         virtual ~[className/]();
         
-        [aClass.eOperations->sortedBy(name).generateDeclaration(true)/]
-        [aClass.eAttributes->sortedBy(name).generateAttributeDeclaration(true)/]
-        [aClass.eReferences->sortedBy(name).generateReferenceDeclaration(true)/]
+[let operations : OrderedSet(EOperation) = aClass.eOperations->select( isPublic(false) )]
+[if operations->notEmpty()]
+        //*********************************
+        // Operations
+        //*********************************
+        [operations.generateDeclaration(true)/]
+[/if]
+[/let]
+[let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( hasSetter('public',false) or hasGetter('public',false) )]
+[if attributes->notEmpty()]
+        //*********************************
+        // Attributes
+        //*********************************
+        [attributes.generateDeclaration(true)/]
+[/if]
+[/let]
+[let references : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EReference)->select( hasSetter('public',false) or hasGetter('public',false)  )]
+[if references->notEmpty()]
+        //*********************************
+        // References
+        //*********************************
+        [references.generateDeclaration(true)/]
+[/if]
+[/let]
 
     protected:
         virtual std::shared_ptr<[getShortQualifiedName('ecore::EClass',namespaceName)/]> eStaticClass() const;
         [aClass.generateReflectivesDeclaration()/]
-       
-        [if aClass.eAttributes->notEmpty() or aClass.eReferences->notEmpty()]
+
+[if aClass.eStructuralFeatures->notEmpty()]
     protected:
-        [aClass.eAttributes->sortedBy(name).generateAttributeProtected()/]
-        [aClass.eReferences->sortedBy(name).generateReferenceProtected()/]
-    [/if]
-    
+        [aClass.eStructuralFeatures.generateDataMember()/]
+[/if]
     private:
         std::weak_ptr<[className/]> [generateGetThisPtrPropertyName()/]_;
     

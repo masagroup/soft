@@ -66,7 +66,7 @@ virtual std::shared_ptr<ENotificationChain> eBasicInverseAdd( const std::shared_
 [/template]
 
 [template private generateEInverseRemoveDeclaration(aClass : EClass)]
-virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )/];
+virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
 [/template]
 
 [template public generateReflectivesDefinition(aClass : EClass)]

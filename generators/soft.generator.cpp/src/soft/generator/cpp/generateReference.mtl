@@ -39,7 +39,7 @@ MOCK_METHOD([anEReference.getSetterName()/],1);
 [/template]
 
 [template public generateReferenceProtected(anEReference : EReference) ]
-[anEReference.generateReferenceType()/] [anEReference.name/]_;
+[anEReference.generateDataType()/] [anEReference.name/]_;
 
 [/template]
 

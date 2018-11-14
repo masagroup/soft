@@ -34,11 +34,11 @@
     <eOperations name="getEStructuralFeature" eType="#//EStructuralFeature">
       <eParameters name="featureID" eType="#//EInt"/>
     </eOperations>
-    <eOperations name="getFeatureID" eType="#//EInt">
-      <eParameters name="feature" eType="#//EStructuralFeature"/>
-    </eOperations>
     <eOperations name="getEStructuralFeature" eType="#//EStructuralFeature">
       <eParameters name="featureName" eType="#//EString"/>
+    </eOperations>
+    <eOperations name="getFeatureID" eType="#//EInt">
+      <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="getOperationCount" eType="#//EInt"/>
     <eOperations name="getEOperation" eType="#//EOperation">

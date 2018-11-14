@@ -18,8 +18,8 @@
 
 [template private generateReturnType(anEAttribute : EAttribute)]
 [if (anEAttribute.eType.oclIsKindOf(EDataType))]
-[if ( needReference(anEAttribute.eType) )]const [anEAttribute.generateAttributeType()/]&[else][anEAttribute.generateAttributeType()/][/if][else]
-std::shared_ptr<[anEAttribute.generateAttributeType()/]>[/if]
+[if ( needReference(anEAttribute.eType) )]const [anEAttribute.generateDataType()/]&[else][anEAttribute.generateDataType()/][/if][else]
+std::shared_ptr<[anEAttribute.generateDataType()/]>[/if]
 [/template]
 
 [template public generateAttributeGetterDeclaration(anEAttribute : EAttribute, impl : Boolean) ? (hasGetter('public',impl))]
@@ -51,8 +51,8 @@ MOCK_METHOD([anEAttribute.getUnSetterName()/],0);
 
 [template public generateAttributeProtected(anEAttribute : EAttribute)]
 [if (not(anEAttribute.upperBound = 1))]
-[anEAttribute.generateAttributeType()/] [anEAttribute.name/]_; [else]
-[anEAttribute.generateAttributeType()/] [anEAttribute.name/]_ [generateDefaultValue()/];
+[anEAttribute.generateDataType()/] [anEAttribute.name/]_; [else]
+[anEAttribute.generateDataType()/] [anEAttribute.name/]_ [generateDefaultValue()/];
 [/if]
 [/template]
 

@@ -17,6 +17,11 @@
 [/if]
 [/template]
 
+[template public generateDataMember(aStructuralFeature : EStructuralFeature)]
+[aStructuralFeature.generateDataType()/] [aStructuralFeature.name/]_;
+
+[/template]
+
 [template public generateBasicGetDeclaration(aStructuralFeature : EStructuralFeature) ? (isBasicGet())]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
 [let methodName : String = aStructuralFeature.getGetterName().toUpperFirst()]

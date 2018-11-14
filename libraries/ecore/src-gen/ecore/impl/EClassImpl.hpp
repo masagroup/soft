@@ -38,63 +38,72 @@ namespace ecore::impl
     public:
         virtual ~EClassImpl();
         
-        virtual std::shared_ptr<ecore::EOperation> getEOperation(int operationID) ;
+        //*********************************
+        // Operations
+        //*********************************
+        virtual bool isSuperTypeOf(const std::shared_ptr<ecore::EClass>& someClass) ;
+        
+        virtual int getFeatureCount() ;
         
         virtual std::shared_ptr<ecore::EStructuralFeature> getEStructuralFeature(int featureID) ;
         
         virtual std::shared_ptr<ecore::EStructuralFeature> getEStructuralFeature(const std::string& featureName) ;
         
-        virtual int getFeatureCount() ;
-        
         virtual int getFeatureID(const std::shared_ptr<ecore::EStructuralFeature>& feature) ;
         
-        virtual std::shared_ptr<ecore::EGenericType> getFeatureType(const std::shared_ptr<ecore::EStructuralFeature>& feature) ;
-        
         virtual int getOperationCount() ;
+        
+        virtual std::shared_ptr<ecore::EOperation> getEOperation(int operationID) ;
         
         virtual int getOperationID(const std::shared_ptr<ecore::EOperation>& operation) ;
         
         virtual std::shared_ptr<ecore::EOperation> getOverride(const std::shared_ptr<ecore::EOperation>& operation) ;
         
-        virtual bool isSuperTypeOf(const std::shared_ptr<ecore::EClass>& someClass) ;
+        virtual std::shared_ptr<ecore::EGenericType> getFeatureType(const std::shared_ptr<ecore::EStructuralFeature>& feature) ;
         
         
+        //*********************************
+        // Attributes
+        //*********************************
         virtual bool isAbstract() const ;
         
-        virtual void setAbstract(bool abstract) ; 
+        virtual void setAbstract(bool abstract) ;
         
         virtual bool isInterface() const ;
         
-        virtual void setInterface(bool interface) ; 
+        virtual void setInterface(bool interface) ;
         
+        
+        //*********************************
+        // References
+        //*********************************
+        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> getESuperTypes() const ;
+        
+        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> getEOperations() const ;
         
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> getEAllAttributes() const ;
         
+        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> getEAllReferences() const ;
+        
+        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> getEReferences() const ;
+        
+        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> getEAttributes() const ;
+        
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> getEAllContainments() const ;
         
-        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> getEAllGenericSuperTypes() const ;
-        
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> getEAllOperations() const ;
-        
-        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> getEAllReferences() const ;
         
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> getEAllStructuralFeatures() const ;
         
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> getEAllSuperTypes() const ;
         
-        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> getEAttributes() const ;
-        
-        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> getEGenericSuperTypes() const ;
-        
         virtual std::shared_ptr<ecore::EAttribute> getEIDAttribute() const ;
-        
-        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> getEOperations() const ;
-        
-        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> getEReferences() const ;
         
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> getEStructuralFeatures() const ;
         
-        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> getESuperTypes() const ;
+        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> getEGenericSuperTypes() const ;
+        
+        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> getEAllGenericSuperTypes() const ;
         
         
 
@@ -106,29 +115,27 @@ namespace ecore::impl
         virtual bool eIsSet(int featureID) const;
         virtual boost::any eInvoke( int operationID, const std::shared_ptr<EList<boost::any>>& arguments );
         virtual std::shared_ptr<ENotificationChain> eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
-        virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )/];
+        virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
         
-       
+
     protected:
-        bool abstract_ = false;
-        bool interface_ = false;
-        
+        bool abstract_;
+        bool interface_;
+        std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> eSuperTypes_;
+        std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> eOperations_;
         std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> eAllAttributes_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> eAllContainments_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> eAllGenericSuperTypes_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> eAllOperations_;
         std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> eAllReferences_;
+        std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> eReferences_;
+        std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> eAttributes_;
+        std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> eAllContainments_;
+        std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> eAllOperations_;
         std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> eAllStructuralFeatures_;
         std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> eAllSuperTypes_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> eAttributes_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> eGenericSuperTypes_;
         std::shared_ptr<ecore::EAttribute> eIDAttribute_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> eOperations_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> eReferences_;
         std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> eStructuralFeatures_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> eSuperTypes_;
+        std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> eGenericSuperTypes_;
+        std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> eAllGenericSuperTypes_;
         
-    
     private:
         std::weak_ptr<EClassImpl> thisPtr_;
     

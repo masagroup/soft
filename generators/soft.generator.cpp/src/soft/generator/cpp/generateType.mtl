@@ -66,7 +66,10 @@ std::shared_ptr<EList<[eElement.eGenericType.generateCppType()/]>>
 [/if]
 [/template]
 
-[template public generateAttributeType(eAttribute : EAttribute) post (trim())]
+[template public generateDataType(aStructuralFeature : EStructuralFeature) post (trim())]
+[/template]
+
+[template public generateDataType(eAttribute : EAttribute) post (trim())]
 [if (not(eAttribute.upperBound = 1))]
 std::shared_ptr<EList<[eAttribute.eGenericType.generateCppType()/]>>
 [else]
@@ -74,7 +77,7 @@ std::shared_ptr<EList<[eAttribute.eGenericType.generateCppType()/]>>
 [/if]
 [/template]
 
-[template public generateReferenceType(eReference : EReference) post (trim())]
+[template public generateDataType(eReference : EReference) post (trim())]
 [if isListType()]
 std::shared_ptr<EList<[eReference.eGenericType.generateCppType()/]>>
 [else]

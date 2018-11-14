@@ -4,7 +4,7 @@
 [import soft::generator::cpp::generateType/]
 [import soft::generator::cpp::generateCommon/]
 
-[template public generateDeclaration(anEOperation : EOperation, impl: Boolean)  ? ( anEOperation.isPublic(impl) ) ]
+[template public generateDeclaration(anEOperation : EOperation, impl: Boolean)]
 virtual [anEOperation.generateReturnType()/] [anEOperation.name/]([anEOperation.generateParameterList()/])[if (hasKey('const'))] const[/if] [abstractSufix(impl)/];
 
 
