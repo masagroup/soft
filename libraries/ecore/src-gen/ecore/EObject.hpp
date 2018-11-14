@@ -64,59 +64,57 @@ namespace ecore
 {
     class EObject  : virtual public ENotifier
     {
-        public:
-            EObject(const EObject &) = delete;
-            EObject& operator=(EObject const&) = delete;
+    public:
+        EObject(const EObject &) = delete;
+        EObject& operator=(EObject const&) = delete;
 
-        protected:
-            EObject() = default;
-     
-        public:
-            //destructor
-            virtual ~EObject() = default;
+    protected:
+        EObject() = default;
+ 
+    public:
+        //destructor
+        virtual ~EObject() = default;
 
-            //*********************************
-            // Operations
-            //*********************************
-            virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eAllContents() const = 0;
-            
-            virtual std::shared_ptr<ecore::EClass> eClass() const = 0;
-            
-            virtual std::shared_ptr<ecore::EObject> eContainer() const = 0;
-            
-            virtual std::shared_ptr<ecore::EStructuralFeature> eContainingFeature() const = 0;
-            
-            virtual std::shared_ptr<ecore::EReference> eContainmentFeature() const = 0;
-            
-            virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eContents() const = 0;
-            
-            virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eCrossReferences() const = 0;
-            
-            virtual boost::any eGet(const std::shared_ptr<ecore::EStructuralFeature>& feature) const = 0;
-            
-            virtual boost::any eGet(const std::shared_ptr<ecore::EStructuralFeature>& feature,bool resolve) const = 0;
-            
-            virtual boost::any eInvoke(const std::shared_ptr<ecore::EOperation>& operation,const std::shared_ptr<EList<boost::any>>& arguments) = 0;
-            
-            virtual bool eIsProxy() const = 0;
-            
-            virtual bool eIsSet(const std::shared_ptr<ecore::EStructuralFeature>& feature) const = 0;
-            
-            virtual int eResource() const = 0;
-            
-            virtual void eSet(const std::shared_ptr<ecore::EStructuralFeature>& feature,const boost::any& newValue) = 0;
-            
-            virtual void eUnset(const std::shared_ptr<ecore::EStructuralFeature>& feature) = 0;
-            
-            
-            // Start of user code EObject
-            virtual std::shared_ptr<ENotificationChain> eInverseAdd( const std::shared_ptr<EObject>& otherEnd
-                                                                   , int featureID
-                                                                   , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
-            virtual std::shared_ptr<ENotificationChain> eInverseRemove( const std::shared_ptr<EObject>& otherEnd
-                                                                      , int featureID
-                                                                      , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
-            // End of user code
+        virtual std::shared_ptr<ecore::EClass> eClass() const = 0;
+        
+        virtual bool eIsProxy() const = 0;
+        
+        virtual int eResource() const = 0;
+        
+        virtual std::shared_ptr<ecore::EObject> eContainer() const = 0;
+        
+        virtual std::shared_ptr<ecore::EStructuralFeature> eContainingFeature() const = 0;
+        
+        virtual std::shared_ptr<ecore::EReference> eContainmentFeature() const = 0;
+        
+        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eContents() const = 0;
+        
+        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eAllContents() const = 0;
+        
+        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eCrossReferences() const = 0;
+        
+        virtual boost::any eGet(const std::shared_ptr<ecore::EStructuralFeature>& feature) const = 0;
+        
+        virtual boost::any eGet(const std::shared_ptr<ecore::EStructuralFeature>& feature,bool resolve) const = 0;
+        
+        virtual void eSet(const std::shared_ptr<ecore::EStructuralFeature>& feature,const boost::any& newValue) = 0;
+        
+        virtual bool eIsSet(const std::shared_ptr<ecore::EStructuralFeature>& feature) const = 0;
+        
+        virtual void eUnset(const std::shared_ptr<ecore::EStructuralFeature>& feature) = 0;
+        
+        virtual boost::any eInvoke(const std::shared_ptr<ecore::EOperation>& operation,const std::shared_ptr<EList<boost::any>>& arguments) = 0;
+        
+        
+        
+        // Start of user code EObject
+        virtual std::shared_ptr<ENotificationChain> eInverseAdd( const std::shared_ptr<EObject>& otherEnd
+                                                                , int featureID
+                                                                , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
+        virtual std::shared_ptr<ENotificationChain> eInverseRemove( const std::shared_ptr<EObject>& otherEnd
+                                                                    , int featureID
+                                                                    , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
+        // End of user code
     };
 }
 #endif /* ECORE_EOBJECT_HPP */

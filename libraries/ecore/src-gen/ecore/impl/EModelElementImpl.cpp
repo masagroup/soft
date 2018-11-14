@@ -112,9 +112,6 @@ boost::any EModelElementImpl::eGet(int featureID, bool resolve, bool coreType) c
 }
 
 
-
-
-
 bool EModelElementImpl::eIsSet(int featureID) const
 {
     switch(featureID)
@@ -172,6 +169,7 @@ std::shared_ptr<ENotificationChain> EModelElementImpl::eBasicInverseRemove( cons
     return EObjectImpl::eBasicInverseRemove(otherEnd, featureID, notifications);
     // End of user code
 }
+
 
 
 // Start of user code EModelElementImpl [declaration-end]

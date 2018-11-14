@@ -1,14 +1,12 @@
 [comment encoding = UTF-8 /]
 [module generateInterface('http://www.eclipse.org/emf/2002/Ecore')/]
 
-[import soft::generator::cpp::generateAttribute/]
 [import soft::generator::cpp::generateClass/]
 [import soft::generator::cpp::generateOperation/]
-[import soft::generator::cpp::generateReference/]
 [import soft::generator::cpp::generateType/]
 [import soft::generator::cpp::generateCommon/]
 [import soft::generator::cpp::lib::generateCommon/]
-
+[import soft::generator::cpp::lib::generateStructuralFeature/]
 
 [template public generateInterface(aClass : EClass) { className : String = aClass.getInterfaceName(); classNamespace : String = aClass.ePackage.getInterfaceNamespaceName(); } ]
 [file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getInterfaceFolder() + '/' + className +'.hpp', false, 'UTF-8')]
@@ -48,37 +46,21 @@ namespace [classNamespace/]
 {
     class [className/] [for ( extend : String | aClass.getInterfaceExtends()->collect( s | getShortQualifiedName(s, classNamespace))->sortedBy( s | s )) before (' : ') separator (', ')]virtual public [extend/][/for]
     {
-        public:
-            [className/](const [className/] &) = delete;
-            [className/]& operator=([className/] const&) = delete;
+    public:
+        [className/](const [className/] &) = delete;
+        [className/]& operator=([className/] const&) = delete;
 
-        protected:
-            [className/]() = default;
-     
-        public:
-            //destructor
-            virtual ~[className/]() = default;
+    protected:
+        [className/]() = default;
+ 
+    public:
+        //destructor
+        virtual ~[className/]() = default;
 
-            [if(aClass.eOperations->notEmpty())]
-            //*********************************
-            // Operations
-            //*********************************
-            [aClass.eOperations->sortedBy(name).generateOperationDeclaration(false)/]
-            [/if]
-            [if(aClass.eAttributes->notEmpty())]
-            //*********************************
-            // Attributes Getter Setter
-            //*********************************
-            [aClass.eAttributes->sortedBy(name).generateAttributeDeclaration(false)/]
-            [/if]
-            [if(aClass.eReferences->notEmpty())]
-            //*********************************
-            // References
-            //*********************************
-            [aClass.eReferences->sortedBy(name).generateReferenceDeclaration(false)/]
-            [/if]
-            // [protected (aClass.name)]
-            // [/protected]
+        [aClass.eOperations.generateDeclaration(false)/]
+        [aClass.eStructuralFeatures.generateDeclaration(false)/]
+        // [protected (aClass.name)]
+        // [/protected]
     };
 }
 [endGuard(aClass)/]

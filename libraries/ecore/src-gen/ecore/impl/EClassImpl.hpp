@@ -39,10 +39,6 @@ namespace ecore::impl
             //destructor
             virtual ~EClassImpl();
             
-
-            //*********************************
-            // Operations
-            //*********************************
             virtual std::shared_ptr<ecore::EOperation> getEOperation(int operationID) ;
             
             virtual std::shared_ptr<ecore::EStructuralFeature> getEStructuralFeature(int featureID) ;
@@ -64,10 +60,6 @@ namespace ecore::impl
             virtual bool isSuperTypeOf(const std::shared_ptr<ecore::EClass>& someClass) ;
             
             
-
-            //*********************************
-            // Attributes Getter Setter
-            //*********************************
             virtual bool isAbstract() const ;
             
             virtual void setAbstract(bool abstract) ; 
@@ -77,10 +69,6 @@ namespace ecore::impl
             virtual void setInterface(bool interface) ; 
             
             
-
-            //*********************************
-            // References
-            //*********************************
             virtual std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> getEAllAttributes() const ;
             
             virtual std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> getEAllContainments() const ;
@@ -113,24 +101,19 @@ namespace ecore::impl
         
         protected:
             virtual std::shared_ptr<EClass> eStaticClass() const;
-            virtual boost::any eGet(int featureID, bool resolve, bool coreType) const ;
-            virtual void eSet(int featureID, const boost::any& newValue) ;
-            virtual void eUnSet(int featureID) ;
-            virtual bool eIsSet(int featureID) const ;
+            virtual boost::any eGet(int featureID, bool resolve, bool coreType) const;
+            virtual void eSet(int featureID, const boost::any& newValue);
+            virtual void eUnSet(int featureID);
+            virtual bool eIsSet(int featureID) const;
             virtual boost::any eInvoke( int operationID, const std::shared_ptr<EList<boost::any>>& arguments );
             virtual std::shared_ptr<ENotificationChain> eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
-            virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
-
+            virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )/];
+            
+       
         protected:
-            //*********************************
-            // Attribute Members
-            //*********************************
             bool abstract_ = false;
             bool interface_ = false;
             
-            //*********************************
-            // Reference Members
-            //*********************************
             std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> eAllAttributes_;
             std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> eAllContainments_;
             std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> eAllGenericSuperTypes_;

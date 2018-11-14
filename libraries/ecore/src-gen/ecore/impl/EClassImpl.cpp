@@ -526,6 +526,7 @@ boost::any EClassImpl::eGet(int featureID, bool resolve, bool coreType) const
     return EClassifierImpl::eGet(featureID, resolve, coreType);
 }
 
+
 void EClassImpl::eSet(int featureID, const boost::any& newValue)
 {
     switch(featureID)
@@ -696,6 +697,7 @@ std::shared_ptr<ENotificationChain> EClassImpl::eBasicInverseRemove( const std::
     return EClassifierImpl::eBasicInverseRemove( otherEnd, featureID, notifications );
     // End of user code
 }
+
 
 
 // Start of user code EClassImpl [declaration-end]

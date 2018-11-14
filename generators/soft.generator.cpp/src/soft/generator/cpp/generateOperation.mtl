@@ -4,16 +4,14 @@
 [import soft::generator::cpp::generateType/]
 [import soft::generator::cpp::generateCommon/]
 
-[query private isPublic( anEOperation : EOperation, impl: Boolean ) : Boolean = anEOperation.getVisibilityType(impl) = 'public'/]
-
-[template public generateOperationDeclaration(anEOperation : EOperation, impl: Boolean)  ? ( anEOperation.isPublic(impl) ) ]
+[template public generateDeclaration(anEOperation : EOperation, impl: Boolean)  ? ( anEOperation.isPublic(impl) ) ]
 virtual [anEOperation.generateReturnType()/] [anEOperation.name/]([anEOperation.generateParameterList()/])[if (hasKey('const'))] const[/if] [abstractSufix(impl)/];
 
 
 [/template]
 
 
-[template public generateOperationImplementation(anEOperation : EOperation) ? ( anEOperation.isPublic(true))]
+[template public generateDefinition(anEOperation : EOperation) ? ( anEOperation.isPublic(true))]
 [let className : String = anEOperation.eContainingClass.getImplementationName()]
 [anEOperation.generateReturnType()/] [className/]::[anEOperation.name/]([anEOperation.generateParameterList()/])[if (hasKey('const'))] const[/if]
 {

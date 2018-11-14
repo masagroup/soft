@@ -5,10 +5,11 @@
 [import soft::generator::cpp::generateClass /]
 [import soft::generator::cpp::generateOperation /]
 [import soft::generator::cpp::generateReference /]
-[import soft::generator::cpp::generateStructuralFeature /]
 [import soft::generator::cpp::generateType /]
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::lib::generateCommon /]
+[import soft::generator::cpp::lib::generateStructuralFeature /]
+[import soft::generator::cpp::lib::impl::generateReflectives /]
 
 [template public generateImplementationHeader(aClass : EClass){ className : String = aClass.getImplementationName(); namespaceName : String = aClass.ePackage.getImplementationNamespaceName(); guardName : String = '_'.concat(className); }]
 [file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getImplementationFolder() + '/' + className +'.hpp', false, 'UTF-8')]
@@ -40,52 +41,18 @@ namespace [namespaceName/]
             //destructor
             virtual ~[className/]();
             
-            [if(aClass.eOperations->notEmpty())]
-
-            //*********************************
-            // Operations
-            //*********************************
-            [aClass.eOperations->sortedBy(name).generateOperationDeclaration(true)/]
-            [/if]
-            [if(aClass.eAttributes->notEmpty())]
-
-            //*********************************
-            // Attributes Getter Setter
-            //*********************************
+            [aClass.eOperations->sortedBy(name).generateDeclaration(true)/]
             [aClass.eAttributes->sortedBy(name).generateAttributeDeclaration(true)/]
-            [/if]
-            [if(aClass.eReferences->notEmpty())]
-
-            //*********************************
-            // References
-            //*********************************
             [aClass.eReferences->sortedBy(name).generateReferenceDeclaration(true)/]
-            [/if]
         
         protected:
             virtual std::shared_ptr<[getShortQualifiedName('ecore::EClass',namespaceName)/]> eStaticClass() const;
-            [aClass.generateGetDeclaration(true)/]
-            [aClass.generateSetDeclaration(true)/]
-            [aClass.generateUnSetDeclaration(true)/]
-            [aClass.generateIsSetDeclaration(true)/]
-            [aClass.generateInvokeDeclaration(true)/]
-            [aClass.generateInverseAddDeclaration(true)/]
-            [aClass.generateInverseRemoveDeclaration(true)/]
-
+            [aClass.generateReflectivesDeclaration()/]
+       
         [if aClass.eAttributes->notEmpty() or aClass.eReferences->notEmpty()]
         protected:
-            [if(aClass.eAttributes->notEmpty())]
-            //*********************************
-            // Attribute Members
-            //*********************************
             [aClass.eAttributes->sortedBy(name).generateAttributeProtected()/]
-            [/if]
-            [if(aClass.eReferences->notEmpty())]
-            //*********************************
-            // Reference Members
-            //*********************************
             [aClass.eReferences->sortedBy(name).generateReferenceProtected()/]
-            [/if]
         [/if]
 
         private:

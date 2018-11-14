@@ -1,0 +1,265 @@
+[comment encoding = UTF-8 /]
+[module generateStructuralFeature('http://www.eclipse.org/emf/2002/Ecore')]
+
+[import soft::generator::cpp::generateCommon /]
+[import soft::generator::cpp::generateType /]
+[import soft::generator::cpp::generateClass /]
+
+
+[template public generateDeclaration(aStructuralFeature : EStructuralFeature, impl : Boolean )]
+[if hasGetter('public',impl)]
+[aStructuralFeature.generateGetDeclaration(impl)/]
+
+[/if]
+[if hasSetter('public',impl)]
+[aStructuralFeature.generateSetDeclaration(impl)/]
+
+[/if]
+[/template]
+
+[template public generateBasicGetDeclaration(aStructuralFeature : EStructuralFeature) ? (isBasicGet())]
+[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let methodName : String = aStructuralFeature.getGetterName().toUpperFirst()]
+[aStructuralFeature.generateReturnType()/] [className/]::basic[methodName/]() const; 
+[/let]
+[/let]
+[/template]
+
+[template public generateBasicGetDefinition(aStructuralFeature : EStructuralFeature) ? (isBasicGet())]
+[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let methodName : String = 'basic' + aStructuralFeature.getGetterName().toUpperFirst()]
+[aStructuralFeature.generateReturnType()/] [className/]::[methodName/]() const 
+{
+    // [protected (className + '::' + methodName)]
+[if isContainer()]
+    if ( eContainerFeatureID() != [aStructuralFeature.eContainingClass.getFeatureIDName(aStructuralFeature)/] )
+        return [aStructuralFeature.generateReturnType()/]();
+    else
+        return eContainer();
+[elseif not isVolatile()]
+    return [aStructuralFeature.name/]_;
+[elseif (hasKey('getterBody'))]
+    [valueKey('getterBody')/]
+[else]
+    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+    throw "NotImplementedException";    
+[/if]
+    // [/protected]
+}
+[/let]
+[/let]
+[/template]
+
+[template public generateGetDeclaration(aStructuralFeature : EStructuralFeature, impl : EBoolean)]
+virtual [aStructuralFeature.generateReturnType()/] [aStructuralFeature.getGetterName()/]() const [abstractSufix(impl)/];
+[/template]
+
+[template public generateGetDefinition(aStructuralFeature : EStructuralFeature) ? (hasGetter('public',true)) ]
+[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[aStructuralFeature.generateReturnType()/] [className/]::[aStructuralFeature.getGetterName()/]() const 
+{
+    // [protected (className + '::' + aStructuralFeature.getGetterName()) ]
+[if not isVolatile() ]
+    [if isListType() ]
+    if ( ![aStructuralFeature.name/]_ )
+        const_cast<[className/]*>(this)->[aStructuralFeature.name/]_.reset(new [getListConstructor()/]);
+    return [aStructuralFeature.name/]_;
+    [elseif isContainer()]
+    if ( eContainerFeatureID() != [aStructuralFeature.eContainingClass.getFeatureIDName(aStructuralFeature)/] )
+        return [aStructuralFeature.generateReturnType()/]();
+    else
+        return eContainer();
+    [elseif isResolveProxies()]
+    // TO BE DONE
+    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+    throw "NotImplementedException";
+    [else]
+    return [aStructuralFeature.name/]_;
+    [/if]
+[elseif hasKey('getterBody')]
+    [valueKey('getterBody')/]
+[else]
+    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+    throw "NotImplementedException";
+[/if]
+    // [/protected]
+}
+[/let]
+[/template]
+
+[template public generateBasicSetDeclaration(aStructuralFeature : EStructuralFeature) ? (isBasicSet())]
+[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let methodName : String = 'basic' +aStructuralFeature.getSetterName().toUpperFirst()]
+std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]() const; 
+[/let]
+[/let]    
+[/template]
+
+
+[template public generateBasicSetDefinition(aStructuralFeature : EStructuralFeature) ? (isBasicSet())]
+[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let methodName : String = 'basic' +aStructuralFeature.getSetterName().toUpperFirst()]
+[let varName : String = 'new' + aStructuralFeature.getSafeName().toUpperFirst()]
+[aStructuralFeature.generateReturnType()/] [className/]::[methodName/]( [aStructuralFeature.generateParameterType()/] [varName/] , const std::shared_ptr<ecore:ENotificationChain>& msgs) 
+{
+    // [protected (className + '::' + methodName)]
+[if isContainer()]
+    return eBasicSetContainer([varName/],msgs); 
+[elseif not isVolatile()]
+    [let oldVarName : String = 'old' + aStructuralFeature.getSafeName().toUpperFirst()]
+    auto [oldVarName/] = [varName/];
+    [aStructuralFeature.getSafeName()/]_ = [varName/];
+    auto notifications = msgs;
+    if ( eNotificationRequired() )
+    {
+        auto notification = std::make_shared<Notification>( Notification::SET , getThisPtr() ,[aStructuralFeature.eContainingClass.getFeatureIDName(aStructuralFeature)/], [oldVarName/], [varName/] );
+        if (notifications)
+            notifications->add( notification );
+        else
+            notifications = notification;
+    }
+    return notifications;
+    [/let]
+[elseif (hasKey('setterBody'))]
+    [valueKey('setterBody')/]
+[else]
+    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+    throw "NotImplementedException";    
+[/if]
+    // [/protected]
+}
+[/let]
+[/let]
+[/let]
+[/template]
+
+[template public generateSetDeclaration(aStructuralFeature : EStructuralFeature, impl : EBoolean)]
+virtual void [aStructuralFeature.getSetterName()/]([aStructuralFeature.generateParameterType()/] [aStructuralFeature.getSafeName()/]) [abstractSufix(impl)/];
+[/template]
+
+[template public generateSetDefinition(aStructuralFeature : EStructuralFeature) ? (hasSetter('public',true))]
+[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let methodName : String = aStructuralFeature.getSetterName()]
+[let varName : String = 'new' + aStructuralFeature.getSafeName().toUpperFirst()]
+void [className/]::[methodName/]([aStructuralFeature.generateParameterType()/] [varName/])
+{
+    // [protected (className + '::' + methodName)]
+[if not isVolatile()]
+    [if isContainer()]
+    if ( [varName/] != eContainer() || (eContainerFeatureID() !=  [aStructuralFeature.eContainingClass.getFeatureIDName(aStructuralFeature)/])) 
+    {
+        std::shared_ptr<ENotificationChain> notifications;
+        if ( eContainer() )
+            notifications = eBasicRemoveFromContainer(notifications);
+        if ( [varName/] )
+            notifications = [varName/]->eInverseAdd( getThisPtr() , [aStructuralFeature.eContainingClass.getFeatureIDName(aStructuralFeature)/], notifications );
+        notifications = basic[methodName.toUpperFirst()/]( [varName/], notifications );
+        if ( notifications )
+            notifications->dispatch();
+    }
+    else if ( eNotificationRequired() )
+        eNotifity( std::make_shared<Notification>(Notification::SET , getThisPtr() ,[aStructuralFeature.eContainingClass.getFeatureIDName(aStructuralFeature)/], [varName/], [varName/]));    
+    [elseif isBidirectional() or isContains()]
+    if ( [varName/] != [aStructuralFeature.getSafeName()/]_ )
+    {
+        std::shared_ptr<ENotificationChain> notifications;
+        if ( [aStructuralFeature.getSafeName()/]_ )
+        [if not isBidirectional()]
+            notifications = [aStructuralFeature.getSafeName()/]_->eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aStructuralFeature.eContainingClass.getFeatureIDName(aStructuralFeature)/] , notifications );
+        if ( [varName/] )
+            notifications = [varName/]->eInverseAdd( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aStructuralFeature.eContainingClass.getFeatureIDName(aStructuralFeature)/] , notifications );
+        [else]
+            [let reverseFeature : EStructuralFeature = aStructuralFeature.oclAsType(EReference).eOpposite]
+            notifications = [aStructuralFeature.getSafeName()/]_->eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - [reverseFeature.eContainingClass.getFeatureIDName(reverseFeature)/] , notifications );
+        if ( [varName/] )
+            notifications = [varName/]->eInverseAdd( getThisPtr(), EOPPOSITE_FEATURE_BASE - [reverseFeature.eContainingClass.getFeatureIDName(reverseFeature)/] , notifications );
+            [/let]
+        [/if]
+        notifications = basic[aStructuralFeature.getSetterName().toUpperFirst()/]([varName/],notifications);
+        if (notifications)
+            notifications->dispatch();
+    }
+        [if isUnSettable()]
+        [/if]
+    [else]
+        [let oldVarName : String = 'old' + aStructuralFeature.getSafeName().toUpperFirst()]
+    auto [oldVarName/] = [aStructuralFeature.getSafeName()/]_;
+    [aStructuralFeature.getSafeName()/]_ = [varName/]_;
+    if ( eNotificationRequired() )
+        eNotifity( std::make_shared<Notification>(Notification::SET , getThisPtr() ,[aStructuralFeature.eContainingClass.getFeatureIDName(aStructuralFeature)/], [oldVarName/], [varName/]));
+        [/let]
+    [/if]
+[elseif hasKey('setterBody')]
+    [valueKey('setterBody')/] 
+[else]
+    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+    throw "NotImplementedException";    
+[/if]
+    // [/protected]
+}
+[/let]
+[/let]
+[/let]
+[/template]
+
+
+[template private getListConstructor( anEAttribute : EStructuralFeature ) post(trim())]
+[/template]
+
+[template private getListConstructor( anEAttribute : EAttribute ) post(trim())]
+BasicEList<[anEAttribute.eGenericType.generateCppType()/],[anEAttribute.unique/]>()
+[/template]
+
+[template private getListConstructor( anEReference : EReference ) post(trim())]
+[let typeArgument : String = anEReference.eGenericType.generateCppType()]
+[let thisPtrGetterName : String = anEReference.eContainingClass.generateGetThisPtrPropertyGetterName()]
+[let packageName : String = anEReference.getMetaModelPackageNameForEStructuralFeature(anEReference.eContainingClass)]
+[let featureID : String = anEReference.eContainingClass.getFeatureIDName( anEReference )]
+[if (anEReference.containment)]
+    [if anEReference.eOpposite.oclIsUndefined() ]
+        EObjectEList<[typeArgument/],true,true,false>([thisPtrGetterName/](), [packageName/]::[featureID/] )
+    [else]
+        [let reverseFeature :EReference = anEReference.eOpposite ]
+        [let reversePackageName : String = reverseFeature.getMetaModelPackageNameForEStructuralFeature(reverseFeature.eContainingClass) ]
+        [let reverseFeatureID :String = reverseFeature.eContainingClass.getFeatureIDName(reverseFeature) ]
+        EObjectEList<[typeArgument/],true,true,true>( [thisPtrGetterName/](), [packageName/]::[featureID/] , [reversePackageName/]::[reverseFeatureID/])
+        [/let]
+        [/let]
+        [/let]
+    [/if]
+[else]
+    [if anEReference.eOpposite.oclIsUndefined() ]
+        EObjectEList<[typeArgument/],false,false,false>( [thisPtrGetterName/](), [packageName/]::[featureID/])
+    [else]
+        [let reverseFeature :EReference = anEReference.eOpposite ]
+        [let reversePackageName : String = reverseFeature.getMetaModelPackageNameForEStructuralFeature(reverseFeature.eContainingClass) ]
+        [let reverseFeatureID :String = reverseFeature.eContainingClass.getFeatureIDName(reverseFeature) ]
+        EObjectEList<[typeArgument/],false,true,true>( [thisPtrGetterName/](), [packageName/]::[featureID/] , [reversePackageName/]::[reverseFeatureID/])
+        [/let]
+        [/let]
+        [/let]
+    [/if]
+[/if]
+[/let]
+[/let]
+[/let]
+[/let]
+[/template]
+
+
+[template public generateStaticFeatureID(anStructFeature : EStructuralFeature,anEClass : EClass )]
+/**
+ * The feature id for the [anEClass.name/] '[anStructFeature.name.toUpperFirst()/]' [anStructFeature.getFeatureKind()/].
+ */
+static const int [anEClass.getFeatureIDName(anStructFeature)/] = [anEClass.getFeatureValue(anStructFeature)/];
+
+[/template]
+
+[template public generateStaticFeatureCountID(anEClass : EClass )]
+/**
+ * The number of structural features of the class [anEClass.name/].
+ */
+static const int [anEClass.getFeatureCountID()/] = [anEClass.getFeatureCountValue()/];
+
+[/template]
+

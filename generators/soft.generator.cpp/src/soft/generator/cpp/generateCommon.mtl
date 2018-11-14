@@ -406,6 +406,8 @@ namespace ecore
 [query public hasUnSetter(aStructuralFeature : EStructuralFeature , aVisibility : String , aImplementation : Boolean) : Boolean = isUnSet() and aStructuralFeature.getVisibilityType('unset', aImplementation ) = aVisibility /]
 [query public hasIsSet(aStructuralFeature : EStructuralFeature , aVisibility : String , aImplementation : Boolean) : Boolean = isIsSet() and aStructuralFeature.getVisibilityType('isset', aImplementation ) = aVisibility /]
 
+[query public isPublic( anEOperation : EOperation, aImplementation: Boolean ) : Boolean = anEOperation.getVisibilityType(aImplementation) = 'public'/]
+
 [query public isVoid(aOperation : EOperation) : Boolean = aOperation.eType.oclIsUndefined() /]
 [query public isCppKeyWord( o : OclAny, s : String ) : Boolean = s = 'volatile' or s = 'class' /]
 [query public getSafeName( anElement : ETypedElement ) : String = if isCppKeyWord(anElement.name) then anElement.name.first(1) else anElement.name endif/]
