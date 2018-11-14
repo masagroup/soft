@@ -19,6 +19,7 @@
 #include "ecore/impl/EClassifierImpl.hpp"
 
 // Start of user code EClassImpl [definition-includes]
+#include <unordered_map>
 // End of user code
 
 namespace ecore::impl 
@@ -171,12 +172,15 @@ namespace ecore::impl
             void initAttributes();
             void initReferences();
             void initOperations();
+            void initNameToFeatureMap();
 
         private:
             class ESuperAdapter;
             std::unique_ptr<ESuperAdapter> eSuperAdapter_;
             std::shared_ptr< EList<std::shared_ptr<EStructuralFeature>>> containments_;
             std::shared_ptr< EList<std::shared_ptr<EStructuralFeature>>> crossReferences_;
+            std::unique_ptr< std::unordered_map< std::string, std::shared_ptr<EStructuralFeature>>> nameToFeatureMap_;
+            std::unique_ptr< std::unordered_map< std::string, std::shared_ptr<EStructuralFeature>>> operationToOverrideMap_;
             // End of user code
 
     };
