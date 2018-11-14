@@ -393,9 +393,7 @@ std::shared_ptr<EList<std::shared_ptr<EStructuralFeature>>> EClassImpl::getEAllS
 std::shared_ptr<EList<std::shared_ptr<EClass>>> EClassImpl::getEAllSuperTypes() const
 {
     // Start of user code EClassImpl::getEAllSuperTypes
-    if( !eAllSuperTypes_ )
-        const_cast<EClassImpl*>( this )->eAllSuperTypes_.reset( new EObjectEList<std::shared_ptr<EClass>, false, false, false>( getThisPtr(), EcorePackage::ECLASS__EALL_SUPER_TYPES ) );
-    return eAllSuperTypes_;
+    return const_cast<EClassImpl*>(this)->getEAllSuperTypes();
     // End of user code
 }
 
@@ -807,6 +805,12 @@ std::shared_ptr<EList<std::shared_ptr<EOperation>>> EClassImpl::getEOperations()
     return eOperations_;
 }
 
+std::shared_ptr<EList<std::shared_ptr<EClass>>> EClassImpl::getEAllSuperTypes()
+{
+    initSuperTypes();
+    return eAllSuperTypes_;
+}
+
 std::shared_ptr<EAttribute> EClassImpl::getEIDAttribute()
 {
     initAttributes();
@@ -947,6 +951,21 @@ void EClassImpl::initOperations()
         allOperations.push_back( operationImpl );
     }
     eAllOperations_ = std::make_shared< ImmutableEList<std::shared_ptr<EOperation>>>( std::move( allOperations ) );
+}
+
+void EClassImpl::initSuperTypes()
+{
+    if (eAllSuperTypes_)
+        return;
+    
+    std::vector< std::shared_ptr< EClass> > allSuperTypes;
+    for (const auto& eClass : *getESuperTypes())
+    {
+        auto superTypes = eClass->getEAllSuperTypes();
+        allSuperTypes.insert( std::end( allSuperTypes ), superTypes->begin(), superTypes->end() );
+        allSuperTypes.push_back( eClass );
+    }
+    eAllSuperTypes_ = std::make_shared< ImmutableEList<std::shared_ptr<EClass>>>( std::move( allSuperTypes ) );
 }
 
 void EClassImpl::initNameToFeatureMap()
