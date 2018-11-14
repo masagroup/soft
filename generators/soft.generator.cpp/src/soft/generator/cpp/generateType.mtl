@@ -70,7 +70,7 @@ std::shared_ptr<EList<[eElement.eGenericType.generateCppType()/]>>
 [/template]
 
 [template public generateDataType(eAttribute : EAttribute) post (trim())]
-[if (not(eAttribute.upperBound = 1))]
+[if isListType()]
 std::shared_ptr<EList<[eAttribute.eGenericType.generateCppType()/]>>
 [else]
 [eAttribute.eGenericType.generateCppType()/]
