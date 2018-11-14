@@ -341,9 +341,7 @@ std::shared_ptr<EList<std::shared_ptr<EAttribute>>> EClassImpl::getEAllAttribute
 std::shared_ptr<EList<std::shared_ptr<EReference>>> EClassImpl::getEAllContainments() const
 {
     // Start of user code EClassImpl::getEAllContainments
-    if( !eAllContainments_ )
-        const_cast<EClassImpl*>( this )->eAllContainments_.reset( new EObjectEList<std::shared_ptr<EReference>, false, false, false>( getThisPtr(), EcorePackage::ECLASS__EALL_CONTAINMENTS ) );
-    return eAllContainments_;
+    return const_cast<EClassImpl*>(this)->getEAllContainments();
     // End of user code
 }
 
@@ -785,6 +783,18 @@ std::shared_ptr<EList<std::shared_ptr<EReference>>> EClassImpl::getEReferences()
     return eReferences_;
 }
 
+std::shared_ptr<EList<std::shared_ptr<EReference>>> EClassImpl::getEAllContainments()
+{
+    initFeaturesSubSet();
+    return eAllContainments_;
+}
+
+std::shared_ptr<EList<std::shared_ptr<EReference>>> EClassImpl::getEAllCrossReferences()
+{
+    initFeaturesSubSet();
+    return eAllCrossReferences_;
+}
+
 std::shared_ptr<EList<std::shared_ptr<EOperation>>> EClassImpl::getEAllOperations()
 {
     initOperations();
@@ -807,12 +817,12 @@ void EClassImpl::initFeaturesSubSet()
 {
     initStructuralFeatures();
 
-    if( containments_ )
+    if( eAllContainments_ )
         return;
 
     auto eAllFeatures = getEAllStructuralFeatures();
-    containments_ = std::make_shared<BasicEList<std::shared_ptr<EStructuralFeature>, true>>();
-    crossReferences_ = std::make_shared<BasicEList<std::shared_ptr<EStructuralFeature>, true>>();
+    eAllContainments_ = std::make_shared<BasicEList<std::shared_ptr<EReference>, true>>();
+    eAllCrossReferences_ = std::make_shared<BasicEList<std::shared_ptr<EReference>, true>>();
     for( const auto& feature : *eAllFeatures )
     {
         if( auto reference = std::dynamic_pointer_cast<EReference>( feature ) )
@@ -820,12 +830,12 @@ void EClassImpl::initFeaturesSubSet()
             if( reference->isContainment() )
             {
                 if( !reference->isDerived() )
-                    containments_->add( reference );
+                    eAllContainments_->add( reference );
             }
             else if( !reference->isContainer() )
             {
                 if( !reference->isDerived() )
-                    crossReferences_->add( reference );
+                    eAllCrossReferences_->add( reference );
             }
         }
     }
@@ -836,8 +846,8 @@ void EClassImpl::initStructuralFeatures()
     if( eAllStructuralFeatures_ )
         return;
 
-    containments_.reset();
-    crossReferences_.reset();
+    eAllContainments_.reset();
+    eAllCrossReferences_.reset();
     nameToFeatureMap_.reset();
 
     std::vector< std::shared_ptr< EStructuralFeature > > allFeatures;
@@ -913,7 +923,6 @@ void EClassImpl::initReferences()
     }
     eReferences_ = std::make_shared< ImmutableEList<std::shared_ptr<EReference>>>( std::move( references ) );
     eAllReferences_ = std::make_shared< ImmutableEList<std::shared_ptr<EReference>>>( std::move( allReferences ) );
-
 }
 
 void EClassImpl::initOperations()
@@ -961,9 +970,10 @@ void EClassImpl::initOperationToOverrideMap()
 
     operationToOverrideMap_ = std::make_unique< std::unordered_map< std::shared_ptr<EOperation>, std::shared_ptr<EOperation>>>();
     auto& allOperations = *getEAllOperations();
-    for (int i = 0; i < allOperations.size(); ++i)
+    auto size = static_cast<int>( allOperations.size() );
+    for (int i = 0; i < size; ++i)
     {
-        for (int j = allOperations.size() - 1; j > i; --j)
+        for (int j = size - 1; j > i; --j)
         {
             const auto& oi = allOperations.get( i );
             const auto& oj = allOperations.get( j );
@@ -973,17 +983,7 @@ void EClassImpl::initOperationToOverrideMap()
     }
 }
 
-std::shared_ptr<EList<std::shared_ptr<EStructuralFeature>>> EClassImpl::getContainments()
-{
-    initFeaturesSubSet();
-    return containments_;
-}
 
-std::shared_ptr<EList<std::shared_ptr<EStructuralFeature>>> EClassImpl::getCrossReferences()
-{
-    initFeaturesSubSet();
-    return crossReferences_;
-}
 
 // End of user code
 

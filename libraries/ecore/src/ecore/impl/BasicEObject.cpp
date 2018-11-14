@@ -76,12 +76,12 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eAllConten
 
 std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eContents() const
 {
-    return std::dynamic_pointer_cast<EClassImpl>( eClass()  )->getContainments()->asEListOf<std::shared_ptr<EObject>>();
+    return std::dynamic_pointer_cast<EClassImpl>( eClass()  )->getEAllContainments()->asEListOf<std::shared_ptr<EObject>>();
 }
 
 std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eCrossReferences() const
 {
-    return std::dynamic_pointer_cast<EClassImpl>( eClass() )->getCrossReferences()->asEListOf<std::shared_ptr<EObject>>();
+    return std::dynamic_pointer_cast<EClassImpl>( eClass() )->getEAllCrossReferences()->asEListOf<std::shared_ptr<EObject>>();
 }
 
 std::shared_ptr<ecore::EClass> BasicEObject::eClass() const

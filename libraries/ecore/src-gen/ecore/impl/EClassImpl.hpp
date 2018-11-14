@@ -152,8 +152,8 @@ namespace ecore::impl
 
             // Start of user code EClassImpl [definition-methods]
         public:
-            std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> getContainments();
-            std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> getCrossReferences();
+            std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> getEAllContainments();
+            std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> getEAllCrossReferences();
             void setModified( int featureID );
             
         protected:
@@ -174,12 +174,11 @@ namespace ecore::impl
             void initOperations();
             void initNameToFeatureMap();
             void initOperationToOverrideMap();
-
+        
         private:
             class ESuperAdapter;
             std::unique_ptr<ESuperAdapter> eSuperAdapter_;
-            std::shared_ptr< EList<std::shared_ptr<EStructuralFeature>>> containments_;
-            std::shared_ptr< EList<std::shared_ptr<EStructuralFeature>>> crossReferences_;
+            std::shared_ptr< EList<std::shared_ptr<EReference>>> eAllCrossReferences_;
             std::unique_ptr< std::unordered_map< std::string, std::shared_ptr<EStructuralFeature>>> nameToFeatureMap_;
             std::unique_ptr< std::unordered_map< std::shared_ptr<EOperation>, std::shared_ptr<EOperation>>> operationToOverrideMap_;
             // End of user code
