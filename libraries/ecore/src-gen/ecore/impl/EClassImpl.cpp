@@ -223,8 +223,8 @@ bool EClassImpl::isInterface() const
 std::shared_ptr<ecore::EOperation> EClassImpl::getEOperation(int operationID)
 {
     // Start of user code EClassImpl::getEOperation
-    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
-    throw "NotImplementedException";
+    auto operations = getEAllOperations();
+    return operationID >= 0 && operationID < operations->size() ? operations->get( operationID ) : std::shared_ptr<EOperation>();
     // End of user code
 }
 
@@ -232,8 +232,8 @@ std::shared_ptr<ecore::EOperation> EClassImpl::getEOperation(int operationID)
 std::shared_ptr<ecore::EStructuralFeature> EClassImpl::getEStructuralFeature(int featureID)
 {
     // Start of user code EClassImpl::getEStructuralFeature
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
-    throw "NotImplementedException";
+    auto features = getEAllStructuralFeatures();
+    return featureID >= 0 && featureID < features->size() ? features->get( featureID ) : std::shared_ptr<EStructuralFeature>();
     // End of user code
 }
 
@@ -250,8 +250,7 @@ std::shared_ptr<ecore::EStructuralFeature> EClassImpl::getEStructuralFeature(con
 int EClassImpl::getFeatureCount()
 {
     // Start of user code EClassImpl::getFeatureCount
-    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
-    throw "NotImplementedException";
+    return getEAllStructuralFeatures()->size();
     // End of user code
 }
 
@@ -259,8 +258,17 @@ int EClassImpl::getFeatureCount()
 int EClassImpl::getFeatureID(const std::shared_ptr<ecore::EStructuralFeature>& feature)
 {
     // Start of user code EClassImpl::getFeatureID
-    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
-    throw "NotImplementedException";
+    auto features = getEAllStructuralFeatures();
+    int featureID = feature->getFeatureID();
+    if (featureID != -1)
+    {
+        for (; featureID < features->size(); ++featureID)
+        {
+            if (features->get( featureID ) == feature)
+                return featureID;
+        }
+    }
+    return -1;
     // End of user code
 }
 
@@ -277,8 +285,7 @@ std::shared_ptr<ecore::EGenericType> EClassImpl::getFeatureType(const std::share
 int EClassImpl::getOperationCount()
 {
     // Start of user code EClassImpl::getOperationCount
-    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
-    throw "NotImplementedException";
+    return getEAllOperations()->size();
     // End of user code
 }
 
@@ -286,8 +293,17 @@ int EClassImpl::getOperationCount()
 int EClassImpl::getOperationID(const std::shared_ptr<ecore::EOperation>& operation)
 {
     // Start of user code EClassImpl::getOperationID
-    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
-    throw "NotImplementedException";
+    auto operations = getEAllStructuralFeatures();
+    int operationID = operation->getOperationID();
+    if (operationID != -1)
+    {
+        for (; operationID < operations->size(); ++operationID)
+        {
+            if (operations->get( operationID ) == operation)
+                return operationID;
+        }
+    }
+    return -1;
     // End of user code
 }
 
