@@ -106,7 +106,7 @@ MOCK_METHOD([anEAttribute.getUnSetterName()/],0);
 [/template]
 
 
-[template public generateAttributeSetterImplementationCpp(anEAttribute : EAttribute, impl : Boolean) ? ( hasSetter('public',impl)) ]
+[template public generateAttributeSetterImplementationCpp(anEAttribute : EAttribute ) ? ( hasSetter('public',true)) ]
 [let className : String = anEAttribute.eContainingClass.getImplementationName()]
 void [className/]::[anEAttribute.getSetterName()/]([anEAttribute.generateParameterType()/] [anEAttribute.getSafeVariableName()/])
 {

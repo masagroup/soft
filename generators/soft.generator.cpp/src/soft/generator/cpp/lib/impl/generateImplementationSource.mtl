@@ -84,7 +84,7 @@ std::shared_ptr<EClass> [className/]::eStaticClass() const
 // Attribute Setter Getter
 //*********************************
 [for (aAttribute : EAttribute | aClass.eAttributes->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-[aAttribute.generateAttributeSetterImplementationCpp(true)/]
+[aAttribute.generateAttributeSetterImplementationCpp()/]
 
 [aAttribute.generateAttributeGetterImplementationCpp()/]
 [/for]
