@@ -252,23 +252,25 @@ std::shared_ptr<ENotificationChain> [className/]::eBasicInverseAdd( const std::s
     // [protected (className + '::eBasicInverseAdd')]
     switch( featureID )
     {
-[for ( eFeature : EStructuralFeature | aClass.getEInverseAddFeatures()->sortedBy(name) )]
-    [let featureID : String = eFeature.getPackageName(aClass).concat('::').concat(eFeature.eContainingClass.getFeatureIDName(eFeature))]
-        case [featureID/]:
+[for ( aFeature : EStructuralFeature | aClass.getEInverseAddFeatures()->sortedBy(name) )]
+        case [aFeature.getQualifiedFeatureIDName()/]:
         {
-        [if eFeature.upperBound <> 1]
-            auto list = std::dynamic_pointer_cast<NotifyingEList<std::shared_ptr<EObject>>>( [eFeature.getGetterName()/]() );
+        [if aFeature.isListType()]
+            auto list = std::dynamic_pointer_cast<NotifyingEList<std::shared_ptr<EObject>>>( [aFeature.getGetterName()/]() );
             _ASSERTE(list);
             return list->add( otherEnd , notifications );
-        [elseif eFeature.isContainer()]
+        [elseif aFeature.isContainer()]
             auto msgs = notifications;
             if (eContainer())
                 msgs = eBasicRemoveFromContainer(msgs);
-            return eBasicSetContainer( otherEnd , [featureID/], msgs );
+            [if aFeature.isBasicSet()]
+            return basic[aFeature.getSetterName().toUpperFirst()/]( std::dynamic_pointer_cast<[aFeature.generateElementType()/]>(otherEnd), msgs );
+            [else]
+            return eBasicSetContainer( otherEnd , [aFeature.getQualifiedFeatureIDName()/], msgs );
+            [/if]
         [else]
             break;
         [/if]
-    [/let]
         }
 [/for]
     }

@@ -20,7 +20,7 @@
 [generateCppType(true)/]
 [/template]
 
-[template public generateCppType(anEDataType : EGenericType , decorate : Boolean ) post (trim())]
+[template private generateCppType(anEDataType : EGenericType , decorate : Boolean ) post (trim())]
 [if (anEDataType.oclIsUndefined())]
 void[else]
 [if (anEDataType.eTypeArguments->notEmpty())]
@@ -78,6 +78,10 @@ const [aAttribute.generateEffectiveType()/]&
 [else]
 [aAttribute.generateEffectiveType()/]
 [/if]
+[/template]
+
+[template public generateElementType(aStructuralFeature : EStructuralFeature) post (trim())]
+[aStructuralFeature.eGenericType.generateCppType(false)/]
 [/template]
 
 [template public generateDataType(aStructuralFeature : EStructuralFeature) post (trim())]

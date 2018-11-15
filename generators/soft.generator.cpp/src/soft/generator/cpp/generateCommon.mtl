@@ -205,6 +205,10 @@
 [query public isUnSet(aStructuralFeature : EStructuralFeature) : Boolean = isChangeable() and isUnSettable()/]
 [query public isIsSet(aStructuralFeature : EStructuralFeature) : Boolean = isUnSettable()/]
 
+[query public isBasicSet(aStructuralFeature : EStructuralFeature) : Boolean = not isListType() and ( isChangeable() or not isContainer() ) and ( isBidirectional() and not isVolatile() or isContains() ) /]
+[query public isBasicGet(aStructuralFeature : EStructuralFeature) : Boolean = isResolveProxies() and not isListType()/]
+[query public isBasicUnSet(aStructuralFeature : EStructuralFeature) : Boolean = isUnSettable() and isChangeable() and not isListType() and aStructuralFeature.oclIsKindOf(EReference) and ( isBidirectional() or isContains() )/]
+
 [query private getSuperTypeContainers(aClass:EClass) : OrderedSet(EReference) = if not(aClass.eSuperTypes->isEmpty()) then aClass.eSuperTypes.getAllContainers()->flatten()->asOrderedSet() else OrderedSet{} endif /]
 [query public getAllContainers(aClass : EClass) : OrderedSet(EReference) =  if getContainerAttribute()->notEmpty() then if getSuperTypeContainers()->isEmpty() then getContainerAttribute() else OrderedSet{getContainerAttribute()}->append(getSuperTypeContainers()->flatten()->reject(oclIsUndefined())->asOrderedSet())->flatten()->asOrderedSet() endif else getSuperTypeContainers()->asOrderedSet() endif /]
 
@@ -345,6 +349,9 @@ namespace ecore
     endif
 /]
 [query private isMap(  aEFeature : EStructuralFeature , n : String  ) : Boolean = let entries : Sequence(String) = Sequence{'java.util.Map.Entry','java.util.Map$Entry'} in entries->includes(n)/]
+[query public getQualifiedFeatureIDName( aStructuralFeature : EStructuralFeature ) : String =
+    aStructuralFeature.getPackageName(aStructuralFeature.eContainingClass) + '::' + aStructuralFeature.eContainingClass.getFeatureIDName( aStructuralFeature )
+/]
 
 [query public getOperationCountID( aEClass : EClass ) : String = aEClass.getClassifierIDName().concat('_OPERATION_COUNT')/]
 [query public getOperationCountValue( aEClass : EClass ) : String = 
