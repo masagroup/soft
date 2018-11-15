@@ -109,6 +109,9 @@ namespace ecore::impl
 
     protected:
         virtual std::shared_ptr<EClass> eStaticClass() const;
+        //*********************************
+        // Reflectives
+        //*********************************
         virtual boost::any eGet(int featureID, bool resolve, bool coreType) const;
         virtual void eSet(int featureID, const boost::any& newValue);
         virtual void eUnSet(int featureID);

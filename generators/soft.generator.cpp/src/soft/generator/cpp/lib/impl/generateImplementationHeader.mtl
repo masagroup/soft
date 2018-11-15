@@ -39,7 +39,7 @@ namespace [namespaceName/]
     public:
         virtual ~[className/]();
         
-[let operations : OrderedSet(EOperation) = aClass.eOperations->select( isPublic(false) )]
+[let operations : OrderedSet(EOperation) = aClass.eOperations->select( isPublic(true) )]
 [if operations->notEmpty()]
         //*********************************
         // Operations
@@ -47,7 +47,7 @@ namespace [namespaceName/]
         [operations.generateDeclaration(true)/]
 [/if]
 [/let]
-[let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( hasSetter('public',false) or hasGetter('public',false) )]
+[let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( hasSetter('public',true) or hasGetter('public',true) )]
 [if attributes->notEmpty()]
         //*********************************
         // Attributes
@@ -55,7 +55,7 @@ namespace [namespaceName/]
         [attributes.generateDeclaration(true)/]
 [/if]
 [/let]
-[let references : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EReference)->select( hasSetter('public',false) or hasGetter('public',false)  )]
+[let references : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EReference)->select( hasSetter('public',true) or hasGetter('public',true)  )]
 [if references->notEmpty()]
         //*********************************
         // References

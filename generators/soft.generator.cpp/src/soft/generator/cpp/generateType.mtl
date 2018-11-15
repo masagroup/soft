@@ -6,22 +6,26 @@
 [query public isAny(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then true else (name = 'EEnumerator' or name = 'EDiagnosticChain' or name = 'EJavaObject') endif/]
 [query private isShared(aReference : EReference) : Boolean = if (aReference.hasKey('AggregationKind')) then aReference.valueKey('AggregationKind')='shared' else false endif/]
 [query public isBackReference(aReference:EReference) : Boolean = aReference.container or isShared()/]
-[query public needReference(anEDataType : EGenericType) : Boolean = anEDataType.eTypeArguments->notEmpty() or needReference(anEDataType.eClassifier)/]
-[query public needReference(anEClassifier : EClassifier) : Boolean = oclIsUndefined() or 
+[query public needReference(anEDataType : EGenericType) : Boolean = ( not anEDataType.oclIsUndefined() ) and ( anEDataType.eTypeArguments->notEmpty() or needReference(anEDataType.eClassifier) )/]
+[query public needReference(anEClassifier : EClassifier) : Boolean = not oclIsUndefined() and( 
                                                                 (not oclIsKindOf(EDataType)) or 
                                                                 name = 'EString' or 
                                                                 name = 'EEnumerator' or 
                                                                 name = 'EDiagnosticChain' or 
                                                                 name = 'EEList' or  
                                                                 name = 'EMap' or 
-                                                                name = 'EJavaObject'/]
+                                                                name = 'EJavaObject' )/]
 
 [template public generateCppType(anEDataType : EGenericType) post (trim())]
+[generateCppType(true)/]
+[/template]
+
+[template public generateCppType(anEDataType : EGenericType , decorate : Boolean ) post (trim())]
 [if (anEDataType.oclIsUndefined())]
 void[else]
 [if (anEDataType.eTypeArguments->notEmpty())]
 [anEDataType.generateGenericType()/]
-[elseif (not anEDataType.eClassifier.oclIsKindOf(EDataType))]
+[elseif (decorate and not anEDataType.eClassifier.oclIsKindOf(EDataType))]
 std::shared_ptr<[anEDataType.eClassifier.generateType()/]>[else]
 [anEDataType.eClassifier.generateType()/][/if][/if]
 [/template]
@@ -39,6 +43,14 @@ std::shared_ptr<[anEDataType.eClassifier.generateType()/]>[else]
 std::shared_ptr<[anEDataType.eClassifier.generateType()/]<[for (g : EGenericType | anEDataType.eTypeArguments) separator (',')][g.generateGenericArgumentType()/][/for]>>[/if]
 [/template]
 
+[template public generateEffectiveType(eElement : ETypedElement) post(trim())]
+[if (isListType())]
+std::shared_ptr<EList<[eElement.eGenericType.generateCppType()/]>>
+[else]
+[eElement.eGenericType.generateCppType()/]
+[/if]
+[/template]
+
 [template public generateParameterList(aOperation:EOperation ) post(trim())]
 [generateParameterList(aOperation,true)/]
 [/template]
@@ -49,32 +61,27 @@ std::shared_ptr<[anEDataType.eClassifier.generateType()/]<[for (g : EGenericType
 [/template]
 
 [template public generateParameterType(eElement : ETypedElement) post (trim())]
-[if (isListType())]
-const std::shared_ptr<EList<[eElement.eGenericType.generateCppType()/]>>&
-[elseif (eElement.eGenericType.needReference())]
-const [eElement.eGenericType.generateCppType()/]&
+[if needReference(eElement.eGenericType)]
+const [eElement.generateEffectiveType()/]&
 [else]
-[eElement.eGenericType.generateCppType()/]
+[eElement.generateEffectiveType()/]
 [/if]
 [/template]
 
 [template public generateReturnType(eElement : ETypedElement) post(trim())]
-[if (isListType())]
-std::shared_ptr<EList<[eElement.eGenericType.generateCppType()/]>>
+[eElement.generateEffectiveType()/]
+[/template]
+
+[template public generateReturnType(aAttribute : EAttribute) post(trim())]
+[if needReference(aAttribute.eGenericType)]
+const [aAttribute.generateEffectiveType()/]&
 [else]
-[eElement.eGenericType.generateCppType()/]
+[aAttribute.generateEffectiveType()/]
 [/if]
 [/template]
 
 [template public generateDataType(aStructuralFeature : EStructuralFeature) post (trim())]
-[/template]
-
-[template public generateDataType(eAttribute : EAttribute) post (trim())]
-[if isListType()]
-std::shared_ptr<EList<[eAttribute.eGenericType.generateCppType()/]>>
-[else]
-[eAttribute.eGenericType.generateCppType()/]
-[/if]
+[aStructuralFeature.generateEffectiveType()/]
 [/template]
 
 [template public generateDataType(eReference : EReference) post (trim())]
@@ -85,8 +92,7 @@ std::shared_ptr<EList<[eReference.eGenericType.generateCppType()/]>>
 [/if]
 [/template]
 
-
-[template public pointerType(aReference : EReference) post(trim())]
+[template private pointerType(aReference : EReference) post(trim())]
 [if(isBackReference())]
 std::weak_ptr
 [else]

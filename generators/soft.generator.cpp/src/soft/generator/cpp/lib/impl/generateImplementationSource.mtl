@@ -80,34 +80,32 @@ std::shared_ptr<EClass> [className/]::eStaticClass() const
     return [aClass.ePackage.getInterfaceName()/]::eInstance()->get[aClass.getElementAccessorName()/]();
 }
 
-[if aClass.eAttributes->notEmpty()]
-//*********************************
-// Attribute Setter Getter
-//*********************************
-[for (aAttribute : EAttribute | aClass.eAttributes->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-[aAttribute.generateAttributeSetterDefinition()/]
-[aAttribute.generateAttributeGetterDefinition()/]
-[/for]
-[/if]
-[if aClass.eOperations->notEmpty()]
+[aClass.generateGetThisPtrCPP()/]
+
+[let operations : OrderedSet(EOperation) = aClass.eOperations->select( isPublic(true) )]
+[if operations->notEmpty()]
 //*********************************
 // Operations
 //*********************************
-[for (aOperation : EOperation | aClass.eOperations->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-[aOperation.generateDefinition()/]
-[/for]
+[operations.generateDefinition()/]
 [/if]
-[if aClass.eReferences->notEmpty()]
+[/let]
+[let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( hasSetter('public',true) or hasGetter('public',true) )]
+[if attributes->notEmpty()]
+//*********************************
+// Attributes
+//*********************************
+[attributes.generateDefinition()/]
+[/if]
+[/let]
+[let references : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EReference)->select( hasSetter('public',true) or hasGetter('public',true)  )]
+[if references->notEmpty()]
 //*********************************
 // References
 //*********************************
-[for (aReference : EReference | aClass.eReferences->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-[aReference.generateReferenceDefinition()/]
-[/for]
+[references.generateDefinition()/]
 [/if]
-
-[aClass.generateGetThisPtrCPP()/]
-
+[/let]
 [aClass.generateReflectivesDefinition()/]
 // [protected (className + ' [declaration-end]') ]
 // [/protected]

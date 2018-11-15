@@ -5,133 +5,17 @@
 [import soft::generator::cpp::generateType /]
 [import soft::generator::cpp::generateCommon /]
 
-[template public generateReferenceDeclaration(anEReference : EReference, impl : EBoolean) ]
-[anEReference.generateReferenceGetterDeclaration(impl)/]
-[anEReference.generateReferenceSetterDeclaration(impl)/]
-[/template]
-
 [template public generateReferenceMock(anEReference : EReference) ]
 [anEReference.generateReferenceGetterMock()/]
 [anEReference.generateReferenceSetterMock()/]
-[/template]
-
-[template public generateReferenceGetterDeclaration(anEReference : EReference, impl : EBoolean)? (hasGetter('public',impl))]
-virtual [anEReference.generateReturnType()/] [anEReference.getGetterName()/]() const [abstractSufix(impl)/];
-
 [/template]
 
 [template public generateReferenceGetterMock(anEReference : EReference)? (hasGetter('public',false))]
 MOCK_METHOD([anEReference.getGetterName()/],0);
 [/template]
 
-
-[template public generateReferenceSetterDeclaration(anEReference : EReference, impl : EBoolean) ? ( hasSetter('public',impl) )]
-virtual void [anEReference.getSetterName()/]([if (not anEReference.eGenericType.oclIsKindOf(EDataType))]
-[anEReference.generateParameterType()/][else]
-[anEReference.eGenericType.generateCppType()/][/if]
-[anEReference.name/]) [abstractSufix(impl)/];
-
-
-[/template]
-
 [template public generateReferenceSetterMock(anEReference : EReference)? (hasSetter('public',false))]
 MOCK_METHOD([anEReference.getSetterName()/],1);
-[/template]
-
-[template public generateReferenceProtected(anEReference : EReference) ]
-[anEReference.generateDataType()/] [anEReference.name/]_;
-
-[/template]
-
-[template public generateReferenceDefinition(anEReference : EReference)]
-[anEReference.generateReferenceGetterDefinition()/]
-
-[anEReference.generateReferenceSetterDefinition()/]
-[/template]
-
-[template public generateReferenceSetterDefinition(anEReference : EReference) ? (hasSetter('public',true))]
-[let className : String = anEReference.eContainingClass.getImplementationName()]
-void [className/]::[anEReference.getSetterName()/]([anEReference.generateParameterType()/] [anEReference.getSafeName()/])
-{
-    // [protected (className + '::' + anEReference.getSetterName())]
-[if (hasKey('setterBody'))]
-    [valueKey('setterBody')/] 
-[else]
-    [anEReference.name/]_ = [anEReference.name/];
-[/if]
-    // [/protected]
-}
-[/let]
-[/template]
-
-[template public generateReferenceGetterDefinition(anEReference : EReference) ? (hasGetter('public',true) and anEReference.upperBound <> 1)]
-[let className : String = anEReference.eContainingClass.getImplementationName()]
-[anEReference.generateReturnType()/] [className/]::[anEReference.getGetterName()/]() const
-{
-    // [protected (className + '::' + anEReference.getGetterName())]
-[if (hasKey('getterBody'))]
-    [valueKey('getterBody')/]
-[else]
-    if ( ![anEReference.name/]_ )
-        const_cast<[className/]*>(this)->[anEReference.name/]_.reset(new [getListConstructor()/]); 
-    return [anEReference.name/]_;
-[/if]
-    // [/protected]
-}
-[/let]
-[/template]
-
-[template public generateReferenceGetterDefinition(anEReference : EReference) ? (hasGetter('public',true))]
-[let className : String = anEReference.eContainingClass.getImplementationName()]
-[anEReference.generateReturnType()/] [className/]::[anEReference.getGetterName()/]() const
-{
-    // [protected (className + '::' + anEReference.getGetterName())]
-[if (hasKey('getterBody'))]
-    //generated from getterbody annotation
-    [valueKey('getterBody')/]
-    //end of body
-[else][if(anEReference.lowerBound>0)]assert([anEReference.name/]_);[/if]
-    return [anEReference.name/]_[if (anEReference.isBackReference())].lock()[/if];
-[/if]
-    // [/protected]
-[/let]
-}
-[/template]
-
-[template private getListConstructor( anEReference : EReference ) post(trim())]
-[let typeArgument : String = anEReference.eGenericType.generateCppType()]
-[let thisPtrGetterName : String = anEReference.eContainingClass.generateGetThisPtrPropertyGetterName()]
-[let packageName : String = anEReference.getMetaModelPackageNameForEStructuralFeature(anEReference.eContainingClass)]
-[let featureID : String = anEReference.eContainingClass.getFeatureIDName( anEReference )]
-[if (anEReference.containment)]
-    [if anEReference.eOpposite.oclIsUndefined() ]
-        EObjectEList<[typeArgument/],true,true,false>([thisPtrGetterName/](), [packageName/]::[featureID/] )
-    [else]
-        [let reverseFeature :EReference = anEReference.eOpposite ]
-        [let reversePackageName : String = reverseFeature.getMetaModelPackageNameForEStructuralFeature(reverseFeature.eContainingClass) ]
-        [let reverseFeatureID :String = reverseFeature.eContainingClass.getFeatureIDName(reverseFeature) ]
-        EObjectEList<[typeArgument/],true,true,true>( [thisPtrGetterName/](), [packageName/]::[featureID/] , [reversePackageName/]::[reverseFeatureID/])
-        [/let]
-        [/let]
-        [/let]
-    [/if]
-[else]
-    [if anEReference.eOpposite.oclIsUndefined() ]
-        EObjectEList<[typeArgument/],false,false,false>( [thisPtrGetterName/](), [packageName/]::[featureID/])
-    [else]
-        [let reverseFeature :EReference = anEReference.eOpposite ]
-        [let reversePackageName : String = reverseFeature.getMetaModelPackageNameForEStructuralFeature(reverseFeature.eContainingClass) ]
-        [let reverseFeatureID :String = reverseFeature.eContainingClass.getFeatureIDName(reverseFeature) ]
-        EObjectEList<[typeArgument/],false,true,true>( [thisPtrGetterName/](), [packageName/]::[featureID/] , [reversePackageName/]::[reverseFeatureID/])
-        [/let]
-        [/let]
-        [/let]
-    [/if]
-[/if]
-[/let]
-[/let]
-[/let]
-[/let]
 [/template]
 
 [template public generateReferenceCreation(anEReference : EReference)]

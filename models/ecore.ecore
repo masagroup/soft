@@ -66,29 +66,65 @@
         eType="#//EOperation" containment="true" resolveProxies="false" eOpposite="#//EOperation/eContainingClass"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllAttributes" upperBound="-1"
         eType="#//EAttribute" changeable="false" volatile="true" transient="true"
-        derived="true"/>
+        derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllReferences" upperBound="-1"
         eType="#//EReference" changeable="false" volatile="true" transient="true"
-        derived="true"/>
+        derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eReferences" upperBound="-1"
         eType="#//EReference" changeable="false" volatile="true" transient="true"
-        derived="true"/>
+        derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAttributes" upperBound="-1"
         eType="#//EAttribute" changeable="false" volatile="true" transient="true"
-        derived="true"/>
+        derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllContainments" upperBound="-1"
         eType="#//EReference" changeable="false" volatile="true" transient="true"
-        derived="true"/>
+        derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllOperations" upperBound="-1"
         eType="#//EOperation" changeable="false" volatile="true" transient="true"
-        derived="true"/>
+        derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllStructuralFeatures"
         upperBound="-1" eType="#//EStructuralFeature" changeable="false" volatile="true"
-        transient="true" derived="true"/>
+        transient="true" derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllSuperTypes" upperBound="-1"
-        eType="#//EClass" changeable="false" volatile="true" transient="true" derived="true"/>
+        eType="#//EClass" changeable="false" volatile="true" transient="true" derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eIDAttribute" eType="#//EAttribute"
-        changeable="false" volatile="true" transient="true" derived="true" resolveProxies="false"/>
+        changeable="false" volatile="true" transient="true" derived="true" resolveProxies="false">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eStructuralFeatures" upperBound="-1"
         eType="#//EStructuralFeature" containment="true" resolveProxies="false" eOpposite="#//EStructuralFeature/eContainingClass"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eGenericSuperTypes" upperBound="-1"
@@ -100,7 +136,11 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllGenericSuperTypes"
         upperBound="-1" eType="#//EGenericType" changeable="false" volatile="true"
-        transient="true" derived="true"/>
+        transient="true" derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="true"/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EClassifier" abstract="true" eSuperTypes="#//ENamedElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">

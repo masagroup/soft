@@ -60,6 +60,16 @@ std::shared_ptr<EClass> EModelElementImpl::eStaticClass() const
     return EcorePackage::eInstance()->getEModelElement();
 }
 
+std::shared_ptr<EModelElementImpl> EModelElementImpl::getThisPtr() const
+{
+    return thisPtr_.lock();
+}
+
+void EModelElementImpl::setThisPtr(const std::shared_ptr<EModelElementImpl>& thisPtr)
+{
+    thisPtr_ = thisPtr;
+}
+
 //*********************************
 // Operations
 //*********************************
@@ -79,7 +89,7 @@ std::shared_ptr<ecore::EAnnotation> EModelElementImpl::getEAnnotation(const std:
 //*********************************
 // References
 //*********************************
-std::shared_ptr<EList<std::shared_ptr<ecore::EAnnotation>>> EModelElementImpl::getEAnnotations() const
+std::shared_ptr<EList<std::shared_ptr<ecore::EAnnotation>>> EModelElementImpl::getEAnnotations() const 
 {
     // Start of user code EModelElementImpl::getEAnnotations
     if ( !eAnnotations_ )
@@ -91,16 +101,9 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EAnnotation>>> EModelElementImpl::g
 
 
 
-std::shared_ptr<EModelElementImpl> EModelElementImpl::getThisPtr() const
-{
-    return thisPtr_.lock();
-}
-
-void EModelElementImpl::setThisPtr(const std::shared_ptr<EModelElementImpl>& thisPtr)
-{
-    thisPtr_ = thisPtr;
-}
-
+//*********************************
+// Reflectives
+//*********************************
 boost::any EModelElementImpl::eGet(int featureID, bool resolve, bool coreType) const
 {
     switch(featureID)

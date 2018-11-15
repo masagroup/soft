@@ -18,6 +18,16 @@
 [query private getEInverseRemoveFeatures(aClass : EClass) : Set(EStructuralFeature) = aClass.eStructuralFeatures->select( eFeature | eFeature.isContains() or (eFeature.isBidirectional() and not eFeature.isVolatile()))/]
 
 [template public generateReflectivesDeclaration(aClass : EClass)]
+[if aClass.getEGetFeatures()->notEmpty() or
+    aClass.getESetFeatures()->notEmpty() or
+    aClass.getEUnSetFeatures()->notEmpty() or
+    aClass.getEIsSetFeatures()->notEmpty() or
+    aClass.eOperations->notEmpty() or
+    aClass.getEInverseAddFeatures()->notEmpty() or
+    aClass.getEInverseRemoveFeatures()->notEmpty()]
+//*********************************
+// Reflectives
+//*********************************
 [if aClass.getEGetFeatures()->notEmpty()]
 [aClass.generateEGetDeclaration()/]
 [/if]
@@ -38,6 +48,7 @@
 [/if]
 [if aClass.getEInverseRemoveFeatures()->notEmpty()]
 [aClass.generateEInverseRemoveDeclaration()/]
+[/if]
 [/if]
 [/template]
 
@@ -70,6 +81,17 @@ virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shar
 [/template]
 
 [template public generateReflectivesDefinition(aClass : EClass)]
+[if aClass.getEGetFeatures()->notEmpty() or
+    aClass.getESetFeatures()->notEmpty() or
+    aClass.getEUnSetFeatures()->notEmpty() or
+    aClass.getEIsSetFeatures()->notEmpty() or
+    aClass.eOperations->notEmpty() or
+    aClass.getEInverseAddFeatures()->notEmpty() or
+    aClass.getEInverseRemoveFeatures()->notEmpty()]
+
+//*********************************
+// Reflectives
+//*********************************
 [if aClass.getEGetFeatures()->notEmpty()]
 [aClass.generateEGetDefinition()/]
 
@@ -98,6 +120,7 @@ virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shar
 [aClass.generateEInverseRemoveDefinition()/]
 
 [/if]
+[/if]
 [/template]
 
 [template private generateEGetDefinition(aClass : EClass)]
@@ -107,7 +130,7 @@ boost::any [className/]::eGet(int featureID, bool resolve, bool coreType) const
     switch(featureID)
     {
     [for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
-        case [anStructFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
+        case [anStructFeature.getPackageName(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
             return [anStructFeature.getGetterName()/]();
     [/for]
     }
@@ -130,7 +153,7 @@ bool [aClass.getImplementationName()/]::eIsSet(int featureID) const
     switch(featureID)
     {
     [for (anStructFeature : EStructuralFeature | aClass.getEIsSetFeatures()->sortedBy(name))]
-        case [anStructFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
+        case [anStructFeature.getPackageName(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
             return [anStructFeature.generateComparison()/];
     [/for]
     }
@@ -145,7 +168,7 @@ void [aClass.getImplementationName()/]::eSet(int featureID, const boost::any& ne
     switch(featureID)
     {
 [for (anStructFeature : EStructuralFeature | aClass.getESetFeatures()->sortedBy(name))]
-        case [anStructFeature.getMetaModelPackageNameForEStructuralFeature(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
+        case [anStructFeature.getPackageName(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
         {
             [anStructFeature.eGenericType.generateCppType()/] [anStructFeature.name.first(1)/] = boost::any_cast<[anStructFeature.eGenericType.generateCppType()/]>(newValue);
             [anStructFeature.getSetterName()/]([anStructFeature.name.first(1)/]);
@@ -177,7 +200,7 @@ boost::any [className/]::eInvoke(int operationID, const std::shared_ptr<EList<bo
     switch( operationID )
     {
     [for ( eOperation : EOperation | aClass.eOperations->sortedBy(name) )]
-        case [eOperation.getMetaModelPackageNameForOperation(aClass)/]::[eOperation.eContainingClass.getOperationIDName(eOperation)/]:
+        case [eOperation.getPackageName(aClass)/]::[eOperation.eContainingClass.getOperationIDName(eOperation)/]:
         {
             [if eOperation.isVoid() ]
             [eOperation.generateOperationInvoke()/]
@@ -195,7 +218,7 @@ boost::any [className/]::eInvoke(int operationID, const std::shared_ptr<EList<bo
 [/template]
 
 [template private generateOperationInvoke(eOperation : EOperation )]
-[if eOperation.getVisibilityType(true) = 'no' and eOperation.eContainingClass.name = 'EObject']BasicEObject::[/if][eOperation.name/]([for (eParameter : EParameter | eOperation.eParameters) separator (',')][let needCast : Boolean = not(not eParameter.oclIsUndefined() and eParameter.upperBound = 1 and not eParameter.eGenericType.oclIsUndefined() and eParameter.eGenericType.eClassifier.isAny())][if needCast]boost::any_cast<[eParameter.generateReturnType()/]>([/if]arguments->get([i-1/])[if needCast])[/if][/let][/for]);
+[if eOperation.getVisibilityType(true) = 'no' and eOperation.eContainingClass.name = 'EObject']BasicEObject::[/if][eOperation.name/]([for (eParameter : EParameter | eOperation.eParameters) separator (',')][let needCast : Boolean = not(not eParameter.oclIsUndefined() and eParameter.upperBound = 1 and not eParameter.eGenericType.oclIsUndefined() and eParameter.eGenericType.eClassifier.isAny())][if needCast]boost::any_cast<[eParameter.generateEffectiveType()/]>([/if]arguments->get([i-1/])[if needCast])[/if][/let][/for]);
 [/template]
 
 [template public generateComparison(anStructFeature : EStructuralFeature) ? (oclIsKindOf(EAttribute) and not eType.isAny()) post (trim())]
@@ -230,7 +253,7 @@ std::shared_ptr<ENotificationChain> [className/]::eBasicInverseAdd( const std::s
     switch( featureID )
     {
 [for ( eFeature : EStructuralFeature | aClass.getEInverseAddFeatures()->sortedBy(name) )]
-    [let featureID : String = eFeature.getMetaModelPackageNameForEStructuralFeature(aClass).concat('::').concat(eFeature.eContainingClass.getFeatureIDName(eFeature))]
+    [let featureID : String = eFeature.getPackageName(aClass).concat('::').concat(eFeature.eContainingClass.getFeatureIDName(eFeature))]
         case [featureID/]:
         {
         [if eFeature.upperBound <> 1]
@@ -263,7 +286,7 @@ std::shared_ptr<ENotificationChain> [className/]::eBasicInverseRemove( const std
     switch( featureID )
     {
 [for ( eFeature : EStructuralFeature | aClass.getEInverseRemoveFeatures()->sortedBy(name) )]
-    [let featureID : String = eFeature.getMetaModelPackageNameForEStructuralFeature(aClass).concat('::').concat(eFeature.eContainingClass.getFeatureIDName(eFeature))]
+    [let featureID : String = eFeature.getPackageName(aClass).concat('::').concat(eFeature.eContainingClass.getFeatureIDName(eFeature))]
         case [featureID/]:
         {
         [if eFeature.upperBound <> 1]
