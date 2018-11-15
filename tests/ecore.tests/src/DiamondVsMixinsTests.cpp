@@ -9,7 +9,9 @@ using namespace boost::timer;
 const int NB_ITERATIONS = 1000000;
 
 #define LOG 0
+#define COMPUTE 1
 
+#if ( COMPUTE == 0 )
 
 namespace diamond
 {
@@ -292,3 +294,5 @@ BOOST_AUTO_TEST_CASE( Performance )
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+#endif

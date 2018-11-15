@@ -67,11 +67,11 @@ namespace ecore::impl
         //*********************************
         virtual bool isAbstract() const ;
         
-        virtual void setAbstract(bool abstract) ;
+        virtual void setAbstract(bool newAbstract) ;
         
         virtual bool isInterface() const ;
         
-        virtual void setInterface(bool interface) ;
+        virtual void setInterface(bool newInterface) ;
         
         
         //*********************************

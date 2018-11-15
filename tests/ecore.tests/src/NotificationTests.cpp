@@ -86,10 +86,10 @@ BOOST_AUTO_TEST_SUITE( NotificationTests )
 
 BOOST_AUTO_TEST_CASE( Constructor )
 {
-    std::shared_ptr<MockNotifier> notifier = std::make_shared<MockNotifier>();
+    std::shared_ptr<MockObject> notifier = std::make_shared<MockObject>();
     std::shared_ptr<MockStructuralFeature> feature = std::make_shared<MockStructuralFeature>();
     {
-        auto notification = std::make_shared<Notification>( ENotification::ADD, notifier, feature, 1, 2 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::ADD, feature, 1, 2 );
         BOOST_CHECK_EQUAL( notification->getEventType(), ENotification::ADD );
         BOOST_CHECK_EQUAL( notification->getNotifier(), notifier );
         BOOST_CHECK_EQUAL( notification->getFeature(), feature );
@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE( Constructor )
         BOOST_CHECK_EQUAL( notification->getPosition(), -1 );
     }
     {
-        auto notification = std::make_shared<Notification>( ENotification::ADD, notifier, feature, 1, 2, 10 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::ADD, feature, 1, 2, 10 );
         BOOST_CHECK_EQUAL( notification->getEventType(), ENotification::ADD );
         BOOST_CHECK_EQUAL( notification->getNotifier(), notifier );
         BOOST_CHECK_EQUAL( notification->getFeature(), feature );
@@ -110,10 +110,10 @@ BOOST_AUTO_TEST_CASE( Constructor )
 
 BOOST_AUTO_TEST_CASE( Dispatch )
 {
-    std::shared_ptr<MockNotifier> notifier = std::make_shared<MockNotifier>();
+    std::shared_ptr<MockObject> notifier = std::make_shared<MockObject>();
     std::shared_ptr<MockStructuralFeature> feature = std::make_shared<MockStructuralFeature>();
     {
-        auto notification = std::make_shared<Notification>( ENotification::ADD, notifier, feature, 1, 2 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::ADD, feature, 1, 2 );
         MOCK_EXPECT( notifier->eNotify ).with( notification ).once();
         notification->dispatch();
     }
@@ -121,27 +121,27 @@ BOOST_AUTO_TEST_CASE( Dispatch )
 
 BOOST_AUTO_TEST_CASE( Merge )
 {
-    std::shared_ptr<MockNotifier> notifier = std::make_shared<MockNotifier>();
+    std::shared_ptr<MockObject> notifier = std::make_shared<MockObject>();
     std::shared_ptr<MockStructuralFeature> feature = std::make_shared<MockStructuralFeature>();
     {
-        auto notification = std::make_shared<Notification>( ENotification::SET, notifier, feature, 1, 2 );
-        auto other = std::make_shared<Notification>( ENotification::SET, notifier, feature, 2, 3 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::SET, feature, 1, 2 );
+        auto other = std::make_shared<Notification>( notifier, ENotification::SET, feature, 2, 3 );
         BOOST_CHECK( notification->merge( other ) );
         BOOST_CHECK_EQUAL( notification->getEventType(), ENotification::SET );
         BOOST_CHECK_EQUAL( boost::any_cast<int>(notification->getOldValue()), 1 );
         BOOST_CHECK_EQUAL( boost::any_cast<int>(notification->getNewValue()), 3 );
     }
     {
-        auto notification = std::make_shared<Notification>( ENotification::SET, notifier, feature, 1, 2 );
-        auto other = std::make_shared<Notification>( ENotification::UNSET, notifier, feature, 2, 0 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::SET, feature, 1, 2 );
+        auto other = std::make_shared<Notification>( notifier, ENotification::UNSET, feature, 2, 0 );
         BOOST_CHECK( notification->merge( other ) );
         BOOST_CHECK_EQUAL( notification->getEventType(), ENotification::SET );
         BOOST_CHECK_EQUAL( boost::any_cast<int>(notification->getOldValue()), 1 );
         BOOST_CHECK_EQUAL( boost::any_cast<int>(notification->getNewValue()), 0 );
     }
     {
-        auto notification = std::make_shared<Notification>( ENotification::UNSET, notifier, feature, 1, 0 );
-        auto other = std::make_shared<Notification>( ENotification::SET, notifier, feature, 0, 2 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::UNSET, feature, 1, 0 );
+        auto other = std::make_shared<Notification>( notifier, ENotification::SET, feature, 0, 2 );
         BOOST_CHECK( notification->merge( other ) );
         BOOST_CHECK_EQUAL( notification->getEventType(), ENotification::SET );
         BOOST_CHECK_EQUAL( boost::any_cast<int>(notification->getOldValue()), 1 );
@@ -150,8 +150,8 @@ BOOST_AUTO_TEST_CASE( Merge )
     {
         auto obj1 = std::make_shared<MockObject>();
         auto obj2 = std::make_shared<MockObject>();
-        auto notification = std::make_shared<Notification>( ENotification::REMOVE, notifier, feature, obj1, nullptr, 2 );
-        auto other = std::make_shared<Notification>( ENotification::REMOVE, notifier, feature, obj2, nullptr, 2 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::REMOVE, feature, obj1, nullptr, 2 );
+        auto other = std::make_shared<Notification>( notifier, ENotification::REMOVE, feature, obj2, nullptr, 2 );
         BOOST_CHECK( notification->merge( other ) );
         BOOST_CHECK_EQUAL( notification->getEventType(), ENotification::REMOVE_MANY );
         auto oldValue = boost::any_cast<std::vector<boost::any>>(notification->getOldValue());
@@ -163,8 +163,8 @@ BOOST_AUTO_TEST_CASE( Merge )
         auto obj1 = std::make_shared<MockObject>();
         auto obj2 = std::make_shared<MockObject>();
         auto obj3 = std::make_shared<MockObject>();
-        auto notification = std::make_shared<Notification>( ENotification::REMOVE_MANY, notifier, feature, std::vector<boost::any>( { obj1 , obj2 } ), std::vector<std::size_t>( { 2, 3 } ) );
-        auto other = std::make_shared<Notification>( ENotification::REMOVE, notifier, feature, obj3, nullptr, 2 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::REMOVE_MANY, feature, std::vector<boost::any>( { obj1 , obj2 } ), std::vector<std::size_t>( { 2, 3 } ) );
+        auto other = std::make_shared<Notification>( notifier, ENotification::REMOVE, feature, obj3, nullptr, 2 );
         BOOST_CHECK( notification->merge( other ) );
         BOOST_CHECK_EQUAL( notification->getEventType(), ENotification::REMOVE_MANY );
         auto oldValue = std::move( boost::any_cast<std::vector<boost::any>>(notification->getOldValue()) );
@@ -176,22 +176,22 @@ BOOST_AUTO_TEST_CASE( Merge )
 
 BOOST_AUTO_TEST_CASE( Add )
 {
-    std::shared_ptr<MockNotifier> notifier = std::make_shared<MockNotifier>();
+    std::shared_ptr<MockObject> notifier = std::make_shared<MockObject>();
     std::shared_ptr<MockStructuralFeature> feature = std::make_shared<MockStructuralFeature>();
     {
-        auto notification = std::make_shared<Notification>( ENotification::SET, notifier, feature, 1, 2 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::SET, feature, 1, 2 );
         BOOST_CHECK( !notification->add( nullptr ) );
     }
     {
-        auto notification = std::make_shared<Notification>( ENotification::SET, notifier, feature, 1, 2 );
-        auto other = std::make_shared<Notification>( ENotification::SET, notifier, feature, 1, 2 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::SET, feature, 1, 2 );
+        auto other = std::make_shared<Notification>( notifier, ENotification::SET, feature, 1, 2 );
         BOOST_CHECK( !notification->add( other ) );
     }
     {
         auto obj1 = std::make_shared<MockObject>();
         auto obj2 = std::make_shared<MockObject>();
-        auto notification = std::make_shared<Notification>( ENotification::ADD, notifier, feature, nullptr , obj1 );
-        auto other = std::make_shared<Notification>( ENotification::ADD, notifier, feature, nullptr, obj2 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::ADD, feature, nullptr, obj1 );
+        auto other = std::make_shared<Notification>( notifier, ENotification::ADD, feature, nullptr, obj2 );
         BOOST_CHECK( notification->add( other ) );
         MOCK_EXPECT( notifier->eNotify ).with( notification ).once();
         MOCK_EXPECT( notifier->eNotify ).with( other ).once();
@@ -200,7 +200,7 @@ BOOST_AUTO_TEST_CASE( Add )
     {
         auto obj1 = std::make_shared<MockObject>();
         auto obj2 = std::make_shared<MockObject>();
-        auto notification = std::make_shared<Notification>( ENotification::ADD, notifier, feature, nullptr, obj1 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::ADD, feature, nullptr, obj1 );
         auto other = std::make_shared<MockNotification>();
         auto otherNotifier = std::make_shared<MockNotifier>();
         MOCK_EXPECT( other->getEventType ).returns( ENotification::SET );

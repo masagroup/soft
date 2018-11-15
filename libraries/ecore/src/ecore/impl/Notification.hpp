@@ -10,22 +10,36 @@
 #ifndef ECORE_NOTIFICATION_HPP_
 #define ECORE_NOTIFICATION_HPP_
 
+
 #include "ecore/ENotification.hpp"
 #include "ecore/ENotificationChain.hpp"
+#include "ecore/EObject.hpp"
+#include "ecore/EClass.hpp"
 
 namespace ecore::impl
 {
-    class Notification : public ENotification , public ENotificationChain , public std::enable_shared_from_this<Notification>
+    class Notification : public ENotification, public ENotificationChain, public std::enable_shared_from_this<Notification>
     {
     public:
 
-        Notification( EventType type,
-                       const std::shared_ptr<ENotifier>& notifier,
-                       const std::shared_ptr<EStructuralFeature>& feature,
-                       const boost::any& oldValue,
-                       const boost::any& newValue,
-                       std::size_t position  = NO_INDEX ):
-            eventType_( type ), notifier_( notifier ), feature_( feature ),
+        Notification( const std::shared_ptr<EObject>& notifier,
+            EventType type,
+            const std::shared_ptr<EStructuralFeature>& feature,
+            const boost::any& oldValue,
+            const boost::any& newValue,
+            std::size_t position = NO_INDEX ) :
+            eventType_( type ), notifier_( notifier ), feature_( feature ), featureID_(-1),
+            oldValue_( oldValue ), newValue_( newValue ), position_( position ), next_()
+        {
+        }
+
+        Notification( const std::shared_ptr<EObject>& notifier,
+            EventType type,
+            int featureID,
+            const boost::any& oldValue,
+            const boost::any& newValue,
+            std::size_t position = NO_INDEX ) :
+            eventType_( type ), notifier_( notifier ), feature_(), featureID_( featureID ),
             oldValue_( oldValue ), newValue_( newValue ), position_( position ), next_()
         {
         }
@@ -46,7 +60,12 @@ namespace ecore::impl
 
         std::shared_ptr<EStructuralFeature> getFeature() const
         {
-            return feature_;
+            return feature_ ? feature_ : notifier_->eClass()->getEStructuralFeature( featureID_ );
+        }
+
+        int getFeatureID() const
+        {
+
         }
 
         const boost::any& getOldValue() const
@@ -72,8 +91,9 @@ namespace ecore::impl
     protected:
 
         EventType eventType_;
-        std::shared_ptr<ENotifier> notifier_;
+        std::shared_ptr<EObject> notifier_;
         std::shared_ptr<EStructuralFeature> feature_;
+        int featureID_;
         boost::any oldValue_;
         boost::any newValue_;
         std::size_t position_;

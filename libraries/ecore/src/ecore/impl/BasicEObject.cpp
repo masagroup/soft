@@ -293,8 +293,8 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
     {
         if( oldContainer  && oldContainerFeatureID >= 0 && oldContainerFeatureID != newContainerFeatureID )
         {
-            auto notification = std::make_shared<Notification>( ENotification::SET,
-                                                                getThisPtr(),
+            auto notification = std::make_shared<Notification>( getThisPtr(), 
+                                                                ENotification::SET,
                                                                 oldContainer->eClass()->getEStructuralFeature( oldContainerFeatureID ),
                                                                 oldContainer,
                                                                 std::shared_ptr<EObject>() );
@@ -305,8 +305,8 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
         }
         if( newContainerFeatureID >= 0 )
         {
-            auto notification = std::make_shared<Notification>( ENotification::SET,
-                                                                getThisPtr(),
+            auto notification = std::make_shared<Notification>( getThisPtr(),
+                                                                ENotification::SET,
                                                                 newContainer->eClass()->getEStructuralFeature( newContainerFeatureID ),
                                                                 oldContainerFeatureID == newContainerFeatureID ? oldContainer : std::shared_ptr<EObject>(),
                                                                 newContainer );

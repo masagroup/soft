@@ -240,7 +240,7 @@ namespace ecore::impl
         std::shared_ptr< Notification > createNotification( ENotification::EventType eventType, const boost::any& oldValue, const boost::any& newValue, std::size_t position )
         {
             auto owner = owner_.lock();
-            return owner ? std::make_shared<Notification>( eventType, owner, owner->eClass()->getEStructuralFeature( featureID_ ), oldValue, newValue, position ) : nullptr;
+            return owner ? std::make_shared<Notification>(owner ,eventType, featureID_, oldValue, newValue, position ) : nullptr;
         }
 
         std::shared_ptr<ENotificationChain> createAndAddNotification( const std::shared_ptr<ENotificationChain>& ns, ENotification::EventType eventType, const boost::any& oldValue, const boost::any& newValue, std::size_t position )

@@ -137,7 +137,7 @@ virtual [aStructuralFeature.generateReturnType()/] [aStructuralFeature.getGetter
 [template public generateBasicSetDeclaration(aStructuralFeature : EStructuralFeature)]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
 [let methodName : String = 'basic' +aStructuralFeature.getSetterName().toUpperFirst()]
-[let newVarName : String = 'new' + aStructuralFeature.getSafeName().toUpperFirst()]
+[let newVarName : String = 'new' + aStructuralFeature.name.toUpperFirst()]
 std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( [aStructuralFeature.generateParameterType()/] [newVarName/] , const std::shared_ptr<ecore::ENotificationChain>& msgs ); 
 [/let]
 [/let]
@@ -148,20 +148,20 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( [aStruct
 [template public generateBasicSetDefinition(aStructuralFeature : EStructuralFeature)]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
 [let methodName : String = 'basic' +aStructuralFeature.getSetterName().toUpperFirst()]
-[let newVarName : String = 'new' + aStructuralFeature.getSafeName().toUpperFirst()]
+[let newVarName : String = 'new' + aStructuralFeature.name.toUpperFirst()]
 std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( [aStructuralFeature.generateParameterType()/] [newVarName/] , const std::shared_ptr<ecore::ENotificationChain>& msgs) 
 {
     // [protected (className + '::' + methodName)]
 [if isContainer()]
     return eBasicSetContainer([newVarName/],[aStructuralFeature.getQualifiedFeatureID()/],msgs); 
 [elseif not isVolatile()]
-    [let oldVarName : String = 'old' + aStructuralFeature.getSafeName().toUpperFirst()]
+    [let oldVarName : String = 'old' + aStructuralFeature.name.toUpperFirst()]
     auto [oldVarName/] = [newVarName/];
-    [aStructuralFeature.getSafeName()/]_ = [newVarName/];
+    [aStructuralFeature.name/]_ = [newVarName/];
     auto notifications = msgs;
     if ( eNotificationRequired() )
     {
-        auto notification = std::make_shared<Notification>( Notification::SET , getThisPtr() ,[aStructuralFeature.getQualifiedFeatureID()/], [oldVarName/], [newVarName/] );
+        auto notification = std::make_shared<Notification>(getThisPtr(), Notification::SET, [aStructuralFeature.getQualifiedFeatureID()/], [oldVarName/], [newVarName/] );
         if (notifications)
             notifications->add( notification );
         else
@@ -183,13 +183,13 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( [aStruct
 [/template]
 
 [template public generateSetDeclaration(aStructuralFeature : EStructuralFeature, impl : EBoolean)]
-virtual void [aStructuralFeature.getSetterName()/]([aStructuralFeature.generateParameterType()/] [aStructuralFeature.getSafeName()/]) [abstractSufix(impl)/];
+virtual void [aStructuralFeature.getSetterName()/]([aStructuralFeature.generateParameterType()/] ['new' + aStructuralFeature.name.toUpperFirst()/]) [abstractSufix(impl)/];
 [/template]
 
 [template public generateSetDefinition(aStructuralFeature : EStructuralFeature)]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
 [let methodName : String = aStructuralFeature.getSetterName()]
-[let newVarName : String = 'new' + aStructuralFeature.getSafeName().toUpperFirst()]
+[let newVarName : String = 'new' + aStructuralFeature.name.toUpperFirst()]
 void [className/]::[methodName/]([aStructuralFeature.generateParameterType()/] [newVarName/])
 {
     // [protected (className + '::' + methodName)]
@@ -207,19 +207,19 @@ void [className/]::[methodName/]([aStructuralFeature.generateParameterType()/] [
             notifications->dispatch();
     }
     else if ( eNotificationRequired() )
-        eNotify( std::make_shared<Notification>(Notification::SET , getThisPtr() ,[aStructuralFeature.getQualifiedFeatureID()/], [newVarName/], [newVarName/]));
+        eNotify( std::make_shared<Notification>(getThisPtr() , Notification::SET, [aStructuralFeature.getQualifiedFeatureID()/], [newVarName/], [newVarName/]));
     [elseif isBidirectional() or isContains()]
-    if ( [newVarName/] != [aStructuralFeature.getSafeName()/]_ )
+    if ( [newVarName/] != [aStructuralFeature.name/]_ )
     {
         std::shared_ptr<ENotificationChain> notifications;
-        if ( [aStructuralFeature.getSafeName()/]_ )
+        if ( [aStructuralFeature.name/]_ )
         [if not isBidirectional()]
-            notifications = [aStructuralFeature.getSafeName()/]_->eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aStructuralFeature.getQualifiedFeatureID()/] , notifications );
+            notifications = [aStructuralFeature.name/]_->eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aStructuralFeature.getQualifiedFeatureID()/] , notifications );
         if ( [newVarName/] )
             notifications = [newVarName/]->eInverseAdd( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aStructuralFeature.getQualifiedFeatureID()/] , notifications );
         [else]
             [let reverseFeature : EStructuralFeature = aStructuralFeature.oclAsType(EReference).eOpposite]
-            notifications = [aStructuralFeature.getSafeName()/]_->eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - [reverseFeature.getQualifiedFeatureID()/] , notifications );
+            notifications = [aStructuralFeature.name/]_->eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - [reverseFeature.getQualifiedFeatureID()/] , notifications );
         if ( [newVarName/] )
             notifications = [newVarName/]->eInverseAdd( getThisPtr(), EOPPOSITE_FEATURE_BASE - [reverseFeature.getQualifiedFeatureID()/] , notifications );
             [/let]
@@ -231,11 +231,11 @@ void [className/]::[methodName/]([aStructuralFeature.generateParameterType()/] [
         [if isUnSettable()]
         [/if]
     [else]
-        [let oldVarName : String = 'old' + aStructuralFeature.getSafeName().toUpperFirst()]
-    auto [oldVarName/] = [aStructuralFeature.getSafeName()/]_;
-    [aStructuralFeature.getSafeName()/]_ = [newVarName/];
+        [let oldVarName : String = 'old' + aStructuralFeature.name.toUpperFirst()]
+    auto [oldVarName/] = [aStructuralFeature.name/]_;
+    [aStructuralFeature.name/]_ = [newVarName/];
     if ( eNotificationRequired() )
-        eNotify( std::make_shared<Notification>(Notification::SET , getThisPtr() ,[aStructuralFeature.getQualifiedFeatureID()/], [oldVarName/], [newVarName/]));
+        eNotify( std::make_shared<Notification>(getThisPtr(), Notification::SET, [aStructuralFeature.getQualifiedFeatureID()/], [oldVarName/], [newVarName/]));
         [/let]
     [/if]
 [elseif hasKey('setterBody')]
