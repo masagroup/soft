@@ -106,6 +106,14 @@ std::shared_ptr<EClass> [className/]::eStaticClass() const
 [references.generateDefinition()/]
 [/if]
 [/let]
+[let basicFeatures : OrderedSet(EAttribute) = aClass.eStructuralFeatures->select( isBasicGet() or isBasicSet() )]
+[if basicFeatures->notEmpty()]
+//*********************************
+// Basics
+//*********************************
+[basicFeatures.generateBasicDefinition()/]
+[/if]
+[/let]
 [aClass.generateReflectivesDefinition()/]
 // [protected (className + ' [declaration-end]') ]
 // [/protected]

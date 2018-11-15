@@ -66,6 +66,15 @@ namespace [namespaceName/]
 
     protected:
         virtual std::shared_ptr<[getShortQualifiedName('ecore::EClass',namespaceName)/]> eStaticClass() const;
+[let basicFeatures : OrderedSet(EAttribute) = aClass.eStructuralFeatures->select( isBasicGet() or isBasicSet() )]
+[if basicFeatures->notEmpty()]
+
+        //*********************************
+        // Basics
+        //*********************************
+        [basicFeatures.generateBasicDeclaration()/]
+[/if]
+[/let]
         [aClass.generateReflectivesDeclaration()/]
 
 [if aClass.eStructuralFeatures->notEmpty()]
