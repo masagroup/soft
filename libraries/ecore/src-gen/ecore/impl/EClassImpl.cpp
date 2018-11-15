@@ -333,6 +333,15 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> EClassImpl::getESuperType
 }
 
 
+void EClassImpl::unsetESuperTypes()
+{
+    // Start of user code EClassImpl::unsetESuperTypes
+    if (eSuperTypes_)
+        eSuperTypes_->clear();
+    // End of user code
+}
+
+
 std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> EClassImpl::getEOperations() const 
 {
     // Start of user code EClassImpl::getEOperations

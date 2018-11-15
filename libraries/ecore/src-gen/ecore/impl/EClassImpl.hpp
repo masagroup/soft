@@ -79,6 +79,8 @@ namespace ecore::impl
         //*********************************
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> getESuperTypes() const ;
         
+        virtual void unsetESuperTypes() ;
+        
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> getEOperations() const ;
         
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> getEAllAttributes() const ;

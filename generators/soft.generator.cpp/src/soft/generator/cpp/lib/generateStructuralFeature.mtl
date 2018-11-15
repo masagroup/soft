@@ -17,6 +17,10 @@
 [aStructuralFeature.generateSetDeclaration(impl)/]
 
 [/if]
+[if hasUnSetter('public',impl)]
+[aStructuralFeature.generateUnSetDeclaration(impl)/]
+
+[/if]
 [/template]
 
 [template public generateBasicDeclaration(aStructuralFeature : EStructuralFeature)]
@@ -26,6 +30,10 @@
 [/if]
 [if isBasicSet()]
 [aStructuralFeature.generateBasicSetDeclaration()/]
+
+[/if]
+[if isBasicUnSet()]
+[aStructuralFeature.generateBasicUnSetDeclaration()/]
 
 [/if]
 [/template]
@@ -40,6 +48,10 @@
 [aStructuralFeature.generateSetDefinition()/]
 
 [/if]
+[if hasUnSetter('public',true)]
+[aStructuralFeature.generateUnSetDefinition()/]
+
+[/if]
 [/template]
 
 
@@ -50,6 +62,10 @@
 [/if]
 [if isBasicSet()]
 [aStructuralFeature.generateBasicSetDefinition()/]
+
+[/if]
+[if isBasicUnSet()]
+[aStructuralFeature.generateBasicUnSetDefinition()/]
 
 [/if]
 [/template]
@@ -328,14 +344,14 @@ virtual void [aStructuralFeature.getUnSetterName()/]() [abstractSufix(impl)/];
 
 [template public generateUnSetDefinition(aStructuralFeature : EStructuralFeature)]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
-[let methodName : String = aStructuralFeature.getSetterName()]
+[let methodName : String = aStructuralFeature.getUnSetterName()]
 void [className/]::[methodName/]()
 {
     // [protected (className + '::' + methodName)]
 [if not isVolatile()]
     [if isListType()]
     if ([aStructuralFeature.name/]_)
-        [aStructuralFeature.name/]_->unset();
+        [aStructuralFeature.name/]_->clear();
     [elseif isBidirectional() or isContains()]
     if ([aStructuralFeature.name/]_)
     {
@@ -363,7 +379,7 @@ void [className/]::[methodName/]()
     std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
     throw "NotImplementedException";    
 [/if]
-    [/protected]
+    // [/protected]
 }
 [/let]
 [/let]
