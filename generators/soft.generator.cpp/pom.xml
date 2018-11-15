@@ -113,7 +113,12 @@
             <version>3.4.200.v20140207-1251</version>
         </dependency>
         <dependency>
-        <groupId>org.osgi</groupId>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>org.eclipse.equinox.preferences</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
             <artifactId>org.osgi.framework</artifactId>
             <version>1.9.0</version>
         </dependency>
