@@ -212,15 +212,16 @@ int EClassImpl::getFeatureCount()
 std::shared_ptr<ecore::EStructuralFeature> EClassImpl::getEStructuralFeature(int featureID)
 {
     // Start of user code EClassImpl::getEStructuralFeature_EInt
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
-    throw "NotImplementedException";
+    auto features = getEAllStructuralFeatures();
+    return featureID >= 0 && featureID < features->size() ? features->get( featureID ) : std::shared_ptr<EStructuralFeature>();
     // End of user code
 }
 std::shared_ptr<ecore::EStructuralFeature> EClassImpl::getEStructuralFeature(const std::string& featureName)
 {
     // Start of user code EClassImpl::getEStructuralFeature_EString
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
-    throw "NotImplementedException";
+    initNameToFeatureMap();
+    auto it = nameToFeatureMap_->find( featureName );
+    return it != nameToFeatureMap_->end() ? it->second : std::shared_ptr<EStructuralFeature>();
     // End of user code
 }
 int EClassImpl::getFeatureID(const std::shared_ptr<ecore::EStructuralFeature>& feature)
