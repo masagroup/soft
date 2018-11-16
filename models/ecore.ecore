@@ -149,11 +149,7 @@
     <eOperations name="isInstance" eType="#//EBoolean">
       <eParameters name="object" eType="#//EJavaObject"/>
     </eOperations>
-    <eOperations name="getClassifierID" eType="#//EInt">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
-        <details key="visibility" value="no"/>
-      </eAnnotations>
-    </eOperations>
+    <eOperations name="getClassifierID" eType="#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceClassName" eType="#//EString"
         volatile="true" unsettable="true">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
@@ -180,12 +176,6 @@
         changeable="false" transient="true" eOpposite="#//EPackage/eClassifiers"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eTypeParameters" upperBound="-1"
         eType="#//ETypeParameter" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="classifierID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
-        defaultValueLiteral="-1">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
-        <details key="setVisibility" value="no:public"/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EDataType" eSuperTypes="#//EClassifier">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="serializable" eType="#//EBoolean"
