@@ -410,19 +410,7 @@ MOCK_METHOD([aStructuralFeature.getUnSetterName()/],0);
 [/template]
 
 
-[template public generateStaticFeatureID(anStructFeature : EStructuralFeature,anEClass : EClass )]
-/**
- * The feature id for the [anEClass.name/] '[anStructFeature.name.toUpperFirst()/]' [anStructFeature.getFeatureKind()/].
- */
-static const int [anEClass.getFeatureIDName(anStructFeature)/] = [anEClass.getFeatureValue(anStructFeature)/];
 
-[/template]
 
-[template public generateStaticFeatureCountID(anEClass : EClass )]
-/**
- * The number of structural features of the class [anEClass.name/].
- */
-static const int [anEClass.getFeatureCountID()/] = [anEClass.getFeatureCountValue()/];
 
-[/template]
 

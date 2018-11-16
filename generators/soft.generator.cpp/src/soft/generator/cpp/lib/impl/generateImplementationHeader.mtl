@@ -1,10 +1,8 @@
 [comment encoding = UTF-8 /]
 [module generateImplementationHeader('http://www.eclipse.org/emf/2002/Ecore')]
 
-[import soft::generator::cpp::generateAttribute /]
 [import soft::generator::cpp::generateClass /]
 [import soft::generator::cpp::generateOperation /]
-[import soft::generator::cpp::generateReference /]
 [import soft::generator::cpp::generateType /]
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::generateStructuralFeature /]

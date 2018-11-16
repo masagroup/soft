@@ -1,14 +1,11 @@
 [comment encoding = UTF-8 /]
 [module generatePackageImplementationSource('http://www.eclipse.org/emf/2002/Ecore')]
 
-[import soft::generator::cpp::generateAttribute /]
 [import soft::generator::cpp::generateClass /]
-[import soft::generator::cpp::generateDataType /]
-[import soft::generator::cpp::generateOperation /]
-[import soft::generator::cpp::generateReference /]
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::lib::generateCommon /]
-[import soft::generator::cpp::lib::pack::generatePackageHelper /]
+[import soft::generator::cpp::lib::pack::generateDataType /]
+[import soft::generator::cpp::lib::pack::generateElement /]
 
 [query public metaModelIncludes(anEPackage : EPackage) : Set(EPackage) = OrderedSet{anEPackage.eAllContents(EClass).eAllSuperTypes.ePackage,anEPackage.eAllContents(EStructuralFeature).eType.ePackage,anEPackage.eAllContents(EParameter).eType.ePackage}->flatten() /]
 
@@ -63,13 +60,13 @@ void [className/]::init(const std::shared_ptr<[className/]>& package)
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
 // Begin Class [aClass.name.toUpperFirst()/]
-[aClass.generateModelElementGetterImpl(anEPackage)/]
-[aClass.eAttributes->sortedBy(name).generateModelElementGetterImpl(anEPackage)/]
-[aClass.eReferences->sortedBy(name).generateModelElementGetterImpl(anEPackage)/]
-[aClass.eOperations->sortedBy(name).generateModelElementGetterImpl(anEPackage)/]
+[aClass.generateGetterDefinition(anEPackage)/]
+[aClass.eAttributes->sortedBy(name).generateGetterDefinition(anEPackage)/]
+[aClass.eReferences->sortedBy(name).generateGetterDefinition(anEPackage)/]
+[aClass.eOperations->sortedBy(name).generateGetterDefinition(anEPackage)/]
 // End Class [aClass.name.toUpperFirst()/]
 [/for]
-[anEPackage.eAllContents(EDataType)->sortedBy(name).generateModelElementGetterImpl(anEPackage)/]
+[anEPackage.eAllContents(EDataType)->sortedBy(name).generateGetterDefinition(anEPackage)/]
 [/file]
 
 [comment] create additional file for create function to reduce comiling time
@@ -97,9 +94,9 @@ void [className/]::createPackageContents(const std::shared_ptr<[className/]>& pa
 void [className/]::create[aClass.name.toUpperFirst()/]Content(const std::shared_ptr<EPackage>& package, const std::shared_ptr<EcoreFactory>& factory)
 {
     [aClass.generateClassCreation()/]
-    [aClass.eAttributes->sortedBy(name).generateAttributeCreation()/]
-    [aClass.eReferences->sortedBy(name).generateReferenceCreation()/]
-    [aClass.eOperations->sortedBy(name).generateOperationCreation()/]
+    [aClass.eAttributes->sortedBy(name).generateCreation()/]
+    [aClass.eReferences->sortedBy(name).generateCreation()/]
+    [aClass.eOperations->sortedBy(name).generateCreation()/]
 }
 [/for]
 
@@ -141,9 +138,9 @@ void [className/]::initializePackageContents()
 void [className/]::initialize[aClass.name.toUpperFirst()/]Content()
 {
     [aClass.generateClassInit()/]
-    [aClass.eAttributes->sortedBy(name).generateAttributeInitialization()/]
-    [aClass.eReferences->sortedBy(name).generateReferenceInitialization()/]
-    [aClass.eOperations->sortedBy(name).generateOperationInitialization()/]
+    [aClass.eAttributes->sortedBy(name).generateInitialization()/]
+    [aClass.eReferences->sortedBy(name).generateInitialization()/]
+    [aClass.eOperations->sortedBy(name).generateInitialization()/]
 }
 [/for]
 
