@@ -7,8 +7,8 @@
 [import soft::generator::cpp::generateReference /]
 [import soft::generator::cpp::generateType /]
 [import soft::generator::cpp::generateCommon /]
+[import soft::generator::cpp::generateStructuralFeature /]
 [import soft::generator::cpp::lib::generateCommon /]
-[import soft::generator::cpp::lib::generateStructuralFeature /]
 [import soft::generator::cpp::lib::impl::generateReflectives /]
 
 [template public generateImplementationHeader(aClass : EClass){ className : String = aClass.getImplementationName(); namespaceName : String = aClass.ePackage.getImplementationNamespaceName(); guardName : String = '_'.concat(className); }]

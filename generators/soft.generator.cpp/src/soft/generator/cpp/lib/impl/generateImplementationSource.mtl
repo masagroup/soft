@@ -7,9 +7,9 @@
 [import soft::generator::cpp::generateOperation/]
 [import soft::generator::cpp::generateReference/]
 [import soft::generator::cpp::generateType/]
+[import soft::generator::cpp::generateStructuralFeature /]
 [import soft::generator::cpp::lib::generateCommon /]
 [import soft::generator::cpp::lib::generateInterface /]
-[import soft::generator::cpp::lib::generateStructuralFeature /]
 [import soft::generator::cpp::lib::impl::generateReflectives /]
 
 

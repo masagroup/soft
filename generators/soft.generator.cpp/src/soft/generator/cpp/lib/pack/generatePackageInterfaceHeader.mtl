@@ -3,13 +3,13 @@
  
 [import soft::generator::cpp::generateAttribute /]
 [import soft::generator::cpp::generateClass /]
+[import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::generateDataType /]
 [import soft::generator::cpp::generateOperation /]
 [import soft::generator::cpp::generateReference /]
 [import soft::generator::cpp::generateSingleton /]
-[import soft::generator::cpp::generateCommon /]
+[import soft::generator::cpp::generateStructuralFeature /]
 [import soft::generator::cpp::lib::generateCommon /]
-[import soft::generator::cpp::lib::generateStructuralFeature /]
 [import soft::generator::cpp::lib::pack::generatePackageHelper /]
 
 [template public generatePackageInterfaceHeader(anEPackage : EPackage) { className : String = anEPackage.getInterfaceName() ; namespaceName : String = anEPackage.getInterfaceNamespaceName(); }]
