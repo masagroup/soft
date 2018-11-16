@@ -146,32 +146,9 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="WellFormedInstanceTypeName UniqueTypeParameterNames"/>
     </eAnnotations>
-    <eOperations name="isInstance" eType="#//EBoolean">
-      <eParameters name="object" eType="#//EJavaObject"/>
-    </eOperations>
     <eOperations name="getClassifierID" eType="#//EInt"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceClassName" eType="#//EString"
-        volatile="true" unsettable="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
-        <details key="issetVisibility" value="no"/>
-        <details key="unsetVisibility" value="no:public"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceClass" changeable="false"
-        volatile="true" transient="true" derived="true">
-      <eGenericType eClassifier="#//EJavaClass">
-        <eTypeArguments/>
-      </eGenericType>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultValue" eType="#//EJavaObject"
         changeable="false" volatile="true" transient="true" derived="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceTypeName" eType="#//EString"
-        volatile="true" unsettable="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
-        <details key="issetVisibility" value="no"/>
-        <details key="unsetVisibility" value="no:public"/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="ePackage" eType="#//EPackage"
         changeable="false" transient="true" eOpposite="#//EPackage/eClassifiers"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eTypeParameters" upperBound="-1"
