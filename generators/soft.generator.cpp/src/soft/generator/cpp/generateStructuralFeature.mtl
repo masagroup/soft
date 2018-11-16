@@ -251,7 +251,7 @@ void [className/]::[methodName/]([aStructuralFeature.generateParameterType()/] [
             notifications = [newVarName/]->eInverseAdd( getThisPtr(), EOPPOSITE_FEATURE_BASE - [reverseFeature.getQualifiedFeatureIDName()/] , notifications );
             [/let]
         [/if]
-        notifications = basic[aStructuralFeature.getSetterName().toUpperFirst()/]([newVarName/],notifications);
+        notifications = basic[methodName.toUpperFirst()/]([newVarName/],notifications);
         if (notifications)
             notifications->dispatch();
     }
@@ -320,7 +320,7 @@ MOCK_METHOD([aStructuralFeature.getSetterName()/],1);
 
 [template public generateBasicUnSetDeclaration(aStructuralFeature : EStructuralFeature)]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
-[let methodName : String = 'basicUn' +aStructuralFeature.getSetterName().toUpperFirst()]
+[let methodName : String = 'basic' + aStructuralFeature.getUnSetterName().toUpperFirst()]
 [let newVarName : String = 'new' + aStructuralFeature.name.toUpperFirst()]
 std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( const std::shared_ptr<ecore::ENotificationChain>& msgs ); 
 [/let]
@@ -331,7 +331,7 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( const st
 
 [template public generateBasicUnSetDefinition(aStructuralFeature : EStructuralFeature)]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
-[let methodName : String = 'basicUn' +aStructuralFeature.getSetterName().toUpperFirst()]
+[let methodName : String = 'basic' + aStructuralFeature.getUnSetterName().toUpperFirst()]
 [let newVarName : String = 'new' + aStructuralFeature.name.toUpperFirst()]
 std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( const std::shared_ptr<ecore::ENotificationChain>& msgs) 
 {
@@ -383,7 +383,7 @@ void [className/]::[methodName/]()
         notifications = [aStructuralFeature.name/]_->eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - [reverseFeature.getQualifiedFeatureIDName()/] , notifications );
             [/let]
         [/if]
-        notifications = basicUn[aStructuralFeature.getSetterName().toUpperFirst()/](notifications);
+        notifications = basic[aStructuralFeature.getUnSetterName().toUpperFirst()/](notifications);
         if ( notifications )
             notifications->dispatch();
     }

@@ -158,7 +158,7 @@
         volatile="true" unsettable="true">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="issetVisibility" value="no"/>
-        <details key="unsetVisibility" value="no"/>
+        <details key="unsetVisibility" value="no:public"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceClass" changeable="false"
@@ -173,7 +173,7 @@
         volatile="true" unsettable="true">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="issetVisibility" value="no"/>
-        <details key="unsetVisibility" value="no"/>
+        <details key="unsetVisibility" value="no:public"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="ePackage" eType="#//EPackage"

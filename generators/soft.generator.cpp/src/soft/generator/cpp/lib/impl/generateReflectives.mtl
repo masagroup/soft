@@ -64,7 +64,7 @@ virtual void eSet(int featureID, const boost::any& newValue);
 [/template]
 
 [template private generateEUnSetDeclaration(aClass : EClass)]
-virtual void eUnSet(int featureID);
+virtual void eUnset(int featureID);
 [/template]
 
 [template private generateEInvokeDeclaration(aClass : EClass)]
@@ -129,7 +129,7 @@ boost::any [className/]::eGet(int featureID, bool resolve, bool coreType) const
     switch(featureID)
     {
     [for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
-        case [anStructFeature.getPackageName(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
+        case [anStructFeature.getQualifiedFeatureIDName()/]:
             return [anStructFeature.getGetterName()/]();
     [/for]
     }
@@ -152,7 +152,7 @@ bool [aClass.getImplementationName()/]::eIsSet(int featureID) const
     switch(featureID)
     {
     [for (anStructFeature : EStructuralFeature | aClass.getEIsSetFeatures()->sortedBy(name))]
-        case [anStructFeature.getPackageName(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
+        case [anStructFeature.getQualifiedFeatureIDName()/]:
             return [anStructFeature.generateComparison()/];
     [/for]
     }
@@ -167,7 +167,7 @@ void [aClass.getImplementationName()/]::eSet(int featureID, const boost::any& ne
     switch(featureID)
     {
 [for (anStructFeature : EStructuralFeature | aClass.getESetFeatures()->sortedBy(name))]
-        case [anStructFeature.getPackageName(aClass)/]::[anStructFeature.eContainingClass.getFeatureIDName(anStructFeature)/]:
+        case [anStructFeature.getQualifiedFeatureIDName()/]:
         {
             [anStructFeature.eGenericType.generateCppType()/] [anStructFeature.name.first(1)/] = boost::any_cast<[anStructFeature.eGenericType.generateCppType()/]>(newValue);
             [anStructFeature.getSetterName()/]([anStructFeature.name.first(1)/]);
@@ -181,12 +181,27 @@ void [aClass.getImplementationName()/]::eSet(int featureID, const boost::any& ne
 
 [template private generateEUnSetDefinition(aClass : EClass)]
 [let className : String = aClass.getImplementationName()]
-void [className/]::eUnSet(int featureID)
+void [className/]::eUnset(int featureID)
 {
-    // [protected (className + '::eUnset')]
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
-    throw "NotImplementedException";
-    // [/protected]
+    switch(featureID)
+    {
+[for (aStructFeature : EStructuralFeature | aClass.getEUnSetFeatures()->sortedBy(name))]
+        case [aStructFeature.getQualifiedFeatureIDName()/]:
+        {
+    [if aStructFeature.isListType() and not aStructFeature.isUnSettable()]
+            [aStructFeature.getGetterName()/]->clear();
+    [elseif aStructFeature.hasUnSetter('public', true) ]
+            [aStructFeature.getUnSetterName()/]();
+    [elseif aStructFeature.oclIsKindOf(EReference)]
+            [aStructFeature.getSetterName()/]( nullptr );
+    [else]
+            [aStructFeature.getSetterName()/]( [aStructFeature.oclAsType(EAttribute).getDefaultValue()/] ); 
+    [/if]
+            return;
+        }
+[/for]
+    }
+    return [removeNamespace(aClass.getClassExtends())/]::eUnset(featureID);
 }
 [/let]
 [/template]
@@ -199,7 +214,7 @@ boost::any [className/]::eInvoke(int operationID, const std::shared_ptr<EList<bo
     switch( operationID )
     {
     [for ( eOperation : EOperation | aClass.eOperations->sortedBy(name) )]
-        case [eOperation.getPackageName(aClass)/]::[eOperation.eContainingClass.getOperationIDName(eOperation)/]:
+        case [eOperation.getQualifiedOperationIDName()/]:
         {
             [if eOperation.isVoid() ]
             [eOperation.generateOperationInvoke()/]
@@ -225,20 +240,20 @@ boost::any [className/]::eInvoke(int operationID, const std::shared_ptr<EList<bo
 [template private generateDefaultValue(anEAttribute : EAttribute) post (trim())]
 [if (anEAttribute.eType.oclIsTypeOf(EEnum))]
     [if (anEAttribute.defaultValueLiteral->notEmpty())]
-        = [anEAttribute.eType.name/]::[anEAttribute.defaultValueLiteral.toUpperCase()/]
+        [anEAttribute.eType.name/]::[anEAttribute.defaultValueLiteral.toUpperCase()/]
     [else]
-        = [anEAttribute.eType.name/]::[anEAttribute.eType.oclAsType(EEnum).eLiterals->first().name.toUpperCase()/] 
+        [anEAttribute.eType.name/]::[anEAttribute.eType.oclAsType(EEnum).eLiterals->first().name.toUpperCase()/] 
     [/if]
 [else]
-    = [anEAttribute.getDefaultValue()/]
+    [anEAttribute.getDefaultValue()/]
 [/if]
 [/template]
 
 [template public generateComparison(anStructFeature : EStructuralFeature) ? (oclIsKindOf(EAttribute) and not eType.isAny()) post (trim())]
-[if (anStructFeature.upperBound <> 1)]
+[if (anStructFeature.isListType())]
 [anStructFeature.name/]_ && ![anStructFeature.name/]_->empty()
 [elseif (eType.oclIsKindOf(EEnum))]
-[anStructFeature.name/]_ ![anStructFeature.oclAsType(EAttribute).generateDefaultValue()/];
+[anStructFeature.name/]_ != [anStructFeature.oclAsType(EAttribute).generateDefaultValue()/];
 [else]
 [anStructFeature.name/]_ != [anStructFeature.oclAsType(EAttribute).getDefaultValue()/]
 [/if]
@@ -310,7 +325,7 @@ std::shared_ptr<ENotificationChain> [className/]::eBasicInverseRemove( const std
     [elseif aFeature.isContainer() and not aFeature.isBasicSet()]
             return eBasicSetContainer( nullptr , [aFeature.getQualifiedFeatureIDName()/], notifications );
     [elseif aFeature.isUnSet()]
-            return basicUn[aFeature.getSetterName().toUpperFirst()/]( notifications );
+            return basic[aFeature.getUnSetterName().toUpperFirst()/]( notifications );
     [else]
             return basic[aFeature.getSetterName().toUpperFirst()/]( nullptr, notifications );
     [/if]

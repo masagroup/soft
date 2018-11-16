@@ -379,6 +379,9 @@ namespace ecore
         endif 
     endif 
 /]
+[query public getQualifiedOperationIDName( aOperation : EOperation ) : String =
+    aOperation.getPackageName(aOperation.eContainingClass) + '::' + aOperation.eContainingClass.getOperationIDName( aOperation )
+/]
 
 [**
  * Feature / Operation accessors visibility

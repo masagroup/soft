@@ -116,7 +116,7 @@ namespace ecore::impl
         //*********************************
         virtual boost::any eGet(int featureID, bool resolve, bool coreType) const;
         virtual void eSet(int featureID, const boost::any& newValue);
-        virtual void eUnSet(int featureID);
+        virtual void eUnset(int featureID);
         virtual bool eIsSet(int featureID) const;
         virtual boost::any eInvoke( int operationID, const std::shared_ptr<EList<boost::any>>& arguments );
         virtual std::shared_ptr<ENotificationChain> eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );

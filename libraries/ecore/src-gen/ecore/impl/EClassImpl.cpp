@@ -520,12 +520,22 @@ void EClassImpl::eSet(int featureID, const boost::any& newValue)
     return EClassifierImpl::eSet(featureID, newValue);
 }
 
-void EClassImpl::eUnSet(int featureID)
+void EClassImpl::eUnset(int featureID)
 {
-    // Start of user code EClassImpl::eUnset
-    std::cout << BOOST_CURRENT_FUNCTION << std::endl;
-    throw "NotImplementedException";
-    // End of user code
+    switch(featureID)
+    {
+        case EcorePackage::ECLASS__ABSTRACT:
+        {
+            setAbstract( false ); 
+            return;
+        }
+        case EcorePackage::ECLASS__INTERFACE:
+        {
+            setInterface( false ); 
+            return;
+        }
+    }
+    return EClassifierImpl::eUnset(featureID);
 }
 
 
