@@ -139,10 +139,6 @@ virtual [aStructuralFeature.generateReturnType()/] [aStructuralFeature.getGetter
         return [aStructuralFeature.generateEffectiveType()/]();
     else
         return std::dynamic_pointer_cast<[aStructuralFeature.generateElementType()/]>(eContainer());
-    [elseif isResolveProxies()]
-    // TO BE DONE
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
-    throw "NotImplementedException";
     [else]
     return [aStructuralFeature.name/]_;
     [/if]
