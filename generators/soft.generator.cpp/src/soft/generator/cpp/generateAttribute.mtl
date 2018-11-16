@@ -4,23 +4,6 @@
 [import soft::generator::cpp::generateType/]
 [import soft::generator::cpp::generateCommon/]
 
-[template public generateAttributeMock(anEAttribute : EAttribute)]
-[anEAttribute.generateAttributeGetterMock()/]
-[anEAttribute.generateAttributeSetterMock()/]
-[/template]
-
-[template public generateAttributeGetterMock(anEAttribute : EAttribute) ? (hasGetter('public',false))]
-MOCK_METHOD([anEAttribute.getGetterName()/],0);
-[/template]
-
-[template public generateAttributeSetterMock(anEAttribute : EAttribute) ? (hasSetter('public',false))]
-MOCK_METHOD([anEAttribute.getSetterName()/],1);
-[/template]
-
-[template public generateAttributeUnSetterMock(anEAttribute : EAttribute) ? (hasUnSetter('public',false))]
-MOCK_METHOD([anEAttribute.getUnSetterName()/],0);
-[/template]
-
 [query public getDefaultValue(anEAttribute : EAttribute) : String = if (defaultValueLiteral->notEmpty()) then defaultValueLiteral else eType.getDefaultValue() endif/]
 
 [template public generateDefaultValue(anEAttribute : EAttribute) post (trim())]

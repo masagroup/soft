@@ -27,7 +27,7 @@ virtual [anEOperation.generateReturnType()/] [anEOperation.name/]([anEOperation.
 [/let]
 [/template]
 
-[template public generateOperationMock(anEOperation : EOperation )  ? ( anEOperation.isPublic(false) ) ]
+[template public generateMock(anEOperation : EOperation )  ? ( anEOperation.isPublic(false) ) ]
 [let needExt : Boolean = anEOperation.eContainingClass.eOperations->select( eC | eC.name = anEOperation.name )->size() > 1]
 MOCK_METHOD[if needExt]_EXT[/if]([anEOperation.name/] ,[anEOperation.eParameters->size()/][if needExt], [anEOperation.generateReturnType()/]([anEOperation.generateParameterList(false)/]), [anEOperation.getElementIdentifier()/][/if]) 
 [/let]

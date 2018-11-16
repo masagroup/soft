@@ -5,18 +5,6 @@
 [import soft::generator::cpp::generateType /]
 [import soft::generator::cpp::generateCommon /]
 
-[template public generateReferenceMock(anEReference : EReference) ]
-[anEReference.generateReferenceGetterMock()/]
-[anEReference.generateReferenceSetterMock()/]
-[/template]
-
-[template public generateReferenceGetterMock(anEReference : EReference)? (hasGetter('public',false))]
-MOCK_METHOD([anEReference.getGetterName()/],0);
-[/template]
-
-[template public generateReferenceSetterMock(anEReference : EReference)? (hasSetter('public',false))]
-MOCK_METHOD([anEReference.getSetterName()/],1);
-[/template]
 
 [template public generateReferenceCreation(anEReference : EReference)]
 [anEReference.getElementInstanceName()/] = factory->createEReference([anEReference.eContainingClass.getElementInstanceName()/], [anEReference.eContainingClass.getFeatureIDName(anEReference)/]);

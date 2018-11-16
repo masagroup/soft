@@ -70,6 +70,18 @@
 [/if]
 [/template]
 
+[template public generateMock(aStructuralFeature : EStructuralFeature)]
+[if hasGetter('public',false)]
+[aStructuralFeature.generateGetMock()/]
+[/if]
+[if hasSetter('public',false)]
+[aStructuralFeature.generateSetMock()/]
+[/if]
+[if hasUnSetter('public',false)]
+[aStructuralFeature.generateUnSetMock()/]
+[/if]
+[/template]
+
 [template public generateDataMember(aStructuralFeature : EStructuralFeature)]
 [aStructuralFeature.generateDataType()/] [aStructuralFeature.name/]_;
 
@@ -143,6 +155,10 @@ virtual [aStructuralFeature.generateReturnType()/] [aStructuralFeature.getGetter
     // [/protected]
 }
 [/let]
+[/template]
+
+[template public generateGetMock(aStructuralFeature : EStructuralFeature)]
+MOCK_METHOD([aStructuralFeature.getGetterName()/],0);
 [/template]
 
 [template public generateBasicSetDeclaration(aStructuralFeature : EStructuralFeature)]
@@ -298,6 +314,10 @@ BasicEList<[anEAttribute.eGenericType.generateCppType()/],[anEAttribute.unique/]
 [/let]
 [/template]
 
+[template public generateSetMock(aStructuralFeature : EStructuralFeature)]
+MOCK_METHOD([aStructuralFeature.getSetterName()/],1);
+[/template]
+
 [template public generateBasicUnSetDeclaration(aStructuralFeature : EStructuralFeature)]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
 [let methodName : String = 'basicUn' +aStructuralFeature.getSetterName().toUpperFirst()]
@@ -383,6 +403,10 @@ void [className/]::[methodName/]()
 }
 [/let]
 [/let]
+[/template]
+
+[template public generateUnSetMock(aStructuralFeature : EStructuralFeature)]
+MOCK_METHOD([aStructuralFeature.getUnSetterName()/],0);
 [/template]
 
 
