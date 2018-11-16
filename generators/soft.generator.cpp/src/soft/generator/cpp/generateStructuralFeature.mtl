@@ -132,7 +132,7 @@ virtual [aStructuralFeature.generateReturnType()/] [aStructuralFeature.getGetter
 [if not isVolatile() ]
     [if isListType() ]
     if ( ![aStructuralFeature.name/]_ )
-        const_cast<[className/]*>(this)->[aStructuralFeature.name/]_.reset(new [getListConstructor()/]);
+        const_cast<[className/]*>(this)->[aStructuralFeature.name/]_ = [getListConstructor()/];
     return [aStructuralFeature.name/]_;
     [elseif isContainer()]
     if ( eContainerFeatureID() != [aStructuralFeature.getQualifiedFeatureIDName()/] )
@@ -289,18 +289,18 @@ BasicEList<[anEAttribute.eGenericType.generateCppType()/],[anEAttribute.unique/]
 [let featureID : String = anEReference.eContainingClass.getFeatureIDName( anEReference )]
 [if (anEReference.containment)]
     [if anEReference.eOpposite.oclIsUndefined() ]
-        EObjectEList<[typeArgument/],true,true,false>([thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] )
+        std::make_shared<EObjectEList<[typeArgument/],true,true,false>>([thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] )
     [else]
         [let reverseFeature :EReference = anEReference.eOpposite ]
-        EObjectEList<[typeArgument/],true,true,true>( [thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
+        std::make_shared<EObjectEList<[typeArgument/],true,true,true>>( [thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
         [/let]
     [/if]
 [else]
     [if anEReference.eOpposite.oclIsUndefined() ]
-        EObjectEList<[typeArgument/],false,false,false>( [thisPtrGetterName/](), [packageName/]::[featureID/])
+        std::make_shared<EObjectEList<[typeArgument/],false,false,false>>( [thisPtrGetterName/](), [packageName/]::[featureID/])
     [else]
         [let reverseFeature :EReference = anEReference.eOpposite ]
-        EObjectEList<[typeArgument/],false,true,true>( [thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
+        std::make_shared<EObjectEList<[typeArgument/],false,true,true>>( [thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
         [/let]
     [/if]
 [/if]

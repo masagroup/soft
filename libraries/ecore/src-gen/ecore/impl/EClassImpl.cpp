@@ -327,8 +327,8 @@ void EClassImpl::setInterface(bool newInterface)
 std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> EClassImpl::getESuperTypes() const 
 {
     // Start of user code EClassImpl::getESuperTypes
-    if( !eSuperTypes_ )
-        const_cast<EClassImpl*>( this )->eSuperTypes_.reset( new EObjectEList<std::shared_ptr<EClass>, false, false, false>( getThisPtr(), EcorePackage::ECLASS__ESUPER_TYPES ) );
+    if ( !eSuperTypes_ )
+        const_cast<EClassImpl*>(this)->eSuperTypes_ = std::make_shared<EObjectEList<std::shared_ptr<ecore::EClass>,false,false,false>>( getThisPtr(), EcorePackage::ECLASS__ESUPER_TYPES);
     return eSuperTypes_;
     // End of user code
 }
@@ -347,7 +347,7 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> EClassImpl::getEOpera
 {
     // Start of user code EClassImpl::getEOperations
     if ( !eOperations_ )
-        const_cast<EClassImpl*>(this)->eOperations_.reset(new EObjectEList<std::shared_ptr<EOperation>,true,true,true>( getThisPtr(), EcorePackage::ECLASS__EOPERATIONS , EcorePackage::EOPERATION__ECONTAINING_CLASS)); 
+        const_cast<EClassImpl*>(this)->eOperations_ = std::make_shared<EObjectEList<std::shared_ptr<ecore::EOperation>,true,true,true>>( getThisPtr(), EcorePackage::ECLASS__EOPERATIONS , EcorePackage::EOPERATION__ECONTAINING_CLASS);
     return eOperations_;
     // End of user code
 }
@@ -428,8 +428,8 @@ std::shared_ptr<ecore::EAttribute> EClassImpl::getEIDAttribute() const
 std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> EClassImpl::getEStructuralFeatures() const 
 {
     // Start of user code EClassImpl::getEStructuralFeatures
-    if( !eStructuralFeatures_ )
-        const_cast<EClassImpl*>( this )->eStructuralFeatures_.reset( new EObjectEList<std::shared_ptr<EStructuralFeature>, true, true, true>( getThisPtr(), EcorePackage::ECLASS__ESTRUCTURAL_FEATURES, EcorePackage::ESTRUCTURAL_FEATURE__ECONTAINING_CLASS ) );
+    if ( !eStructuralFeatures_ )
+        const_cast<EClassImpl*>(this)->eStructuralFeatures_ = std::make_shared<EObjectEList<std::shared_ptr<ecore::EStructuralFeature>,true,true,true>>( getThisPtr(), EcorePackage::ECLASS__ESTRUCTURAL_FEATURES , EcorePackage::ESTRUCTURAL_FEATURE__ECONTAINING_CLASS);
     return eStructuralFeatures_;
     // End of user code
 }
@@ -438,8 +438,8 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> EClassImpl::g
 std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> EClassImpl::getEGenericSuperTypes() const 
 {
     // Start of user code EClassImpl::getEGenericSuperTypes
-    if( !eGenericSuperTypes_ )
-        const_cast<EClassImpl*>( this )->eGenericSuperTypes_.reset( new EObjectEList<std::shared_ptr<EGenericType>, true, true, false>( getThisPtr(), EcorePackage::ECLASS__EGENERIC_SUPER_TYPES ) );
+    if ( !eGenericSuperTypes_ )
+        const_cast<EClassImpl*>(this)->eGenericSuperTypes_ = std::make_shared<EObjectEList<std::shared_ptr<ecore::EGenericType>,true,true,false>>(getThisPtr(), EcorePackage::ECLASS__EGENERIC_SUPER_TYPES );
     return eGenericSuperTypes_;
     // End of user code
 }
@@ -448,13 +448,10 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> EClassImpl::getEGen
 std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> EClassImpl::getEAllGenericSuperTypes() const 
 {
     // Start of user code EClassImpl::getEAllGenericSuperTypes
-    if( !eAllGenericSuperTypes_ )
-        const_cast<EClassImpl*>( this )->eAllGenericSuperTypes_.reset( new EObjectEList<std::shared_ptr<EGenericType>, false, false, false>( getThisPtr(), EcorePackage::ECLASS__EALL_GENERIC_SUPER_TYPES ) );
-    return eAllGenericSuperTypes_;
+    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+    throw "NotImplementedException";
     // End of user code
 }
-
-
 
 
 //*********************************
