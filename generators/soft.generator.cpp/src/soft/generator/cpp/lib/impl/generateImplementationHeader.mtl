@@ -29,7 +29,7 @@ namespace [namespaceName/]
 {
     class [className/] : public virtual [getShortQualifiedName(aClass.getClassExtends(),namespaceName)/],[for ( implClass : String | aClass.getClassImplements()->asOrderedSet()->sortedBy(s | s)) separator (', ')] public virtual [getShortQualifiedName(implClass, namespaceName)/][/for] 
     {
-    private:    
+    private:
         [className/]& operator=([className/] const&) = delete;
     
     protected:
@@ -80,8 +80,16 @@ namespace [namespaceName/]
 
 [if aClass.eStructuralFeatures->notEmpty()]
     protected:
-        [aClass.eStructuralFeatures.generateDataMember()/]
+        [aClass.eStructuralFeatures.generateDataDeclaration()/]
 [/if]
+
+[let dataFeatures : OrderedSet(EStructuralFeature) = aClass.getDataInitializationFeatures()]
+[if dataFeatures->notEmpty()]
+    private:
+        [dataFeatures.generateDataInitializationMethodDeclaration()/]
+[/if]
+[/let]
+
     private:
         std::weak_ptr<[className/]> [generateGetThisPtrPropertyName()/]_;
     

@@ -58,20 +58,25 @@ using namespace [namespace/];
 //*********************************
 // Constructor / Destructor
 //*********************************
-//[protected (className+ '::' + className)]
 [className/]::[className/]()
+[for ( aFeature : EStructuralFeature | aClass.eStructuralFeatures ) before(':') separator(',')]
+   [aFeature.generateDataInitialization()/]
+[/for]
+//[protected (className+ '::' + className)]
 {
 }
 //[/protected]
 
-//[protected (className+ '::~' + className)]
+
 [className/]::~[className/]()
 {
 #ifdef SHOW_DELETION
     std::cout << "-------------------------------------------------------------------------------------------------\r\ndelete [aClass.name.toUpperFirst()/] "<< this << "\r\n------------------------------------------------------------------------ " << std::endl;
 #endif
-}
+//[protected (className+ '::~' + className)]
 //[/protected]
+}
+
 
 std::shared_ptr<EClass> [className/]::eStaticClass() const
 {
@@ -113,6 +118,16 @@ std::shared_ptr<EClass> [className/]::eStaticClass() const
 [/if]
 [/let]
 [aClass.generateReflectivesDefinition()/]
+[let dataFeatures : OrderedSet(EStructuralFeature) = aClass.getDataInitializationFeatures()]
+[if dataFeatures->notEmpty()]
+//*********************************
+// Initializations
+//*********************************
+[dataFeatures.generateDataInitializationMethodDefinition()/]
+[/if]
+[/let]
+
+
 // [protected (className + ' [declaration-end]') ]
 // [/protected]
 

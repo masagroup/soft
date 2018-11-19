@@ -6,7 +6,7 @@
 [import soft::generator::cpp::generateClass /]
 
 
-[query public getLazy( aStructuralFeature : EStructuralFeature ) : String =
+[query private getLazy( aStructuralFeature : EStructuralFeature ) : String =
 if aStructuralFeature.hasKey('lazy') then 
     aStructuralFeature.valueKey('lazy')
 else
@@ -22,7 +22,12 @@ else
 endif/]
 
 [query public isLazy( aStructuralFeature : EStructuralFeature ) : Boolean = aStructuralFeature.getLazy() <> 'no'/] 
-[query public hasLazyInitializationMethod( aStructuralFeature : EStructuralFeature ) : Boolean = isLazy() and ( let lazyType : String = aStructuralFeature.getLazy() in lazyType = 'action' or lazyType = 'function')/]
+[query public hasDataInitializationMethod( aStructuralFeature : EStructuralFeature ) : Boolean = isLazy() and ( let lazyType : String = aStructuralFeature.getLazy() in lazyType = 'action' or lazyType = 'function')/]
+[query public getDataInitializationFeatures( aClass : EClass ) : OrderedSet(EStructuralFeature) = 
+         aClass.eStructuralFeatures->select( hasDataInitializationMethod() and getLazy() = 'function')
+->addAll(aClass.eStructuralFeatures->select( hasDataInitializationMethod() and getLazy() = 'action' ))/]
+
+
 
 [template public generateDeclaration(aStructuralFeature : EStructuralFeature, impl : Boolean )]
 [if hasGetter('public',impl)]
@@ -139,24 +144,10 @@ endif/]
 [/let]
 [/template]
 
-[template public generateDataInitializationMethodDefinition(aStructuralFeature : EStructuralFeature)]
-[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
-[let methodName : String = aStructuralFeature.getLazyInitializationName()]
-[aStructuralFeature.generateReturnType()/] [className/]::[methodName/]
-{
-    // [protected (className + '::' + methodName)]
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
-    throw "NotImplementedException";    
-    // [/protected]
-}
-[/let]
-[/let]
-[/template]
-
 [template public generateDataInitializationMethodDefinition(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'function' )]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
 [let methodName : String = aStructuralFeature.getLazyInitializationName()]
-[aStructuralFeature.generateReturnType()/] [className/]::[methodName/]
+[aStructuralFeature.generateReturnType()/] [className/]::[methodName/]()
 {
     // [protected (className + '::' + methodName)]
 [if isListType()]
@@ -171,12 +162,13 @@ endif/]
 }
 [/let]
 [/let]
+
 [/template]
 
 [template public generateDataInitializationMethodDefinition(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'action' )]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
 [let methodName : String = aStructuralFeature.getLazyInitializationName()]
-void [className/]::[methodName/]
+void [className/]::[methodName/]()
 {
     // [protected (className + '::' + methodName)]
 [if isListType()]
@@ -191,6 +183,7 @@ void [className/]::[methodName/]
 }
 [/let]
 [/let]
+
 [/template]
 
 [template public generateBasicGetDeclaration(aStructuralFeature : EStructuralFeature)]
@@ -213,7 +206,11 @@ void [className/]::[methodName/]
     else
         return std::dynamic_pointer_cast<[aStructuralFeature.generateElementType()/]>(eContainer());
 [elseif not isVolatile()]
+    [if isLazy()]
+    return [aStructuralFeature.name/]_.get();
+    [else]
     return [aStructuralFeature.name/]_;
+    [/if]
 [elseif (hasKey('getterBody'))]
     [valueKey('getterBody')/]
 [else]
@@ -236,17 +233,17 @@ virtual [aStructuralFeature.generateReturnType()/] [aStructuralFeature.getGetter
 {
     // [protected (className + '::' + aStructuralFeature.getGetterName()) ]
 [if not isVolatile() ]
-    [if isListType() ]
-    if ( ![aStructuralFeature.name/]_ )
-        const_cast<[className/]*>(this)->[aStructuralFeature.name/]_ = [getListConstructor()/];
-    return [aStructuralFeature.name/]_;
-    [elseif isContainer()]
+    [if isContainer()]
     if ( eContainerFeatureID() != [aStructuralFeature.getQualifiedFeatureIDName()/] )
         return [aStructuralFeature.generateEffectiveType()/]();
     else
         return std::dynamic_pointer_cast<[aStructuralFeature.generateElementType()/]>(eContainer());
     [else]
+        [if isLazy()]
+    return [aStructuralFeature.name/]_.get();
+        [else]
     return [aStructuralFeature.name/]_;
+        [/if]
     [/if]
 [elseif hasKey('getterBody')]
     [valueKey('getterBody')/]

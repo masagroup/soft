@@ -110,6 +110,16 @@ namespace ecore::impl
             return *this;
         }
 
+        operator bool() const
+        {
+            return static_cast<bool>(value_);
+        }
+
+        T* operator ->() const
+        {
+            return value_.get();
+        }
+
         operator const std::shared_ptr<T>&() const
         {
             return get();
@@ -153,12 +163,21 @@ namespace ecore::impl
             return *this;
         }
 
+        operator bool() const
+        {
+            return static_cast<bool>(value_);
+        }
+
+        T* operator ->() const
+        {
+            return value_.get();
+        }
+
         operator const std::shared_ptr<T>&( ) const
         {
             return get();
         }
 
-        
         const std::shared_ptr<T>& get() const
         {
             initializer_();

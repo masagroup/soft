@@ -40,20 +40,23 @@ using namespace ecore::impl;
 //*********************************
 // Constructor / Destructor
 //*********************************
-//Start of user code EModelElementImpl::EModelElementImpl
 EModelElementImpl::EModelElementImpl()
+:   eAnnotations_([&](){ return initEAnnotations();})
+//Start of user code EModelElementImpl::EModelElementImpl
 {
 }
 //End of user code
 
-//Start of user code EModelElementImpl::~EModelElementImpl
+
 EModelElementImpl::~EModelElementImpl()
 {
 #ifdef SHOW_DELETION
     std::cout << "-------------------------------------------------------------------------------------------------\r\ndelete EModelElement "<< this << "\r\n------------------------------------------------------------------------ " << std::endl;
 #endif
-}
+//Start of user code EModelElementImpl::~EModelElementImpl
 //End of user code
+}
+
 
 std::shared_ptr<EClass> EModelElementImpl::eStaticClass() const
 {
@@ -92,9 +95,7 @@ std::shared_ptr<ecore::EAnnotation> EModelElementImpl::getEAnnotation(const std:
 std::shared_ptr<EList<std::shared_ptr<ecore::EAnnotation>>> EModelElementImpl::getEAnnotations() const 
 {
     // Start of user code EModelElementImpl::getEAnnotations
-    if ( !eAnnotations_ )
-        const_cast<EModelElementImpl*>(this)->eAnnotations_.reset(new EObjectEList<std::shared_ptr<ecore::EAnnotation>,true,true,true>( getThisPtr(), EcorePackage::EMODEL_ELEMENT__EANNOTATIONS , EcorePackage::EANNOTATION__EMODEL_ELEMENT)); 
-    return eAnnotations_;
+    return eAnnotations_.get();
     // End of user code
 }
 
@@ -172,6 +173,19 @@ std::shared_ptr<ENotificationChain> EModelElementImpl::eBasicInverseRemove( cons
     return EObjectImpl::eBasicInverseRemove(otherEnd, featureID, notifications);
     // End of user code
 }
+
+
+
+//*********************************
+// Initializations
+//*********************************
+std::shared_ptr<EList<std::shared_ptr<ecore::EAnnotation>>> EModelElementImpl::initEAnnotations()
+{
+    // Start of user code EModelElementImpl::initEAnnotations
+    return std::make_shared<EObjectEList<std::shared_ptr<ecore::EAnnotation>,true,true,true>>( getThisPtr(), EcorePackage::EMODEL_ELEMENT__EANNOTATIONS , EcorePackage::EANNOTATION__EMODEL_ELEMENT);
+    // End of user code
+}
+
 
 
 

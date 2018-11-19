@@ -17,6 +17,7 @@
 
 #include "ecore/EClass.hpp"
 #include "ecore/impl/EClassifierImpl.hpp"
+#include "ecore/impl/Lazy.hpp"
 
 // Start of user code EClassImpl [definition-includes]
 #include <unordered_map>
@@ -26,7 +27,7 @@ namespace ecore::impl
 {
     class EClassImpl : public virtual EClassifierImpl, public virtual EClass 
     {
-    private:    
+    private:
         EClassImpl& operator=(EClassImpl const&) = delete;
     
     protected:
@@ -126,21 +127,39 @@ namespace ecore::impl
     protected:
         bool abstract_;
         bool interface_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> eSuperTypes_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> eOperations_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> eAllAttributes_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> eAllReferences_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> eReferences_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>> eAttributes_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>> eAllContainments_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> eAllOperations_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> eAllStructuralFeatures_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> eAllSuperTypes_;
-        std::shared_ptr<ecore::EAttribute> eIDAttribute_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> eStructuralFeatures_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> eGenericSuperTypes_;
-        std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> eAllGenericSuperTypes_;
+        Lazy<std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>>> eSuperTypes_;
+        Lazy<std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>>> eOperations_;
+        Lazy<std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>>,void> eAllAttributes_;
+        Lazy<std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>>,void> eAllReferences_;
+        Lazy<std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>>,void> eReferences_;
+        Lazy<std::shared_ptr<EList<std::shared_ptr<ecore::EAttribute>>>,void> eAttributes_;
+        Lazy<std::shared_ptr<EList<std::shared_ptr<ecore::EReference>>>,void> eAllContainments_;
+        Lazy<std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>>,void> eAllOperations_;
+        Lazy<std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>>,void> eAllStructuralFeatures_;
+        Lazy<std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>>,void> eAllSuperTypes_;
+        Lazy<std::shared_ptr<ecore::EAttribute>,void> eIDAttribute_;
+        Lazy<std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>>> eStructuralFeatures_;
+        Lazy<std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>>,void> eGenericSuperTypes_;
+        Lazy<std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>>,void> eAllGenericSuperTypes_;
         
+
+    private:
+        std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> initESuperTypes();
+        std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> initEOperations();
+        std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> initEStructuralFeatures();
+        void initEAllAttributes();
+        void initEAllReferences();
+        void initEReferences();
+        void initEAttributes();
+        void initEAllContainments();
+        void initEAllOperations();
+        void initEAllStructuralFeatures();
+        void initEAllSuperTypes();
+        void initEIDAttribute();
+        void initEGenericSuperTypes();
+        void initEAllGenericSuperTypes();
+        
+
     private:
         std::weak_ptr<EClassImpl> thisPtr_;
     
