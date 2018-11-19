@@ -59,7 +59,34 @@ BOOST_AUTO_TEST_CASE( LazyShared_NoReturn )
     BOOST_CHECK( called );
 }
 
+BOOST_AUTO_TEST_CASE( LazySharedClass_Return )
+{
+    class A
+    {
+    public:
+        A()
+            : value_( std::bind( &A::initValue , this ) )
+        {
+        }
 
+        int getValue() const
+        {
+            return value_.get();
+        }
+
+    private:
+        int initValue()
+        {
+            return 1;
+        }
+
+    private:
+        Lazy<int> value_;
+    };
+
+    A a;
+    BOOST_CHECK_EQUAL( a.getValue() , 1 );
+}
 
 BOOST_AUTO_TEST_CASE( LazyUnique_Return )
 {
