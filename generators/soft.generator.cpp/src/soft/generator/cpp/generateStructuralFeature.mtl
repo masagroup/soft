@@ -6,7 +6,7 @@
 [import soft::generator::cpp::generateClass /]
 
 
-[query private getLazy( aStructuralFeature : EStructuralFeature ) : String =
+[query public getLazy( aStructuralFeature : EStructuralFeature ) : String =
 if aStructuralFeature.hasKey('lazy') then 
     aStructuralFeature.valueKey('lazy')
 else
@@ -22,6 +22,7 @@ else
 endif/]
 
 [query public isLazy( aStructuralFeature : EStructuralFeature ) : Boolean = aStructuralFeature.getLazy() <> 'no'/] 
+[query public hasLazyInitializationMethod( aStructuralFeature : EStructuralFeature ) : Boolean = isLazy() and ( let lazyType : String = aStructuralFeature.getLazy() in lazyType = 'action' or lazyType = 'function')/]
 
 [template public generateDeclaration(aStructuralFeature : EStructuralFeature, impl : Boolean )]
 [if hasGetter('public',impl)]
@@ -97,14 +98,99 @@ endif/]
 [/if]
 [/template]
 
-[template public generateDataMember(aStructuralFeature : EStructuralFeature) ]
+[template public generateDataDeclaration(aStructuralFeature : EStructuralFeature) ]
 [if aStructuralFeature.isLazy()]
 [let shortQualifiedLazyClass : String = getShortQualifiedName('ecore::impl::Lazy', aStructuralFeature.eContainingClass.ePackage.getQualifiedImplementationName())]
-[shortQualifiedLazyClass/]<[aStructuralFeature.generateDataType()/]> [aStructuralFeature.name/]_;
+[shortQualifiedLazyClass/]<[aStructuralFeature.generateDataType()/][if aStructuralFeature.getLazy() = 'action'],void[/if]> [aStructuralFeature.name/]_;
 [/let]
 [else]
 [aStructuralFeature.generateDataType()/] [aStructuralFeature.name/]_;
 [/if]
+[/template]
+
+[template public generateDataInitialization(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'no')]
+[aStructuralFeature.name/]_([generateDataInitializationValue()/])
+[/template]
+
+[template public generateDataInitialization(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'lambda') ]
+[aStructuralFeature.name/]_(['['/]&[']'/](){ return [generateDataInitializationValue()/];})
+[/template]
+
+[template public generateDataInitialization(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'function') ]
+[aStructuralFeature.name/]_(['['/]&[']'/](){ return [aStructuralFeature.getLazyInitializationName()/]();})
+[/template]
+
+[template public generateDataInitialization(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'action') ]
+[aStructuralFeature.name/]_(['['/]&[']'/](){ [aStructuralFeature.getLazyInitializationName()/]();})
+[/template]
+
+[template private generateDataInitializationValue(aStructuralFeature : EStructuralFeature) post(trim())]
+[if isListType()]
+[aStructuralFeature.getListConstructor()/]
+[elseif aStructuralFeature.oclIsKindOf(EAttribute)]
+[aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/]
+[else]
+[/if]
+[/template]
+
+[template public generateDataInitializationMethodDeclaration(aStructuralFeature : EStructuralFeature) ]
+[let methodName : String = aStructuralFeature.getLazyInitializationName()]
+[if aStructuralFeature.getLazy() = 'action']void[else][aStructuralFeature.generateReturnType()/][/if] [methodName/]();
+[/let]
+[/template]
+
+[template public generateDataInitializationMethodDefinition(aStructuralFeature : EStructuralFeature)]
+[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let methodName : String = aStructuralFeature.getLazyInitializationName()]
+[aStructuralFeature.generateReturnType()/] [className/]::[methodName/]
+{
+    // [protected (className + '::' + methodName)]
+    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+    throw "NotImplementedException";    
+    // [/protected]
+}
+[/let]
+[/let]
+[/template]
+
+[template public generateDataInitializationMethodDefinition(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'function' )]
+[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let methodName : String = aStructuralFeature.getLazyInitializationName()]
+[aStructuralFeature.generateReturnType()/] [className/]::[methodName/]
+{
+    // [protected (className + '::' + methodName)]
+[if isListType()]
+    return [getListConstructor()/];
+[elseif aStructuralFeature.oclIsKindOf(EAttribute)]
+    return [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/];
+[else]
+    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+    throw "NotImplementedException";    
+[/if]
+    // [/protected]
+}
+[/let]
+[/let]
+[/template]
+
+[template public generateDataInitializationMethodDefinition(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'action' )]
+[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let methodName : String = aStructuralFeature.getLazyInitializationName()]
+void [className/]::[methodName/]
+{
+    // [protected (className + '::' + methodName)]
+[if isListType()]
+    [aStructuralFeature.name/]_ = [getListConstructor()/];
+[elseif aStructuralFeature.oclIsKindOf(EAttribute)]
+    [aStructuralFeature.name/]_ = [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/];
+[else]
+    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+    throw "NotImplementedException";    
+[/if]
+    // [/protected]
+}
+[/let]
+[/let]
 [/template]
 
 [template public generateBasicGetDeclaration(aStructuralFeature : EStructuralFeature)]

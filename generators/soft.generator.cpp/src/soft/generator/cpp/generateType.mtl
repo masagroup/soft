@@ -191,6 +191,9 @@ std::string
 [anEClassifier.name/]
 [/template]
 
+[query public getDefaultValue(anEAttribute : EAttribute) : String = if (defaultValueLiteral->notEmpty()) then defaultValueLiteral else eType.getDefaultValue() endif/]
+
+
 [query public getDefaultValue(anEClassifier : EClassifier) : String = 
         if ((name = 'EBoolean' ) or 
             (name = 'EBooleanObject' ) or 
