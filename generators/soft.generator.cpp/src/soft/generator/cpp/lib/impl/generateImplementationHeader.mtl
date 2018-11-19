@@ -18,6 +18,9 @@
 #include "[namespaceToFolder(implInclude)/].hpp"
 [/for]
 #include "[namespaceToFolder(aClass.getClassExtends())/].hpp"
+[if aClass.eStructuralFeatures->exists( isLazy())]
+#include "ecore/impl/Lazy.hpp"
+[/if]
 
 // [protected (className + ' [definition-includes]')]
 // [/protected]

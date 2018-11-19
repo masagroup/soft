@@ -6,7 +6,22 @@
 [import soft::generator::cpp::generateClass /]
 
 
+[query private getLazy( aStructuralFeature : EStructuralFeature ) : String =
+if aStructuralFeature.hasKey('lazy') then 
+    aStructuralFeature.valueKey('lazy')
+else
+    if ( aStructuralFeature.isListType() ) then
+        if aStructuralFeature.eContainingClass.ePackage.hasKey('lazy') then 
+            aStructuralFeature.eContainingClass.ePackage.valueKey('lazy') 
+        else 
+            'no'
+        endif
+    else
+        'no'
+    endif
+endif/]
 
+[query public isLazy( aStructuralFeature : EStructuralFeature ) : Boolean = aStructuralFeature.getLazy() <> 'no'/] 
 
 [template public generateDeclaration(aStructuralFeature : EStructuralFeature, impl : Boolean )]
 [if hasGetter('public',impl)]
@@ -82,9 +97,14 @@
 [/if]
 [/template]
 
-[template public generateDataMember(aStructuralFeature : EStructuralFeature)]
+[template public generateDataMember(aStructuralFeature : EStructuralFeature) ]
+[if aStructuralFeature.isLazy()]
+[let shortQualifiedLazyClass : String = getShortQualifiedName('ecore::impl::Lazy', aStructuralFeature.eContainingClass.ePackage.getQualifiedImplementationName())]
+[shortQualifiedLazyClass/]<[aStructuralFeature.generateDataType()/]> [aStructuralFeature.name/]_;
+[/let]
+[else]
 [aStructuralFeature.generateDataType()/] [aStructuralFeature.name/]_;
-
+[/if]
 [/template]
 
 [template public generateBasicGetDeclaration(aStructuralFeature : EStructuralFeature)]
