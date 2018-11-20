@@ -138,6 +138,11 @@ namespace ecore::impl
             value_.reset();
         }
 
+        const std::shared_ptr<T>& value() const
+        {
+            return value_;
+        }
+
     private:
         mutable std::shared_ptr<T> value_;
         std::function<std::shared_ptr<T>()> initializer_;
@@ -203,7 +208,7 @@ namespace ecore::impl
     template<typename T, typename Q>
     bool operator==( std::nullptr_t, const Lazy<std::shared_ptr<T>,Q>& right ) _NOEXCEPT
     {	// test if nullptr == shared_ptr
-        return ( nullptr == right.value_() );
+        return ( nullptr == right.value() );
     }
 
     template<typename T, typename Q>
@@ -263,6 +268,12 @@ namespace ecore::impl
             value_.reset();
         }
 
+        const std::unique_ptr<T>& value() const
+        {
+            return value_;
+        }
+
+
     private:
         mutable std::unique_ptr<T> value_;
         std::function<std::unique_ptr<T>()> initializer_;
@@ -306,6 +317,11 @@ namespace ecore::impl
             value_.reset();
         }
 
+        const std::unique_ptr<T>& value() const
+        {
+            return value_;
+        }
+
     private:
         mutable std::unique_ptr<T> value_;
         std::function<void()> initializer_;
@@ -314,7 +330,7 @@ namespace ecore::impl
     template<typename T, typename Q>
     bool operator==( std::nullptr_t, const Lazy<std::unique_ptr<T>, Q>& right ) _NOEXCEPT
     {	// test if nullptr == shared_ptr
-        return ( nullptr == right.value_() );
+        return ( nullptr == right.value() );
     }
 
     template<typename T, typename Q>

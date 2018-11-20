@@ -88,6 +88,17 @@ BOOST_AUTO_TEST_CASE( LazySharedClass_Return )
     BOOST_CHECK_EQUAL( a.getValue() , 1 );
 }
 
+BOOST_AUTO_TEST_CASE( LazyShared_Operators )
+{
+    Lazy<std::shared_ptr<int>> a( []
+    {
+        return std::make_shared<int>(1);
+    });
+    BOOST_CHECK( a == nullptr );
+    BOOST_CHECK_EQUAL( *a.get(), 1 );
+    BOOST_CHECK( a != nullptr );
+}
+
 BOOST_AUTO_TEST_CASE( LazyUnique_Return )
 {
     Lazy<std::unique_ptr<int>> l( []()
