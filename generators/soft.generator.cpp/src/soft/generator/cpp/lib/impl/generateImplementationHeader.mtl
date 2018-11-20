@@ -76,6 +76,7 @@ namespace [namespaceName/]
         [basicFeatures.generateBasicDeclaration()/]
 [/if]
 [/let]
+
         [aClass.generateReflectivesDeclaration()/]
 
 [if aClass.eStructuralFeatures->notEmpty()]
