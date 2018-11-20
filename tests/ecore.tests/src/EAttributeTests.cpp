@@ -72,8 +72,8 @@ BOOST_FIXTURE_TEST_CASE( Accessors_ENamedElement_Notifications , AttributeNotifi
             && n->getFeature() == EcorePackage::eInstance()->getENamedElement_Name()
             && boost::any_cast<std::string>(n->getOldValue()) == ""
             && boost::any_cast<std::string>( n->getNewValue() ) == "toto"
-            && n->getPosition() == 0;
-    } );
+            && n->getPosition() == -1;
+    } ).once();
 
     eAttribute->setName( "toto" );
     BOOST_CHECK_EQUAL( eAttribute->getName(), "toto" );

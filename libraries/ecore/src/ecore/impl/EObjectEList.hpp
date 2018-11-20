@@ -30,22 +30,7 @@ namespace ecore::impl
     {
         typedef BasicEList<T, true> Super;
     public:
-        EObjectEList( const std::shared_ptr<EObject>& owner, int featureID )
-            : owner_( owner )
-            , featureID_( featureID )
-            , inverseFeatureID_( -1 )
-            , inverse_( *this )
-        {
-            auto reference = std::dynamic_pointer_cast<EReference>(owner->eClass()->getEStructuralFeature( featureID ));
-            if (reference)
-            {
-                std::shared_ptr<EReference> opposite = reference->getEOpposite();
-                if (opposite)
-                    inverseFeatureID_ = opposite->getFeatureID();
-            }
-        }
-
-        EObjectEList( const std::shared_ptr<EObject>& owner, int featureID, int inverseFeatureID )
+        EObjectEList( const std::shared_ptr<EObject>& owner, int featureID, int inverseFeatureID = -1)
             : owner_( owner )
             , featureID_( featureID )
             , inverseFeatureID_( inverseFeatureID )
