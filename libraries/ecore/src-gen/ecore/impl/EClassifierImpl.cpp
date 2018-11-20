@@ -55,9 +55,6 @@ EClassifierImpl::EClassifierImpl()
 
 EClassifierImpl::~EClassifierImpl()
 {
-#ifdef SHOW_DELETION
-    std::cout << "-------------------------------------------------------------------------------------------------\r\ndelete EClassifier "<< this << "\r\n------------------------------------------------------------------------ " << std::endl;
-#endif
 //Start of user code EClassifierImpl::~EClassifierImpl
 //End of user code
 }

@@ -50,9 +50,6 @@ EModelElementImpl::EModelElementImpl()
 
 EModelElementImpl::~EModelElementImpl()
 {
-#ifdef SHOW_DELETION
-    std::cout << "-------------------------------------------------------------------------------------------------\r\ndelete EModelElement "<< this << "\r\n------------------------------------------------------------------------ " << std::endl;
-#endif
 //Start of user code EModelElementImpl::~EModelElementImpl
 //End of user code
 }

@@ -72,9 +72,11 @@ using namespace [namespace/];
 
 [className/]::~[className/]()
 {
+[if not aClass.ePackage.eClassifiers->exists( c | c.oclIsKindOf(EClass) and c <> aClass and aClass.isSuperTypeOf(c.oclAsType(EClass)))]
 #ifdef SHOW_DELETION
     std::cout << "-------------------------------------------------------------------------------------------------\r\ndelete [aClass.name.toUpperFirst()/] "<< this << "\r\n------------------------------------------------------------------------ " << std::endl;
 #endif
+[/if]
 //[protected (className+ '::~' + className)]
 //[/protected]
 }
