@@ -232,18 +232,16 @@ virtual [aStructuralFeature.generateReturnType()/] [aStructuralFeature.getGetter
 [aStructuralFeature.generateReturnType()/] [className/]::[aStructuralFeature.getGetterName()/]() const 
 {
     // [protected (className + '::' + aStructuralFeature.getGetterName()) ]
-[if not isVolatile() ]
-    [if isContainer()]
-    if ( eContainerFeatureID() != [aStructuralFeature.getQualifiedFeatureIDName()/] )
-        return [aStructuralFeature.generateEffectiveType()/]();
-    else
-        return std::dynamic_pointer_cast<[aStructuralFeature.generateElementType()/]>(eContainer());
-    [else]
-        [if isLazy()]
+[if isContainer()]
+if ( eContainerFeatureID() != [aStructuralFeature.getQualifiedFeatureIDName()/] )
+    return [aStructuralFeature.generateEffectiveType()/]();
+else
+    return std::dynamic_pointer_cast<[aStructuralFeature.generateElementType()/]>(eContainer());
+[elseif not isVolatile()]
+    [if isLazy()]
     return [aStructuralFeature.name/]_.get();
-        [else]
+    [else]
     return [aStructuralFeature.name/]_;
-        [/if]
     [/if]
 [elseif hasKey('getterBody')]
     [valueKey('getterBody')/]

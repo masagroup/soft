@@ -72,22 +72,24 @@ foreach( SOURCE_FILE ${SOURCE_FILES})
         get_filename_component(SOURCE_FULL_PATH "${SOURCE_FILE}" ABSOLUTE )
           if ( EXISTS "${SOURCE_FULL_PATH}" )
             file(READ "${SOURCE_FILE}" SOURCE_FILE_CONTENTS)
-            string(REGEX MATCHALL ${TEST_SUITES_REGEXP} TEST_SUITES ${SOURCE_FILE_CONTENTS})
-            foreach( TEST_SUITE ${TEST_SUITES} )
-                # extract test suite name
-                string(REGEX REPLACE ${TEST_SUITES_REGEXP} "\\1" TEST_SUITE_NAME ${TEST_SUITE})
-                # extract test suite block
-                string(REGEX REPLACE ${TEST_SUITES_REGEXP} "\\2" TEST_SUITE_CONTENT ${TEST_SUITE})
-                # retrieve all test cases in the test suite
-                string(REGEX MATCHALL ${TEST_CASES_REGEXP} FOUND_TESTS ${TEST_SUITE_CONTENT})
-                foreach(HIT ${FOUND_TESTS})
-                    #extract test case name
-                    string(REGEX REPLACE ${TEST_CASES_REGEXP} "\\2" TEST_NAME ${HIT})
-                    add_test(NAME "${PROJECT_NAME}.${TEST_SUITE_NAME}.${TEST_NAME}" 
-                             WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} 
-                             COMMAND ${PROJECT_NAME} --run_test=${TEST_SUITE_NAME}/${TEST_NAME} --catch_system_error=yes )
+            if ( NOT "${SOURCE_FILE_CONTENTS}" STREQUAL "" )
+                string(REGEX MATCHALL ${TEST_SUITES_REGEXP} TEST_SUITES ${SOURCE_FILE_CONTENTS})
+                foreach( TEST_SUITE ${TEST_SUITES} )
+                    # extract test suite name
+                    string(REGEX REPLACE ${TEST_SUITES_REGEXP} "\\1" TEST_SUITE_NAME ${TEST_SUITE})
+                    # extract test suite block
+                    string(REGEX REPLACE ${TEST_SUITES_REGEXP} "\\2" TEST_SUITE_CONTENT ${TEST_SUITE})
+                    # retrieve all test cases in the test suite
+                    string(REGEX MATCHALL ${TEST_CASES_REGEXP} FOUND_TESTS ${TEST_SUITE_CONTENT})
+                    foreach(HIT ${FOUND_TESTS})
+                        #extract test case name
+                        string(REGEX REPLACE ${TEST_CASES_REGEXP} "\\2" TEST_NAME ${HIT})
+                        add_test(NAME "${PROJECT_NAME}.${TEST_SUITE_NAME}.${TEST_NAME}" 
+                                 WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} 
+                                 COMMAND ${PROJECT_NAME} --run_test=${TEST_SUITE_NAME}/${TEST_NAME} --catch_system_error=yes )
+                    endforeach()
                 endforeach()
-            endforeach()
+            endif()
         endif()
     endif()
 endforeach()
