@@ -39,7 +39,7 @@ using namespace [namespace/];
 
 [className/]::[className/]()
 {
-    setEFactoryInstance(std::shared_ptr<ecore::EFactory >( [anEPackage.getFactoryInterfaceName()/]::eInstance()));
+    setEFactoryInstance([anEPackage.getFactoryInterfaceName()/]::eInstance());
 }
 
 [className/]::~[className/]()

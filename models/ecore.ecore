@@ -382,10 +382,10 @@
         eType="#//EFactory" transient="true" resolveProxies="false" eOpposite="#//EFactory/ePackage"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eClassifiers" upperBound="-1"
         eType="#//EClassifier" containment="true" eOpposite="#//EClassifier/ePackage"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eSubpackages" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eSubPackages" upperBound="-1"
         eType="#//EPackage" containment="true" eOpposite="#//EPackage/eSuperPackage"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eSuperPackage" eType="#//EPackage"
-        changeable="false" transient="true" eOpposite="#//EPackage/eSubpackages"/>
+        changeable="false" transient="true" eOpposite="#//EPackage/eSubPackages"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EParameter" eSuperTypes="#//ETypedElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="eOperation" eType="#//EOperation"
