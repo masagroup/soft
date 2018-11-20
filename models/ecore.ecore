@@ -154,6 +154,7 @@
         defaultValueLiteral="-1">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="setVisibility" value="no:public"/>
+        <details key="lazy" value="function"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
