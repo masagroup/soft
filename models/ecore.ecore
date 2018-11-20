@@ -450,17 +450,17 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="required" eType="#//EBoolean"
         changeable="false" volatile="true" transient="true" derived="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eType" eType="#//EClassifier"
-        volatile="true" unsettable="true">
+        unsettable="true">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
-        <details key="suppressedIsSetVisibility" value="true"/>
-        <details key="suppressedUnsetVisibility" value="true"/>
+        <details key="issetVisibility" value="no"/>
+        <details key="unsetVisibility" value="no:public"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eGenericType" eType="#//EGenericType"
-        volatile="true" unsettable="true" containment="true" resolveProxies="false">
+        unsettable="true" containment="true" resolveProxies="false">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
-        <details key="suppressedIsSetVisibility" value="true"/>
-        <details key="suppressedUnsetVisibility" value="true"/>
+        <details key="issetVisibility" value="no"/>
+        <details key="unsetVisibility" value="no:public"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

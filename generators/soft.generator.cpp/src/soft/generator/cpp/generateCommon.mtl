@@ -24,7 +24,9 @@
 [query public getSetterName(feature : EStructuralFeature) : String = if hasKey('SetterName') then valueKey('SetterName') else 'set'.concat(name.toUpperFirst()) endif/]
 [query public getGetterName(feature : EStructuralFeature) : String = if hasKey('GetterName') then valueKey('GetterName') else getterPrefix().concat(name.toUpperFirst()) endif/]
 [query public getUnSetterName(feature : EStructuralFeature) : String = if hasKey('UnSetterName') then valueKey('UnSetterName') else 'unset'.concat(name.toUpperFirst()) endif/]
+[query public getIsSetName(feature : EStructuralFeature) : String = if hasKey('IsSetName') then valueKey('IsSetName') else 'isSet'.concat(name.toUpperFirst()) endif/]
 [query public getLazyInitializationName(feature : EStructuralFeature) : String = if hasKey('LazyInitializationName') then valueKey('LazyInitializationName') else 'init'.concat(name.toUpperFirst()) endif/]
+
 
 
 [**
@@ -200,6 +202,7 @@
 /]
 [query public isListType(aTypedElement : ETypedElement ) : Boolean = (not aTypedElement.oclIsUndefined() ) and ( aTypedElement.many or aTypedElement.upperBound <> 1 )/]  
 [query public isResolveProxies(aStructuralFeature : EStructuralFeature) : Boolean = (not isContainer() and not isContains()) and aStructuralFeature.oclIsKindOf(EReference) and aStructuralFeature.oclAsType(EReference).resolveProxies/]  
+[query public isField(aStructuralFeature : EStructuralFeature) : Boolean = not isContainer() and not isVolatile()/]
 
 [query public isGet(aStructuralFeature : EStructuralFeature) : Boolean = true/]
 [query public isSet(aStructuralFeature : EStructuralFeature) : Boolean = isChangeable() and aStructuralFeature.upperBound = 1/]

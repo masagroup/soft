@@ -151,10 +151,10 @@ bool [aClass.getImplementationName()/]::eIsSet(int featureID) const
 {
     switch(featureID)
     {
-    [for (anStructFeature : EStructuralFeature | aClass.getEIsSetFeatures()->sortedBy(name))]
+[for (anStructFeature : EStructuralFeature | aClass.getEIsSetFeatures()->sortedBy(name))]
         case [anStructFeature.getQualifiedFeatureIDName()/]:
             return [anStructFeature.generateComparison()/];
-    [/for]
+[/for]
     }
     return [removeNamespace(aClass.getClassExtends())/]::eIsSet(featureID);
 }
@@ -256,22 +256,36 @@ boost::any [className/]::eInvoke(int operationID, const std::shared_ptr<EList<bo
 [/template]
 
 [template public generateComparison(anStructFeature : EStructuralFeature) ? (oclIsKindOf(EAttribute) and not eType.isAny()) post (trim())]
-[if (anStructFeature.isListType())]
-[anStructFeature.name/]_ && ![anStructFeature.name/]_->empty()
-[elseif (eType.oclIsKindOf(EEnum))]
-[anStructFeature.name/]_ != [anStructFeature.oclAsType(EAttribute).generateDefaultValue()/];
+[if isListType()]
+    [if isField()]
+        [anStructFeature.name/]_ && ![anStructFeature.name/]_->empty()
+    [else]
+        ![anStructFeature.getGetterName()/]()->empty()
+    [/if]
 [else]
-[anStructFeature.name/]_ != [anStructFeature.oclAsType(EAttribute).getDefaultValue()/]
+    [let accessor : String = if isField() then anStructFeature.name + '_' else anStructFeature.getGetterName()+'()' endif]
+    [if eType.oclIsKindOf(EEnum)]
+        [accessor/] != [anStructFeature.oclAsType(EAttribute).generateDefaultValue()/]
+    [else]
+        [accessor/] != [anStructFeature.oclAsType(EAttribute).getDefaultValue()/]
+    [/if]
+    [/let]
 [/if]
 [/template]
 
 [template public generateComparison(anStructFeature : EStructuralFeature) ? (oclIsKindOf(EReference) and not eType.isAny()) post (trim())]
-[if (anStructFeature.upperBound <> 1)]
-[anStructFeature.name/]_ && ![anStructFeature.name/]_->empty()
+[if isListType()]
+    [if isField()]
+        [anStructFeature.name/]_ && ![anStructFeature.name/]_->empty()
+    [else]
+        ![anStructFeature.getGetterName()/]()->empty()
+    [/if]
 [elseif anStructFeature.oclAsType(EReference).isBackReference() ]
-!is_uninitialized([anStructFeature.name/]_)
+    !is_uninitialized([anStructFeature.name/]_)
 [else]
-[anStructFeature.name/]_ != [anStructFeature.eType.getDefaultValue()/]
+    [let accessor : String = if isField() then anStructFeature.name + '_' else anStructFeature.getGetterName()+'()' endif]
+        [accessor/] != [anStructFeature.eType.getDefaultValue()/]
+    [/let]
 [/if]
 [/template]
 
