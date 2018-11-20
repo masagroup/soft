@@ -44,8 +44,7 @@ using namespace ecore::impl;
 // Constructor / Destructor
 //*********************************
 EClassifierImpl::EClassifierImpl()
-:   defaultValue_(nullptr)
-,   ePackage_()
+:   ePackage_()
 ,   eTypeParameters_([&](){ return initETypeParameters();})
 ,   classifierID_([&](){ return initClassifierID();})
 //Start of user code EClassifierImpl::EClassifierImpl

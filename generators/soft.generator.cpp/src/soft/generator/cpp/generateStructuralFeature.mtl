@@ -24,8 +24,8 @@ endif/]
 [query public isLazy( aStructuralFeature : EStructuralFeature ) : Boolean = aStructuralFeature.getLazy() <> 'no'/] 
 [query public hasDataInitializationMethod( aStructuralFeature : EStructuralFeature ) : Boolean = isLazy() and ( let lazyType : String = aStructuralFeature.getLazy() in lazyType = 'action' or lazyType = 'function')/]
 [query public getDataInitializationFeatures( aClass : EClass ) : OrderedSet(EStructuralFeature) = 
-         aClass.eStructuralFeatures->select( hasDataInitializationMethod() and getLazy() = 'function')
-->addAll(aClass.eStructuralFeatures->select( hasDataInitializationMethod() and getLazy() = 'action' ))/]
+         aClass.eStructuralFeatures->select( not isVolatile() and hasDataInitializationMethod() and getLazy() = 'function')
+->addAll(aClass.eStructuralFeatures->select( not isVolatile() and hasDataInitializationMethod() and getLazy() = 'action' ))/]
 
 
 

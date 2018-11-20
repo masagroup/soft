@@ -59,9 +59,11 @@ using namespace [namespace/];
 // Constructor / Destructor
 //*********************************
 [className/]::[className/]()
-[for ( aFeature : EStructuralFeature | aClass.eStructuralFeatures ) before(':') separator(',')]
+[let dataFeatures : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( not isVolatile() )]
+[for ( aFeature : EStructuralFeature | dataFeatures ) before(':') separator(',')]
    [aFeature.generateDataInitialization()/]
 [/for]
+[/let]
 //[protected (className+ '::' + className)]
 {
 }

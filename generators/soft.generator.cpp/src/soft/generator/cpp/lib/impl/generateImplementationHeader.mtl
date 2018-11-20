@@ -79,15 +79,17 @@ namespace [namespaceName/]
 
         [aClass.generateReflectivesDeclaration()/]
 
-[if aClass.eStructuralFeatures->notEmpty()]
+[let dataDeclarationFeatures : OrderedSet(EAttribute) = aClass.eStructuralFeatures->select( not isVolatile() )]
+[if dataDeclarationFeatures->notEmpty()]
     protected:
-        [aClass.eStructuralFeatures.generateDataDeclaration()/]
+        [dataDeclarationFeatures.generateDataDeclaration()/]
 [/if]
+[/let]
 
-[let dataFeatures : OrderedSet(EStructuralFeature) = aClass.getDataInitializationFeatures()]
-[if dataFeatures->notEmpty()]
+[let dataInitializationFeatures : OrderedSet(EStructuralFeature) = aClass.getDataInitializationFeatures()]
+[if dataInitializationFeatures->notEmpty()]
     private:
-        [dataFeatures.generateDataInitializationMethodDeclaration()/]
+        [dataInitializationFeatures.generateDataInitializationMethodDeclaration()/]
 [/if]
 [/let]
 
