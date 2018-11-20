@@ -10,7 +10,7 @@
  * Reflectives eGet/eSet//eUnSet/eIsSet/eInverseAdd/eInverseRemove
 */]
 [query private getEGetFeatures(aClass : EClass) : Set(EStructuralFeature) = aClass.eStructuralFeatures/]
-[query private getESetFeatures(aClass : EClass) : Set(EStructuralFeature) = aClass.eStructuralFeatures->select( eFeature | eFeature.isSet())/]
+[query private getESetFeatures(aClass : EClass) : Set(EStructuralFeature) = aClass.eStructuralFeatures->select( eFeature | eFeature.isChangeable())/]
 [query private getEIsSetFeatures(aClass : EClass) : Set(EStructuralFeature) = aClass.getEGetFeatures()/]
 [query private getEUnSetFeatures(aClass : EClass) : Set(EStructuralFeature) = aClass.getESetFeatures()/]
 [query private getEInverseAddFeatures(aClass : EClass) : Set(EStructuralFeature) = aClass.eStructuralFeatures->select( eFeature | eFeature.isBidirectional() and not eFeature.isVolatile())/]
@@ -169,9 +169,16 @@ void [aClass.getImplementationName()/]::eSet(int featureID, const boost::any& ne
 [for (anStructFeature : EStructuralFeature | aClass.getESetFeatures()->sortedBy(name))]
         case [anStructFeature.getQualifiedFeatureIDName()/]:
         {
-            [anStructFeature.eGenericType.generateCppType()/] [anStructFeature.name.first(1)/] = boost::any_cast<[anStructFeature.eGenericType.generateCppType()/]>(newValue);
-            [anStructFeature.getSetterName()/]([anStructFeature.name.first(1)/]);
+    [let varName : String = anStructFeature.name.first(1)]
+            [anStructFeature.generateEffectiveType()/] [varName/] = boost::any_cast<[anStructFeature.generateEffectiveType()/]>(newValue);
+    [if anStructFeature.isListType()]
+            [anStructFeature.getGetterName()/]()->clear();
+            [anStructFeature.getGetterName()/]()->addAll([varName/]);
+    [else]
+            [anStructFeature.getSetterName()/]([varName/]);
+    [/if]
             return;
+    [/let]
         }
 [/for]
     }
@@ -189,7 +196,7 @@ void [className/]::eUnset(int featureID)
         case [aStructFeature.getQualifiedFeatureIDName()/]:
         {
     [if aStructFeature.isListType() and not aStructFeature.isUnSettable()]
-            [aStructFeature.getGetterName()/]->clear();
+            [aStructFeature.getGetterName()/]()->clear();
     [elseif aStructFeature.hasUnSetter('public', true) ]
             [aStructFeature.getUnSetterName()/]();
     [elseif aStructFeature.oclIsKindOf(EReference)]

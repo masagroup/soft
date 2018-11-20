@@ -455,6 +455,15 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> EClassImpl::getEGen
 }
 
 
+void EClassImpl::unsetEGenericSuperTypes()
+{
+    // Start of user code EClassImpl::unsetEGenericSuperTypes
+    if (eGenericSuperTypes_)
+        eGenericSuperTypes_->clear();
+    // End of user code
+}
+
+
 std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> EClassImpl::getEAllGenericSuperTypes() const 
 {
     // Start of user code EClassImpl::getEAllGenericSuperTypes
@@ -519,6 +528,34 @@ void EClassImpl::eSet(int featureID, const boost::any& newValue)
             setAbstract(a);
             return;
         }
+        case EcorePackage::ECLASS__EGENERIC_SUPER_TYPES:
+        {
+            std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> e = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>>>(newValue);
+            getEGenericSuperTypes()->clear();
+            getEGenericSuperTypes()->addAll(e);
+            return;
+        }
+        case EcorePackage::ECLASS__EOPERATIONS:
+        {
+            std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> e = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>>>(newValue);
+            getEOperations()->clear();
+            getEOperations()->addAll(e);
+            return;
+        }
+        case EcorePackage::ECLASS__ESTRUCTURAL_FEATURES:
+        {
+            std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> e = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>>>(newValue);
+            getEStructuralFeatures()->clear();
+            getEStructuralFeatures()->addAll(e);
+            return;
+        }
+        case EcorePackage::ECLASS__ESUPER_TYPES:
+        {
+            std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> e = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>>>(newValue);
+            getESuperTypes()->clear();
+            getESuperTypes()->addAll(e);
+            return;
+        }
         case EcorePackage::ECLASS__INTERFACE:
         {
             bool i = boost::any_cast<bool>(newValue);
@@ -536,6 +573,26 @@ void EClassImpl::eUnset(int featureID)
         case EcorePackage::ECLASS__ABSTRACT:
         {
             setAbstract( false ); 
+            return;
+        }
+        case EcorePackage::ECLASS__EGENERIC_SUPER_TYPES:
+        {
+            unsetEGenericSuperTypes();
+            return;
+        }
+        case EcorePackage::ECLASS__EOPERATIONS:
+        {
+            getEOperations()->clear();
+            return;
+        }
+        case EcorePackage::ECLASS__ESTRUCTURAL_FEATURES:
+        {
+            getEStructuralFeatures()->clear();
+            return;
+        }
+        case EcorePackage::ECLASS__ESUPER_TYPES:
+        {
+            unsetESuperTypes();
             return;
         }
         case EcorePackage::ECLASS__INTERFACE:

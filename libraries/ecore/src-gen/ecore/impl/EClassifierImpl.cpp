@@ -166,6 +166,13 @@ void EClassifierImpl::eSet(int featureID, const boost::any& newValue)
             setClassifierID(c);
             return;
         }
+        case EcorePackage::ECLASSIFIER__ETYPE_PARAMETERS:
+        {
+            std::shared_ptr<EList<std::shared_ptr<ecore::ETypeParameter>>> e = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<ecore::ETypeParameter>>>>(newValue);
+            getETypeParameters()->clear();
+            getETypeParameters()->addAll(e);
+            return;
+        }
     }
     return ENamedElementImpl::eSet(featureID, newValue);
 }
@@ -177,6 +184,11 @@ void EClassifierImpl::eUnset(int featureID)
         case EcorePackage::ECLASSIFIER__CLASSIFIER_ID:
         {
             setClassifierID( -1 ); 
+            return;
+        }
+        case EcorePackage::ECLASSIFIER__ETYPE_PARAMETERS:
+        {
+            getETypeParameters()->clear();
             return;
         }
     }

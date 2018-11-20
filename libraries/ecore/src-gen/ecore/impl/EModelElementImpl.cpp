@@ -116,6 +116,35 @@ boost::any EModelElementImpl::eGet(int featureID, bool resolve, bool coreType) c
 }
 
 
+void EModelElementImpl::eSet(int featureID, const boost::any& newValue)
+{
+    switch(featureID)
+    {
+        case EcorePackage::EMODEL_ELEMENT__EANNOTATIONS:
+        {
+            std::shared_ptr<EList<std::shared_ptr<ecore::EAnnotation>>> e = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<ecore::EAnnotation>>>>(newValue);
+            getEAnnotations()->clear();
+            getEAnnotations()->addAll(e);
+            return;
+        }
+    }
+    return EObjectImpl::eSet(featureID, newValue);
+}
+
+void EModelElementImpl::eUnset(int featureID)
+{
+    switch(featureID)
+    {
+        case EcorePackage::EMODEL_ELEMENT__EANNOTATIONS:
+        {
+            getEAnnotations()->clear();
+            return;
+        }
+    }
+    return EObjectImpl::eUnset(featureID);
+}
+
+
 bool EModelElementImpl::eIsSet(int featureID) const
 {
     switch(featureID)

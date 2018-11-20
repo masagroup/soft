@@ -106,6 +106,8 @@ namespace ecore::impl
         
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> getEGenericSuperTypes() const ;
         
+        virtual void unsetEGenericSuperTypes() ;
+        
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> getEAllGenericSuperTypes() const ;
         
         

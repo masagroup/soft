@@ -128,7 +128,7 @@
         eType="#//EGenericType" unsettable="true" containment="true" resolveProxies="false">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="issetVisibility" value="no"/>
-        <details key="unsetVisibility" value="no"/>
+        <details key="unsetVisibility" value="no:public"/>
         <details key="lazy" value="action"/>
       </eAnnotations>
     </eStructuralFeatures>
@@ -352,14 +352,14 @@
         eType="#//EClassifier" unsettable="true">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="issetVisibility" value="no"/>
-        <details key="unsetVisibility" value="no"/>
+        <details key="unsetVisibility" value="no:public"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eGenericExceptions" upperBound="-1"
         eType="#//EGenericType" unsettable="true" containment="true" resolveProxies="false">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="issetVisibility" value="no"/>
-        <details key="unsetVisibility" value="no"/>
+        <details key="unsetVisibility" value="no:public"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="operationID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
