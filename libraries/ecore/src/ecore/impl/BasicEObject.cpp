@@ -43,12 +43,12 @@ std::shared_ptr<BasicEObject> BasicEObject::getThisPtr() const
 }
 
 
-EList<EAdapter*>& BasicEObject::eAdapters()
+EList<EAdapter*>& BasicEObject::eAdapters() const
 {
     return *eAdapters_;
 }
 
-bool BasicEObject::eDeliver()
+bool BasicEObject::eDeliver() const
 {
     return eDeliver_;
 }

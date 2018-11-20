@@ -30,8 +30,8 @@ namespace ecore::impl
         std::shared_ptr<BasicEObject> getThisPtr() const;
 
         // Notification
-        virtual EList<EAdapter*>& eAdapters();
-        virtual bool eDeliver();
+        virtual EList<EAdapter*>& eAdapters() const;
+        virtual bool eDeliver() const;
         virtual void eSetDeliver( bool deliver );
         virtual void eNotify( const std::shared_ptr<ENotification>& notification );
         bool eNotificationRequired();

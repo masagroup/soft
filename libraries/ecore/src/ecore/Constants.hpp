@@ -16,6 +16,8 @@ namespace ecore
 {
     static const int EOPPOSITE_FEATURE_BASE = -1;
     
+    static const int UNBOUNDED_MULTIPLICITY = -1;
+
     static const boost::any NO_VALUE;
 
 }

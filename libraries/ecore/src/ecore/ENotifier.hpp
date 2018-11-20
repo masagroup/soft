@@ -29,14 +29,14 @@ namespace ecore
         * Returns list of the adapters associated with this notifier.
         * @return the adapters associated with this notifier.
         */
-        virtual EList<EAdapter*>& eAdapters() = 0;
+        virtual EList<EAdapter*>& eAdapters() const = 0;
 
         /**
         * Returns whether this notifier will deliver notifications to the adapters.
         * @return whether notifications will be delivered.
         * @see #eSetDeliver
         */
-        virtual bool eDeliver() = 0;
+        virtual bool eDeliver() const = 0;
 
         /**
         * Sets whether this notifier will deliver notifications to the adapters.

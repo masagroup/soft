@@ -434,16 +434,16 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( const st
 {
     // [protected (className + '::' + methodName)]
 [if not isVolatile()]
+    auto notifications = msgs;
     if ( eNotificationRequired())
     {
-        auto notifications = msgs;
         auto notification = std::make_shared<Notification>(getThisPtr() , Notification::UNSET, [aStructuralFeature.getQualifiedFeatureIDName()/], boost::any(), boost::any());
         if ( notifications )
             notifications->add( notification );
         else
             notifications = notification;
-        return notifications;
     }
+    return notifications;
 [else]
     std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
     throw "NotImplementedException";
