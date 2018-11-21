@@ -56,12 +56,13 @@ namespace [namespaceName/]
             [anEPackage.eAllContents(EDataType).generateGetterDeclaration(anEPackage, true)/]
 
         private:
-            [anEPackage.eAllContents(EClass)->sortedBy(name).generateDataMember(anEPackage)/]
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
+    [let dataMembers : Sequence(ENamedElement) = Sequence{ Sequence{ aClass } , aClass.eStructuralFeatures, aClass.eOperations}->flatten()]
+            [dataMembers.generateDataMember(anEPackage)/]
+    [/let]
+[/for]
             [anEPackage.eAllContents(EDataType)->sortedBy(name).generateDataMember(anEPackage)/]
-            [anEPackage.eAllContents(EClass).eAttributes->sortedBy(name).generateDataMember(anEPackage)/]
-            [anEPackage.eAllContents(EClass).eReferences->sortedBy(name).generateDataMember(anEPackage)/]
-            [anEPackage.eAllContents(EClass).eOperations->sortedBy(name).generateDataMember(anEPackage)/]
-
+           
             friend class [anEPackage.getInterfaceName()/];
 
             static [className/]* create();
