@@ -74,7 +74,10 @@ using namespace [namespace/];
 {
 [if not aClass.ePackage.eClassifiers->exists( c | c.oclIsKindOf(EClass) and c <> aClass and aClass.isSuperTypeOf(c.oclAsType(EClass)))]
 #ifdef SHOW_DELETION
-    std::cout << "-------------------------------------------------------------------------------------------------\r\ndelete [aClass.name.toUpperFirst()/] "<< this << "\r\n------------------------------------------------------------------------ " << std::endl;
+    std::string name;
+    if ( auto named = dynamic_cast<ENamedElement*>( this ) )
+        name = named->getName();
+    std::cout << "delete [aClass.name.toUpperFirst()/] ['['/]"<< this << "[']'/] " << name << std::endl;
 #endif
 [/if]
 //[protected (className+ '::~' + className)]

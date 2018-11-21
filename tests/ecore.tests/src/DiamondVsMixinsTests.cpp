@@ -9,9 +9,8 @@ using namespace boost::timer;
 const int NB_ITERATIONS = 1000000;
 
 #define LOG 0
-#define COMPUTE 1
 
-#if ( COMPUTE == 0 )
+#ifdef BENCHMARK
 
 namespace diamond
 {

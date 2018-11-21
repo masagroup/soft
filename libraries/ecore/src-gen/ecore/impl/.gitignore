@@ -3,3 +3,4 @@
 !EClassifierImpl.cpp
 !EClassImpl.*
 !EModelElementImpl.cpp
+!ETypedElementImpl.cpp

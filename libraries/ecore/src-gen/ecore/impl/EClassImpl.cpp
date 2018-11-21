@@ -188,7 +188,10 @@ EClassImpl::EClassImpl()
 EClassImpl::~EClassImpl()
 {
 #ifdef SHOW_DELETION
-    std::cout << "-------------------------------------------------------------------------------------------------\r\ndelete EClass "<< this << "\r\n------------------------------------------------------------------------ " << std::endl;
+    std::string name;
+    if ( auto named = dynamic_cast<ENamedElement*>( this ) )
+        name = named->getName();
+    std::cout << "delete EClass ["<< this << "] " << name << std::endl;
 #endif
 //Start of user code EClassImpl::~EClassImpl
     eAdapters().remove( eSuperAdapter_.get() );

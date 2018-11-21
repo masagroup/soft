@@ -41,6 +41,14 @@ namespace ecore::impl
 
         virtual ~EObjectEList()
         {
+#ifdef SHOW_DELETION
+            std::cout << "delete EObjectEList [" << this << "] owner[";
+            if (auto owner = owner_.lock())
+                std::cout << owner.get();
+            else
+                std::cout << "unknown";
+            std::cout << "] featureID[" << featureID_ << "]" << std::endl;
+#endif
         }
 
         virtual void addUnique( const T& e )
