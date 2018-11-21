@@ -63,14 +63,14 @@ namespace ecore::impl
             didChange();
         }
 
-        virtual bool addAllUnique( const std::shared_ptr<EList<T>>& l )
+        virtual bool addAllUnique( const EList<T>& l )
         {
-            std::size_t growth = l->size();
+            std::size_t growth = l.size();
             std::size_t oldSize = v_.size();
             v_.resize( oldSize + growth );
             for (int i = 0; i < growth; ++i)
             {
-                auto t = l->get( i );
+                auto t = l.get( i );
                 v_[i + oldSize] = t;
                 didAdd( i + oldSize, t );
                 didChange();
@@ -78,16 +78,16 @@ namespace ecore::impl
             return growth != 0 ;
         }
 
-        virtual bool addAllUnique( std::size_t pos,  const std::shared_ptr<EList<T>>& l )
+        virtual bool addAllUnique( std::size_t pos,  const EList<T>& l )
         {
-            std::size_t growth = l->size();
+            std::size_t growth = l.size();
             std::size_t oldSize = v_.size();
             v_.resize( oldSize + growth );
             for (int i = (int)oldSize -1 ; i >= (int)pos; --i)
                 v_[ i + growth ] = v_[i];
             for (int i = 0; i < growth; ++i)
             {
-                auto t = l->get( i );
+                auto t = l.get( i );
                 v_[i + pos] = t;
                 didAdd( i + pos, t );
                 didChange();

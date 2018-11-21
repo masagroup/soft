@@ -535,28 +535,28 @@ void EClassImpl::eSet(int featureID, const boost::any& newValue)
         {
             std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>> e = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<ecore::EGenericType>>>>(newValue);
             getEGenericSuperTypes()->clear();
-            getEGenericSuperTypes()->addAll(e);
+            getEGenericSuperTypes()->addAll(*e);
             return;
         }
         case EcorePackage::ECLASS__EOPERATIONS:
         {
             std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>> e = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<ecore::EOperation>>>>(newValue);
             getEOperations()->clear();
-            getEOperations()->addAll(e);
+            getEOperations()->addAll(*e);
             return;
         }
         case EcorePackage::ECLASS__ESTRUCTURAL_FEATURES:
         {
             std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> e = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>>>(newValue);
             getEStructuralFeatures()->clear();
-            getEStructuralFeatures()->addAll(e);
+            getEStructuralFeatures()->addAll(*e);
             return;
         }
         case EcorePackage::ECLASS__ESUPER_TYPES:
         {
             std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>> e = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<ecore::EClass>>>>(newValue);
             getESuperTypes()->clear();
-            getESuperTypes()->addAll(e);
+            getESuperTypes()->addAll(*e);
             return;
         }
         case EcorePackage::ECLASS__INTERFACE:

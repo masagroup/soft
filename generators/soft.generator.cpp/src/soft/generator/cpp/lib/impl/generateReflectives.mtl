@@ -173,7 +173,7 @@ void [aClass.getImplementationName()/]::eSet(int featureID, const boost::any& ne
             [anStructFeature.generateEffectiveType()/] [varName/] = boost::any_cast<[anStructFeature.generateEffectiveType()/]>(newValue);
     [if anStructFeature.isListType()]
             [anStructFeature.getGetterName()/]()->clear();
-            [anStructFeature.getGetterName()/]()->addAll([varName/]);
+            [anStructFeature.getGetterName()/]()->addAll(*[varName/]);
     [else]
             [anStructFeature.getSetterName()/]([varName/]);
     [/if]

@@ -15,20 +15,17 @@
 namespace ecore {
 
     template <typename T>
-    class EList : public std::enable_shared_from_this<EList<T>> {
+    class EList {
     public:
-        typedef typename std::shared_ptr<EList<T>> T_Ptr_Type;
-        typedef typename std::shared_ptr<const EList<T>> T_Ptr_Const_Type;
-
         virtual ~EList() {}
 
         virtual bool add( const T& e ) = 0;
 
-        virtual bool addAll( const std::shared_ptr<EList<T>>& l ) = 0;
+        virtual bool addAll( const EList<T>& l ) = 0;
 
         virtual void add( std::size_t pos, const T& e ) = 0;
 
-        virtual bool addAll( std::size_t pos, const std::shared_ptr<EList<T>>& l ) = 0;
+        virtual bool addAll( std::size_t pos, const EList<T>& l ) = 0;
 
         virtual T get( std::size_t pos ) const = 0;
 
@@ -54,12 +51,12 @@ namespace ecore {
         }
 
         /** Iterator interfaces for an EList<T>. */
-        template <typename EListPtrType>
+        template <typename ListType >
         class EListIterator : public std::iterator<std::random_access_iterator_tag, T> {
         public:
-            EListIterator( EListPtrType eList, std::size_t index )
-                : eList_( eList ),
-                index_( index ) {
+            EListIterator( ListType* eList, std::size_t index )
+                : eList_( eList )
+                , index_( index ) {
             }
 
             T operator*() const {
@@ -151,7 +148,7 @@ namespace ecore {
                 return ((int64_t)index_ < (int64_t)eList_->size() - 1);
             }
 
-            const EListPtrType& getEList() const {
+            const ListType* getEList() const {
                 return eList_;
             }
 
@@ -162,8 +159,8 @@ namespace ecore {
         private:
 #if _ITERATOR_DEBUG_LEVEL == 2
             void _Compat( const EListIterator& rhs ) const
-            {	// test for compatible iterator pair
-                if (eList_ != rhs.eList_)
+            {   // test for compatible iterator pair
+                if ( eList_ != rhs.eList_)
                 {
                     _ASSERTE( "vector iterators incompatible" && 0 );
                     _SCL_SECURE_INVALID_ARGUMENT;
@@ -183,31 +180,27 @@ namespace ecore {
 #endif /* _ITERATOR_DEBUG_LEVEL */
 
         private:
-            EListPtrType eList_;
+            ListType* eList_;
             std::size_t index_;
         };
 
-        typedef EListIterator<T_Ptr_Type> iterator;
-        typedef EListIterator<T_Ptr_Const_Type> const_iterator;
+        typedef EListIterator<EList<T>> iterator;
+        typedef EListIterator<const EList<T>> const_iterator;
 
         iterator begin() {
-            auto this_shared = std::enable_shared_from_this<EList<T>>::shared_from_this();
-            return iterator( this_shared, 0 );
+            return iterator( this, 0 );
         }
 
         const_iterator begin() const {
-            auto this_shared = std::enable_shared_from_this<EList<T>>::shared_from_this();
-            return const_iterator( this_shared, 0 );
+            return const_iterator( this, 0 );
         }
 
         iterator end() {
-            auto this_shared = std::enable_shared_from_this<EList<T>>::shared_from_this();
-            return iterator( this_shared, size() );
+            return iterator( this, size() );
         }
 
         const_iterator end() const {
-            auto this_shared = std::enable_shared_from_this<EList<T>>::shared_from_this();
-            return const_iterator( this_shared, size() );
+            return const_iterator( this, size() );
         }
 
         const_iterator cbegin() const {
@@ -222,7 +215,7 @@ namespace ecore {
          * Allows treating an EList<T> as an EList<Q> (if T can be casted to Q dynamically)
          */
         template< typename Q >
-        inline typename EList< Q >::T_Ptr_Type asEListOf()
+        inline std::shared_ptr<EList< Q >> asEListOf()
         {
             return std::make_shared<DelegateEList< Q, T >>( *this );
         }
@@ -233,7 +226,6 @@ namespace ecore {
     class DelegateEList : public EList< T >
     {
     public:
-
         typedef EList< Q > T_ListDelegate;
 
         DelegateEList( T_ListDelegate& delegate ) :
@@ -255,14 +247,16 @@ namespace ecore {
             delegate_.add( pos, cast< T, Q >::do_cast( e ) );
         }
 
-        virtual bool addAll( const std::shared_ptr<EList<T>>& l )
+        virtual bool addAll( const EList<T>& l )
         {
-            return delegate_.addAll( l->asEListOf<Q>() );
+            auto transformed = const_cast<EList<T>&>(l).asEListOf<Q>();
+            return delegate_.addAll( *transformed );
         }
 
-        virtual bool addAll( std::size_t pos, const std::shared_ptr<EList<T>>& l )
+        virtual bool addAll( std::size_t pos, const EList<T>& l )
         {
-            return delegate_.addAll( pos, l->asEListOf<Q>() );
+            auto transformed = const_cast<EList<T>&>(l).asEListOf<Q>();
+            return delegate_.addAll( pos, *transformed );
         }
 
         virtual T get( std::size_t pos ) const {

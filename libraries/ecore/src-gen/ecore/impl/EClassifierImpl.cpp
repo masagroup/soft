@@ -166,7 +166,7 @@ void EClassifierImpl::eSet(int featureID, const boost::any& newValue)
         {
             std::shared_ptr<EList<std::shared_ptr<ecore::ETypeParameter>>> e = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<ecore::ETypeParameter>>>>(newValue);
             getETypeParameters()->clear();
-            getETypeParameters()->addAll(e);
+            getETypeParameters()->addAll(*e);
             return;
         }
     }

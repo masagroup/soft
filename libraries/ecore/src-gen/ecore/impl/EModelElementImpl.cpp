@@ -121,7 +121,7 @@ void EModelElementImpl::eSet(int featureID, const boost::any& newValue)
         {
             std::shared_ptr<EList<std::shared_ptr<ecore::EAnnotation>>> e = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<ecore::EAnnotation>>>>(newValue);
             getEAnnotations()->clear();
-            getEAnnotations()->addAll(e);
+            getEAnnotations()->addAll(*e);
             return;
         }
     }

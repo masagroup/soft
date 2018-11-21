@@ -39,31 +39,30 @@ namespace ecore::impl
             return uniquePolicy_.add( e );
         }
 
+        virtual bool addAll( const EList<T>& l )
+        {
+            return uniquePolicy_.addAll( l );
+        }
+
         virtual void add( std::size_t pos, const T& e )
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
             uniquePolicy_.add( pos, e );
         }
 
-        virtual void addUnique( const T& e ) = 0;
-
-        virtual void addUnique( std::size_t pos, const T& e ) = 0;
-
-
-        virtual bool addAll( const std::shared_ptr<EList<T>>& l )
-        {
-            return uniquePolicy_.addAll( l );
-        }
-
-        virtual bool addAll( std::size_t pos, const std::shared_ptr<EList<T>>& l )
+        virtual bool addAll( std::size_t pos, const EList<T>& l )
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
             return uniquePolicy_.addAll( pos, l );
         }
 
-        virtual bool addAllUnique( const std::shared_ptr<EList<T>>& l ) = 0;
+        virtual void addUnique( const T& e ) = 0;
 
-        virtual bool addAllUnique( std::size_t pos, const std::shared_ptr<EList<T>>& l ) = 0;
+        virtual void addUnique( std::size_t pos, const T& e ) = 0;
+
+        virtual bool addAllUnique( const EList<T>& l ) = 0;
+
+        virtual bool addAllUnique( std::size_t pos, const EList<T>& l ) = 0;
 
         virtual void set( std::size_t pos, const T& e )
         {
@@ -107,7 +106,7 @@ namespace ecore::impl
                 return true;
             }
 
-            inline bool addAll( const std::shared_ptr<EList<T>>& l )
+            inline bool addAll( const EList<T>& l )
             {
                 return list_.addAllUnique( l );
             }
@@ -117,7 +116,7 @@ namespace ecore::impl
                 list_.addUnique( pos, e );
             }
 
-            inline bool addAll( std::size_t pos, const std::shared_ptr<EList<T>>& l )
+            inline bool addAll( std::size_t pos, const EList<T>& l )
             {
                 return list_.addAllUnique( pos, l );
             }
@@ -146,9 +145,10 @@ namespace ecore::impl
                 }
             }
 
-            inline bool addAll( const std::shared_ptr<EList<T>>& l )
+            inline bool addAll( const EList<T>& l )
             {
-                return list_.addAllUnique( getNonDuplicates( l ) );
+                auto nonDuplicates = getNonDuplicates( l );
+                return list_.addAllUnique( *nonDuplicates );
             }
 
             inline void add( std::size_t pos, const T& e )
@@ -157,9 +157,10 @@ namespace ecore::impl
                 list_.addUnique( pos, e );
             }
 
-            inline bool addAll( std::size_t pos, const std::shared_ptr<EList<T>>& l )
+            inline bool addAll( std::size_t pos, const EList<T>& l )
             {
-                return list_.addAllUnique( pos, getNonDuplicates( l ) );
+                auto nonDuplicates = getNonDuplicates( l );
+                return list_.addAllUnique( pos, *nonDuplicates );
             }
 
             inline void set( std::size_t pos, const T& e )
@@ -169,11 +170,11 @@ namespace ecore::impl
                 list_.setUnique( pos, e );
             }
         
-            std::shared_ptr<EList<T>> getNonDuplicates( const std::shared_ptr<EList<T>> & l )
+            std::unique_ptr<EList<T>> getNonDuplicates( const EList<T>& l )
             {
                 std::unordered_set<T> s;
                 std::vector<T> v;
-                for (auto e : *l)
+                for (auto e : l)
                 {
                     auto i = s.insert( e );
                     if (i.second)
@@ -182,7 +183,7 @@ namespace ecore::impl
                             v.push_back( e );
                     }
                 }
-                return std::make_shared<ImmutableEList<T>>( std::move(v) );
+                return std::make_unique<ImmutableEList<T>>( std::move(v) );
             }
 
             AbstractEList& list_;

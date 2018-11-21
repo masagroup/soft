@@ -24,15 +24,20 @@ namespace ecore::impl {
         {
         }
 
+        ImmutableEList( std::initializer_list<T> l )
+            : v_( l )
+        {
+        }
+
         virtual ~ImmutableEList() {}
 
         virtual bool add( const T& e ) { throw "UnsupportedOperationException";  }
 
-        virtual bool addAll( const std::shared_ptr<EList<T>>& l ) { throw "UnsupportedOperationException"; }
+        virtual bool addAll( const EList<T>& l ) { throw "UnsupportedOperationException"; }
 
         virtual void add( std::size_t pos, const T& e ) { throw "UnsupportedOperationException"; }
 
-        virtual bool addAll( std::size_t pos, const std::shared_ptr<EList<T>>& l ) { throw "UnsupportedOperationException"; }
+        virtual bool addAll( std::size_t pos, const EList<T>& l ) { throw "UnsupportedOperationException"; }
 
         virtual T get( std::size_t pos ) const { return v_.at( pos );  }
 

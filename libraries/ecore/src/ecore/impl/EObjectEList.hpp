@@ -22,6 +22,10 @@
 #include <memory>
 #include <algorithm>
 
+#ifdef SHOW_DELETION
+#include <iostream>
+#endif
+
 namespace ecore::impl
 {
     
@@ -73,24 +77,24 @@ namespace ecore::impl
             return createAndAddNotification( notifications, ENotification::ADD, NO_VALUE, e, index );
         }
 
-        virtual bool addAllUnique( const std::shared_ptr<EList<T>>& l )
+        virtual bool addAllUnique( const EList<T>& l )
         {
             return addAllUnique( size(), l );
         }
 
-        virtual bool addAllUnique( std::size_t index, const std::shared_ptr<EList<T>>& l )
+        virtual bool addAllUnique( std::size_t index, const EList<T>& l )
         {
-            if (l->empty())
+            if (l.empty())
                 return false;
             Super::addAllUnique( index, l );
             auto notifications = createNotificationChain();
-            for (int i = 0; i < l->size(); ++i)
+            for (int i = 0; i < l.size(); ++i)
             {
                 auto object = v_[ i + index ];
                 notifications = inverse_.inverseAdd( object, notifications );
             }
-            createAndDispatchNotification( notifications, [&]() { return l->size() == 1 ? createNotification( ENotification::ADD, NO_VALUE, l->get( 0 ), index )
-                                                                                        : createNotification( ENotification::ADD_MANY, NO_VALUE, l, index ); } );
+            createAndDispatchNotification( notifications, [&]() { return l.size() == 1 ? createNotification( ENotification::ADD, NO_VALUE, l.get( 0 ), index )
+                                                                                       : createNotification( ENotification::ADD_MANY, NO_VALUE, toAny(l), index ); } );
             return true;
         }
 
@@ -214,6 +218,13 @@ namespace ecore::impl
         };
 
     private:
+
+        static boost::any toAny(const EList<T>& l)
+        {
+            std::vector<boost::any> v;
+            std::transform( l.begin(), l.end(), v.end(), []( const T& i ) { return i; } );
+            return v;
+        }
 
         std::shared_ptr<EObject> getOwner()
         {
