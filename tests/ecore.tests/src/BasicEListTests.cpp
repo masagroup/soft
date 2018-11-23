@@ -86,6 +86,7 @@ BOOST_AUTO_TEST_CASE( Constructor_Default )
 BOOST_AUTO_TEST_CASE( Constructor_Initializer )
 {
     BasicEList<int> list = { 1 , 2 };
+    BOOST_CHECK_EQUAL( list, std::vector<int>( { 1 , 2 } ) );
 }
 
 BOOST_AUTO_TEST_CASE( Empty )
@@ -230,6 +231,7 @@ BOOST_AUTO_TEST_CASE( Unique_Add_Index )
     BasicEList<int, true> list;
     list.add( 0, 1 );
     list.add( 0, 2 );
+    BOOST_CHECK_EQUAL( list, std::vector<int>( { 2,1 } ) );
 }
 
 BOOST_AUTO_TEST_CASE( Unique_Add_Index_InvalidElement, *boost::unit_test::precondition( no_debugger() ) )
