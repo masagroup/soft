@@ -90,14 +90,20 @@ const [aAttribute.generateEffectiveType()/]&
 
 [template public generateDataType(eReference : EReference) post (trim())]
 [if isListType()]
-std::shared_ptr<EList<[eReference.eGenericType.generateCppType()/]>>
+[let shortQualifiedListClass : String = getShortQualifiedName('ecore::EList', eReference.eContainingClass.ePackage.getQualifiedImplementationName())]
+std::shared_ptr<[shortQualifiedListClass/]<[eReference.eGenericType.generateCppType()/]>>
+[/let]
+[elseif isProxy()]
+[let shortQualifiedProxyClass : String = getShortQualifiedName('ecore::impl::Proxy', eReference.eContainingClass.ePackage.getQualifiedImplementationName())]
+[shortQualifiedProxyClass/]<[eReference.eGenericType.generateCppType(false)/]>
+[/let]
 [else]
 [eReference.pointerType()/]<[eReference.eGenericType.eClassifier.generateType()/]>
 [/if]
 [/template]
 
 [template private pointerType(aReference : EReference) post(trim())]
-[if(isBackReference())]
+[if isBackReference() or isProxy() ]
 std::weak_ptr
 [else]
 std::shared_ptr

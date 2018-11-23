@@ -10,11 +10,11 @@
 if aStructuralFeature.hasKey('lazy') then 
     aStructuralFeature.valueKey('lazy')
 else
-    if ( aStructuralFeature.isListType() ) then
+    if ( aStructuralFeature.isListType() or aStructuralFeature.isProxy()) then
         if aStructuralFeature.eContainingClass.ePackage.hasKey('lazy') then 
             aStructuralFeature.eContainingClass.ePackage.valueKey('lazy') 
         else 
-            'no'
+            'function'
         endif
     else
         'no'
@@ -132,26 +132,34 @@ endif/]
 [template private generateDataInitializationValue(aStructuralFeature : EStructuralFeature) post(trim())]
 [if isListType()]
 [aStructuralFeature.getListConstructor()/]
+[elseif isProxy()]
+[generateDataType()/]( getThisPtr() , [aStructuralFeature.getQualifiedFeatureIDName()/] )
 [elseif aStructuralFeature.oclIsKindOf(EAttribute)]
 [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/]
 [else]
 [/if]
 [/template]
 
+[template private generateDataInitializationMethodReturnType(aStructuralFeature : EStructuralFeature) post(trim())]
+[if aStructuralFeature.getLazy() = 'action']void[elseif aStructuralFeature.isProxy()][aStructuralFeature.generateDataType()/][else][aStructuralFeature.generateReturnType()/][/if]
+[/template]
+
 [template public generateDataInitializationMethodDeclaration(aStructuralFeature : EStructuralFeature) ]
 [let methodName : String = aStructuralFeature.getLazyInitializationName()]
-[if aStructuralFeature.getLazy() = 'action']void[else][aStructuralFeature.generateReturnType()/][/if] [methodName/]();
+[generateDataInitializationMethodReturnType()/] [methodName/]();
 [/let]
 [/template]
 
 [template public generateDataInitializationMethodDefinition(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'function' )]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
 [let methodName : String = aStructuralFeature.getLazyInitializationName()]
-[aStructuralFeature.generateReturnType()/] [className/]::[methodName/]()
+[generateDataInitializationMethodReturnType()/] [className/]::[methodName/]()
 {
     // [protected (className + '::' + methodName)]
 [if isListType()]
     return [getListConstructor()/];
+[elseif isProxy()]
+    return [generateDataType()/]( getThisPtr() , [aStructuralFeature.getQualifiedFeatureIDName()/] );
 [elseif aStructuralFeature.oclIsKindOf(EAttribute)]
     return [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/];
 [else]
@@ -173,6 +181,7 @@ void [className/]::[methodName/]()
     // [protected (className + '::' + methodName)]
 [if isListType()]
     [aStructuralFeature.name/]_ = [getListConstructor()/];
+[elseif isProxy()]
 [elseif aStructuralFeature.oclIsKindOf(EAttribute)]
     [aStructuralFeature.name/]_ = [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/];
 [else]
@@ -207,7 +216,12 @@ void [className/]::[methodName/]()
         return std::dynamic_pointer_cast<[aStructuralFeature.generateElementType()/]>(eContainer());
 [elseif not isVolatile()]
     [if isLazy()]
+        [if isProxy() and not isListType()]
+    const auto& proxy = [aStructuralFeature.name/]_.get(); 
+    return proxy.get();
+        [else]
     return [aStructuralFeature.name/]_.get();
+        [/if]
     [else]
     return [aStructuralFeature.name/]_;
     [/if]
@@ -238,8 +252,13 @@ virtual [aStructuralFeature.generateReturnType()/] [aStructuralFeature.getGetter
     else
         return std::dynamic_pointer_cast<[aStructuralFeature.generateElementType()/]>(eContainer());
 [elseif not isVolatile()]
-    [if isLazy()]
+     [if isLazy()]
+        [if isProxy() and not isListType()]
+    const auto& proxy = [aStructuralFeature.name/]_.get(); 
+    return proxy.get();
+        [else]
     return [aStructuralFeature.name/]_.get();
+        [/if]
     [else]
     return [aStructuralFeature.name/]_;
     [/if]
@@ -280,7 +299,7 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( [aStruct
     return eBasicSetContainer([newVarName/],[aStructuralFeature.getQualifiedFeatureIDName()/],msgs); 
 [elseif not isVolatile()]
     [let oldVarName : String = 'old' + aStructuralFeature.name.toUpperFirst()]
-    auto [oldVarName/] = [newVarName/];
+    auto [oldVarName/] = [newVarName/][if isLazy()].get()[/if];
     [aStructuralFeature.name/]_ = [newVarName/];
     auto notifications = msgs;
     if ( eNotificationRequired() )
@@ -356,7 +375,7 @@ void [className/]::[methodName/]([aStructuralFeature.generateParameterType()/] [
         [/if]
     [else]
         [let oldVarName : String = 'old' + aStructuralFeature.name.toUpperFirst()]
-    auto [oldVarName/] = [aStructuralFeature.name/]_;
+    auto [oldVarName/] = [aStructuralFeature.name/]_[if isLazy()].get()[/if];
     [aStructuralFeature.name/]_ = [newVarName/];
     if ( eNotificationRequired() )
         eNotify( std::make_shared<Notification>(getThisPtr(), Notification::SET, [aStructuralFeature.getQualifiedFeatureIDName()/], [oldVarName/], [newVarName/]));

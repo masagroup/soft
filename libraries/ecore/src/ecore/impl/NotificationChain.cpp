@@ -35,5 +35,4 @@ void NotificationChain::dispatch()
         if( notifier &&  notification->getEventType() != -1 )
             notifier->eNotify( notification );
     }
-
 }

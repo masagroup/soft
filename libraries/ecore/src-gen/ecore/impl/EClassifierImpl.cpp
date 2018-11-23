@@ -99,7 +99,7 @@ int EClassifierImpl::getClassifierID() const
 void EClassifierImpl::setClassifierID(int newClassifierID)
 {
     // Start of user code EClassifierImpl::setClassifierID
-    auto oldClassifierID = classifierID_;
+    auto oldClassifierID = classifierID_.get();
     classifierID_ = newClassifierID;
     if ( eNotificationRequired() )
         eNotify( std::make_shared<Notification>(getThisPtr(), Notification::SET, EcorePackage::ECLASSIFIER__CLASSIFIER_ID, oldClassifierID, newClassifierID));

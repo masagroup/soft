@@ -10,10 +10,11 @@
 #ifndef ECORE_PROXY_HPP_
 #define ECORE_PROXY_HPP_
 
+#include "ecore/EObject.hpp"
 #include "ecore/impl/Notification.hpp"
 #include <memory>
 
-namespace
+namespace ecore
 {
     class EObject;
 }
@@ -26,11 +27,11 @@ namespace ecore::impl
     public:
         Proxy()
             : owner_()
-            , featureID_(-1)
+            , featureID_( -1 )
         {
         }
 
-        Proxy( const std::shared_ptr<EObject>& owner , int featureID )
+        Proxy( const std::shared_ptr<EObject>& owner, int featureID )
             : owner_( owner )
             , featureID_( featureID )
         {
@@ -52,17 +53,17 @@ namespace ecore::impl
             {
                 if( proxy_ )
                 {
-                    auto resolved = owner.eResolveProxy( proxy_ );
-                    if( resolved && resolved != proxy_ )
+                    auto owner = owner_.lock();
+                    if( owner )
                     {
-                        ref_ = resolved;
-                        if( isNotificationRequired() )
+                        auto resolved = std::dynamic_pointer_cast<T>( owner->eResolveProxy( proxy_ ) );
+                        if( resolved && resolved != proxy_ )
                         {
-                            auto owner = getOwner();
-                            _ASSERT( owner );
-                            owner->eNotify( std::make_shared< Notification >( owner, featureID_, Notification::REMOVE, proxy_, resolved ) );
+                            ref_ = resolved;
+                            if( isNotificationRequired() )
+                                owner->eNotify( std::make_shared< Notification >( owner, Notification::REMOVE, featureID_, proxy_, resolved ) );
+                            return resolved;
                         }
-                        return resolved;
                     }
                 }
                 return proxy_;
@@ -73,10 +74,18 @@ namespace ecore::impl
 
         void set( const std::shared_ptr<T>& ref )
         {
-            if( ref->eIsProxy() )
-                proxy_ = std::move( ref );
+            if( ref )
+            {
+                if( ref->eIsProxy() )
+                    proxy_ = std::move( ref );
+                else
+                    ref_ = ref;
+            }
             else
-                ref_ = ref;
+            {
+                ref_.reset();
+                proxy_.reset();
+            }
         }
 
         Proxy& operator=( const Proxy& o )
@@ -94,31 +103,76 @@ namespace ecore::impl
             return *this;
         }
 
+        bool operator ==( const Proxy& o ) const
+        {
+            return equals( owner_, o.owner_ )
+                && featureID_ == o.featureID_
+                && equals( ref_, o.ref_ )
+                && proxy_ == o.proxy_;
+        }
+
+        bool operator !=( const Proxy& o ) const
+        {
+            return !operator ==( o );
+        }
+
+        std::shared_ptr<T> getNoResolution() const
+        {
+            auto ref = ref_.lock();
+            return ref ? ref : proxy_;
+        }
+
     private:
         template <typename T>
-        bool is_uninitialized( std::weak_ptr<T> const& weak )
+        bool is_uninitialized( const std::weak_ptr<T>& weak ) const
         {
             using wt = std::weak_ptr<T>;
             return !weak.owner_before( wt{} ) && !wt{}.owner_before( weak );
         }
 
-        std::shared_ptr<EObject> getOwner() const
+        template <typename T, typename U>
+        inline bool equals( const std::weak_ptr<T>& t, const std::weak_ptr<U>& u ) const
         {
-            return owner_.lock();
+            return ( is_uninitialized( t ) && is_uninitialized( u ) ) || ( !is_uninitialized( t ) && t.lock() == u.lock() );
         }
 
         bool isNotificationRequired() const
         {
-            auto owner = getOwner();
+            auto owner = owner_.lock();
             return owner ? ( owner->eDeliver() && !owner->eAdapters().empty() ) : false;
         }
 
     private:
         std::weak_ptr<EObject> owner_;
         int featureID_;
-        std::weak_ptr<T> ref_;
+        mutable std::weak_ptr<T> ref_;
         std::shared_ptr<T> proxy_;
     };
+
+    template<typename T>
+    bool operator==( std::nullptr_t, const Proxy<T>& right ) _NOEXCEPT
+    {	// test if nullptr == shared_ptr
+        return ( nullptr == right.getNoResolution() );
+    }
+
+    template<typename T>
+    bool operator==( const Proxy<T>& left, nullptr_t ) _NOEXCEPT
+    {	// test if nullptr == shared_ptr
+        return ( left.getNoResolution() == nullptr );
+    }
+
+    template<typename T>
+    bool operator!=( const Proxy<T>& left, std::nullptr_t right ) _NOEXCEPT
+    {	// test if shared_ptr != nullptr
+        return ( !( left == right ) );
+    }
+
+    template<typename T>
+    bool operator!=( std::nullptr_t left, const Proxy<T>& right ) _NOEXCEPT
+    {	// test if nullptr != shared_ptr
+        return ( !( left == right ) );
+    }
 }
 
 #endif
+

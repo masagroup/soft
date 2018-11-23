@@ -47,7 +47,7 @@ ETypedElementImpl::ETypedElementImpl()
 ,   unique_(true)
 ,   lowerBound_(0)
 ,   upperBound_(1)
-,   eType_()
+,   eType_([&](){ return initEType();})
 ,   eGenericType_()
 //Start of user code ETypedElementImpl::ETypedElementImpl
 {
@@ -182,7 +182,8 @@ bool ETypedElementImpl::isRequired() const
 std::shared_ptr<ecore::EClassifier> ETypedElementImpl::getEType() const 
 {
     // Start of user code ETypedElementImpl::getEType
-    return eType_;
+    const auto& proxy = eType_.get(); 
+    return proxy.get();
     // End of user code
 }
 
@@ -257,7 +258,8 @@ void ETypedElementImpl::unsetEGenericType()
 std::shared_ptr<ecore::EClassifier> ETypedElementImpl::basicGetEType() const 
 {
     // Start of user code ETypedElementImpl::basicGetEType
-    return eType_;
+    const auto& proxy = eType_.get(); 
+    return proxy.get();
     // End of user code
 }
 
@@ -449,6 +451,17 @@ std::shared_ptr<ENotificationChain> ETypedElementImpl::eBasicInverseRemove( cons
     // End of user code
 }
 
+
+
+//*********************************
+// Initializations
+//*********************************
+Proxy<ecore::EClassifier> ETypedElementImpl::initEType()
+{
+    // Start of user code ETypedElementImpl::initEType
+    return Proxy<ecore::EClassifier>( getThisPtr() , EcorePackage::ETYPED_ELEMENT__ETYPE );
+    // End of user code
+}
 
 
 

@@ -45,6 +45,7 @@ namespace ecore::tests
         // Start of user code MockObject
         MOCK_METHOD( eInverseAdd, 3 )
         MOCK_METHOD( eInverseRemove, 3 )
+        MOCK_METHOD( eResolveProxy, 1)
         // End of user code
     };
 } 

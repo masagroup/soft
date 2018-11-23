@@ -21,6 +21,9 @@
 [if aClass.eStructuralFeatures->exists( isLazy())]
 #include "ecore/impl/Lazy.hpp"
 [/if]
+[if aClass.eStructuralFeatures->exists( isProxy())]
+#include "ecore/impl/Proxy.hpp"
+[/if]
 
 // [protected (className + ' [definition-includes]')]
 // [/protected]

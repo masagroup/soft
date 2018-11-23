@@ -18,6 +18,7 @@
 #include "ecore/EClass.hpp"
 #include "ecore/impl/EClassifierImpl.hpp"
 #include "ecore/impl/Lazy.hpp"
+#include "ecore/impl/Proxy.hpp"
 
 // Start of user code EClassImpl [definition-includes]
 #include <unordered_map>

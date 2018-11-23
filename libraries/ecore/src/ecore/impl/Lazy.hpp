@@ -23,7 +23,8 @@ namespace ecore::impl
         {
         }
 
-        Lazy& operator =( const T& other )
+        template<typename U>
+        Lazy& operator =( const U& other )
         {
             value_ = other;
             return *this;
@@ -46,6 +47,11 @@ namespace ecore::impl
             value_ = init_;
         }
 
+        const T& value() const
+        {
+            return value_;
+        }
+    
     private:
         mutable T value_;
         T init_;
@@ -60,7 +66,8 @@ namespace ecore::impl
         {
         }
 
-        Lazy& operator =( const T& other )
+        template<typename U>
+        Lazy& operator =( const U& other )
         {
             value_ = other;
             return *this;
@@ -83,11 +90,64 @@ namespace ecore::impl
             value_ = init_;
         }
 
+        const T& value() const
+        {
+            return value_;
+        }
+
     private:
         mutable T value_;
         T init_;
         std::function<void()> initializer_;
     };
+
+    template<typename T, typename Q, typename O>
+    bool operator==( const O& left, const Lazy<T, Q>& right ) _NOEXCEPT
+    {	
+        return ( left == right.value() );
+    }
+
+    template<typename T, typename Q , typename O>
+    bool operator==( const Lazy<T, Q>& left, const O& right ) _NOEXCEPT
+    {	
+        return ( left.value() == right );
+    }
+
+    template<typename T, typename Q, typename O>
+    bool operator!=( const Lazy<T, Q>& left, const O& right ) _NOEXCEPT
+    {	
+        return ( !( left == right ) );
+    }
+
+    template<typename T, typename Q, typename O>
+    bool operator!=( const O& left, const Lazy<T, Q>& right ) _NOEXCEPT
+    {	
+        return ( !( left == right ) );
+    }
+
+    template<typename T, typename Q>
+    bool operator==( std::nullptr_t, const Lazy<T, Q>& right ) _NOEXCEPT
+    {
+        return ( nullptr == right.value() );
+    }
+
+    template<typename T, typename Q>
+    bool operator==( const Lazy<T, Q>& left, std::nullptr_t ) _NOEXCEPT
+    {
+        return ( left.value() == nullptr );
+    }
+
+    template<typename T, typename Q>
+    bool operator!=( const Lazy<T, Q>& left, std::nullptr_t ) _NOEXCEPT
+    {
+        return ( !( left == nullptr ) );
+    }
+
+    template<typename T, typename Q>
+    bool operator!=( std::nullptr_t, const Lazy<T, Q>& right ) _NOEXCEPT
+    {
+        return ( !( nullptr == right ) );
+    }
 
     template <typename T>
     struct Lazy<std::shared_ptr<T>, std::shared_ptr<T>>
@@ -98,13 +158,15 @@ namespace ecore::impl
         {
         }
 
-        Lazy& operator =( const std::shared_ptr<T>& other )
+        template<typename U>
+        Lazy& operator =( const U& other )
         {
             value_ = other;
             return *this;
         }
 
-        Lazy& operator =( const std::shared_ptr<T>&& other )
+        template<typename U>
+        Lazy& operator =( const U&& other )
         {
             value_ = std::move( other );
             return *this;
@@ -157,13 +219,15 @@ namespace ecore::impl
         {
         }
 
-        Lazy& operator =( const std::shared_ptr<T>& other )
+        template<typename U>
+        Lazy& operator =( const U& other )
         {
             value_ = other;
             return *this;
         }
 
-        Lazy& operator =( const std::shared_ptr<T>&& other )
+        template<typename U>
+        Lazy& operator =( const U&& other )
         {
             value_ = std::move( other );
             return *this;
@@ -239,15 +303,17 @@ namespace ecore::impl
         {
         }
 
-        Lazy& operator =( std::unique_ptr<T>& other )
+        template<typename U>
+        Lazy& operator =( U& other )
         {
             value_ = other;
             return *this;
         }
 
-        Lazy& operator =( std::unique_ptr<T>&& other )
+        template<typename U>
+        Lazy& operator =( U&& other )
         {
-            value_ = std::move(other);
+            value_ = std::move( other );
             return *this;
         }
 
@@ -288,15 +354,17 @@ namespace ecore::impl
         {
         }
 
-        Lazy& operator =( std::unique_ptr<T>& other )
+        template<typename U>
+        Lazy& operator =( U& other )
         {
             value_ = other;
             return *this;
         }
 
-        Lazy& operator =( std::unique_ptr<T>&& other )
+        template<typename U>
+        Lazy& operator =( U&& other )
         {
-            value_ = other;
+            value_ = std::move( other );
             return *this;
         }
         

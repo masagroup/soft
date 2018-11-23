@@ -201,7 +201,7 @@
     aStructuralFeature.volatile or ( not eReverseFeature.oclIsUndefined() and eReverseFeature.volatile )
 /]
 [query public isListType(aTypedElement : ETypedElement ) : Boolean = (not aTypedElement.oclIsUndefined() ) and ( aTypedElement.many or aTypedElement.upperBound <> 1 )/]  
-[query public isResolveProxies(aStructuralFeature : EStructuralFeature) : Boolean = (not isContainer() and not isContains()) and aStructuralFeature.oclIsKindOf(EReference) and aStructuralFeature.oclAsType(EReference).resolveProxies/]  
+[query public isProxy(aStructuralFeature : EStructuralFeature) : Boolean = (not isContainer() and not isContains()) and aStructuralFeature.oclIsKindOf(EReference) and aStructuralFeature.oclAsType(EReference).resolveProxies/]  
 [query public isField(aStructuralFeature : EStructuralFeature) : Boolean = not isContainer() and not isVolatile()/]
 
 [query public isGet(aStructuralFeature : EStructuralFeature) : Boolean = true/]
@@ -210,7 +210,7 @@
 [query public isIsSet(aStructuralFeature : EStructuralFeature) : Boolean = isUnSettable()/]
 
 [query public isBasicSet(aStructuralFeature : EStructuralFeature) : Boolean = not isListType() and ( isChangeable() or not isContainer() ) and ( isBidirectional() and not isVolatile() or isContains() ) /]
-[query public isBasicGet(aStructuralFeature : EStructuralFeature) : Boolean = isResolveProxies() and not isListType()/]
+[query public isBasicGet(aStructuralFeature : EStructuralFeature) : Boolean = isProxy() and not isListType()/]
 [query public isBasicUnSet(aStructuralFeature : EStructuralFeature) : Boolean = isUnSettable() and isChangeable() and not isListType() and aStructuralFeature.oclIsKindOf(EReference) and ( isBidirectional() or isContains() )/]
 
 [query private getSuperTypeContainers(aClass:EClass) : OrderedSet(EReference) = if not(aClass.eSuperTypes->isEmpty()) then aClass.eSuperTypes.getAllContainers()->flatten()->asOrderedSet() else OrderedSet{} endif /]
