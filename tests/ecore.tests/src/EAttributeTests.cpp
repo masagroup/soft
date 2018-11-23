@@ -1,6 +1,7 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
 
+#include "ecore/Constants.hpp"
 #include "ecore/EAttribute.hpp"
 #include "ecore/EcoreFactory.hpp"
 #include "ecore/EcorePackage.hpp"
@@ -64,14 +65,14 @@ BOOST_AUTO_TEST_CASE( Accessors_ENamedElement )
     BOOST_CHECK_EQUAL( eAttribute->getName(), "toto" );
 }
 
-BOOST_FIXTURE_TEST_CASE( Accessors_ENamedElement_Notifications , AttributeNotificationsFixture  )
+BOOST_FIXTURE_TEST_CASE( Accessors_ENamedElement_Notifications, AttributeNotificationsFixture )
 {
-    MOCK_EXPECT( eAdapter->notifyChanged ).with( [ = ]( const std::shared_ptr<ENotification>& n )
+    MOCK_EXPECT( eAdapter->notifyChanged ).with( [=]( const std::shared_ptr<ENotification>& n )
     {
         return n->getNotifier() == eAttribute
             && n->getFeature() == EcorePackage::eInstance()->getENamedElement_Name()
             && boost::any_cast<std::string>(n->getOldValue()) == ""
-            && boost::any_cast<std::string>( n->getNewValue() ) == "toto"
+            && boost::any_cast<std::string>(n->getNewValue()) == "toto"
             && n->getPosition() == -1;
     } ).once();
 
@@ -79,7 +80,7 @@ BOOST_FIXTURE_TEST_CASE( Accessors_ENamedElement_Notifications , AttributeNotifi
     BOOST_CHECK_EQUAL( eAttribute->getName(), "toto" );
 }
 
-BOOST_AUTO_TEST_CASE( Accessors_ETypedElement )
+BOOST_AUTO_TEST_CASE( Accessors_ETypedElement_Default )
 {
     auto eAttribute = EcoreFactory::eInstance()->createEAttribute();
     BOOST_CHECK( eAttribute );
@@ -89,8 +90,42 @@ BOOST_AUTO_TEST_CASE( Accessors_ETypedElement )
     BOOST_CHECK_EQUAL( eAttribute->getUpperBound(), 1 );
     BOOST_CHECK_EQUAL( eAttribute->isMany(), false );
     BOOST_CHECK_EQUAL( eAttribute->isRequired(), false );
-    
 }
+
+BOOST_AUTO_TEST_CASE( Accessors_ETypedElement_Setters )
+{
+    auto eAttribute = EcoreFactory::eInstance()->createEAttribute();
+    BOOST_CHECK( eAttribute );
+    eAttribute->setUpperBound( UNBOUNDED_MULTIPLICITY );
+    BOOST_CHECK_EQUAL( eAttribute->isMany(), true );
+    eAttribute->setLowerBound( 1 );
+    BOOST_CHECK_EQUAL( eAttribute->isRequired(), true );
+}
+
+BOOST_FIXTURE_TEST_CASE( Accessors_ETypedElement_Setters_Notifications, AttributeNotificationsFixture )
+{
+    auto i = EcorePackage::eInstance()->getETypedElement_UpperBound();
+    MOCK_EXPECT( eAdapter->notifyChanged ).with( [=]( const std::shared_ptr<ENotification>& n )
+    {
+        return n->getNotifier() == eAttribute
+            && n->getFeature() == EcorePackage::eInstance()->getETypedElement_UpperBound()
+            && boost::any_cast<int>(n->getOldValue()) == 1
+            && boost::any_cast<int>(n->getNewValue()) == UNBOUNDED_MULTIPLICITY
+            && n->getPosition() == -1;
+    } ).once();
+    MOCK_EXPECT( eAdapter->notifyChanged ).with( [=]( const std::shared_ptr<ENotification>& n )
+    {
+        return n->getNotifier() == eAttribute
+            && n->getFeature() == EcorePackage::eInstance()->getETypedElement_LowerBound()
+            && boost::any_cast<int>(n->getOldValue()) == 0
+            && boost::any_cast<int>(n->getNewValue()) == 1
+            && n->getPosition() == -1;
+    } ).once();
+    eAttribute->setUpperBound( UNBOUNDED_MULTIPLICITY );
+    eAttribute->setLowerBound( 1 );
+}
+
+
 
 BOOST_AUTO_TEST_CASE( Accessors_EStructuralFeature )
 {

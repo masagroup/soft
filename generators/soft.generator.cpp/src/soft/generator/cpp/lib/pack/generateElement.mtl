@@ -50,6 +50,8 @@ std::shared_ptr<[getMetaType(anENamedElement, anEPackage)/]> [anENamedElement.ge
 
 [/template]
 
+[template public generateCreation(aStructuralFeature : EStructuralFeature)]
+[/template]
 
 [template public generateCreation(anEAttribute : EAttribute)]
 [anEAttribute.getElementInstanceName()/] = factory->createEAttribute([anEAttribute.eContainingClass.getElementInstanceName()/], [anEAttribute.eContainingClass.getFeatureIDName(anEAttribute)/]);

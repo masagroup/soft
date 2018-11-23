@@ -94,9 +94,8 @@ void [className/]::createPackageContents(const std::shared_ptr<[className/]>& pa
 void [className/]::create[aClass.name.toUpperFirst()/]Content(const std::shared_ptr<EPackage>& package, const std::shared_ptr<EcoreFactory>& factory)
 {
     [aClass.generateClassCreation()/]
-    [aClass.eAttributes->sortedBy(name).generateCreation()/]
-    [aClass.eReferences->sortedBy(name).generateCreation()/]
-    [aClass.eOperations->sortedBy(name).generateCreation()/]
+    [aClass.eStructuralFeatures.generateCreation()/]
+    [aClass.eOperations.generateCreation()/]
 }
 [/for]
 
