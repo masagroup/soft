@@ -10,6 +10,7 @@
 #ifndef ECORE_PROXY_HPP_
 #define ECORE_PROXY_HPP_
 
+#include "ecore/impl/Notification.hpp"
 #include <memory>
 
 namespace
@@ -23,8 +24,24 @@ namespace ecore::impl
     class Proxy
     {
     public:
-        Proxy( ecore::EObject& owner )
+        Proxy()
+            : owner_()
+            , featureID_(-1)
+        {
+        }
+
+        Proxy( const std::shared_ptr<EObject>& owner , int featureID )
             : owner_( owner )
+            , featureID_( featureID )
+        {
+
+        }
+
+        Proxy( const Proxy& o )
+            : owner_( o.owner_ )
+            , featureID_( o.featureID_ )
+            , ref_( o.ref_ )
+            , proxy_( o.proxy_ )
         {
 
         }
@@ -35,8 +52,20 @@ namespace ecore::impl
             {
                 if( proxy_ )
                 {
-                    throw "ProxyResolutionToBeImplemented";
+                    auto resolved = owner.eResolveProxy( proxy_ );
+                    if( resolved && resolved != proxy_ )
+                    {
+                        ref_ = resolved;
+                        if( isNotificationRequired() )
+                        {
+                            auto owner = getOwner();
+                            _ASSERT( owner );
+                            owner->eNotify( std::make_shared< Notification >( owner, featureID_, Notification::REMOVE, proxy_, resolved ) );
+                        }
+                        return resolved;
+                    }
                 }
+                return proxy_;
             }
             else
                 return ref_.lock();
@@ -48,6 +77,15 @@ namespace ecore::impl
                 proxy_ = std::move( ref );
             else
                 ref_ = ref;
+        }
+
+        Proxy& operator=( const Proxy& o )
+        {
+            owner_ = o.owner_;
+            featureID_ = o.featureID_;
+            ref_ = o.ref_;
+            proxy_ = o.proxy_;
+            return *this;
         }
 
         Proxy& operator=( const std::shared_ptr<T>& ref )
@@ -64,8 +102,20 @@ namespace ecore::impl
             return !weak.owner_before( wt{} ) && !wt{}.owner_before( weak );
         }
 
+        std::shared_ptr<EObject> getOwner() const
+        {
+            return owner_.lock();
+        }
+
+        bool isNotificationRequired() const
+        {
+            auto owner = getOwner();
+            return owner ? ( owner->eDeliver() && !owner->eAdapters().empty() ) : false;
+        }
+
     private:
-        EObject& owner_;
+        std::weak_ptr<EObject> owner_;
+        int featureID_;
         std::weak_ptr<T> ref_;
         std::shared_ptr<T> proxy_;
     };

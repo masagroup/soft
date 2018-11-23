@@ -60,6 +60,9 @@ namespace ecore::impl
         std::shared_ptr<ENotificationChain> eInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID , const std::shared_ptr<ENotificationChain>& notifications  );
         std::shared_ptr<ENotificationChain> eInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
 
+        // Proxy
+        virtual std::shared_ptr<EObject> eResolveProxy( const std::shared_ptr<EObject>& proxy ) const;
+
     protected:
         virtual std::shared_ptr<EClass> eStaticClass() const;
         virtual int eDerivedStructuralFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;

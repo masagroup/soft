@@ -115,6 +115,7 @@ namespace ecore
         virtual std::shared_ptr<ENotificationChain> eInverseRemove( const std::shared_ptr<EObject>& otherEnd
                                                                   , int featureID
                                                                   , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
+        virtual std::shared_ptr<EObject> eResolveProxy( const std::shared_ptr<EObject>& proxy ) const = 0;
         // End of user code
     };
 }

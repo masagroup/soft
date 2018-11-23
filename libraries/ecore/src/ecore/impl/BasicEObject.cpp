@@ -281,6 +281,11 @@ std::shared_ptr<ENotificationChain> BasicEObject::eInverseRemove( const std::sha
         return eBasicSetContainer( nullptr, featureID, notifications );
 }
 
+std::shared_ptr<EObject> BasicEObject::eResolveProxy( const std::shared_ptr<EObject>& proxy ) const
+{
+    return std::shared_ptr<EObject>();
+}
+
 std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std::shared_ptr<EObject>& newContainer, int newContainerFeatureID, const std::shared_ptr<ENotificationChain>& n )
 {
     auto notifications = n;
