@@ -107,7 +107,6 @@ BOOST_AUTO_TEST_CASE( Accessors_ETypedElement_Setters )
 
 BOOST_FIXTURE_TEST_CASE( Accessors_ETypedElement_Setters_Notifications, AttributeNotificationsFixture )
 {
-    auto i = EcorePackage::eInstance()->getETypedElement_UpperBound();
     MOCK_EXPECT( eAdapter->notifyChanged ).with( [=]( const std::shared_ptr<ENotification>& n )
     {
         return n->getNotifier() == eAttribute

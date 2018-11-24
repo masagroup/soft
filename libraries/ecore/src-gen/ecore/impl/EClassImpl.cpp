@@ -50,9 +50,8 @@ class EClassImpl::ESuperAdapter : public EAdapter
 public:
     ESuperAdapter( EClassImpl& eClassImpl )
         : eClassImpl_( eClassImpl )
-        , subClasses_( new BasicEList<std::shared_ptr<EClassImpl>, true>() )
+        , subClasses_()
     {
-
     }
 
     virtual ~ESuperAdapter()
@@ -60,7 +59,7 @@ public:
 
     }
 
-    const std::shared_ptr<EList<std::shared_ptr<EClassImpl>>>& getSubClasses() const
+    std::vector<std::weak_ptr<EClassImpl>>& getSubClasses()
     {
         return subClasses_;
     }
@@ -84,14 +83,18 @@ public:
                         {
                             auto eClass = boost::any_cast<std::shared_ptr<EClass>>( oldValue );
                             auto eClassImpl = std::dynamic_pointer_cast<EClassImpl>( eClass );
-                            eClassImpl->eSuperAdapter_->getSubClasses()->remove( eNotifier );
+                            auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
+                            auto it = std::find_if( subClasses.begin(), subClasses.end(), [=]( const auto& w ) { return w.lock() = eNotifier; } );
+                            if ( it != subClasses.end() )
+                                subClasses.erase( it );
                         }
                         boost::any newValue = notification->getNewValue();
                         if( !newValue.empty() )
                         {
                             auto eClass = boost::any_cast<std::shared_ptr<EClass>>( newValue );
                             auto eClassImpl = std::dynamic_pointer_cast<EClassImpl>( eClass );
-                            eClassImpl->eSuperAdapter_->getSubClasses()->add( eNotifier );
+                            auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
+                            subClasses.push_back( eNotifier );
                         }
                         break;
                     }
@@ -102,7 +105,8 @@ public:
                         {
                             auto eClass = boost::any_cast<std::shared_ptr<EClass>>( newValue );
                             auto eClassImpl = std::dynamic_pointer_cast<EClassImpl>( eClass );
-                            eClassImpl->eSuperAdapter_->getSubClasses()->add( eNotifier );
+                            auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
+                            subClasses.push_back( eNotifier );
                         }
                         break;
                     }
@@ -115,7 +119,8 @@ public:
                             for( const auto& eClass : *eCollection )
                             {
                                 auto eClassImpl = std::dynamic_pointer_cast<EClassImpl>( eClass );
-                                eClassImpl->eSuperAdapter_->getSubClasses()->add( eNotifier );
+                                auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
+                                subClasses.push_back( eNotifier );
                             }
                         }
                         break;
@@ -127,7 +132,10 @@ public:
                         {
                             auto eClass = boost::any_cast<std::shared_ptr<EClass>>( oldValue );
                             auto eClassImpl = std::dynamic_pointer_cast<EClassImpl>( eClass );
-                            eClassImpl->eSuperAdapter_->getSubClasses()->remove( eNotifier );
+                            auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
+                            auto it = std::find_if( subClasses.begin(), subClasses.end(), [=]( const auto& w ) { return w.lock() = eNotifier; } );
+                            if (it != subClasses.end())
+                                subClasses.erase( it );
                         }
                         break;
                     }
@@ -140,7 +148,10 @@ public:
                             for( const auto& eClass : *eCollection )
                             {
                                 auto eClassImpl = std::dynamic_pointer_cast<EClassImpl>( eClass );
-                                eClassImpl->eSuperAdapter_->getSubClasses()->remove( eNotifier );
+                                auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
+                                auto it = std::find_if( subClasses.begin(), subClasses.end(), [=]( const auto& w ) { return w.lock() = eNotifier; } );
+                                if (it != subClasses.end())
+                                    subClasses.erase( it );
                             }
                         }
                         break;
@@ -153,7 +164,7 @@ public:
 
 private:
     EClassImpl& eClassImpl_;
-    std::shared_ptr<EList<std::shared_ptr<EClassImpl>>> subClasses_;
+    std::vector<std::weak_ptr<EClassImpl>> subClasses_;
 };
 //End of user code
 
@@ -1000,8 +1011,11 @@ void EClassImpl::setModified( int featureID )
         }
     }
     const auto& subClasses = eSuperAdapter_->getSubClasses();
-    for( const auto& subClass : *subClasses )
-        subClass->setModified( featureID );
+    for (const auto& weakSubClass : subClasses)
+    {
+        if ( auto subClass = weakSubClass.lock() )
+            subClass->setModified( featureID );
+    }
 }
 
 std::shared_ptr<EList<std::shared_ptr<EReference>>> EClassImpl::getEAllCrossReferences()

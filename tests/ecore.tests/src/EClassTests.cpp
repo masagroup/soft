@@ -64,7 +64,28 @@ BOOST_AUTO_TEST_CASE( Constructor )
     BOOST_CHECK( eClass );
 }
 
-BOOST_AUTO_TEST_CASE( StructuralFeatures )
+BOOST_AUTO_TEST_CASE( SuperClass )
+{
+    auto eClass = EcoreFactory::eInstance()->createEClass();
+    eClass->setName( "MyClass" );
+
+    auto eSuperClass = EcoreFactory::eInstance()->createEClass();
+    eSuperClass->setName( "MySuperClass" );
+
+    eClass->getESuperTypes()->add( eSuperClass );
+}
+
+BOOST_AUTO_TEST_CASE( StructuralFeatures_Add )
+{
+    auto eClass = EcoreFactory::eInstance()->createEClass();
+    auto eAttribute = EcoreFactory::eInstance()->createEAttribute();
+    BOOST_CHECK_EQUAL( eAttribute->getFeatureID(), -1 );
+    eClass->getEStructuralFeatures()->add( eAttribute );
+    BOOST_CHECK_EQUAL( eClass->getFeatureCount() , 1);
+    BOOST_CHECK_EQUAL( eAttribute->getFeatureID(), 0 );
+}
+
+BOOST_AUTO_TEST_CASE( StructuralFeatures_Getters )
 {
     auto eClass = EcoreFactory::eInstance()->createEClass();
     auto eAttribute1 = EcoreFactory::eInstance()->createEAttribute();
@@ -72,12 +93,6 @@ BOOST_AUTO_TEST_CASE( StructuralFeatures )
     auto eAttribute3 = EcoreFactory::eInstance()->createEAttribute();
     auto eReference1 = EcoreFactory::eInstance()->createEReference();
     auto eReference2 = EcoreFactory::eInstance()->createEReference();
-
-    BOOST_CHECK_EQUAL( eAttribute1->getFeatureID(), -1 );
-    BOOST_CHECK_EQUAL( eAttribute2->getFeatureID(), -1 );
-    BOOST_CHECK_EQUAL( eReference1->getFeatureID(), -1 );
-    BOOST_CHECK_EQUAL( eReference2->getFeatureID(), -1 );
-
     eClass->getEStructuralFeatures()->add( eAttribute1 );
     eClass->getEStructuralFeatures()->add( eAttribute2 );
     eClass->getEStructuralFeatures()->add( 0, eReference1 );
@@ -105,6 +120,8 @@ BOOST_AUTO_TEST_CASE( StructuralFeatures )
     BOOST_CHECK_EQUAL( eClass->getEAttributes(), std::vector<std::shared_ptr<EAttribute>>( { eAttribute1, eAttribute2 , eAttribute3 } ) );
     BOOST_CHECK_EQUAL( eClass->getEAllAttributes(), std::vector<std::shared_ptr<EAttribute>>( { eAttribute1, eAttribute2 , eAttribute3 } ) );
 }
+
+
 
 BOOST_AUTO_TEST_CASE( AttributeID )
 {
