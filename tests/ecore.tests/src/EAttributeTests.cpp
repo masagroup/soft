@@ -69,7 +69,7 @@ BOOST_FIXTURE_TEST_CASE( Accessors_ENamedElement_Notifications, AttributeNotific
     MOCK_EXPECT( eAdapter->notifyChanged ).with( [=]( const std::shared_ptr<ENotification>& n )
     {
         return n->getNotifier() == eAttribute
-            && n->getFeature() == EcorePackage::eInstance()->getENamedElement_Name()
+            && n->getFeatureID() == EcorePackage::EATTRIBUTE__NAME
             && boost::any_cast<std::string>(n->getOldValue()) == ""
             && boost::any_cast<std::string>(n->getNewValue()) == "toto"
             && n->getPosition() == -1;
@@ -111,7 +111,7 @@ BOOST_FIXTURE_TEST_CASE( Accessors_ETypedElement_Setters_Notifications, Attribut
     MOCK_EXPECT( eAdapter->notifyChanged ).with( [=]( const std::shared_ptr<ENotification>& n )
     {
         return n->getNotifier() == eAttribute
-            && n->getFeature() == EcorePackage::eInstance()->getETypedElement_UpperBound()
+            && n->getFeatureID() == EcorePackage::EATTRIBUTE__UPPER_BOUND
             && boost::any_cast<int>(n->getOldValue()) == 1
             && boost::any_cast<int>(n->getNewValue()) == UNBOUNDED_MULTIPLICITY
             && n->getPosition() == -1;
@@ -121,7 +121,7 @@ BOOST_FIXTURE_TEST_CASE( Accessors_ETypedElement_Setters_Notifications, Attribut
     MOCK_EXPECT( eAdapter->notifyChanged ).with( [=]( const std::shared_ptr<ENotification>& n )
     {
         return n->getNotifier() == eAttribute
-            && n->getFeature() == EcorePackage::eInstance()->getETypedElement_LowerBound()
+            && n->getFeatureID() == EcorePackage::EATTRIBUTE__LOWER_BOUND
             && boost::any_cast<int>(n->getOldValue()) == 0
             && boost::any_cast<int>(n->getNewValue()) == 1
             && n->getPosition() == -1;
@@ -131,7 +131,7 @@ BOOST_FIXTURE_TEST_CASE( Accessors_ETypedElement_Setters_Notifications, Attribut
     MOCK_EXPECT( eAdapter->notifyChanged ).with( [=]( const std::shared_ptr<ENotification>& n )
     {
         return n->getNotifier() == eAttribute
-            && n->getFeature() == EcorePackage::eInstance()->getETypedElement_Unique()
+            && n->getFeatureID() == EcorePackage::EATTRIBUTE__UNIQUE
             && boost::any_cast<bool>(n->getOldValue()) == true
             && boost::any_cast<bool>(n->getNewValue()) == false
             && n->getPosition() == -1;
@@ -141,7 +141,7 @@ BOOST_FIXTURE_TEST_CASE( Accessors_ETypedElement_Setters_Notifications, Attribut
     MOCK_EXPECT( eAdapter->notifyChanged ).with( [=]( const std::shared_ptr<ENotification>& n )
     {
         return n->getNotifier() == eAttribute
-            && n->getFeature() == EcorePackage::eInstance()->getETypedElement_Ordered()
+            && n->getFeatureID() == EcorePackage::EATTRIBUTE__ORDERED
             && boost::any_cast<bool>(n->getOldValue()) == true
             && boost::any_cast<bool>(n->getNewValue()) == false
             && n->getPosition() == -1;
