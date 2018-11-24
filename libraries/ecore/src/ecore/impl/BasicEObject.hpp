@@ -81,7 +81,7 @@ namespace ecore::impl
         std::shared_ptr<ENotificationChain> eBasicRemoveFromContainerFeature( const std::shared_ptr<ENotificationChain>& notifications );
         static std::shared_ptr<EReference> eContainmentFeature( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EObject>& eContainer, int eContainerFeatureID );
     protected:
-        std::shared_ptr< EList<EAdapter*> > eAdapters_;
+        std::unique_ptr< EList<EAdapter*> > eAdapters_;
         bool eDeliver_;
         std::weak_ptr<EObject> eContainer_;
         int eContainerFeatureID_;
