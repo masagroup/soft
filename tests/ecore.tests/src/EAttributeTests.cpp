@@ -100,6 +100,10 @@ BOOST_AUTO_TEST_CASE( Accessors_ETypedElement_Setters )
     BOOST_CHECK_EQUAL( eAttribute->isMany(), true );
     eAttribute->setLowerBound( 1 );
     BOOST_CHECK_EQUAL( eAttribute->isRequired(), true );
+    eAttribute->setUnique( false );
+    BOOST_CHECK_EQUAL( eAttribute->isUnique(), false );
+    eAttribute->setOrdered( false );
+    BOOST_CHECK_EQUAL( eAttribute->isOrdered(), false );
 }
 
 BOOST_FIXTURE_TEST_CASE( Accessors_ETypedElement_Setters_Notifications, AttributeNotificationsFixture )
@@ -113,6 +117,8 @@ BOOST_FIXTURE_TEST_CASE( Accessors_ETypedElement_Setters_Notifications, Attribut
             && boost::any_cast<int>(n->getNewValue()) == UNBOUNDED_MULTIPLICITY
             && n->getPosition() == -1;
     } ).once();
+    eAttribute->setUpperBound( UNBOUNDED_MULTIPLICITY );
+
     MOCK_EXPECT( eAdapter->notifyChanged ).with( [=]( const std::shared_ptr<ENotification>& n )
     {
         return n->getNotifier() == eAttribute
@@ -121,8 +127,27 @@ BOOST_FIXTURE_TEST_CASE( Accessors_ETypedElement_Setters_Notifications, Attribut
             && boost::any_cast<int>(n->getNewValue()) == 1
             && n->getPosition() == -1;
     } ).once();
-    eAttribute->setUpperBound( UNBOUNDED_MULTIPLICITY );
     eAttribute->setLowerBound( 1 );
+
+    MOCK_EXPECT( eAdapter->notifyChanged ).with( [=]( const std::shared_ptr<ENotification>& n )
+    {
+        return n->getNotifier() == eAttribute
+            && n->getFeature() == EcorePackage::eInstance()->getETypedElement_Unique()
+            && boost::any_cast<bool>(n->getOldValue()) == true
+            && boost::any_cast<bool>(n->getNewValue()) == false
+            && n->getPosition() == -1;
+    } ).once();
+    eAttribute->setUnique( false );
+
+    MOCK_EXPECT( eAdapter->notifyChanged ).with( [=]( const std::shared_ptr<ENotification>& n )
+    {
+        return n->getNotifier() == eAttribute
+            && n->getFeature() == EcorePackage::eInstance()->getETypedElement_Ordered()
+            && boost::any_cast<bool>(n->getOldValue()) == true
+            && boost::any_cast<bool>(n->getNewValue()) == false
+            && n->getPosition() == -1;
+    } ).once();
+    eAttribute->setOrdered( false );
 }
 
 
