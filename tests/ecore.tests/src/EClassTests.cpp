@@ -67,9 +67,9 @@ BOOST_AUTO_TEST_CASE( Constructor )
 BOOST_AUTO_TEST_CASE( StructuralFeatures )
 {
     auto eClass = EcoreFactory::eInstance()->createEClass();
-    BOOST_CHECK( eClass );
     auto eAttribute1 = EcoreFactory::eInstance()->createEAttribute();
     auto eAttribute2 = EcoreFactory::eInstance()->createEAttribute();
+    auto eAttribute3 = EcoreFactory::eInstance()->createEAttribute();
     auto eReference1 = EcoreFactory::eInstance()->createEReference();
     auto eReference2 = EcoreFactory::eInstance()->createEReference();
 
@@ -101,13 +101,28 @@ BOOST_AUTO_TEST_CASE( StructuralFeatures )
     BOOST_CHECK_EQUAL( eClass->getEReferences(), std::vector<std::shared_ptr<EReference>>( { eReference2 , eReference1  } ) );
     BOOST_CHECK_EQUAL( eClass->getEAllReferences(), std::vector<std::shared_ptr<EReference>>( { eReference2 , eReference1 } ) );
 
+    eClass->getEStructuralFeatures()->add( eAttribute3 );
+    BOOST_CHECK_EQUAL( eClass->getEAttributes(), std::vector<std::shared_ptr<EAttribute>>( { eAttribute1, eAttribute2 , eAttribute3 } ) );
+    BOOST_CHECK_EQUAL( eClass->getEAllAttributes(), std::vector<std::shared_ptr<EAttribute>>( { eAttribute1, eAttribute2 , eAttribute3 } ) );
+}
+
+BOOST_AUTO_TEST_CASE( AttributeID )
+{
+    auto eClass = EcoreFactory::eInstance()->createEClass();
+    auto eAttribute1 = EcoreFactory::eInstance()->createEAttribute();
+    auto eAttribute2 = EcoreFactory::eInstance()->createEAttribute();
+    eClass->getEStructuralFeatures()->add( eAttribute1 );
+    eClass->getEStructuralFeatures()->add( eAttribute2 );
+    BOOST_CHECK( !eClass->getEIDAttribute() );
+
+    /*eAttribute1->setID( true );
+    BOOST_CHECK_EQUAL( eClass->getEIDAttribute(), eAttribute1 );*/
 
 }
 
 BOOST_AUTO_TEST_CASE( Operations )
 {
     auto eClass = EcoreFactory::eInstance()->createEClass();
-    BOOST_CHECK( eClass );
     auto eOperation1 = EcoreFactory::eInstance()->createEOperation();
     auto eOperation2 = EcoreFactory::eInstance()->createEOperation();
 
@@ -129,9 +144,7 @@ BOOST_AUTO_TEST_CASE( Operations )
 BOOST_AUTO_TEST_CASE( StructuralFeatures_With_SuperType )
 {
     auto eClass = EcoreFactory::eInstance()->createEClass();
-    BOOST_CHECK( eClass );
     auto eSuperClass = EcoreFactory::eInstance()->createEClass();
-    BOOST_CHECK( eSuperClass );
     eClass->getESuperTypes()->add( eSuperClass );
 
     // add features to tghe class
@@ -182,9 +195,7 @@ BOOST_AUTO_TEST_CASE( StructuralFeatures_With_SuperType )
 BOOST_AUTO_TEST_CASE( Operations_With_SuperType )
 {
     auto eClass = EcoreFactory::eInstance()->createEClass();
-    BOOST_CHECK( eClass );
     auto eSuperClass = EcoreFactory::eInstance()->createEClass();
-    BOOST_CHECK( eSuperClass );
     eClass->getESuperTypes()->add( eSuperClass );
 
     // add operations to the class

@@ -60,6 +60,12 @@ namespace ecore
         virtual std::shared_ptr<EStructuralFeature> getFeature() const = 0;
         
         /**
+        * Returns the numeric ID of the feature.
+        * @return the feature ID of the feature that has changed.
+        */
+        virtual int getFeatureID() const = 0;
+
+        /**
         * Returns the value of the notifier's feature before the change occurred.
         * For a list-based feature, this represents a value, or a list of values, removed from the list.
         * For a move, this represents the old position of the moved value.

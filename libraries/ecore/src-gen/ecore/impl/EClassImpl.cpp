@@ -71,7 +71,7 @@ public:
         auto eNotifier = std::dynamic_pointer_cast<EClassImpl>( notification->getNotifier() );
         if( eventType != ENotification::REMOVING_ADAPTER )
         {
-            int featureID = notification->getFeature()->getFeatureID();
+            int featureID = notification->getFeatureID();
             if( featureID == EcorePackage::ECLASS__ESUPER_TYPES )
             {
                 switch( eventType )
@@ -779,6 +779,9 @@ std::shared_ptr<EList<std::shared_ptr<ecore::EStructuralFeature>>> EClassImpl::i
 void EClassImpl::initEAllAttributes()
 {
     // Start of user code EClassImpl::initEAllAttributes
+    if (eAllAttributes_)
+        return;
+
     std::vector<std::shared_ptr<EAttribute>> allAttributes, attributes;
     std::shared_ptr<EAttribute> eIDAttribute;
     for( const auto& eClass : *getESuperTypes() )
@@ -812,6 +815,9 @@ void EClassImpl::initEAllAttributes()
 void EClassImpl::initEAllReferences()
 {
     // Start of user code EClassImpl::initEAllReferences
+    if (eAllReferences_)
+        return;
+
     std::vector<std::shared_ptr<EReference>> allReferences, references;
 
     for( const auto& eClass : *getESuperTypes() )
@@ -857,6 +863,9 @@ void EClassImpl::initEAllContainments()
 void EClassImpl::initEAllOperations()
 {
     // Start of user code EClassImpl::initEAllOperations
+    if (eAllOperations_)
+        return;
+
     operationToOverrideMap_.reset();
 
     std::vector< std::shared_ptr< EOperation > > allOperations;
@@ -880,6 +889,9 @@ void EClassImpl::initEAllOperations()
 void EClassImpl::initEAllStructuralFeatures()
 {
     // Start of user code EClassImpl::initEAllStructuralFeatures
+    if (eAllStructuralFeatures_)
+        return;
+
     eAllContainments_.reset();
     eAllCrossReferences_.reset();
     nameToFeatureMap_.reset();
@@ -905,6 +917,9 @@ void EClassImpl::initEAllStructuralFeatures()
 void EClassImpl::initEAllSuperTypes()
 {
     // Start of user code EClassImpl::initEAllSuperTypes
+    if (eAllSuperTypes_)
+        return;
+
     std::vector< std::shared_ptr< EClass> > allSuperTypes;
     for( const auto& eClass : *getESuperTypes() )
     {

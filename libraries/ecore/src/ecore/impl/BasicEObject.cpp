@@ -18,7 +18,7 @@ using namespace ecore;
 using namespace ecore::impl;
 
 BasicEObject::BasicEObject()
-    : eDeliver_( false )
+    : eDeliver_( true )
     , eAdapters_( new BasicEList<EAdapter*>() )
     , eContainer_()
     , eContainerFeatureID_( -1 )
@@ -300,7 +300,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
         {
             auto notification = std::make_shared<Notification>( getThisPtr(), 
                                                                 ENotification::SET,
-                                                                oldContainer->eClass()->getEStructuralFeature( oldContainerFeatureID ),
+                                                                oldContainerFeatureID,
                                                                 oldContainer,
                                                                 std::shared_ptr<EObject>() );
             if( notifications )
@@ -312,7 +312,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
         {
             auto notification = std::make_shared<Notification>( getThisPtr(),
                                                                 ENotification::SET,
-                                                                newContainer->eClass()->getEStructuralFeature( newContainerFeatureID ),
+                                                                newContainerFeatureID,
                                                                 oldContainerFeatureID == newContainerFeatureID ? oldContainer : std::shared_ptr<EObject>(),
                                                                 newContainer );
             if( notifications )

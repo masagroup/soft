@@ -15,6 +15,7 @@
 #include "ecore/ENotificationChain.hpp"
 #include "ecore/EObject.hpp"
 #include "ecore/EClass.hpp"
+#include "ecore/EStructuralFeature.hpp"
 
 namespace ecore::impl
 {
@@ -65,7 +66,7 @@ namespace ecore::impl
 
         int getFeatureID() const
         {
-
+            return featureID_ != -1 ? featureID_ : ( feature_ ? feature_->getFeatureID() : -1 );
         }
 
         const boost::any& getOldValue() const

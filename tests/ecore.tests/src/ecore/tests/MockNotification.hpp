@@ -20,6 +20,7 @@ namespace ecore::tests
         MOCK_METHOD( getEventType, 0 );
         MOCK_METHOD( getNotifier, 0 );
         MOCK_METHOD( getFeature, 0 );
+        MOCK_METHOD( getFeatureID, 0 );
         MOCK_METHOD( getOldValue, 0 );
         MOCK_METHOD( getNewValue, 0 );
         MOCK_METHOD( getPosition, 0 );

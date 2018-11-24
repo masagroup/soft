@@ -24,7 +24,6 @@ namespace
         {
             BOOST_CHECK( eAttribute );
             eAttribute->eAdapters().add( eAdapter.get() );
-            eAttribute->eSetDeliver( true );
         }
 
         ~AttributeNotificationsFixture()
@@ -50,9 +49,9 @@ BOOST_AUTO_TEST_CASE( Accessors_ENotifier )
 {
     auto eAttribute = EcoreFactory::eInstance()->createEAttribute();
     BOOST_CHECK( eAttribute );
-    BOOST_CHECK_EQUAL( eAttribute->eDeliver(), false );
-    eAttribute->eSetDeliver( true );
     BOOST_CHECK_EQUAL( eAttribute->eDeliver(), true );
+    eAttribute->eSetDeliver( false );
+    BOOST_CHECK_EQUAL( eAttribute->eDeliver(), false );
 }
 
 
