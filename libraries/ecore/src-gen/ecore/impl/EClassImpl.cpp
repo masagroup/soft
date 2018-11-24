@@ -786,6 +786,7 @@ void EClassImpl::initEAllAttributes()
         auto superAttributes = eClass->getEAllAttributes();
         for( const auto& attribute : *superAttributes )
         {
+            allAttributes.push_back( attribute );
             if( attribute->isID() && !eIDAttribute )
                 eIDAttribute = attribute;
         }
