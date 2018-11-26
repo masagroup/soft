@@ -11,9 +11,8 @@
 #define ECORE_EOBJECTELIST_HPP_
 
 #include "ecore/ENotifyingList.hpp"
-#include "ecore/EUnsettableList.hpp"
-#include "ecore/impl/BasicElist.hpp"
-#include "ecore/impl/NotifyingElist.hpp"
+#include "ecore/impl/AbstractArrayEList.hpp"
+#include "ecore/impl/AbstractEObjectEList.hpp"
 
 #ifdef SHOW_DELETION
 #include <iostream>
@@ -23,11 +22,11 @@ namespace ecore::impl
 {
     
     template <typename T, bool containement = false, bool inverse = false, bool opposite = false >
-    class EObjectEList : public AbstractEObjectEList< BasicEList<T, true, ENotifyingList<T> >, containement, inverse, opposite>
+    class EObjectEList : public AbstractEObjectEList< AbstractArrayEList<T, ENotifyingList<T> ,true >, containement, inverse, opposite>
     {
     public:
         EObjectEList( const std::shared_ptr<EObject>& owner, int featureID, int inverseFeatureID = -1)
-            : AbstractEObjectEList< BasicEList<T, true, ENotifyingList<T> >, containement, inverse, opposite>( owner , featureID, inverseFeatureID )
+            : AbstractEObjectEList< AbstractArrayEList<T, ENotifyingList<T>, true >, containement, inverse, opposite>( owner , featureID, inverseFeatureID )
         {
         }
 

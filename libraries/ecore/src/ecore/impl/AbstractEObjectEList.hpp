@@ -24,9 +24,9 @@ namespace ecore::impl
     class AbstractEObjectEList : public SuperList
     {
     public:
-        typedef SuperList Super;
-        typedef SuperList::ValueType ValueType;
-        typedef SuperList::InterfaceType InterfaceType;
+        typedef typename SuperList Super;
+        typedef typename SuperList::ValueType ValueType;
+        typedef typename SuperList::InterfaceType InterfaceType;
 
         AbstractEObjectEList( const std::shared_ptr<EObject>& owner, int featureID, int inverseFeatureID = -1 )
             : owner_( owner )
@@ -125,7 +125,7 @@ namespace ecore::impl
         template <bool opposite = false >
         struct Opposite
         {
-            inline Opposite( EObjectEList& list ) : list_( list )
+            inline Opposite( AbstractEObjectEList& list ) : list_( list )
             {
             }
 
@@ -139,13 +139,13 @@ namespace ecore::impl
                 return object->eInverseRemove( list_.getOwner(), EOPPOSITE_FEATURE_BASE - list_.featureID_, notifications );
             }
 
-            EObjectEList& list_;
+            AbstractEObjectEList& list_;
         };
 
         template <>
         struct Opposite<true>
         {
-            inline Opposite( EObjectEList& list ) : list_( list )
+            inline Opposite( AbstractEObjectEList& list ) : list_( list )
             {
             }
 
@@ -159,13 +159,13 @@ namespace ecore::impl
                 return object->eInverseRemove( list_.getOwner(), list_.inverseFeatureID_, notifications );
             }
 
-            EObjectEList& list_;
+            AbstractEObjectEList& list_;
         };
 
         template <bool inverse = false, bool opposite = false >
         struct Inverse
         {
-            inline Inverse( EObjectEList& list )
+            inline Inverse( AbstractEObjectEList& list )
             {
             }
 
@@ -183,7 +183,7 @@ namespace ecore::impl
         template <bool opposite>
         struct Inverse<true, opposite>
         {
-            inline Inverse( EObjectEList& list ) : opposite_( list )
+            inline Inverse( AbstractEObjectEList& list ) : opposite_( list )
             {
             }
 
@@ -269,7 +269,7 @@ namespace ecore::impl
         }
 
 
-    private:
+    protected:
         std::weak_ptr<EObject> owner_;
         int featureID_;
         int inverseFeatureID_;

@@ -243,7 +243,7 @@ std::shared_ptr<ENotificationChain> EClassifierImpl::eBasicInverseRemove( const 
         }
         case EcorePackage::ECLASSIFIER__ETYPE_PARAMETERS:
         {
-            auto list = std::dynamic_pointer_cast<NotifyingEList<std::shared_ptr<EObject>>>( getETypeParameters() );
+            auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( getETypeParameters() );
             _ASSERTE(list);
             return list->remove( otherEnd , notifications );
         }

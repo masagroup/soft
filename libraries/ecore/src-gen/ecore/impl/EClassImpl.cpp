@@ -717,18 +717,18 @@ std::shared_ptr<ENotificationChain> EClassImpl::eBasicInverseAdd( const std::sha
     {
         case EcorePackage::ECLASS__EOPERATIONS:
         {
-            auto list = std::dynamic_pointer_cast<NotifyingEList<std::shared_ptr<EObject>>>( getEOperations() );
-            _ASSERTE( list );
-            return list->add( otherEnd, notifications );
+            auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( getEOperations() );
+            _ASSERTE(list);
+            return list->add( otherEnd , notifications );
         }
         case EcorePackage::ECLASS__ESTRUCTURAL_FEATURES:
         {
-            auto list = std::dynamic_pointer_cast<NotifyingEList<std::shared_ptr<EObject>>>( getEStructuralFeatures() );
-            _ASSERTE( list );
-            return list->add( otherEnd, notifications );
+            auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( getEStructuralFeatures() );
+            _ASSERTE(list);
+            return list->add( otherEnd , notifications );
         }
     }
-    return EClassifierImpl::eBasicInverseAdd( otherEnd, featureID, notifications );
+    return EClassifierImpl::eBasicInverseAdd(otherEnd, featureID, notifications);
     // End of user code
 }
 
@@ -740,24 +740,24 @@ std::shared_ptr<ENotificationChain> EClassImpl::eBasicInverseRemove( const std::
     {
         case EcorePackage::ECLASS__EGENERIC_SUPER_TYPES:
         {
-            auto list = std::dynamic_pointer_cast<NotifyingEList<std::shared_ptr<EObject>>>( getEGenericSuperTypes() );
-            _ASSERTE( list );
-            return list->remove( otherEnd, notifications );
+            auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( getEGenericSuperTypes() );
+            _ASSERTE(list);
+            return list->remove( otherEnd , notifications );
         }
         case EcorePackage::ECLASS__EOPERATIONS:
         {
-            auto list = std::dynamic_pointer_cast<NotifyingEList<std::shared_ptr<EObject>>>( getEOperations() );
-            _ASSERTE( list );
-            return list->remove( otherEnd, notifications );
+            auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( getEOperations() );
+            _ASSERTE(list);
+            return list->remove( otherEnd , notifications );
         }
         case EcorePackage::ECLASS__ESTRUCTURAL_FEATURES:
         {
-            auto list = std::dynamic_pointer_cast<NotifyingEList<std::shared_ptr<EObject>>>( getEStructuralFeatures() );
-            _ASSERTE( list );
-            return list->remove( otherEnd, notifications );
+            auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( getEStructuralFeatures() );
+            _ASSERTE(list);
+            return list->remove( otherEnd , notifications );
         }
     }
-    return EClassifierImpl::eBasicInverseRemove( otherEnd, featureID, notifications );
+    return EClassifierImpl::eBasicInverseRemove(otherEnd, featureID, notifications);
     // End of user code
 }
 

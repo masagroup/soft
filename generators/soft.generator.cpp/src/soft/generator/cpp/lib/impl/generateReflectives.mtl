@@ -304,7 +304,7 @@ std::shared_ptr<ENotificationChain> [className/]::eBasicInverseAdd( const std::s
         case [aFeature.getQualifiedFeatureIDName()/]:
         {
     [if aFeature.isListType()]
-            auto list = std::dynamic_pointer_cast<NotifyingEList<std::shared_ptr<EObject>>>( [aFeature.getGetterName()/]() );
+            auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( [aFeature.getGetterName()/]() );
             _ASSERTE(list);
             return list->add( otherEnd , notifications );
     [elseif aFeature.isContainer()]
@@ -339,7 +339,7 @@ std::shared_ptr<ENotificationChain> [className/]::eBasicInverseRemove( const std
         case [aFeature.getQualifiedFeatureIDName()/]:
         {
     [if aFeature.isListType()]
-            auto list = std::dynamic_pointer_cast<NotifyingEList<std::shared_ptr<EObject>>>( [aFeature.getGetterName()/]() );
+            auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( [aFeature.getGetterName()/]() );
             _ASSERTE(list);
             return list->remove( otherEnd , notifications );
     [elseif aFeature.isContainer() and not aFeature.isBasicSet()]

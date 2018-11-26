@@ -174,7 +174,7 @@ std::shared_ptr<ENotificationChain> EModelElementImpl::eBasicInverseAdd( const s
     {
         case EcorePackage::EMODEL_ELEMENT__EANNOTATIONS:
         {
-            auto list = std::dynamic_pointer_cast<NotifyingEList<std::shared_ptr<EObject>>>( getEAnnotations() );
+            auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( getEAnnotations() );
             _ASSERTE(list);
             return list->add( otherEnd , notifications );
         }
@@ -191,7 +191,7 @@ std::shared_ptr<ENotificationChain> EModelElementImpl::eBasicInverseRemove( cons
     {
         case EcorePackage::EMODEL_ELEMENT__EANNOTATIONS:
         {
-            auto list = std::dynamic_pointer_cast<NotifyingEList<std::shared_ptr<EObject>>>( getEAnnotations() );
+            auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( getEAnnotations() );
             _ASSERTE(list);
             return list->remove( otherEnd , notifications );
         }

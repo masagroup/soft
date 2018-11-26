@@ -1,5 +1,5 @@
 #include "ecore/impl/BasicEObject.hpp"
-#include "ecore/impl/BasicEList.hpp"
+#include "ecore/impl/ArrayEList.hpp"
 #include "ecore/impl/EClassImpl.hpp"
 #include "ecore/impl/Notification.hpp"
 #include "ecore/Constants.hpp"
@@ -19,7 +19,7 @@ using namespace ecore::impl;
 
 BasicEObject::BasicEObject()
     : eDeliver_( true )
-    , eAdapters_( new BasicEList<EAdapter*>() )
+    , eAdapters_( new ArrayEList<EAdapter*>() )
     , eContainer_()
     , eContainerFeatureID_( -1 )
     , thisPtr_()

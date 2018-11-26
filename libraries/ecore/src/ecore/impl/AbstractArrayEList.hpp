@@ -21,6 +21,9 @@ namespace ecore::impl
     class AbstractArrayEList : public AbstractEList<T, I, unique >
     {
     public:
+        typedef typename T ValueType;
+        typedef typename I InterfaceType;
+
         AbstractArrayEList()
             : AbstractEList<T, I, unique >()
             , v_()
