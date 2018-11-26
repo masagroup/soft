@@ -335,7 +335,6 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="UniqueParameterNames UniqueTypeParameterNames NoRepeatingVoid"/>
     </eAnnotations>
-    <eOperations name="getOperationID" eType="#//EInt"/>
     <eOperations name="isOverrideOf" eType="#//EBoolean">
       <eParameters name="someOperation" eType="#//EOperation"/>
     </eOperations>
