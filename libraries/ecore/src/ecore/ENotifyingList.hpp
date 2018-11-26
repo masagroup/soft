@@ -7,21 +7,22 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_NOTIFICATIONELIST_HPP_
-#define ECORE_NOTIFICATIONELIST_HPP_
+#ifndef ECORE_ENOTIFYINGLIST_HPP_
+#define ECORE_ENOTIFYINGLIST_HPP_
+
+#include "ecore/EList.hpp"
+
+#include <memory>
 
 namespace ecore
 {
     class ENotificationChain;
-}
 
-namespace ecore::impl
-{
     template <typename T>
-    class NotifyingEList
+    class ENotifyingList : public EList<T>
     {
     public:
-        virtual ~NotifyingEList() {}
+        virtual ~ENotifyingList() {}
 
         virtual std::shared_ptr<ENotificationChain> add( const T& t, const std::shared_ptr<ENotificationChain>& notifications ) = 0;
 
@@ -33,4 +34,4 @@ namespace ecore::impl
 
 
 
-#endif /* ECORE_NOTIFICATIONELIST_HPP_ */
+#endif /* ECORE_ENOTIFYINGLIST_HPP_ */

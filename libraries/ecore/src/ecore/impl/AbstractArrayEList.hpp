@@ -7,44 +7,43 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_BASICELIST_HPP_
-#define ECORE_BASICELIST_HPP_
+#ifndef ECORE_ABSTRACTARRAYELIST_HPP_
+#define ECORE_ABSTRACTARRAYELIST_HPP_
 
 #include "ecore/impl/AbstractEList.hpp"
 
 #include <vector>
 
-
 namespace ecore::impl
 {
 
-    template <typename T, bool unique = false>
-    class BasicEList : public AbstractEList<T,unique>
+    template <typename T, typename I, bool unique >
+    class AbstractArrayEList : public AbstractEList<T, I, unique >
     {
     public:
-        BasicEList()
-            : AbstractEList<T, unique>()
+        AbstractArrayEList()
+            : AbstractEList<T, I, unique >()
             , v_()
         {
 
         }
 
-        BasicEList( const std::initializer_list<T>& init )
-            : AbstractEList<T, unique>()
+        AbstractArrayEList( const std::initializer_list<T>& init )
+            : AbstractEList<T, I, unique >()
             , v_( init )
         {
 
         }
 
 
-        BasicEList( const BasicEList<T>& o )
-            : AbstractEList<T, unique>( o )
+        AbstractArrayEList( const AbstractArrayEList<T, I, unique>& o )
+            : AbstractEList<T, I, unique >( o )
             , v_( o.v_ )
         {
 
         }
 
-        virtual ~BasicEList()
+        virtual ~AbstractArrayEList()
         {
         }
 
@@ -75,16 +74,16 @@ namespace ecore::impl
                 didAdd( i + oldSize, t );
                 didChange();
             }
-            return growth != 0 ;
+            return growth != 0;
         }
 
-        virtual bool addAllUnique( std::size_t pos,  const EList<T>& l )
+        virtual bool addAllUnique( std::size_t pos, const EList<T>& l )
         {
             std::size_t growth = l.size();
             std::size_t oldSize = v_.size();
             v_.resize( oldSize + growth );
-            for (int i = (int)oldSize -1 ; i >= (int)pos; --i)
-                v_[ i + growth ] = v_[i];
+            for (int i = (int)oldSize - 1; i >= (int)pos; --i)
+                v_[i + growth] = v_[i];
             for (int i = 0; i < growth; ++i)
             {
                 auto t = l.get( i );
@@ -97,8 +96,8 @@ namespace ecore::impl
 
         virtual T setUnique( std::size_t pos, const T& e )
         {
-            auto old = v_[ pos ];
-            v_[ pos ] = e;
+            auto old = v_[pos];
+            v_[pos] = e;
             didSet( pos, e, old );
             didChange();
             return old;
@@ -128,7 +127,7 @@ namespace ecore::impl
 
         virtual void clear()
         {
-            auto oldObjects = std::move(v_);
+            auto oldObjects = std::move( v_ );
             v_.clear();
             didClear( oldObjects );
         }
@@ -149,4 +148,4 @@ namespace ecore::impl
 
 }
 
-#endif /* ECORE_BASICELIST_HPP_ */
+#endif /* ECORE_ABSTRACTARRAYELIST_HPP_ */

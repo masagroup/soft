@@ -19,11 +19,12 @@
 namespace ecore::impl
 {
 
-    template<typename T , bool unique = false >
-    class AbstractEList : public EList<T>
+    template<typename T , typename I, bool unique >
+    class AbstractEList : public I
     {
-
     public:
+        typedef T ValueType;
+        typedef T InterfaceType;
 
         AbstractEList()
             : uniquePolicy_( *this )

@@ -3,7 +3,7 @@
 
 set(SOURCE_FILES
     src/main.cpp
-    src/BasicEListTests.cpp
+    src/ArrayEListTests.cpp
     src/DiamondVsMixinsTests.cpp
     src/EcoreFactoryTests.cpp
     src/EcorePackageTests.cpp

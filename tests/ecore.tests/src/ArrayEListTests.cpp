@@ -1,7 +1,7 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
 
-#include "ecore/impl/BasicEList.hpp"
+#include "ecore/impl/ArrayEList.hpp"
 #include "ecore/impl/ImmutableEList.hpp"
 #include <Windows.h>
 
@@ -80,23 +80,23 @@ BOOST_AUTO_TEST_SUITE( BasicEListTests )
 
 BOOST_AUTO_TEST_CASE( Constructor_Default )
 {
-    BOOST_CHECK_NO_THROW( BasicEList<int> list; );
+    BOOST_CHECK_NO_THROW( ArrayEList<int> list; );
 }
 
 BOOST_AUTO_TEST_CASE( Constructor_Initializer )
 {
-    BasicEList<int> list = { 1 , 2 };
+    ArrayEList<int> list = { 1 , 2 };
     BOOST_CHECK_EQUAL( list, std::vector<int>( { 1 , 2 } ) );
 }
 
 BOOST_AUTO_TEST_CASE( Empty )
 {
     {
-        BasicEList<int> list;
+        ArrayEList<int> list;
         BOOST_CHECK( list.empty() );
     }
     {
-        BasicEList<int> list = { 1 };
+        ArrayEList<int> list = { 1 };
         BOOST_CHECK( !list.empty() );
     }
 }
@@ -105,25 +105,25 @@ BOOST_AUTO_TEST_CASE( Empty )
 BOOST_AUTO_TEST_CASE( Size )
 {
     {
-        BasicEList<int> list;
+        ArrayEList<int> list;
         BOOST_CHECK_EQUAL( list.size(), 0 );
     }
     {
-        BasicEList<int> list = { 1 , 2 };
+        ArrayEList<int> list = { 1 , 2 };
         BOOST_CHECK_EQUAL( list.size(), 2 );
     }
 }
 
 BOOST_AUTO_TEST_CASE( Get )
 {
-    BasicEList<int> list = { 1 , 2 };
+    ArrayEList<int> list = { 1 , 2 };
     BOOST_CHECK_EQUAL( list.get( 0 ), 1 );
     BOOST_CHECK_EQUAL( list.get( 1 ), 2 );
 }
 
 BOOST_AUTO_TEST_CASE( Iterators_Empty )
 {
-    BasicEList<int> list;
+    ArrayEList<int> list;
     BOOST_CHECK( list.begin() == list.end() );
 
     for (int i = 0; i < 10; ++i)
@@ -136,7 +136,7 @@ BOOST_AUTO_TEST_CASE( Iterators_Empty )
 
 BOOST_AUTO_TEST_CASE( Iterators )
 {
-    BasicEList<int> list;
+    ArrayEList<int> list;
     for (int i = 0; i < 10; ++i)
         list.add( i );
 
@@ -147,7 +147,7 @@ BOOST_AUTO_TEST_CASE( Iterators )
 
 BOOST_AUTO_TEST_CASE( IndexOf )
 {
-    BasicEList<int > list;
+    ArrayEList<int > list;
     list.add( 1 );
     list.add( 2 );
     BOOST_CHECK_EQUAL( list.indexOf( 1 ), 0 );
@@ -157,7 +157,7 @@ BOOST_AUTO_TEST_CASE( IndexOf )
 
 BOOST_AUTO_TEST_CASE( Add )
 {
-    BasicEList<int> list;
+    ArrayEList<int> list;
     BOOST_CHECK_EQUAL( list.add( 1 ), true );
     BOOST_CHECK_EQUAL( list.add( 2 ), true );
     BOOST_CHECK_EQUAL( list.size(), 2 );
@@ -167,13 +167,13 @@ BOOST_AUTO_TEST_CASE( Add )
 
 BOOST_AUTO_TEST_CASE( Add_InvalidIndex, *boost::unit_test::precondition( no_debugger() ) )
 {
-    BasicEList<int> list;
+    ArrayEList<int> list;
     BOOST_REQUIRE_THROW( list.add( 1, 0 ), boost::execution_exception );
 }
 
 BOOST_AUTO_TEST_CASE( Add_Index )
 {
-    BasicEList<int> list;
+    ArrayEList<int> list;
     list.add( 0, 1 );
     list.add( 0, 2 );
     BOOST_CHECK_EQUAL( list.size(), 2 );
@@ -184,13 +184,13 @@ BOOST_AUTO_TEST_CASE( Add_Index )
 BOOST_AUTO_TEST_CASE( AddAll )
 {
     {
-        BasicEList<int> list;
+        ArrayEList<int> list;
         ImmutableEList<int> other( std::initializer_list<int>{ 1, 2 } );
         BOOST_CHECK( list.addAll( other ) );
         BOOST_CHECK_EQUAL( list, std::vector<int>( { 1, 2 } ) );
     }
     {
-        BasicEList<int> list( std::initializer_list<int>{ 1, 2 } );
+        ArrayEList<int> list( std::initializer_list<int>{ 1, 2 } );
         ImmutableEList<int> other( std::initializer_list<int>{ 3, 4 } );
         BOOST_CHECK( list.addAll( other ) );
         BOOST_CHECK_EQUAL( list, std::vector<int>( { 1, 2 , 3 ,4 } ) );
@@ -200,19 +200,19 @@ BOOST_AUTO_TEST_CASE( AddAll )
 BOOST_AUTO_TEST_CASE( AddAll_Index )
 {
     {
-        BasicEList<int> list( std::initializer_list<int>{ 1, 2 } );
+        ArrayEList<int> list( std::initializer_list<int>{ 1, 2 } );
         ImmutableEList<int> other( std::initializer_list<int>{ 3, 4 } );
         BOOST_CHECK( list.addAll( 0, other ) );
         BOOST_CHECK_EQUAL( list, std::vector<int>( { 3,4,1,2 } ) );
     }
     {
-        BasicEList<int> list( std::initializer_list<int>{ 1, 2 } );
+        ArrayEList<int> list( std::initializer_list<int>{ 1, 2 } );
         ImmutableEList<int> other( std::initializer_list<int>{ 3, 4 } );
         BOOST_CHECK( list.addAll( 1, other ) );
         BOOST_CHECK_EQUAL( list, std::vector<int>( { 1,3,4,2 } ) );
     }
     {
-        BasicEList<int> list( std::initializer_list<int>{ 1, 2 } );
+        ArrayEList<int> list( std::initializer_list<int>{ 1, 2 } );
         ImmutableEList<int> other( std::initializer_list<int>{ 3, 4 } );
         BOOST_CHECK( list.addAll( 2, other ) );
         BOOST_CHECK_EQUAL( list, std::vector<int>( { 1,2,3,4 } ) );
@@ -221,14 +221,14 @@ BOOST_AUTO_TEST_CASE( AddAll_Index )
 
 BOOST_AUTO_TEST_CASE( Unique_Add )
 {
-    BasicEList<int, true> list;
+    ArrayEList<int, true> list;
     BOOST_CHECK( list.add( 1 ) );
     BOOST_CHECK( !list.add( 1 ) );
 }
 
 BOOST_AUTO_TEST_CASE( Unique_Add_Index )
 {
-    BasicEList<int, true> list;
+    ArrayEList<int, true> list;
     list.add( 0, 1 );
     list.add( 0, 2 );
     BOOST_CHECK_EQUAL( list, std::vector<int>( { 2,1 } ) );
@@ -236,14 +236,14 @@ BOOST_AUTO_TEST_CASE( Unique_Add_Index )
 
 BOOST_AUTO_TEST_CASE( Unique_Add_Index_InvalidElement, *boost::unit_test::precondition( no_debugger() ) )
 {
-    BasicEList<int, true> list;
+    ArrayEList<int, true> list;
     list.add( 0, 1 );
     BOOST_REQUIRE_THROW( list.add( 1, 1 ), boost::execution_exception );
 }
 
 BOOST_AUTO_TEST_CASE( Unique_AddAll )
 {
-    BasicEList<int, true> list( std::initializer_list<int>{ 1, 2 } );
+    ArrayEList<int, true> list( std::initializer_list<int>{ 1, 2 } );
     ImmutableEList<int> other( std::initializer_list<int>{ 2, 3 } );
     BOOST_CHECK( list.addAll( other ) );
     BOOST_CHECK_EQUAL( list, std::vector<int>( { 1,2,3 } ) );
@@ -252,19 +252,19 @@ BOOST_AUTO_TEST_CASE( Unique_AddAll )
 BOOST_AUTO_TEST_CASE( Unique_AddAll_Index )
 {
     {
-        BasicEList<int, true> list = { 1, 2 };
+        ArrayEList<int, true> list = { 1, 2 };
         ImmutableEList<int> other = { 2, 3 };
         BOOST_CHECK( list.addAll( 0, other ) );
         BOOST_CHECK_EQUAL( list, std::vector<int>( { 3,1,2 } ) );
     }
     {
-        BasicEList<int, true> list( std::initializer_list<int>{ 1, 2 } );
+        ArrayEList<int, true> list( std::initializer_list<int>{ 1, 2 } );
         ImmutableEList<int> other( std::initializer_list<int>{ 2, 3 } );
         BOOST_CHECK( list.addAll( 1, other ) );
         BOOST_CHECK_EQUAL( list, std::vector<int>( { 1,3,2 } ) );
     }
     {
-        BasicEList<int, true> list( std::initializer_list<int>{ 1, 2 } );
+        ArrayEList<int, true> list( std::initializer_list<int>{ 1, 2 } );
         ImmutableEList<int> other( std::initializer_list<int>{ 2, 3 } );
         BOOST_CHECK( list.addAll( 2, other ) );
         BOOST_CHECK_EQUAL( list, std::vector<int>( { 1,2,3 } ) );
@@ -273,14 +273,14 @@ BOOST_AUTO_TEST_CASE( Unique_AddAll_Index )
 
 BOOST_AUTO_TEST_CASE( Remove_InvalidIndex, *boost::unit_test::precondition( no_debugger() ) )
 {
-    BasicEList<int> list;
+    ArrayEList<int> list;
     BOOST_REQUIRE_THROW( list.remove( 0 ), boost::execution_exception );
 }
 
 
 BOOST_AUTO_TEST_CASE( Remove_Index )
 {
-    BasicEList<int> list = { 1 , 2 };
+    ArrayEList<int> list = { 1 , 2 };
     int old = list.remove( 0 );
     BOOST_CHECK_EQUAL( old, 1 );
     BOOST_CHECK_EQUAL( list.size(), 1 );
@@ -288,20 +288,20 @@ BOOST_AUTO_TEST_CASE( Remove_Index )
 
 BOOST_AUTO_TEST_CASE( Set_InvalidIndex, *boost::unit_test::precondition( no_debugger() ) )
 {
-    BasicEList<int> list = { 1 , 2 };
+    ArrayEList<int> list = { 1 , 2 };
     BOOST_REQUIRE_THROW( list.set( 2, 3 ), boost::execution_exception );
 }
 
 BOOST_AUTO_TEST_CASE( Set )
 {
-    BasicEList<int> list = { 1 , 2 };
+    ArrayEList<int> list = { 1 , 2 };
     list.set( 0, 3 );
     BOOST_CHECK_EQUAL( list.get( 0 ), 3 );
 }
 
 BOOST_AUTO_TEST_CASE( Clear )
 {
-    BasicEList<int> list = { 1 , 2 };
+    ArrayEList<int> list = { 1 , 2 };
     list.clear();
     BOOST_CHECK( list.empty() );
 }
