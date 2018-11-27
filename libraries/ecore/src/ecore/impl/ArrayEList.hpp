@@ -18,22 +18,22 @@ namespace ecore::impl
 {
 
     template <typename T, bool unique = false >
-    class ArrayEList : public AbstractArrayEList<T, EList<T>, unique >
+    class ArrayEList : public AbstractArrayEList<EList<T>,T, unique >
     {
     public:
         ArrayEList()
-            : AbstractArrayEList<T, EList<T>, unique >()
+            : AbstractArrayEList<EList<T>, T, unique >()
         {
         }
 
         ArrayEList( const std::initializer_list<T>& init )
-            : AbstractArrayEList<T, EList<T>, unique >( init )
+            : AbstractArrayEList<EList<T>, T, unique >( init )
         {
         }
 
 
         ArrayEList( const ArrayEList<T>& o )
-            : AbstractArrayEList<T, EList<T>, unique >( o )
+            : AbstractArrayEList<EList<T>, T, unique >( o )
         {
         }
 

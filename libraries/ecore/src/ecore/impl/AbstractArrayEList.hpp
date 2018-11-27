@@ -17,105 +17,143 @@
 namespace ecore::impl
 {
 
-    template <typename T, typename I, bool unique >
-    class AbstractArrayEList : public AbstractEList<T, I, unique >
+    template <typename I, typename S, bool unique >
+    class AbstractArrayEList : public AbstractEList<I, unique >
     {
-    public:
-        typedef typename T ValueType;
-        typedef typename I InterfaceType;
+        struct identity
+        {
+            template<typename U>
+            constexpr auto operator()( U&& v ) const noexcept
+                -> decltype( std::forward<U>( v ) )
+            {
+                return std::forward<U>( v );
+            }
+        };
 
+    public:
+        typedef typename I InterfaceType;
+        typedef typename I::ValueType ValueType;
+        typedef typename S StorageType;
+
+        template <typename = std::enable_if< std::is_same<ValueType, StorageType>::value>::type>
         AbstractArrayEList()
-            : AbstractEList<T, I, unique >()
+            : AbstractEList<I, unique >()
+            , from_( identity() )
+            , to_( identity() )
             , v_()
         {
-
         }
 
-        AbstractArrayEList( const std::initializer_list<T>& init )
-            : AbstractEList<T, I, unique >()
+        template <typename = std::enable_if< std::is_same<ValueType, StorageType>::value>::type>
+        AbstractArrayEList( const std::initializer_list<ValueType>& init )
+            : AbstractEList<I, unique >()
+            , from_( identity() )
+            , to_( identity() )
             , v_( init )
         {
+        }
 
+        template <typename = !std::enable_if< std::is_same<ValueType, StorageType>::value>::type>
+        AbstractArrayEList( std::function< ValueType( const StorageType& )> from
+                          , std::function< StorageType( const ValueType& )> to )
+            : AbstractEList<I, unique >()
+            , from_( from )
+            , to_( to )
+            , v_()
+        {
+        }
+
+        template <typename = !std::enable_if< std::is_same<ValueType, StorageType>::value>::type>
+        AbstractArrayEList( const std::initializer_list<ValueType>& init
+                            , std::function< ValueType( const StorageType& )> from
+                            , std::function< StorageType( const ValueType& )> to )
+            : AbstractEList<I, unique >()
+            , from_( from )
+            , to_( to )
+            , v_()
+        {
+            std::transform( init.begin(), init.end(), v_.end(), to_ );
         }
 
 
-        AbstractArrayEList( const AbstractArrayEList<T, I, unique>& o )
-            : AbstractEList<T, I, unique >( o )
+        AbstractArrayEList( const AbstractArrayEList<I, S, unique>& o )
+            : AbstractEList<I, S, unique >( o )
+            , from_( o.from_ )
+            , to_( o.to_ )
             , v_( o.v_ )
         {
-
         }
 
         virtual ~AbstractArrayEList()
         {
         }
 
-        virtual void addUnique( const T& e )
+        virtual void addUnique( const ValueType& e )
         {
             std::size_t pos = size();
-            v_.push_back( e );
+            v_.push_back( to_( e ) );
             didAdd( pos, e );
             didChange();
         }
 
-        virtual void addUnique( std::size_t pos, const T& e )
+        virtual void addUnique( std::size_t pos, const ValueType& e )
         {
-            v_.insert( v_.begin() + pos, e );
+            v_.insert( v_.begin() + pos, to_( e ) );
             didAdd( pos, e );
             didChange();
         }
 
-        virtual bool addAllUnique( const EList<T>& l )
+        virtual bool addAllUnique( const EList<ValueType>& l )
         {
             std::size_t growth = l.size();
             std::size_t oldSize = v_.size();
             v_.resize( oldSize + growth );
-            for (int i = 0; i < growth; ++i)
+            for( int i = 0; i < growth; ++i )
             {
-                auto t = l.get( i );
-                v_[i + oldSize] = t;
-                didAdd( i + oldSize, t );
+                auto v = l.get( i );
+                v_[ i + oldSize ] = to_( v );
+                didAdd( i + oldSize, v );
                 didChange();
             }
             return growth != 0;
         }
 
-        virtual bool addAllUnique( std::size_t pos, const EList<T>& l )
+        virtual bool addAllUnique( std::size_t pos, const EList<ValueType>& l )
         {
             std::size_t growth = l.size();
             std::size_t oldSize = v_.size();
             v_.resize( oldSize + growth );
-            for (int i = (int)oldSize - 1; i >= (int)pos; --i)
-                v_[i + growth] = v_[i];
-            for (int i = 0; i < growth; ++i)
+            for( int i = (int)oldSize - 1; i >= (int)pos; --i )
+                v_[ i + growth ] = v_[ i ];
+            for( int i = 0; i < growth; ++i )
             {
-                auto t = l.get( i );
-                v_[i + pos] = t;
-                didAdd( i + pos, t );
+                auto v = l.get( i );
+                v_[ i + pos ] = to_( v );
+                didAdd( i + pos, v );
                 didChange();
             }
             return growth != 0;
         }
 
-        virtual T setUnique( std::size_t pos, const T& e )
+        virtual ValueType setUnique( std::size_t pos, const ValueType& e )
         {
-            auto old = v_[pos];
-            v_[pos] = e;
+            auto old = from_( v_[ pos ] );
+            v_[ pos ] = to_( e );
             didSet( pos, e, old );
             didChange();
             return old;
         }
 
-        virtual T get( std::size_t pos ) const
+        virtual ValueType get( std::size_t pos ) const
         {
-            return v_[pos];
+            return from_( v_[ pos ] );
         }
 
-        virtual T remove( std::size_t pos )
+        virtual ValueType remove( std::size_t pos )
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos < size() );
             auto it = v_.begin() + pos;
-            T oldObject = std::move( *it );
+            auto oldObject = from_( std::move( *it ) );
             v_.erase( it );
             didRemove( pos, oldObject );
             didChange();
@@ -132,7 +170,7 @@ namespace ecore::impl
         {
             auto oldObjects = std::move( v_ );
             v_.clear();
-            didClear( oldObjects );
+            //didClear( oldObjects );
         }
 
         virtual bool empty() const
@@ -140,13 +178,15 @@ namespace ecore::impl
             return v_.empty();
         }
 
-        std::vector<T>& data()
+        std::vector<StorageType>& data()
         {
             return v_;
         }
 
     protected:
-        std::vector<T> v_;
+        std::function< StorageType( const ValueType& )> to_;
+        std::function< ValueType( const StorageType& )> from_;
+        std::vector<StorageType> v_;
     };
 
 }

@@ -19,13 +19,13 @@
 namespace ecore::impl
 {
 
-    template<typename T , typename I, bool unique >
+    template<typename I, bool unique >
     class AbstractEList : public I
     {
     public:
-        typedef T ValueType;
-        typedef T InterfaceType;
-
+        typedef typename I InterfaceType;
+        typedef typename I::ValueType ValueType;
+        
         AbstractEList()
             : uniquePolicy_( *this )
         {
@@ -35,45 +35,45 @@ namespace ecore::impl
         {
         }
 
-        virtual bool add( const T& e )
+        virtual bool add( const ValueType& e )
         {
             return uniquePolicy_.add( e );
         }
 
-        virtual bool addAll( const EList<T>& l )
+        virtual bool addAll( const EList<ValueType>& l )
         {
             return uniquePolicy_.addAll( l );
         }
 
-        virtual void add( std::size_t pos, const T& e )
+        virtual void add( std::size_t pos, const ValueType& e )
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
             uniquePolicy_.add( pos, e );
         }
 
-        virtual bool addAll( std::size_t pos, const EList<T>& l )
+        virtual bool addAll( std::size_t pos, const EList<ValueType>& l )
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
             return uniquePolicy_.addAll( pos, l );
         }
 
-        virtual void addUnique( const T& e ) = 0;
+        virtual void addUnique( const ValueType& e ) = 0;
 
-        virtual void addUnique( std::size_t pos, const T& e ) = 0;
+        virtual void addUnique( std::size_t pos, const ValueType& e ) = 0;
 
-        virtual bool addAllUnique( const EList<T>& l ) = 0;
+        virtual bool addAllUnique( const EList<ValueType>& l ) = 0;
 
-        virtual bool addAllUnique( std::size_t pos, const EList<T>& l ) = 0;
+        virtual bool addAllUnique( std::size_t pos, const EList<ValueType>& l ) = 0;
 
-        virtual void set( std::size_t pos, const T& e )
+        virtual void set( std::size_t pos, const ValueType& e )
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos < size() );
             uniquePolicy_.set( pos, e );
         }
 
-        virtual T setUnique( std::size_t pos, const T& e ) = 0;
+        virtual ValueType setUnique( std::size_t pos, const ValueType& e ) = 0;
 
-        virtual bool remove( const T& e )
+        virtual bool remove( const ValueType& e )
         {
             std::size_t index = indexOf( e );
             if (index >= 0)
@@ -87,7 +87,7 @@ namespace ecore::impl
             }
         }
 
-        virtual T remove( std::size_t index ) = 0;
+        virtual ValueType remove( std::size_t index ) = 0;
 
         virtual bool empty() const
         {
@@ -101,28 +101,28 @@ namespace ecore::impl
         {
             inline UniquePolicy( AbstractEList& list ) : list_(list) {}
 
-            inline bool add( const T& e )
+            inline bool add( const ValueType& e )
             {
                 list_.addUnique( e );
                 return true;
             }
 
-            inline bool addAll( const EList<T>& l )
+            inline bool addAll( const EList<ValueType>& l )
             {
                 return list_.addAllUnique( l );
             }
 
-            inline void add( std::size_t pos, const T& e )
+            inline void add( std::size_t pos, const ValueType& e )
             {
                 list_.addUnique( pos, e );
             }
 
-            inline bool addAll( std::size_t pos, const EList<T>& l )
+            inline bool addAll( std::size_t pos, const EList<ValueType>& l )
             {
                 return list_.addAllUnique( pos, l );
             }
 
-            inline void set( std::size_t pos, const T& e )
+            inline void set( std::size_t pos, const ValueType& e )
             {
                 list_.setUnique( pos, e );
             }
@@ -135,7 +135,7 @@ namespace ecore::impl
         {
             inline UniquePolicy( AbstractEList& list ) : list_( list ) {}
 
-            inline bool add( const T& e )
+            inline bool add( const ValueType& e )
             {
                 if (list_.contains( e ))
                     return  false;
@@ -146,35 +146,35 @@ namespace ecore::impl
                 }
             }
 
-            inline bool addAll( const EList<T>& l )
+            inline bool addAll( const EList<ValueType>& l )
             {
                 auto nonDuplicates = getNonDuplicates( l );
                 return list_.addAllUnique( *nonDuplicates );
             }
 
-            inline void add( std::size_t pos, const T& e )
+            inline void add( std::size_t pos, const ValueType& e )
             {
                 _SCL_SECURE_ALWAYS_VALIDATE( !list_.contains( e ) );
                 list_.addUnique( pos, e );
             }
 
-            inline bool addAll( std::size_t pos, const EList<T>& l )
+            inline bool addAll( std::size_t pos, const EList<ValueType>& l )
             {
                 auto nonDuplicates = getNonDuplicates( l );
                 return list_.addAllUnique( pos, *nonDuplicates );
             }
 
-            inline void set( std::size_t pos, const T& e )
+            inline void set( std::size_t pos, const ValueType& e )
             {
                 std::size_t currentIndex = list_.indexOf( e );
                 _SCL_SECURE_ALWAYS_VALIDATE(currentIndex == -1 || currentIndex == pos );
                 list_.setUnique( pos, e );
             }
         
-            std::unique_ptr<EList<T>> getNonDuplicates( const EList<T>& l )
+            std::unique_ptr<EList<ValueType>> getNonDuplicates( const EList<ValueType>& l )
             {
-                std::unordered_set<T> s;
-                std::vector<T> v;
+                std::unordered_set<ValueType> s;
+                std::vector<ValueType> v;
                 for (auto e : l)
                 {
                     auto i = s.insert( e );
@@ -184,33 +184,33 @@ namespace ecore::impl
                             v.push_back( e );
                     }
                 }
-                return std::make_unique<ImmutableEList<T>>( std::move(v) );
+                return std::make_unique<ImmutableEList<ValueType>>( std::move(v) );
             }
 
             AbstractEList& list_;
         };
 
-        virtual void didSet( std::size_t pos, const T& newObject, const T& oldObject )
+        virtual void didSet( std::size_t pos, const ValueType& newObject, const ValueType& oldObject )
         {
             // Do nothing.
         }
 
-        virtual void didAdd( std::size_t pos, const T& newObject )
+        virtual void didAdd( std::size_t pos, const ValueType& newObject )
         {
             // Do nothing.
         }
 
-        virtual void didRemove( std::size_t pos, const T& oldObject )
+        virtual void didRemove( std::size_t pos, const ValueType& oldObject )
         {
             // Do nothing.
         }
 
-        virtual void didClear( const std::vector<T>& oldObjects ) {
+        virtual void didClear( const std::vector<ValueType>& oldObjects ) {
             for (int i = 0; i < oldObjects.size(); ++i)
                 didRemove( i, oldObjects[i] );
         }
 
-        virtual void didMove( std::size_t pos, const T& movedObject, std::size_t oldIndex )
+        virtual void didMove( std::size_t pos, const ValueType& movedObject, std::size_t oldIndex )
         {
             // Do nothing.
         }

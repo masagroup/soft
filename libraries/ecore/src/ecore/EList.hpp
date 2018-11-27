@@ -17,6 +17,8 @@ namespace ecore {
     template <typename T>
     class EList {
     public:
+        typedef typename T ValueType;
+
         virtual ~EList() {}
 
         virtual bool add( const T& e ) = 0;
