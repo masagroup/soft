@@ -32,6 +32,7 @@ namespace ecore::impl
             : owner_( owner )
             , featureID_( featureID )
             , inverseFeatureID_( inverseFeatureID )
+            , isSet_( false )
             , inverse_( *this )
         {
         }
@@ -120,7 +121,25 @@ namespace ecore::impl
             return createAndAddNotification( notifications, ENotification::SET, oldObject, object, index );
         }
 
+        virtual bool isSet() const
+        {
+            return isSet_;
+        }
+
+        virtual void unset()
+        {
+            clear();
+            bool oldIsSet = isSet_;
+            isSet_ = false;
+            createAndDispatchNotification( nullptr, ENotification::UNSET, oldIsSet, isSet_ , -1);
+        }
+
     protected:
+
+        virtual void didChange()
+        {
+            isSet_ = true;
+        }
 
         template <bool opposite = false >
         struct Opposite
@@ -273,6 +292,7 @@ namespace ecore::impl
         std::weak_ptr<EObject> owner_;
         int featureID_;
         int inverseFeatureID_;
+        bool isSet_;
         Inverse<inverse, opposite> inverse_;
     };
 }

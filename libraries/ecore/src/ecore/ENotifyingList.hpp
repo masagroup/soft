@@ -24,6 +24,9 @@ namespace ecore
     public:
         virtual ~ENotifyingList() {}
 
+        using EList::add;
+        using EList::remove;
+
         virtual std::shared_ptr<ENotificationChain> add( const T& t, const std::shared_ptr<ENotificationChain>& notifications ) = 0;
 
         virtual std::shared_ptr<ENotificationChain> remove( const T& t, const std::shared_ptr<ENotificationChain>& notifications ) = 0;

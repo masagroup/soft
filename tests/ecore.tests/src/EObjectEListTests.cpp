@@ -22,7 +22,7 @@ namespace
             : owner( new MockObject() )
             , object( new MockObject() )
         {
-            MOCK_EXPECT( owner->eDeliver ).once().returns( notifications );
+            MOCK_EXPECT( owner->eDeliver ).returns( notifications );
         }
 
         std::shared_ptr<MockObject> owner;
@@ -73,45 +73,58 @@ BOOST_AUTO_TEST_CASE( Constructor )
     {
         EObjectEList< std::shared_ptr<EObject>, false, true, true> list( object, 0, 1 );
     }
+    {
+        EObjectEList< std::shared_ptr<EObject>, false, true, true, true> list( object, 0, 1 );
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE( Unset , AddFixture )
+{
+    EObjectEList<std::shared_ptr<EObject>, false, false, false, true> list( owner, 1, 2 );
+    BOOST_CHECK( !list.isSet() );
+    BOOST_CHECK( list.add(object) );
+    BOOST_CHECK( list.isSet() );
+    list.unset();
+    BOOST_CHECK( !list.isSet() );
 }
 
 BOOST_FIXTURE_TEST_CASE( Add_SimpleNoNotifications , AddFixture )
 {
-    std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>>>( owner, 1, 2 );
-    BOOST_CHECK( list->add( object ) );
-    BOOST_CHECK_EQUAL( list->size(), 1 );
-    BOOST_CHECK_EQUAL( list->get( 0 ), object );
-    BOOST_CHECK( !list->add( object ) );
+    EObjectEList<std::shared_ptr<EObject>> list( owner, 1, 2 );
+    BOOST_CHECK( list.add( object ) );
+    BOOST_CHECK_EQUAL( list.size(), 1 );
+    BOOST_CHECK_EQUAL( list.get( 0 ), object );
+    BOOST_CHECK( !list.add( object ) );
 }
 
 BOOST_FIXTURE_TEST_CASE( Add_SimpleNotifications, AddFixtureNotifications )
 {
-    std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>>>( owner, 1, 2 );
-    BOOST_CHECK(list->add( object ));
-    BOOST_CHECK_EQUAL( list->size(), 1 );
-    BOOST_CHECK_EQUAL( list->get( 0 ), object );
-    BOOST_CHECK( !list->add( object ) );
+    EObjectEList<std::shared_ptr<EObject>> list( owner, 1, 2 );
+    BOOST_CHECK(list.add( object ));
+    BOOST_CHECK_EQUAL( list.size(), 1 );
+    BOOST_CHECK_EQUAL( list.get( 0 ), object );
+    BOOST_CHECK( !list.add( object ) );
 }
 
 BOOST_FIXTURE_TEST_CASE( Add_InverseNoNotifications, AddFixture )
 {
     MOCK_EXPECT( object->eInverseAdd ).with( owner, -2, nullptr ).once().returns( nullptr );
 
-    std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, true, false>>( owner, 1, 2 );
-    BOOST_CHECK( list->add( object ) );
-    BOOST_CHECK_EQUAL( list->size(), 1 );
-    BOOST_CHECK_EQUAL( list->get( 0 ), object );
-    BOOST_CHECK( !list->add( object ) );
+    EObjectEList<std::shared_ptr<EObject>, false, true, false> list( owner, 1, 2 );
+    BOOST_CHECK( list.add( object ) );
+    BOOST_CHECK_EQUAL( list.size(), 1 );
+    BOOST_CHECK_EQUAL( list.get( 0 ), object );
+    BOOST_CHECK( !list.add( object ) );
 }
 
 BOOST_FIXTURE_TEST_CASE( Add_InverseNotifications, AddFixtureNotifications )
 {
     MOCK_EXPECT( object->eInverseAdd ).with( owner, -2, nullptr ).once().returns( nullptr );
-    std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, true, false>>( owner, 1, 2 );
-    BOOST_CHECK( list->add( object ) );
-    BOOST_CHECK_EQUAL( list->size(), 1 );
-    BOOST_CHECK_EQUAL( list->get( 0 ), object );
-    BOOST_CHECK( !list->add( object ) );
+    EObjectEList<std::shared_ptr<EObject>, false, true, false> list( owner, 1, 2 );
+    BOOST_CHECK( list.add( object ) );
+    BOOST_CHECK_EQUAL( list.size(), 1 );
+    BOOST_CHECK_EQUAL( list.get( 0 ), object );
+    BOOST_CHECK( !list.add( object ) );
 }
 
 
@@ -119,22 +132,22 @@ BOOST_FIXTURE_TEST_CASE( Add_InverseOppositeNoNotifications , AddFixture )
 {
     MOCK_EXPECT( object->eInverseAdd ).with( owner, 2, nullptr ).once().returns( nullptr );
 
-    std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, true, true>>( owner, 1, 2 );
-    BOOST_CHECK( list->add( object ) );
-    BOOST_CHECK_EQUAL( list->size(), 1 );
-    BOOST_CHECK_EQUAL( list->get( 0 ), object );
-    BOOST_CHECK( !list->add( object ) );
+    EObjectEList<std::shared_ptr<EObject>, false, true, true> list( owner, 1, 2 );
+    BOOST_CHECK( list.add( object ) );
+    BOOST_CHECK_EQUAL( list.size(), 1 );
+    BOOST_CHECK_EQUAL( list.get( 0 ), object );
+    BOOST_CHECK( !list.add( object ) );
 }
 
 BOOST_FIXTURE_TEST_CASE( Add_InverseOppositeNotifications , AddFixtureNotifications )
 {
     MOCK_EXPECT( object->eInverseAdd ).with( owner, 2, nullptr ).once().returns( nullptr );
 
-    std::shared_ptr<EList<std::shared_ptr<EObject>>> list = std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, true, true>>( owner, 1, 2 );
-    BOOST_CHECK( list->add( object ) );
-    BOOST_CHECK_EQUAL( list->size(), 1 );
-    BOOST_CHECK_EQUAL( list->get( 0 ), object );
-    BOOST_CHECK( !list->add( object ) );
+    EObjectEList<std::shared_ptr<EObject>, false, true, true> list( owner, 1, 2 );
+    BOOST_CHECK( list.add( object ) );
+    BOOST_CHECK_EQUAL( list.size(), 1 );
+    BOOST_CHECK_EQUAL( list.get( 0 ), object );
+    BOOST_CHECK( !list.add( object ) );
 }
 
 
