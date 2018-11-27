@@ -45,6 +45,13 @@ namespace ecore::impl
 
         }
 
+        Proxy( const std::shared_ptr<EObject>& owner, int featureID , const T& ref )
+            : owner_( owner )
+            , featureID_( featureID )
+        {
+            set( ref );
+        }
+
         Proxy( const Proxy& o )
             : owner_( o.owner_ )
             , featureID_( o.featureID_ )

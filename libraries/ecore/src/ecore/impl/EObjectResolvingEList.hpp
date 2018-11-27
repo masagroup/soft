@@ -14,6 +14,7 @@
 #include "ecore/EUnsettableList.hpp"
 #include "ecore/impl/AbstractEList.hpp"
 #include "ecore/impl/AbstractEObjectEList.hpp"
+#include "ecore/impl/Proxy.hpp"
 #include "ecore/impl/TypeTraits.hpp"
 
 #ifdef SHOW_DELETION
@@ -40,6 +41,83 @@ namespace ecore::impl
 
         virtual ~EObjectResolvingEList()
         {
+        }
+
+        virtual T get( std::size_t pos ) const
+        {
+            return v_[ pos ].get();
+        }
+
+        virtual std::size_t size() const
+        {
+            return v_.size();
+        }
+
+        virtual void clear()
+        {
+            return v_.clear();
+        }
+
+        virtual bool empty() const
+        {
+            return v_.empty();
+        }
+
+
+    protected:
+
+        virtual void doAddUnique( const T& e )
+        {
+            std::size_t pos = size();
+            v_.push_back( Proxy<T>( owner_.lock(), featureID_, e) );
+            didAdd( pos, e );
+            didChange();
+        }
+
+        virtual void doAddUnique( std::size_t pos, const T& e )
+        {
+            v_.insert( v_.begin() + pos, Proxy<T>( owner_.lock(), featureID_, e ) );
+            didAdd( pos, e );
+            didChange();
+        }
+
+        virtual bool doAddAllUnique( std::size_t pos, const EList<T>& l )
+        {
+            std::size_t growth = l.size();
+            std::size_t oldSize = v_.size();
+            v_.resize( oldSize + growth );
+            for( int i = (int)oldSize - 1; i >= (int)pos; --i )
+                v_[ i + growth ] = v_[ i ];
+            for( int i = 0; i < growth; ++i )
+            {
+                auto t = l.get( i );
+                v_[ i + pos ] = Proxy<T>( owner_.lock(), featureID_, t );
+                didAdd( i + pos, t );
+                didChange();
+            }
+            return growth != 0;
+        }
+
+        virtual T doSetUnique( std::size_t pos, const T& e )
+        {
+            auto oldProxy = v_[ pos ];
+            auto oldValue = oldProxy.get();
+            v_[ pos ] = Proxy<T>( owner_.lock(), featureID_, e );
+            didSet( pos, e, oldValue );
+            didChange();
+            return oldValue;
+        }
+
+        virtual T doRemove( std::size_t pos )
+        {
+            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos < size() );
+            auto it = v_.begin() + pos;
+            auto oldProxy = std::move( *it );
+            auto oldValue = oldProxy.get();
+            v_.erase( it );
+            didRemove( pos, oldValue );
+            didChange();
+            return oldValue;
         }
 
     private:

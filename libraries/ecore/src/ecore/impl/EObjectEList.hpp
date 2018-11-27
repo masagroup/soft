@@ -38,6 +38,33 @@ namespace ecore::impl
         virtual ~EObjectEList()
         {
         }
+
+    protected:
+        
+        virtual void doAddUnique( const T& e )
+        {
+            AbstractArrayEList::addUnique( e );
+        }
+
+        virtual void doAddUnique( std::size_t index, const T& e )
+        {
+            AbstractArrayEList::addUnique( index, e );
+        }
+
+        virtual bool doAddAllUnique( std::size_t index, const EList<T>& l )
+        {
+            return AbstractArrayEList::addAllUnique( index, l );
+        }
+
+        virtual T doSetUnique( std::size_t index, const T& object )
+        {
+            return AbstractArrayEList::setUnique( index, object );
+        }
+
+        virtual T doRemove( std::size_t index )
+        {
+            return AbstractArrayEList::remove( index );
+        }
     };
 }
 

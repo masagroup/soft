@@ -56,14 +56,16 @@ namespace ecore::impl
         virtual void addUnique( const ValueType& e )
         {
             auto index = size();
-            Super::addUnique( e );
+            doAddUnique( e );
             auto notifications = inverse_.inverseAdd( e, nullptr );
             createAndDispatchNotification( notifications, ENotification::ADD, NO_VALUE, e, index );
         }
 
+        
+
         virtual void addUnique( std::size_t index, const ValueType& e )
         {
-            Super::addUnique( index, e );
+            doAddUnique( index, e );
             auto notifications = inverse_.inverseAdd( e, nullptr );
             createAndDispatchNotification( notifications, ENotification::ADD, NO_VALUE, e, index );
         }
@@ -71,7 +73,7 @@ namespace ecore::impl
         virtual std::shared_ptr<ENotificationChain> add( const ValueType& e, const std::shared_ptr<ENotificationChain>& notifications )
         {
             auto index = size();
-            Super::addUnique( e );
+            doAddUnique( e );
             return createAndAddNotification( notifications, ENotification::ADD, NO_VALUE, e, index );
         }
 
@@ -84,7 +86,7 @@ namespace ecore::impl
         {
             if (l.empty())
                 return false;
-            Super::addAllUnique( index, l );
+            bool result = doAddAllUnique( index, l );
             auto notifications = createNotificationChain();
             for (int i = 0; i < l.size(); ++i)
             {
@@ -93,12 +95,12 @@ namespace ecore::impl
             }
             createAndDispatchNotification( notifications, [&]() { return l.size() == 1 ? createNotification( ENotification::ADD, NO_VALUE, l.get( 0 ), index )
                 : createNotification( ENotification::ADD_MANY, NO_VALUE, toAny( l ), index ); } );
-            return true;
+            return result;
         }
 
         virtual ValueType remove( std::size_t index )
         {
-            auto oldObject = Super::remove( index );
+            auto oldObject = doRemove( index );
             auto notifications = inverse_.inverseRemove( oldObject, nullptr );
             createAndDispatchNotification( notifications, ENotification::REMOVE, oldObject, NO_VALUE, index );
             return oldObject;
@@ -109,7 +111,7 @@ namespace ecore::impl
             std::size_t index = indexOf( e );
             if (index != -1)
             {
-                auto oldObject = Super::remove( index );
+                auto oldObject = doRemove( index );
                 return createAndAddNotification( notifications, ENotification::REMOVE, oldObject, NO_VALUE, index );
             }
             return notifications;
@@ -118,7 +120,7 @@ namespace ecore::impl
 
         virtual ValueType setUnique( std::size_t index, const ValueType& newObject )
         {
-            ValueType oldObject = Super::setUnique( index, newObject );
+            ValueType oldObject = doSetUnique( index, newObject );
             if (newObject != oldObject)
             {
                 std::shared_ptr<ENotificationChain> notifications;
@@ -131,7 +133,7 @@ namespace ecore::impl
 
         virtual std::shared_ptr<ENotificationChain> set( std::size_t index, const ValueType& object, const std::shared_ptr<ENotificationChain>& notifications )
         {
-            auto oldObject = Super::setUnique( index, object );
+            auto oldObject = doSetUnique( index, object );
             return createAndAddNotification( notifications, ENotification::SET, oldObject, object, index );
         }
 
@@ -150,6 +152,12 @@ namespace ecore::impl
 
     protected:
 
+        virtual void doAddUnique( const ValueType& e ) = 0;
+        virtual void doAddUnique( std::size_t index, const ValueType& e ) = 0;
+        virtual bool doAddAllUnique( std::size_t index, const EList<ValueType>& l ) = 0;
+        virtual ValueType doSetUnique( std::size_t index, const ValueType& object ) = 0;
+        virtual ValueType doRemove( std::size_t index ) = 0;
+        
         virtual void didChange()
         {
             isSet_ = true;
