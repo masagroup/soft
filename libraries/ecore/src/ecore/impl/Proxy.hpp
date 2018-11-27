@@ -10,6 +10,7 @@
 #ifndef ECORE_PROXY_HPP_
 #define ECORE_PROXY_HPP_
 
+#include "ecore/EList.hpp"
 #include "ecore/EObject.hpp"
 #include "ecore/impl/Notification.hpp"
 #include "ecore/impl/TypeTraits.hpp"
@@ -67,7 +68,7 @@ namespace ecore::impl
                         {
                             ref_ = resolved;
                             if( isNotificationRequired() )
-                                owner->eNotify( std::make_shared< Notification >( owner, Notification::REMOVE, featureID_, proxy_, resolved ) );
+                                owner->eNotify( std::make_shared< Notification >( owner, Notification::RESOLVE, featureID_, proxy_, resolved ) );
                             return resolved;
                         }
                     }
