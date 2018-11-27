@@ -15,9 +15,7 @@
 #include "ecore/impl/AbstractArrayEList.hpp"
 #include "ecore/impl/AbstractEObjectEList.hpp"
 
-#ifdef SHOW_DELETION
-#include <iostream>
-#endif
+
 
 namespace ecore::impl
 {
@@ -39,14 +37,6 @@ namespace ecore::impl
 
         virtual ~EObjectEList()
         {
-#ifdef SHOW_DELETION
-            std::cout << "delete EObjectEList [" << this << "] owner[";
-            if( auto owner = owner_.lock() )
-                std::cout << owner.get();
-            else
-                std::cout << "unknown";
-            std::cout << "] featureID[" << featureID_ << "]" << std::endl;
-#endif
         }
     };
 }

@@ -12,7 +12,7 @@
 
 #include "ecore/ENotifyingList.hpp"
 #include "ecore/EUnsettableList.hpp"
-#include "ecore/impl/AbstractArrayEList.hpp"
+#include "ecore/impl/AbstractEList.hpp"
 #include "ecore/impl/AbstractEObjectEList.hpp"
 #include "ecore/impl/TypeTraits.hpp"
 
@@ -28,9 +28,22 @@ namespace ecore::impl
         , inverse
         , opposite>
     {
-    private:
         static_assert( is_shared_ptr<T>::value,"EObjectResolvingEList requires std::shared_ptr" );
+    public:
+        using EList<T>::add;
+        using ENotifyingList<T>::add;
 
+        EObjectResolvingEList( const std::shared_ptr<EObject>& owner, int featureID, int inverseFeatureID = -1 )
+            : AbstractEObjectEList( owner, featureID, inverseFeatureID )
+        {
+        }
+
+        virtual ~EObjectResolvingEList()
+        {
+        }
+
+    private:
+        std::vector< Proxy<T> > v_;
     };
 
 }

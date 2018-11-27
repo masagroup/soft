@@ -18,6 +18,10 @@
 #include <memory>
 #include <algorithm>
 
+#ifdef SHOW_DELETION
+#include <iostream>
+#endif
+
 namespace ecore::impl
 {
     template <typename SuperList, bool containement, bool inverse, bool opposite>
@@ -37,7 +41,17 @@ namespace ecore::impl
         {
         }
 
-        virtual ~AbstractEObjectEList() {}
+        virtual ~AbstractEObjectEList() 
+        {
+#ifdef SHOW_DELETION
+            std::cout << "delete EObjectEList [" << this << "] owner[";
+            if( auto owner = owner_.lock() )
+                std::cout << owner.get();
+            else
+                std::cout << "unknown";
+            std::cout << "] featureID[" << featureID_ << "]" << std::endl;
+#endif
+        }
 
         virtual void addUnique( const ValueType& e )
         {
