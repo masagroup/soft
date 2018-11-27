@@ -14,6 +14,7 @@
 #include "ecore/EUnsettableList.hpp"
 #include "ecore/impl/AbstractArrayEList.hpp"
 #include "ecore/impl/AbstractEObjectEList.hpp"
+#include "ecore/impl/TypeTraits.hpp"
 
 #ifdef SHOW_DELETION
 #include <iostream>
@@ -22,16 +23,13 @@
 namespace ecore::impl
 {
     template <typename T, bool containement = false, bool inverse = false, bool opposite = false, bool unset = false >
-    class EObjectEList : public AbstractEObjectEList< AbstractEList<T, typename std::conditional<unset, EUnsettableList<T>, ENotifyingList<T>>::type, true >
+    class EObjectResolvingEList : public AbstractEObjectEList< AbstractEList<T, typename std::conditional<unset, EUnsettableList<T>, ENotifyingList<T>>::type, true >
         , containement
         , inverse
         , opposite>
     {
     private:
-
-
-        static_assert( std::is_copy_constructible<T>::value,
-                       "Swap requires copying" );
+        static_assert( is_shared_ptr<T>::value,"EObjectResolvingEList requires std::shared_ptr" );
 
     };
 
