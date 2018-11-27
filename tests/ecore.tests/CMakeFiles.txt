@@ -10,9 +10,11 @@ set(SOURCE_FILES
     src/EAttributeTests.cpp
     src/EClassTests.cpp
     src/EObjectEListTests.cpp
+    src/EObjectResolvingEListTests.cpp
     src/LazyTests.cpp
     src/NotificationTests.cpp
     src/NotificationChainTests.cpp
+    src/ProxyTests.cpp
 )
 
 set(SOURCE_ECORE_TESTS_FILES
