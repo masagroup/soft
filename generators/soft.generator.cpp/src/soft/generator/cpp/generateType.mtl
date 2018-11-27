@@ -95,7 +95,7 @@ std::shared_ptr<[shortQualifiedListClass/]<[eReference.eGenericType.generateCppT
 [/let]
 [elseif isProxy()]
 [let shortQualifiedProxyClass : String = getShortQualifiedName('ecore::impl::Proxy', eReference.eContainingClass.ePackage.getQualifiedImplementationName())]
-[shortQualifiedProxyClass/]<[eReference.eGenericType.generateCppType(false)/]>
+[shortQualifiedProxyClass/]<[eReference.eGenericType.generateCppType()/]>
 [/let]
 [else]
 [eReference.pointerType()/]<[eReference.eGenericType.eClassifier.generateType()/]>

@@ -21,8 +21,21 @@ namespace ecore
 
 namespace ecore::impl
 {
-    template <typename T>
+    template<typename T> struct is_shared_ptr : std::false_type
+    {
+    };
+
+    template<typename T> struct is_shared_ptr<std::shared_ptr<T>> : std::true_type
+    {
+    };
+
+    template <typename T , typename Enable = void>
     class Proxy
+    {
+    };
+
+    template <typename T> 
+    class Proxy<T, typename std::enable_if<is_shared_ptr<T>::value>::type >
     {
     public:
         Proxy()
@@ -47,7 +60,7 @@ namespace ecore::impl
 
         }
 
-        std::shared_ptr<T> get() const
+        T get() const
         {
             if( is_uninitialized( ref_ ) )
             {
@@ -56,7 +69,7 @@ namespace ecore::impl
                     auto owner = owner_.lock();
                     if( owner )
                     {
-                        auto resolved = std::dynamic_pointer_cast<T>( owner->eResolveProxy( proxy_ ) );
+                        auto resolved = std::dynamic_pointer_cast<typename T::element_type>( owner->eResolveProxy( proxy_ ) );
                         if( resolved && resolved != proxy_ )
                         {
                             ref_ = resolved;
@@ -72,7 +85,7 @@ namespace ecore::impl
                 return ref_.lock();
         }
 
-        void set( const std::shared_ptr<T>& ref )
+        void set( const T& ref )
         {
             if( ref )
             {
@@ -97,7 +110,7 @@ namespace ecore::impl
             return *this;
         }
 
-        Proxy& operator=( const std::shared_ptr<T>& ref )
+        Proxy& operator=( const T& ref )
         {
             set( ref );
             return *this;
@@ -116,7 +129,7 @@ namespace ecore::impl
             return !operator ==( o );
         }
 
-        std::shared_ptr<T> getNoResolution() const
+        T getNoResolution() const
         {
             auto ref = ref_.lock();
             return ref ? ref : proxy_;
@@ -145,8 +158,8 @@ namespace ecore::impl
     private:
         std::weak_ptr<EObject> owner_;
         int featureID_;
-        mutable std::weak_ptr<T> ref_;
-        std::shared_ptr<T> proxy_;
+        mutable std::weak_ptr<typename T::element_type> ref_;
+        T proxy_;
     };
 
     template<typename T>

@@ -456,10 +456,10 @@ std::shared_ptr<ENotificationChain> ETypedElementImpl::eBasicInverseRemove( cons
 //*********************************
 // Initializations
 //*********************************
-Proxy<ecore::EClassifier> ETypedElementImpl::initEType()
+Proxy<std::shared_ptr<ecore::EClassifier>> ETypedElementImpl::initEType()
 {
     // Start of user code ETypedElementImpl::initEType
-    return Proxy<ecore::EClassifier>( getThisPtr() , EcorePackage::ETYPED_ELEMENT__ETYPE );
+    return Proxy<std::shared_ptr<ecore::EClassifier>>( getThisPtr() , EcorePackage::ETYPED_ELEMENT__ETYPE );
     // End of user code
 }
 
