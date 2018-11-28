@@ -3,4 +3,6 @@
 !EClassifierImpl.cpp
 !EClassImpl.*
 !EModelElementImpl.cpp
+!EStructuralFeatureImpl.*
 !ETypedElementImpl.cpp
+
