@@ -36,6 +36,15 @@ namespace ecore::impl
         }
 
         template <typename = std::enable_if< std::is_same<ValueType, StorageType>::value>::type>
+        AbstractArrayEList( const std::vector<ValueType>&& v)
+            : AbstractEList<I, unique >()
+            , from_( identity() )
+            , to_( identity() )
+            , v_(v)
+        {
+        }
+
+        template <typename = std::enable_if< std::is_same<ValueType, StorageType>::value>::type>
         AbstractArrayEList( const std::initializer_list<ValueType>& init )
             : AbstractEList<I, unique >()
             , from_( identity() )
