@@ -22,7 +22,6 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/ArrayEList.hpp
     src/ecore/impl/BasicEObject.hpp
     src/ecore/impl/EObjectEList.hpp
-    src/ecore/impl/EObjectResolvingEList.hpp
     src/ecore/impl/ImmutableEList.hpp
     src/ecore/impl/Lazy.hpp
     src/ecore/impl/Notification.hpp

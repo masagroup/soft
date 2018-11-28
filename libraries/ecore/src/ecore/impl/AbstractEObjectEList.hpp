@@ -14,6 +14,7 @@
 #include "ecore/EObject.hpp"
 #include "ecore/impl/Notification.hpp"
 #include "ecore/impl/NotificationChain.hpp"
+#include "ecore/impl/AbstractArrayEList.hpp"
 
 #include <memory>
 #include <algorithm>
@@ -24,16 +25,32 @@
 
 namespace ecore::impl
 {
-    template <typename SuperList, bool containement, bool inverse, bool opposite>
-    class AbstractEObjectEList : public SuperList
+    template <typename I, typename S, bool containement, bool inverse, bool opposite>
+    class AbstractEObjectEList : public AbstractArrayEList<I,S,true>
     {
     public:
-        typedef typename SuperList Super;
-        typedef typename SuperList::ValueType ValueType;
-        typedef typename SuperList::InterfaceType InterfaceType;
+        typedef typename AbstractArrayEList<I, S, true> Super;
+        typedef typename I InterfaceType;
+        typedef typename I::ValueType ValueType;
+        typedef typename S StorageType;
+        
+        template <typename = std::enable_if< std::is_same<ValueType, StorageType>::value>::type>
+        AbstractEObjectEList( const std::weak_ptr<EObject>& owner, int featureID, int inverseFeatureID = -1 )
+            : AbstractArrayEList<I, S, true>()
+            , owner_( owner )
+            , featureID_( featureID )
+            , inverseFeatureID_( inverseFeatureID )
+            , isSet_( false )
+            , inverse_( *this )
+        {
+        }
 
-        AbstractEObjectEList( const std::shared_ptr<EObject>& owner, int featureID, int inverseFeatureID = -1 )
-            : owner_( owner )
+        template <typename = std::enable_if< !std::is_same<ValueType, StorageType>::value>::type>
+        AbstractEObjectEList( std::function< ValueType( const StorageType& )> from
+                            , std::function< StorageType( const ValueType& )> to
+                            , const std::weak_ptr<EObject>& owner, int featureID, int inverseFeatureID = -1 )
+            : AbstractArrayEList<I, S, true>( from , to )
+            , owner_( owner )
             , featureID_( featureID )
             , inverseFeatureID_( inverseFeatureID )
             , isSet_( false )
@@ -56,7 +73,7 @@ namespace ecore::impl
         virtual void addUnique( const ValueType& e )
         {
             auto index = size();
-            doAddUnique( e );
+            Super::addUnique( e );
             auto notifications = inverse_.inverseAdd( e, nullptr );
             createAndDispatchNotification( notifications, ENotification::ADD, NO_VALUE, e, index );
         }
@@ -65,7 +82,7 @@ namespace ecore::impl
 
         virtual void addUnique( std::size_t index, const ValueType& e )
         {
-            doAddUnique( index, e );
+            Super::addUnique( index, e );
             auto notifications = inverse_.inverseAdd( e, nullptr );
             createAndDispatchNotification( notifications, ENotification::ADD, NO_VALUE, e, index );
         }
@@ -73,7 +90,7 @@ namespace ecore::impl
         virtual std::shared_ptr<ENotificationChain> add( const ValueType& e, const std::shared_ptr<ENotificationChain>& notifications )
         {
             auto index = size();
-            doAddUnique( e );
+            Super::addUnique( e );
             return createAndAddNotification( notifications, ENotification::ADD, NO_VALUE, e, index );
         }
 
@@ -86,7 +103,7 @@ namespace ecore::impl
         {
             if (l.empty())
                 return false;
-            bool result = doAddAllUnique( index, l );
+            bool result = Super::addAllUnique( index, l );
             auto notifications = createNotificationChain();
             for (int i = 0; i < l.size(); ++i)
             {
@@ -100,7 +117,7 @@ namespace ecore::impl
 
         virtual ValueType remove( std::size_t index )
         {
-            auto oldObject = doRemove( index );
+            auto oldObject = Super::remove( index );
             auto notifications = inverse_.inverseRemove( oldObject, nullptr );
             createAndDispatchNotification( notifications, ENotification::REMOVE, oldObject, NO_VALUE, index );
             return oldObject;
@@ -111,7 +128,7 @@ namespace ecore::impl
             std::size_t index = indexOf( e );
             if (index != -1)
             {
-                auto oldObject = doRemove( index );
+                auto oldObject = Super::remove( index );
                 return createAndAddNotification( notifications, ENotification::REMOVE, oldObject, NO_VALUE, index );
             }
             return notifications;
@@ -120,7 +137,7 @@ namespace ecore::impl
 
         virtual ValueType setUnique( std::size_t index, const ValueType& newObject )
         {
-            ValueType oldObject = doSetUnique( index, newObject );
+            ValueType oldObject = Super::setUnique( index, newObject );
             if (newObject != oldObject)
             {
                 std::shared_ptr<ENotificationChain> notifications;
@@ -133,7 +150,7 @@ namespace ecore::impl
 
         virtual std::shared_ptr<ENotificationChain> set( std::size_t index, const ValueType& object, const std::shared_ptr<ENotificationChain>& notifications )
         {
-            auto oldObject = doSetUnique( index, object );
+            auto oldObject = Super::setUnique( index, object );
             return createAndAddNotification( notifications, ENotification::SET, oldObject, object, index );
         }
 
@@ -152,12 +169,6 @@ namespace ecore::impl
 
     protected:
 
-        virtual void doAddUnique( const ValueType& e ) = 0;
-        virtual void doAddUnique( std::size_t index, const ValueType& e ) = 0;
-        virtual bool doAddAllUnique( std::size_t index, const EList<ValueType>& l ) = 0;
-        virtual ValueType doSetUnique( std::size_t index, const ValueType& object ) = 0;
-        virtual ValueType doRemove( std::size_t index ) = 0;
-        
         virtual void didChange()
         {
             isSet_ = true;

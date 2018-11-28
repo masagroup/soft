@@ -20,16 +20,6 @@ namespace ecore::impl
     template <typename I, typename S, bool unique >
     class AbstractArrayEList : public AbstractEList<I, unique >
     {
-        struct identity
-        {
-            template<typename U>
-            constexpr auto operator()( U&& v ) const noexcept
-                -> decltype( std::forward<U>( v ) )
-            {
-                return std::forward<U>( v );
-            }
-        };
-
     public:
         typedef typename I InterfaceType;
         typedef typename I::ValueType ValueType;
@@ -53,7 +43,7 @@ namespace ecore::impl
         {
         }
 
-        template <typename = !std::enable_if< std::is_same<ValueType, StorageType>::value>::type>
+        template <typename = std::enable_if< !std::is_same<ValueType, StorageType>::value>::type>
         AbstractArrayEList( std::function< ValueType( const StorageType& )> from
                           , std::function< StorageType( const ValueType& )> to )
             : AbstractEList<I, unique >()
@@ -62,19 +52,6 @@ namespace ecore::impl
             , v_()
         {
         }
-
-        template <typename = !std::enable_if< std::is_same<ValueType, StorageType>::value>::type>
-        AbstractArrayEList( const std::initializer_list<ValueType>& init
-                            , std::function< ValueType( const StorageType& )> from
-                            , std::function< StorageType( const ValueType& )> to )
-            : AbstractEList<I, unique >()
-            , from_( from )
-            , to_( to )
-            , v_()
-        {
-            std::transform( init.begin(), init.end(), v_.end(), to_ );
-        }
-
 
         AbstractArrayEList( const AbstractArrayEList<I, S, unique>& o )
             : AbstractEList<I, S, unique >( o )
@@ -183,7 +160,18 @@ namespace ecore::impl
             return v_;
         }
 
-    protected:
+    private:
+        struct identity
+        {
+            template<typename U>
+            constexpr auto operator()( U&& v ) const noexcept
+                -> decltype(std::forward<U>( v ))
+            {
+                return std::forward<U>( v );
+            }
+        };
+
+    private:
         std::function< StorageType( const ValueType& )> to_;
         std::function< ValueType( const StorageType& )> from_;
         std::vector<StorageType> v_;

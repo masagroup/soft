@@ -14,56 +14,42 @@
 #include "ecore/EUnsettableList.hpp"
 #include "ecore/impl/AbstractArrayEList.hpp"
 #include "ecore/impl/AbstractEObjectEList.hpp"
-
+#include "ecore/impl/Proxy.hpp"
 
 
 namespace ecore::impl
 {
 
-    template <typename T,bool containement = false, bool inverse = false, bool opposite = false , bool unset = false >
-    class EObjectEList : public AbstractEObjectEList< AbstractArrayEList<T, typename std::conditional<unset, EUnsettableList<T>, ENotifyingList<T>>::type, true >
+    template <typename T, bool containement = false, bool inverse = false, bool opposite = false, bool proxies = false, bool unset = false >
+    class EObjectEList : public AbstractEObjectEList< typename std::conditional<unset, EUnsettableList<T>, ENotifyingList<T>>::type
+                                                    , typename std::conditional<proxies, Proxy<T>, T>::type
                                                     , containement
                                                     , inverse
                                                     , opposite>
     {
+        template <class...> struct null_v : std::integral_constant<int, 0> {};
     public:
         using EList<T>::add;
         using ENotifyingList<T>::add;
 
-        EObjectEList( const std::shared_ptr<EObject>& owner, int featureID, int inverseFeatureID = -1 )
+        template <typename U = T, long = null_v<std::enable_if_t< !proxies >>::value >
+        EObjectEList( const std::weak_ptr<EObject>& owner, int featureID, int inverseFeatureID = -1 )
             : AbstractEObjectEList( owner, featureID, inverseFeatureID )
+        {
+        }
+
+        template <typename U = T, int = null_v<std::enable_if_t< proxies >>::value >
+        EObjectEList( const std::weak_ptr<EObject>& owner, int featureID, int inverseFeatureID = -1 )
+            : AbstractEObjectEList( []( const Proxy<T>& p ) { return p.get(); }
+                                  , [=]( const T& v ) { return Proxy<T>(owner,featureID_,v); } 
+                                  , owner
+                                  , featureID
+                                  , inverseFeatureID)
         {
         }
 
         virtual ~EObjectEList()
         {
-        }
-
-    protected:
-        
-        virtual void doAddUnique( const T& e )
-        {
-            AbstractArrayEList::addUnique( e );
-        }
-
-        virtual void doAddUnique( std::size_t index, const T& e )
-        {
-            AbstractArrayEList::addUnique( index, e );
-        }
-
-        virtual bool doAddAllUnique( std::size_t index, const EList<T>& l )
-        {
-            return AbstractArrayEList::addAllUnique( index, l );
-        }
-
-        virtual T doSetUnique( std::size_t index, const T& object )
-        {
-            return AbstractArrayEList::setUnique( index, object );
-        }
-
-        virtual T doRemove( std::size_t index )
-        {
-            return AbstractArrayEList::remove( index );
         }
     };
 }

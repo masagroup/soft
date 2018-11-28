@@ -68,24 +68,20 @@ BOOST_AUTO_TEST_CASE( Constructor )
         EObjectEList< std::shared_ptr<EObject> > list(object,0,1);
     }
     {
-        EObjectEList< std::shared_ptr<EObject>, false, true, true> list( object, 0, 1 );
+        EObjectEList< std::shared_ptr<EObject>, false, true, false> list( object, 0, 1 );
     }
     {
         EObjectEList< std::shared_ptr<EObject>, false, true, true> list( object, 0, 1 );
     }
     {
-        EObjectEList< std::shared_ptr<EObject>, false, true, true, true> list( object, 0, 1 );
+        EObjectEList< std::shared_ptr<EObject>, false, false, false, true, false> list( object, 0, 1 );
     }
-}
-
-BOOST_FIXTURE_TEST_CASE( Unset , AddFixture )
-{
-    EObjectEList<std::shared_ptr<EObject>, false, false, false, true> list( owner, 1, 2 );
-    BOOST_CHECK( !list.isSet() );
-    BOOST_CHECK( list.add(object) );
-    BOOST_CHECK( list.isSet() );
-    list.unset();
-    BOOST_CHECK( !list.isSet() );
+    {
+        EObjectEList< std::shared_ptr<EObject>, false, false, false, false, true> list( object, 0, 1 );
+    }
+    {
+        EObjectEList< std::shared_ptr<EObject>, true, true, true, true, true> list( object, 0, 1 );
+    }
 }
 
 BOOST_FIXTURE_TEST_CASE( Add_SimpleNoNotifications , AddFixture )
@@ -150,5 +146,28 @@ BOOST_FIXTURE_TEST_CASE( Add_InverseOppositeNotifications , AddFixtureNotificati
     BOOST_CHECK( !list.add( object ) );
 }
 
+BOOST_FIXTURE_TEST_CASE( Proxies, AddFixture )
+{
+    EObjectEList<std::shared_ptr<EObject>, false, false, false, true> list( owner, 1, 2 );
+    auto proxy = std::make_shared<MockObject>();
+    auto resolved = std::make_shared<MockObject>();
+
+    MOCK_EXPECT( proxy->eIsProxy ).returns( true );
+    BOOST_CHECK( list.add( proxy ) );
+    MOCK_EXPECT( owner->eResolveProxy ).once().with( proxy ).returns( proxy );
+    BOOST_CHECK_EQUAL( list.get( 0 ), proxy );
+    MOCK_EXPECT( owner->eResolveProxy ).once().with( proxy ).returns( resolved );
+    BOOST_CHECK_EQUAL( list.get( 0 ), resolved );
+}
+
+BOOST_FIXTURE_TEST_CASE( Unset, AddFixture )
+{
+    EObjectEList<std::shared_ptr<EObject>, false, false, false, false, true> list( owner, 1, 2 );
+    BOOST_CHECK( !list.isSet() );
+    BOOST_CHECK( list.add( object ) );
+    BOOST_CHECK( list.isSet() );
+    list.unset();
+    BOOST_CHECK( !list.isSet() );
+}
 
 BOOST_AUTO_TEST_SUITE_END()
