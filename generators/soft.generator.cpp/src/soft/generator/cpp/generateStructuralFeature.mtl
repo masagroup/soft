@@ -133,7 +133,7 @@ endif/]
 [if isListType()]
 [aStructuralFeature.getListConstructor()/]
 [elseif isProxy()]
-[generateDataType()/]( getThisPtr() , [aStructuralFeature.getQualifiedFeatureIDName()/] )
+[generateDataType()/]( thisPtr_ , [aStructuralFeature.getQualifiedFeatureIDName()/] )
 [elseif aStructuralFeature.oclIsKindOf(EAttribute)]
 [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/]
 [else]
@@ -159,7 +159,7 @@ endif/]
 [if isListType()]
     return [getListConstructor()/];
 [elseif isProxy()]
-    return [generateDataType()/]( getThisPtr() , [aStructuralFeature.getQualifiedFeatureIDName()/] );
+    return [generateDataType()/]( thisPtr_ , [aStructuralFeature.getQualifiedFeatureIDName()/] );
 [elseif aStructuralFeature.oclIsKindOf(EAttribute)]
     return [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/];
 [else]
@@ -404,27 +404,25 @@ BasicEList<[anEAttribute.eGenericType.generateCppType()/],[anEAttribute.unique/]
 
 [template private getListConstructor( anEReference : EReference ) post(trim())]
 [let typeArgument : String = anEReference.eGenericType.generateCppType()]
-[let thisPtrGetterName : String = anEReference.eContainingClass.generateGetThisPtrPropertyGetterName()]
 [let packageName : String = anEReference.getPackageName(anEReference.eContainingClass)]
 [let featureID : String = anEReference.eContainingClass.getFeatureIDName( anEReference )]
 [if (anEReference.containment)]
     [if anEReference.eOpposite.oclIsUndefined() ]
-        std::make_shared<EObjectEList<[typeArgument/],true,true,false,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>([thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] )
+        std::make_shared<EObjectEList<[typeArgument/],true,true,false,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>(thisPtr_, [anEReference.getQualifiedFeatureIDName()/] )
     [else]
         [let reverseFeature :EReference = anEReference.eOpposite ]
-        std::make_shared<EObjectEList<[typeArgument/],true,true,true,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>( [thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
+        std::make_shared<EObjectEList<[typeArgument/],true,true,true,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>(thisPtr_, [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
         [/let]
     [/if]
 [else]
     [if anEReference.eOpposite.oclIsUndefined() ]
-        std::make_shared<EObjectEList<[typeArgument/],false,false,false,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>( [thisPtrGetterName/](), [packageName/]::[featureID/])
+        std::make_shared<EObjectEList<[typeArgument/],false,false,false,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>(thisPtr_, [packageName/]::[featureID/])
     [else]
         [let reverseFeature :EReference = anEReference.eOpposite ]
-        std::make_shared<EObjectEList<[typeArgument/],false,true,true,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>( [thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
+        std::make_shared<EObjectEList<[typeArgument/],false,true,true,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>(thisPtr_, [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
         [/let]
     [/if]
 [/if]
-[/let]
 [/let]
 [/let]
 [/let]

@@ -477,6 +477,10 @@ std::shared_ptr<ENotificationChain> EStructuralFeatureImpl::eBasicInverseRemove(
     // End of user code
 }
 
+
+
+
+
 // Start of user code EStructuralFeatureImpl [declaration-end]
 void EStructuralFeatureImpl::setName( const std::string & newName )
 {

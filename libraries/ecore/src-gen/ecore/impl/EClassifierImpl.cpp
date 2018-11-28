@@ -260,7 +260,7 @@ std::shared_ptr<ENotificationChain> EClassifierImpl::eBasicInverseRemove( const 
 std::shared_ptr<EList<std::shared_ptr<ecore::ETypeParameter>>> EClassifierImpl::initETypeParameters()
 {
     // Start of user code EClassifierImpl::initETypeParameters
-    return std::make_shared<EObjectEList<std::shared_ptr<ecore::ETypeParameter>,true,true,false>>(getThisPtr(), EcorePackage::ECLASSIFIER__ETYPE_PARAMETERS );
+    return std::make_shared<EObjectEList<std::shared_ptr<ecore::ETypeParameter>,true,true,false,false,false>>(thisPtr_, EcorePackage::ECLASSIFIER__ETYPE_PARAMETERS );
     // End of user code
 }
 
