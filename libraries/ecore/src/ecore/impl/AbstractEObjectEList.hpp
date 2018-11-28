@@ -41,7 +41,6 @@ namespace ecore::impl
             , featureID_( featureID )
             , inverseFeatureID_( inverseFeatureID )
             , isSet_( false )
-            , inverse_( *this )
         {
         }
 
@@ -54,7 +53,6 @@ namespace ecore::impl
             , featureID_( featureID )
             , inverseFeatureID_( inverseFeatureID )
             , isSet_( false )
-            , inverse_( *this )
         {
         }
 
@@ -74,7 +72,7 @@ namespace ecore::impl
         {
             auto index = size();
             Super::addUnique( e );
-            auto notifications = inverse_.inverseAdd( e, nullptr );
+            auto notifications = inverseAdd( e, nullptr );
             createAndDispatchNotification( notifications, ENotification::ADD, NO_VALUE, e, index );
         }
 
@@ -83,7 +81,7 @@ namespace ecore::impl
         virtual void addUnique( std::size_t index, const ValueType& e )
         {
             Super::addUnique( index, e );
-            auto notifications = inverse_.inverseAdd( e, nullptr );
+            auto notifications = inverseAdd( e, nullptr );
             createAndDispatchNotification( notifications, ENotification::ADD, NO_VALUE, e, index );
         }
 
@@ -108,7 +106,7 @@ namespace ecore::impl
             for (int i = 0; i < l.size(); ++i)
             {
                 auto object = get(i + index);
-                notifications = inverse_.inverseAdd( object, notifications );
+                notifications = inverseAdd( object, notifications );
             }
             createAndDispatchNotification( notifications, [&]() { return l.size() == 1 ? createNotification( ENotification::ADD, NO_VALUE, l.get( 0 ), index )
                 : createNotification( ENotification::ADD_MANY, NO_VALUE, toAny( l ), index ); } );
@@ -118,7 +116,7 @@ namespace ecore::impl
         virtual ValueType remove( std::size_t index )
         {
             auto oldObject = Super::remove( index );
-            auto notifications = inverse_.inverseRemove( oldObject, nullptr );
+            auto notifications = inverseRemove( oldObject, nullptr );
             createAndDispatchNotification( notifications, ENotification::REMOVE, oldObject, NO_VALUE, index );
             return oldObject;
         }
@@ -141,8 +139,8 @@ namespace ecore::impl
             if (newObject != oldObject)
             {
                 std::shared_ptr<ENotificationChain> notifications;
-                notifications = inverse_.inverseRemove( oldObject, notifications );
-                notifications = inverse_.inverseAdd( newObject, notifications );
+                notifications = inverseRemove( oldObject, notifications );
+                notifications = inverseAdd( newObject, notifications );
                 createAndDispatchNotification( notifications, ENotification::SET, oldObject, newObject, index );
             }
             return oldObject;
@@ -174,83 +172,41 @@ namespace ecore::impl
             isSet_ = true;
         }
 
-        template <bool opposite = false >
-        struct Opposite
+        template <bool inv = inverse , bool op = opposite>
+        typename std::enable_if< inv && !op, std::shared_ptr<ENotificationChain> >::type inverseAdd( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
         {
-            inline Opposite( AbstractEObjectEList& list ) : list_( list )
-            {
-            }
+            return object->eInverseAdd( getOwner(), EOPPOSITE_FEATURE_BASE - featureID_, notifications );
+        }
 
-            inline std::shared_ptr<ENotificationChain> inverseAdd( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
-            {
-                return object->eInverseAdd( list_.getOwner(), EOPPOSITE_FEATURE_BASE - list_.featureID_, notifications );
-            }
-
-            inline std::shared_ptr<ENotificationChain> inverseRemove( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
-            {
-                return object->eInverseRemove( list_.getOwner(), EOPPOSITE_FEATURE_BASE - list_.featureID_, notifications );
-            }
-
-            AbstractEObjectEList& list_;
-        };
-
-        template <>
-        struct Opposite<true>
+        template <bool inv = inverse, bool op = opposite>
+        typename std::enable_if< inv && op, std::shared_ptr<ENotificationChain> >::type inverseAdd( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
         {
-            inline Opposite( AbstractEObjectEList& list ) : list_( list )
-            {
-            }
+            return object->eInverseAdd( getOwner(), inverseFeatureID_, notifications );
+        }
 
-            inline std::shared_ptr<ENotificationChain> inverseAdd( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
-            {
-                return object->eInverseAdd( list_.getOwner(), list_.inverseFeatureID_, notifications );
-            }
-
-            inline std::shared_ptr<ENotificationChain> inverseRemove( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
-            {
-                return object->eInverseRemove( list_.getOwner(), list_.inverseFeatureID_, notifications );
-            }
-
-            AbstractEObjectEList& list_;
-        };
-
-        template <bool inverse = false, bool opposite = false >
-        struct Inverse
+        template <bool inv = inverse, bool op = opposite>
+        typename std::enable_if< !inv, std::shared_ptr<ENotificationChain> >::type inverseAdd( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
         {
-            inline Inverse( AbstractEObjectEList& list )
-            {
-            }
+            return notifications;
+        }
 
-            inline std::shared_ptr<ENotificationChain> inverseAdd( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
-            {
-                return  notifications;
-            }
-
-            inline std::shared_ptr<ENotificationChain> inverseRemove( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
-            {
-                return  notifications;
-            }
-        };
-
-        template <bool opposite>
-        struct Inverse<true, opposite>
+        template <bool inv = inverse, bool op = opposite>
+        typename std::enable_if< inv && !op, std::shared_ptr<ENotificationChain> >::type inverseRemove( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
         {
-            inline Inverse( AbstractEObjectEList& list ) : opposite_( list )
-            {
-            }
+            return object->eInverseRemove( getOwner(), EOPPOSITE_FEATURE_BASE - featureID_, notifications );
+        }
 
-            inline std::shared_ptr<ENotificationChain> inverseAdd( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
-            {
-                return opposite_.inverseAdd( object, notifications );
-            }
+        template <bool inv = inverse, bool op = opposite>
+        typename std::enable_if< inv && op, std::shared_ptr<ENotificationChain> >::type inverseRemove( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
+        {
+            return object->eInverseRemove( getOwner(), inverseFeatureID_, notifications );
+        }
 
-            inline std::shared_ptr<ENotificationChain> inverseRemove( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
-            {
-                return opposite_.inverseRemove( object, notifications );
-            }
-
-            Opposite<opposite> opposite_;
-        };
+        template <bool inv = inverse, bool op = opposite>
+        typename std::enable_if< !inv, std::shared_ptr<ENotificationChain> >::type inverseRemove( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications )
+        {
+            return notifications;
+        }
 
     private:
 
@@ -326,7 +282,6 @@ namespace ecore::impl
         int featureID_;
         int inverseFeatureID_;
         bool isSet_;
-        Inverse<inverse, opposite> inverse_;
     };
 }
 

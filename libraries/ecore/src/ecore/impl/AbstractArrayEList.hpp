@@ -13,6 +13,7 @@
 #include "ecore/impl/AbstractEList.hpp"
 
 #include <vector>
+#include <type_traits>
 
 namespace ecore::impl
 {
@@ -143,16 +144,14 @@ namespace ecore::impl
             return v_.size();
         }
 
-        virtual void clear()
-        {
-            auto oldObjects = std::move( v_ );
-            v_.clear();
-            //didClear( oldObjects );
-        }
-
         virtual bool empty() const
         {
             return v_.empty();
+        }
+
+        virtual void clear()
+        {
+            doClear();
         }
 
         std::vector<StorageType>& data()
@@ -170,6 +169,24 @@ namespace ecore::impl
                 return std::forward<U>( v );
             }
         };
+
+        template <typename T = ValueType>
+        typename std::enable_if< std::is_same<T, StorageType>::value >::type doClear()
+        {
+            auto oldObjects = std::move( v_ );
+            v_.clear();
+            didClear( oldObjects );
+        }
+
+        template <typename T = ValueType>
+        typename std::enable_if< !std::is_same<T, StorageType>::value >::type doClear()
+        {
+            auto oldObjects = std::move( v_ );
+            v_.clear();
+            std::vector<ValueType> oldValues;
+            std::transform( oldObjects.begin(), oldObjects.end(), oldValues.end(), from_ );
+            didClear( oldValues );
+        }
 
     private:
         std::function< StorageType( const ValueType& )> to_;
