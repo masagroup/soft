@@ -27,7 +27,6 @@ namespace ecore::impl
         typedef typename I::ValueType ValueType;
         
         AbstractEList()
-            : uniquePolicy_( *this )
         {
         }
 
@@ -37,24 +36,24 @@ namespace ecore::impl
 
         virtual bool add( const ValueType& e )
         {
-            return uniquePolicy_.add( e );
+            return doAdd( e );
         }
 
         virtual bool addAll( const EList<ValueType>& l )
         {
-            return uniquePolicy_.addAll( l );
+            return doAddAll( l );
         }
 
         virtual void add( std::size_t pos, const ValueType& e )
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
-            uniquePolicy_.add( pos, e );
+            doAdd( pos, e );
         }
 
         virtual bool addAll( std::size_t pos, const EList<ValueType>& l )
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
-            return uniquePolicy_.addAll( pos, l );
+            return doAddAll( pos, l );
         }
 
         virtual void addUnique( const ValueType& e ) = 0;
@@ -68,7 +67,7 @@ namespace ecore::impl
         virtual void set( std::size_t pos, const ValueType& e )
         {
             _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos < size() );
-            uniquePolicy_.set( pos, e );
+            doSet( pos, e );
         }
 
         virtual ValueType setUnique( std::size_t pos, const ValueType& e ) = 0;
@@ -95,100 +94,6 @@ namespace ecore::impl
         }
 
     protected:
-
-        template <bool unique = false> 
-        struct UniquePolicy
-        {
-            inline UniquePolicy( AbstractEList& list ) : list_(list) {}
-
-            inline bool add( const ValueType& e )
-            {
-                list_.addUnique( e );
-                return true;
-            }
-
-            inline bool addAll( const EList<ValueType>& l )
-            {
-                return list_.addAllUnique( l );
-            }
-
-            inline void add( std::size_t pos, const ValueType& e )
-            {
-                list_.addUnique( pos, e );
-            }
-
-            inline bool addAll( std::size_t pos, const EList<ValueType>& l )
-            {
-                return list_.addAllUnique( pos, l );
-            }
-
-            inline void set( std::size_t pos, const ValueType& e )
-            {
-                list_.setUnique( pos, e );
-            }
-
-            AbstractEList& list_;
-        };
-
-        template <>
-        struct UniquePolicy<true>
-        {
-            inline UniquePolicy( AbstractEList& list ) : list_( list ) {}
-
-            inline bool add( const ValueType& e )
-            {
-                if (list_.contains( e ))
-                    return  false;
-                else
-                {
-                    list_.addUnique( e );
-                    return true;
-                }
-            }
-
-            inline bool addAll( const EList<ValueType>& l )
-            {
-                auto nonDuplicates = getNonDuplicates( l );
-                return list_.addAllUnique( *nonDuplicates );
-            }
-
-            inline void add( std::size_t pos, const ValueType& e )
-            {
-                _SCL_SECURE_ALWAYS_VALIDATE( !list_.contains( e ) );
-                list_.addUnique( pos, e );
-            }
-
-            inline bool addAll( std::size_t pos, const EList<ValueType>& l )
-            {
-                auto nonDuplicates = getNonDuplicates( l );
-                return list_.addAllUnique( pos, *nonDuplicates );
-            }
-
-            inline void set( std::size_t pos, const ValueType& e )
-            {
-                std::size_t currentIndex = list_.indexOf( e );
-                _SCL_SECURE_ALWAYS_VALIDATE(currentIndex == -1 || currentIndex == pos );
-                list_.setUnique( pos, e );
-            }
-        
-            std::unique_ptr<EList<ValueType>> getNonDuplicates( const EList<ValueType>& l )
-            {
-                std::unordered_set<ValueType> s;
-                std::vector<ValueType> v;
-                for (auto e : l)
-                {
-                    auto i = s.insert( e );
-                    if (i.second)
-                    {
-                        if ( !list_.contains(e) )
-                            v.push_back( e );
-                    }
-                }
-                return std::make_unique<ImmutableEList<ValueType>>( std::move(v) );
-            }
-
-            AbstractEList& list_;
-        };
 
         virtual void didSet( std::size_t pos, const ValueType& newObject, const ValueType& oldObject )
         {
@@ -221,7 +126,96 @@ namespace ecore::impl
         }
 
     private:
-        UniquePolicy<unique> uniquePolicy_;
+        
+        template <bool u = unique>
+        typename std::enable_if< u, bool >::type doAdd( const ValueType& e )
+        {
+            if ( contains( e ))
+                return  false;
+            else
+            {
+                addUnique( e );
+                return true;
+            }
+        }
+
+        template <bool u = unique>
+        typename std::enable_if< !u, bool >::type doAdd( const ValueType& e )
+        {
+            addUnique( e );
+            return true;
+        }
+
+        template <bool u = unique>
+        typename std::enable_if< u, void >::type doAdd( std::size_t pos, const ValueType& e )
+        {
+            _SCL_SECURE_ALWAYS_VALIDATE( !contains( e ) );
+            addUnique( pos, e );
+        }
+
+        template <bool u = unique>
+        typename std::enable_if < !u, void > ::type doAdd( std::size_t pos, const ValueType& e )
+        {
+            addUnique( pos, e );
+        }
+
+        template <bool u = unique>
+        typename std::enable_if< u, bool >::type doAddAll( const EList<ValueType>& l )
+        {
+            auto nonDuplicates = getNonDuplicates( l );
+            return addAllUnique( *nonDuplicates );
+        }
+
+        template <bool u = unique>
+        typename std::enable_if< !u, bool >::type doAddAll( const EList<ValueType>& l )
+        {
+            return addAllUnique( l );
+        }
+
+        template <bool u = unique>
+        typename std::enable_if< u, bool >::type doAddAll( std::size_t pos, const EList<ValueType>& l )
+        {
+            auto nonDuplicates = getNonDuplicates( l );
+            return addAllUnique( pos, *nonDuplicates );
+        }
+
+        template <bool u = unique>
+        typename std::enable_if< !u, bool >::type doAddAll( std::size_t pos, const EList<ValueType>& l )
+        {
+            return addAllUnique( pos, l );
+        }
+
+        template <bool u = unique>
+        typename std::enable_if< u, void >::type doSet( std::size_t pos, const ValueType& e )
+        {
+            std::size_t currentIndex = indexOf( e );
+            _SCL_SECURE_ALWAYS_VALIDATE( currentIndex == -1 || currentIndex == pos );
+            setUnique( pos, e );
+        }
+
+        template <bool u = unique>
+        typename std::enable_if< !u, void >::type doSet( std::size_t pos, const ValueType& e )
+        {
+            setUnique( pos, e );
+        }
+
+    private:
+        std::unique_ptr<EList<ValueType>> getNonDuplicates( const EList<ValueType>& l )
+        {
+            std::unordered_set<ValueType> s;
+            std::vector<ValueType> v;
+            for (auto e : l)
+            {
+                auto i = s.insert( e );
+                if (i.second)
+                {
+                    if (!contains( e ))
+                        v.push_back( e );
+                }
+            }
+            return std::make_unique<ImmutableEList<ValueType>>( std::move( v ) );
+        }
+
     };
 
 }
