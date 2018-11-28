@@ -409,18 +409,18 @@ BasicEList<[anEAttribute.eGenericType.generateCppType()/],[anEAttribute.unique/]
 [let featureID : String = anEReference.eContainingClass.getFeatureIDName( anEReference )]
 [if (anEReference.containment)]
     [if anEReference.eOpposite.oclIsUndefined() ]
-        std::make_shared<EObjectEList<[typeArgument/],true,true,false>>([thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] )
+        std::make_shared<EObjectEList<[typeArgument/],true,true,false,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>([thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] )
     [else]
         [let reverseFeature :EReference = anEReference.eOpposite ]
-        std::make_shared<EObjectEList<[typeArgument/],true,true,true>>( [thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
+        std::make_shared<EObjectEList<[typeArgument/],true,true,true,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>( [thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
         [/let]
     [/if]
 [else]
     [if anEReference.eOpposite.oclIsUndefined() ]
-        std::make_shared<EObjectEList<[typeArgument/],false,false,false>>( [thisPtrGetterName/](), [packageName/]::[featureID/])
+        std::make_shared<EObjectEList<[typeArgument/],false,false,false,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>( [thisPtrGetterName/](), [packageName/]::[featureID/])
     [else]
         [let reverseFeature :EReference = anEReference.eOpposite ]
-        std::make_shared<EObjectEList<[typeArgument/],false,true,true>>( [thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
+        std::make_shared<EObjectEList<[typeArgument/],false,true,true,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>( [thisPtrGetterName/](), [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
         [/let]
     [/if]
 [/if]
