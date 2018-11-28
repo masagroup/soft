@@ -487,7 +487,10 @@ void [className/]::[methodName/]()
 [if not isVolatile()]
     [if isListType()]
     if ([aStructuralFeature.name/]_)
-        [aStructuralFeature.name/]_->clear();
+    {
+        auto unsettable = std::static_pointer_cast<ecore::EUnsettableList<[aStructuralFeature.eGenericType.generateCppType()/]>>([aStructuralFeature.name/]_[if isLazy()].get()[/if]);
+        unsettable->unset();
+    }
     [elseif isBidirectional() or isContains()]
     if ([aStructuralFeature.name/]_)
     {
