@@ -1,5 +1,2 @@
 *
 !.gitignore
-!EStructuralFeatureImpl.*
-!ETypedElementImpl.cpp
-
