@@ -83,9 +83,11 @@
 [query public getInterfaceNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getInterfaceNamespace() ) /]
 [query public getImplementationNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getImplementationNamespace() )/]
 [query public getTestsNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getTestsNamespace() )/]
+[query public getExtensionNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getExtensionNamespace() )/]
 [query private getBaseNamespace( aPackage : EPackage ) : String = if hasKey('baseNamespace') then valueKey('baseNamespace') else '' endif/]
 [query private getInterfaceNamespace( aPackage : EPackage ) : String = if hasKey('interfaceNamespace') then valueKey('interfaceNamespace') else '' endif/]
 [query private getImplementationNamespace( aPackage : EPackage ) : String = if hasKey('implementationNamespace') then valueKey('implementationNamespace') else 'impl' endif/]
+[query private getExtensionNamespace( aPackage : EPackage ) : String = if hasKey('extensionNamespace') then valueKey('extensionNamespace') else 'ext' endif/]
 [query private getTestsNamespace( aPackage : EPackage ) : String = if hasKey('testsNamespace') then valueKey('testsNamespace') else 'tests' endif/]
 [query private getQualifiedNamespaceName( aPackage : EPackage , aSuffix : String  ) : String = 
     if ( matches(aSuffix,'\\{\\d+\\}') ) then

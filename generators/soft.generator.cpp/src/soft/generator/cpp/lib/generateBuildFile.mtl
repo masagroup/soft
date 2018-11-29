@@ -78,6 +78,7 @@ endif()
 
 [let namespaces : OrderedSet(String) = Sequence{ getAllNamespaces( aPackage.getInterfaceNamespaceName() ) 
                                                , getAllNamespaces( aPackage.getImplementationNamespaceName() )
+                                               , getAllNamespaces( aPackage.getExtensionNamespaceName() )
                                                }->flatten()->asOrderedSet()->sortedBy(s | s)]
 add_library(${PROJECT_NAME} STATIC  ${CMAKE_FILES}
 [for (variable : String | namespaces->getAllVariables())]

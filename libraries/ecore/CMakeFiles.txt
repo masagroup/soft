@@ -36,4 +36,13 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/NotificationChain.cpp
 )
 
+set(HEADER_ECORE_EXT_FILES 
+    src/ecore/ext/EClassExt.hpp
+)
+
+set(SOURCE_ECORE_EXT_FILES 
+    src/ecore/ext/EClassExt.cpp
+)
+
+
 
