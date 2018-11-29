@@ -146,7 +146,7 @@ endif/]
 
 [template public generateDataInitializationMethodDeclaration(aStructuralFeature : EStructuralFeature) ]
 [let methodName : String = aStructuralFeature.getLazyInitializationName()]
-[generateDataInitializationMethodReturnType()/] [methodName/]();
+virtual [generateDataInitializationMethodReturnType()/] [methodName/]();
 [/let]
 [/template]
 

@@ -82,20 +82,21 @@ namespace [namespaceName/]
 
         [aClass.generateReflectivesDeclaration()/]
 
+[let dataInitializationFeatures : OrderedSet(EStructuralFeature) = aClass.getDataInitializationFeatures()]
+[if dataInitializationFeatures->notEmpty()]
+        //*********************************
+        // Initializers
+        //*********************************
+        [dataInitializationFeatures.generateDataInitializationMethodDeclaration()/]
+[/if]
+[/let]
+
 [let dataDeclarationFeatures : OrderedSet(EAttribute) = aClass.eStructuralFeatures->select( not isVolatile() )]
 [if dataDeclarationFeatures->notEmpty()]
     protected:
         [dataDeclarationFeatures.generateDataDeclaration()/]
 [/if]
 [/let]
-
-[let dataInitializationFeatures : OrderedSet(EStructuralFeature) = aClass.getDataInitializationFeatures()]
-[if dataInitializationFeatures->notEmpty()]
-    private:
-        [dataInitializationFeatures.generateDataInitializationMethodDeclaration()/]
-[/if]
-[/let]
-
     private:
         std::weak_ptr<[className/]> [generateGetThisPtrPropertyName()/]_;
     
