@@ -8,12 +8,8 @@
 [template public generateFactoryInterfaceSource(anEPackage : EPackage)]
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getInterfaceFolder() + '/' + anEPackage.getFactoryInterfaceName() +'.cpp', false, 'UTF-8')]
 [fileComment()/]
-[let isExtensionFactory : Boolean = anEPackage.hasKey('factory') and anEPackage.valueKey('factory') = 'extension']
 [let includes : OrderedSet(String) = OrderedSet{ anEPackage.getFactoryQualifiedInterfaceName() 
-                                               , if isExtensionFactory then 
-                                                    anEPackage.getFactoryQualifiedExtensionName() 
-                                                 else anEPackage.getFactoryQualifiedImplementationName() 
-                                                 endif }]
+                                               , anEPackage.getFactoryQualifiedImplementationName() }]
 [for (include:String | includes )]
 #include "[namespaceToFolder(include)/].hpp"
 [/for]
@@ -21,20 +17,14 @@
 
 [let namespaces : OrderedSet(String) = OrderedSet{ 'ecore' 
                                                  , anEPackage.getInterfaceNamespaceName() 
-                                                 , if isExtensionFactory then 
-                                                        anEPackage.getExtensionNamespaceName()
-                                                   else 
-                                                        anEPackage.getImplementationNamespaceName() 
-                                                   endif }]
+                                                 , anEPackage.getImplementationNamespaceName() 
+                                                   }]
 [for (namespace : String | namespaces )]
 using namespace [namespace/];
 [/for]
 [/let]
 
 //static initialisation
-[let factoryName : String =  if isExtensionFactory then anEPackage.getFactoryExtensionName() else anEPackage.getFactoryImplementationName() endif]
-[generateSingletonImplementation( anEPackage.getFactoryInterfaceName() , factoryName , false)/]
-[/let]
-[/let]
+[generateSingletonImplementation( anEPackage.getFactoryInterfaceName() , anEPackage.getFactoryImplementationName() , false)/]
 [/file]
 [/template]

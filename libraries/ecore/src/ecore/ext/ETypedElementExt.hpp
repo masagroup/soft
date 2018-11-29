@@ -20,7 +20,6 @@ namespace ecore::ext
         ETypedElementExt& operator=( ETypedElementExt const& ) = delete;
 
     protected:
-        friend class EcoreFactoryExt;
         ETypedElementExt();
 
     public:

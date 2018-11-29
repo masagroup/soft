@@ -23,7 +23,7 @@ namespace ecore::ext
         EClassExt& operator=( EClassExt const& ) = delete;
 
     protected:
-        friend class EcoreFactoryExt;
+        friend class impl::EcoreFactoryImpl;
         EClassExt();
     
     public:

@@ -21,7 +21,6 @@ namespace ecore::ext
         EClassifierExt& operator=( EClassifierExt const& ) = delete;
 
     protected:
-        friend class EcoreFactoryExt;
         EClassifierExt();
 
     public:
