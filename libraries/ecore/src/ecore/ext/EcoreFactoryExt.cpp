@@ -15,7 +15,9 @@ EcoreFactoryExt::~EcoreFactoryExt()
 
 std::shared_ptr<EClass> EcoreFactoryExt::createEClass() const
 {
-    return std::make_shared<EClassExt>();
+    std::shared_ptr<EClassExt> aClass( new EClassExt() );
+    aClass->setThisPtr( aClass );
+    return aClass;
 }
 
 EcoreFactoryExt * EcoreFactoryExt::create()

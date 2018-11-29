@@ -72,7 +72,7 @@ std::shared_ptr<[getShortQualifiedName('ecore::EObject',namespaceName)/]> [class
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
 std::shared_ptr<[aClass.getInterfaceName()/]> [className/]::create[aClass.name/]() const
 {
-    std::shared_ptr<[aClass.getImplementationName()/]> element(new [aClass.getImplementationName()/]() );
+    std::shared_ptr<[aClass.getImplementationName()/]> element( new [aClass.getImplementationName()/]() );
     element->[generateGetThisPtrPropertySetterName()/](element);
     return element;
 }
@@ -100,11 +100,12 @@ std::shared_ptr<[anEPackage.getInterfaceName()/]> [className/]::get[anEPackage.g
 [/file]
 [/template]
 
-[template public generateCreateFunctionContent(anEClass : EClass, ref : OrderedSet(EReference), aReference : EReference, anEPackage : EPackage, addID : Boolean)]
-auto element = std::shared_ptr<[anEClass.getImplementationName()/]>( new [anEClass.getImplementationName()/]() );
-element->[generateGetThisPtrPropertySetterName()/](element);
+[template public generateCreateFunctionContent(aClass : EClass, ref : OrderedSet(EReference), aReference : EReference, anEPackage : EPackage, addID : Boolean)]
 [if(addID)]
-element->set[anEClass.getElementIDAccessorName()/]ID(classID);
+auto element = std::dynamic_pointer_cast< [aClass.getImplementationName()/] >( create[aClass.name/]() );
+element->set[aClass.getElementIDAccessorName()/]ID(classID);
+[else]
+auto element = create[aClass.name/]();
 [/if]
 [if(not aReference.eOpposite.name.oclIsUndefined())]
 if( eContainer)
