@@ -1,6 +1,5 @@
 *
 !.gitignore
-!EClassifierImpl.cpp
 !EModelElementImpl.cpp
 !EStructuralFeatureImpl.*
 !ETypedElementImpl.cpp

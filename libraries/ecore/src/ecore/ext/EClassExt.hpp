@@ -10,13 +10,14 @@
 #ifndef ECORE_ECLASS_ECLASSEXT_HPP
 #define ECORE_ECLASS_ECLASSEXT_HPP
 
+#include "ecore/ext/EClassifierExt.hpp"
 #include "ecore/impl/EClassImpl.hpp"
 
 #include <unordered_map>
 
 namespace ecore::ext
 {
-    class EClassExt : public impl::EClassImpl
+    class EClassExt : public virtual EClassifierExt , public virtual impl::EClassImpl
     {
     private:
         EClassExt& operator=( EClassExt const& ) = delete;
