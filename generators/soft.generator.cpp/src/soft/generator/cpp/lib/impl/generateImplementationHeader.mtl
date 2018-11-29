@@ -25,7 +25,7 @@
 #include "ecore/impl/Proxy.hpp"
 [/if]
 
-// [protected (className + ' [definition-includes]')]
+// [protected (className + ' [declaration-includes]')]
 // [/protected]
 
 namespace [namespaceName/] 
@@ -100,7 +100,7 @@ namespace [namespaceName/]
     private:
         std::weak_ptr<[className/]> [generateGetThisPtrPropertyName()/]_;
     
-        // [protected (className + ' [definition-methods]')]
+        // [protected (className + ' [declaration-methods]')]
         // [/protected]
     };
 }

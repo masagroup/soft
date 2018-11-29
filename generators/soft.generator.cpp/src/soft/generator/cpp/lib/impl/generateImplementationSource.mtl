@@ -41,7 +41,7 @@
 #include <boost/any.hpp>
 [/if]
 
-//[protected (className + ' [declaration-includes]')]
+//[protected (className + ' [definition-includes]')]
 //[/protected]
 
 
@@ -52,7 +52,7 @@ using namespace [namespace/];
 [/for]
 [/let]
 
-//[protected (className + ' [declaration-begin]')]
+//[protected (className + ' [definition-begin]')]
 //[/protected]
 
 //*********************************
@@ -135,7 +135,7 @@ std::shared_ptr<EClass> [className/]::eStaticClass() const
 [/let]
 
 
-// [protected (className + ' [declaration-end]') ]
+// [protected (className + ' [definition-end]') ]
 // [/protected]
 
 [/file]

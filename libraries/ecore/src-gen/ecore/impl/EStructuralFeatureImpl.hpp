@@ -16,14 +16,14 @@
 #define ECORE_ESTRUCTURALFEATURE_ESTRUCTURALFEATUREIMPL_HPP
 
 #include "ecore/EStructuralFeature.hpp"
-#include "ecore/impl/ETypedElementImpl.hpp"
+#include "ecore/ext/ETypedElementExt.hpp"
 
-// Start of user code EStructuralFeatureImpl [definition-includes]
+// Start of user code EStructuralFeatureImpl [declaration-includes]
 // End of user code
 
 namespace ecore::impl 
 {
-    class EStructuralFeatureImpl : public virtual ETypedElementImpl, public virtual EStructuralFeature 
+    class EStructuralFeatureImpl : public virtual ext::ETypedElementExt, public virtual EStructuralFeature 
     {
     private:
         EStructuralFeatureImpl& operator=(EStructuralFeatureImpl const&) = delete;
@@ -101,6 +101,7 @@ namespace ecore::impl
         virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
         
 
+
     protected:
         bool changeable_;
         bool volatile_;
@@ -111,14 +112,10 @@ namespace ecore::impl
         std::weak_ptr<ecore::EClass> eContainingClass_;
         int featureID_;
         
-
-
     private:
         std::weak_ptr<EStructuralFeatureImpl> thisPtr_;
     
-        // Start of user code EStructuralFeatureImpl [definition-methods]
-    public:
-        virtual void setName( const std::string& newName );
+        // Start of user code EStructuralFeatureImpl [declaration-methods]
         // End of user code
     };
 }

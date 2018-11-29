@@ -29,15 +29,14 @@
 #include <iostream>
 #include <sstream>
 
-//Start of user code EStructuralFeatureImpl [declaration-includes]
-#include "ecore/impl/EClassImpl.hpp"
+//Start of user code EStructuralFeatureImpl [definition-includes]
 //End of user code
 
 
 using namespace ecore;
 using namespace ecore::impl;
 
-//Start of user code EStructuralFeatureImpl [declaration-begin]
+//Start of user code EStructuralFeatureImpl [definition-begin]
 //End of user code
 
 //*********************************
@@ -289,7 +288,7 @@ boost::any EStructuralFeatureImpl::eGet(int featureID, bool resolve, bool coreTy
         case EcorePackage::ESTRUCTURAL_FEATURE__VOLATILE:
             return isVolatile();
     }
-    return ETypedElementImpl::eGet(featureID, resolve, coreType);
+    return ETypedElementExt::eGet(featureID, resolve, coreType);
 }
 
 
@@ -346,7 +345,7 @@ void EStructuralFeatureImpl::eSet(int featureID, const boost::any& newValue)
             return;
         }
     }
-    return ETypedElementImpl::eSet(featureID, newValue);
+    return ETypedElementExt::eSet(featureID, newValue);
 }
 
 void EStructuralFeatureImpl::eUnset(int featureID)
@@ -394,7 +393,7 @@ void EStructuralFeatureImpl::eUnset(int featureID)
             return;
         }
     }
-    return ETypedElementImpl::eUnset(featureID);
+    return ETypedElementExt::eUnset(featureID);
 }
 
 
@@ -427,7 +426,7 @@ bool EStructuralFeatureImpl::eIsSet(int featureID) const
         case EcorePackage::ESTRUCTURAL_FEATURE__VOLATILE:
             return volatile_ != false;
     }
-    return ETypedElementImpl::eIsSet(featureID);
+    return ETypedElementExt::eIsSet(featureID);
 }
 
 boost::any EStructuralFeatureImpl::eInvoke(int operationID, const std::shared_ptr<EList<boost::any>>& arguments)
@@ -481,14 +480,6 @@ std::shared_ptr<ENotificationChain> EStructuralFeatureImpl::eBasicInverseRemove(
 
 
 
-// Start of user code EStructuralFeatureImpl [declaration-end]
-void EStructuralFeatureImpl::setName( const std::string & newName )
-{
-    ETypedElementImpl::setName( newName );
-
-    auto eContainingClass = std::dynamic_pointer_cast<EClassImpl>(eContainingClass_.lock());
-    if (eContainingClass)
-        eContainingClass->setModified( EcorePackage::ECLASS__ESTRUCTURAL_FEATURES );
-}
+// Start of user code EStructuralFeatureImpl [definition-end]
 // End of user code
 

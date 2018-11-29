@@ -30,6 +30,9 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="InterfaceIsAbstract AtMostOneID UniqueFeatureNames UniqueOperationSignatures NoCircularSuperTypes WellFormedMapEntryClass ConsistentSuperTypes DisjointFeatureAndOperationSignatures"/>
     </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
     <eOperations name="isSuperTypeOf" eType="#//EBoolean">
       <eParameters name="someClass" eType="#//EClass"/>
     </eOperations>
@@ -150,6 +153,9 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="WellFormedInstanceTypeName UniqueTypeParameterNames"/>
     </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultValue" eType="#//EJavaObject"
         changeable="false" volatile="true" transient="true" derived="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="ePackage" eType="#//EPackage"
@@ -217,6 +223,9 @@
         eType="#//EPackage" transient="true" resolveProxies="false" eOpposite="#//EPackage/eFactoryInstance"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EModelElement" abstract="true">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
     <eOperations name="getEAnnotation" eType="#//EAnnotation">
       <eParameters name="source" eType="#//EString"/>
     </eOperations>
@@ -442,6 +451,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="ETypedElement" abstract="true" eSuperTypes="#//ENamedElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="ValidLowerBound ValidUpperBound ConsistentBounds ValidType"/>
+    </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="ordered" eType="#//EBoolean"
         defaultValueLiteral="true"/>

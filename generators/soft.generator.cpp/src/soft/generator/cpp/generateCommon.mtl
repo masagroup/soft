@@ -84,6 +84,7 @@
 [query public getImplementationNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getImplementationNamespace() )/]
 [query public getTestsNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getTestsNamespace() )/]
 [query public getExtensionNamespaceName( aPackage : EPackage ) : String = aPackage.getQualifiedNamespaceName( aPackage.getExtensionNamespace() )/]
+
 [query private getBaseNamespace( aPackage : EPackage ) : String = if hasKey('baseNamespace') then valueKey('baseNamespace') else '' endif/]
 [query private getInterfaceNamespace( aPackage : EPackage ) : String = if hasKey('interfaceNamespace') then valueKey('interfaceNamespace') else '' endif/]
 [query private getImplementationNamespace( aPackage : EPackage ) : String = if hasKey('implementationNamespace') then valueKey('implementationNamespace') else 'impl' endif/]
@@ -113,6 +114,7 @@
         aPackage.eSuperPackage.getNamespaceNames()->append( aPackage.name )
     endif
 /]
+
 [query public getShortQualifiedName( aQualifiedName : String , aNamespaceName : String ) : String =
     let aQualifiedNames : Sequence(String) = aQualifiedName.tokenize('::') in
     let aNamespaceNames : Sequence(String) = aNamespaceName.tokenize('::') in
@@ -126,6 +128,7 @@
     ) in
     shortQualifiedNames->join('::')
 /]
+
 [query public removeNamespace( aQualifiedName : String ) : String = 
     let index : Integer = aQualifiedName.lastIndexOf( '::') in
     if ( index = -1 ) then
@@ -180,6 +183,9 @@
 
 [query public getQualifiedImplementationName( aClass : EClass ) : String = addNamespacePrefix( aClass.ePackage.getImplementationNamespaceName() , aClass.getImplementationName())/]
 [query public getQualifiedImplementationName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getImplementationNamespaceName() , aPackage.getImplementationName())/]
+
+[query public getQualifiedExtensionName( aClass : EClass ) : String = addNamespacePrefix( aClass.ePackage.getExtensionNamespaceName() , aClass.getExtensionName())/]
+[query public getQualifiedExtensionName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getExtensionNamespaceName() , aPackage.getExtensionName())/]
 
 [query public getQualifiedMockName( aClass : EClass ) : String = addNamespacePrefix( aClass.ePackage.getTestsNamespaceName() , aClass.getMockName())/]
 
@@ -431,6 +437,8 @@ namespace ecore
 [**
  * Classes Onthology
 */]
+[query public hasExtension( aEClass : EClass ) : Boolean = hasKey('extension') and valueKey('extension' )='true'/]
+
 [query public getOrderedClasses( anEPackage : EPackage ) : Sequence(EClass) = invoke('soft.generator.cpp.utils.GenerateUtils','getOrderedClasses(org.eclipse.emf.ecore.EPackage)',Sequence{anEPackage}) /]
 
 [query public getBaseClass( aEClass : EClass ) : EClass = if (aEClass.eSuperTypes->isEmpty() ) then null else aEClass.eSuperTypes->first() endif/]
@@ -457,7 +465,11 @@ namespace ecore
             'ecore::impl::EObjectImpl'
         endif
     else
-        extendsClass.getQualifiedImplementationName()
+        if ( extendsClass.hasExtension() ) then
+            extendsClass.getQualifiedExtensionName()
+        else
+            extendsClass.getQualifiedImplementationName()
+        endif
     endif
 /]
 
