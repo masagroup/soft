@@ -8,19 +8,33 @@
 [template public generateFactoryInterfaceSource(anEPackage : EPackage)]
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getInterfaceFolder() + '/' + anEPackage.getFactoryInterfaceName() +'.cpp', false, 'UTF-8')]
 [fileComment()/]
-[let includes : OrderedSet(String) = OrderedSet{ anEPackage.getFactoryQualifiedInterfaceName() , anEPackage.getFactoryQualifiedImplementationName() }]
+[let isExtensionFactory : Boolean = anEPackage.hasKey('factory') and anEPackage.valueKey('factory') = 'extension']
+[let includes : OrderedSet(String) = OrderedSet{ anEPackage.getFactoryQualifiedInterfaceName() 
+                                               , if isExtensionFactory then 
+                                                    anEPackage.getFactoryQualifiedExtensionName() 
+                                                 else anEPackage.getFactoryQualifiedImplementationName() 
+                                                 endif }]
 [for (include:String | includes )]
 #include "[namespaceToFolder(include)/].hpp"
 [/for]
 [/let]
 
-[let namespaces : OrderedSet(String) = OrderedSet{ 'ecore' , anEPackage.getInterfaceNamespaceName() , anEPackage.getImplementationNamespaceName()}]
+[let namespaces : OrderedSet(String) = OrderedSet{ 'ecore' 
+                                                 , anEPackage.getInterfaceNamespaceName() 
+                                                 , if isExtensionFactory then 
+                                                        anEPackage.getExtensionNamespaceName()
+                                                   else 
+                                                        anEPackage.getImplementationNamespaceName() 
+                                                   endif }]
 [for (namespace : String | namespaces )]
 using namespace [namespace/];
 [/for]
 [/let]
 
 //static initialisation
-[generateSingletonImplementation(anEPackage.getFactoryInterfaceName(), anEPackage.getFactoryImplementationName(), false)/]
+[let factoryName : String =  if isExtensionFactory then anEPackage.getFactoryExtensionName() else anEPackage.getFactoryImplementationName() endif]
+[generateSingletonImplementation( anEPackage.getFactoryInterfaceName() , factoryName , false)/]
+[/let]
+[/let]
 [/file]
 [/template]
