@@ -281,7 +281,11 @@ boost::any [className/]::eInvoke(int operationID, const std::shared_ptr<EList<bo
         ![anStructFeature.getGetterName()/]()->empty()
     [/if]
 [elseif anStructFeature.oclAsType(EReference).isBackReference() ]
+    [if isField()]
     !is_uninitialized([anStructFeature.name/]_)
+    [else]
+    static_cast<bool>( [anStructFeature.getGetterName()/]() )
+    [/if]
 [else]
     [let accessor : String = if isField() then anStructFeature.name + '_' else anStructFeature.getGetterName()+'()' endif]
         [accessor/] != [anStructFeature.eType.getDefaultValue()/]

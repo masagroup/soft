@@ -109,7 +109,6 @@ namespace ecore::impl
         std::string defaultValueLiteral_;
         bool unsettable_;
         bool derived_;
-        std::weak_ptr<ecore::EClass> eContainingClass_;
         int featureID_;
         
     private:

@@ -91,7 +91,7 @@ namespace [namespaceName/]
 [/if]
 [/let]
 
-[let dataDeclarationFeatures : OrderedSet(EAttribute) = aClass.eStructuralFeatures->select( not isVolatile() )]
+[let dataDeclarationFeatures : OrderedSet(EAttribute) = aClass.eStructuralFeatures->select( isField() )]
 [if dataDeclarationFeatures->notEmpty()]
     protected:
         [dataDeclarationFeatures.generateDataDeclaration()/]

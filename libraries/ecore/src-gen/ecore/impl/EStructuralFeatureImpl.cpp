@@ -49,7 +49,6 @@ EStructuralFeatureImpl::EStructuralFeatureImpl()
 ,   defaultValueLiteral_("")
 ,   unsettable_(false)
 ,   derived_(false)
-,   eContainingClass_()
 ,   featureID_(-1)
 //Start of user code EStructuralFeatureImpl::EStructuralFeatureImpl
 {
@@ -416,7 +415,7 @@ bool EStructuralFeatureImpl::eIsSet(int featureID) const
         case EcorePackage::ESTRUCTURAL_FEATURE__DERIVED:
             return derived_ != false;
         case EcorePackage::ESTRUCTURAL_FEATURE__ECONTAINING_CLASS:
-            return !is_uninitialized(eContainingClass_);
+            return static_cast<bool>( getEContainingClass() );
         case EcorePackage::ESTRUCTURAL_FEATURE__FEATURE_ID:
             return featureID_ != -1;
         case EcorePackage::ESTRUCTURAL_FEATURE__TRANSIENT:
