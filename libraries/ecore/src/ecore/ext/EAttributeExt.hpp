@@ -10,11 +10,12 @@
 #ifndef ECORE_EATTRIBUTE_EATTRIBUTEEXT_HPP
 #define ECORE_EATTRIBUTE_EATTRIBUTEEXT_HPP
 
+#include "ecore/ext/EStructuralFeatureExt.hpp"
 #include "ecore/impl/EAttributeImpl.hpp"
 
 namespace ecore::ext
 {
-    class EAttributeExt : public virtual impl::EAttributeImpl
+    class EAttributeExt : public virtual EStructuralFeatureExt , public virtual impl::EAttributeImpl
     {
     private:
         EAttributeExt& operator=( EAttributeExt const& ) = delete;

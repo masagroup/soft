@@ -41,6 +41,7 @@ set(HEADER_ECORE_EXT_FILES
     src/ecore/ext/EClassExt.hpp
     src/ecore/ext/EClassifierExt.hpp
     src/ecore/ext/EModelElementExt.hpp
+    src/ecore/ext/EStructuralFeatureExt.hpp
     src/ecore/ext/ETypedElementExt.hpp
 )
 
@@ -49,6 +50,7 @@ set(SOURCE_ECORE_EXT_FILES
     src/ecore/ext/EClassExt.cpp
     src/ecore/ext/EClassifierExt.cpp
     src/ecore/ext/EModelElementExt.cpp
+    src/ecore/ext/EStructuralFeatureExt.cpp
     src/ecore/ext/ETypedElementExt.cpp
 )
 
