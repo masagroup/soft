@@ -295,14 +295,28 @@ void EClassExt::initEAttributes()
     initEAllAttributes();
 }
 
-void EClassExt::initEAllContainments()
+void ecore::ext::EClassExt::initEContainments()
 {
     initFeaturesSubSet();
 }
 
-void ecore::ext::EClassExt::initEAllCrossReferences()
+void ecore::ext::EClassExt::initECrossReferences()
 {
     initFeaturesSubSet();
+}
+
+void EClassExt::initEAllContainments()
+{
+    if( eAllContainments_ )
+        return;
+
+    std::vector< std::shared_ptr< EReference > > allContainments;
+    for( const auto& reference : *getEAllReferences() )
+    {
+        if( reference->isContainment() )
+            allContainments.push_back( reference );
+    }
+    eAllContainments_ = std::make_shared< ImmutableEList<std::shared_ptr<EReference>>>( std::move( allContainments ) );
 }
 
 void EClassExt::initEAllOperations()
@@ -334,8 +348,8 @@ void EClassExt::initEAllStructuralFeatures()
     if( eAllStructuralFeatures_ )
         return;
 
-    eAllContainments_.reset();
-    eAllCrossReferences_.reset();
+    eCrossReferences_.reset();
+    eContainments_.reset();
     nameToFeatureMap_.reset();
 
     std::vector< std::shared_ptr< EStructuralFeature > > allFeatures;
@@ -430,30 +444,30 @@ void EClassExt::initFeaturesSubSet()
 {
     initEAllStructuralFeatures();
 
-    if( eAllContainments_ )
+    if( eContainments_ )
         return;
 
-    std::vector< std::shared_ptr< EReference > > allContainments;
-    std::vector< std::shared_ptr< EReference > > allCrossReferences;
-    auto eAllFeatures = getEAllStructuralFeatures();
-    for( const auto& feature : *eAllFeatures )
+    std::vector< std::shared_ptr< EReference > > containments;
+    std::vector< std::shared_ptr< EReference > > crossReferences;
+    auto eFeatures = getEStructuralFeatures();
+    for( const auto& feature : *eFeatures )
     {
         if( auto reference = std::dynamic_pointer_cast<EReference>( feature ) )
         {
             if( reference->isContainment() )
             {
                 if( !reference->isDerived() )
-                    allContainments.push_back( reference );
+                    containments.push_back( reference );
             }
             else if( !reference->isContainer() )
             {
                 if( !reference->isDerived() )
-                    allCrossReferences.push_back( reference );
+                    crossReferences.push_back( reference );
             }
         }
     }
-    eAllContainments_ = std::make_shared< ImmutableEList<std::shared_ptr<EReference>>>( std::move( allContainments ) );
-    eAllCrossReferences_ = std::make_shared< ImmutableEList<std::shared_ptr<EReference>>>( std::move( allCrossReferences ) );
+    eContainments_ = std::make_shared< ImmutableEList<std::shared_ptr<EReference>>>( std::move( containments ) );
+    eCrossReferences_ = std::make_shared< ImmutableEList<std::shared_ptr<EReference>>>( std::move( crossReferences ) );
 }
 
 void EClassExt::initNameToFeatureMap()

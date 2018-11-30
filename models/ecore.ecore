@@ -63,15 +63,6 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="interface" eType="#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eStructuralFeatures" upperBound="-1"
         eType="#//EStructuralFeature" containment="true" resolveProxies="false" eOpposite="#//EStructuralFeature/eContainingClass"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eSuperTypes" upperBound="-1"
-        eType="#//EClass" unsettable="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
-        <details key="issetVisibility" value="no"/>
-        <details key="unsetVisibility" value="no:public"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eOperations" upperBound="-1"
-        eType="#//EOperation" containment="true" resolveProxies="false" eOpposite="#//EOperation/eContainingClass"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAttributes" upperBound="-1"
         eType="#//EAttribute" changeable="false" transient="true" derived="true">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
@@ -84,6 +75,27 @@
         <details key="lazy" value="action"/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eSuperTypes" upperBound="-1"
+        eType="#//EClass" unsettable="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="issetVisibility" value="no"/>
+        <details key="unsetVisibility" value="no:public"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eOperations" upperBound="-1"
+        eType="#//EOperation" containment="true" resolveProxies="false" eOpposite="#//EOperation/eContainingClass"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eContainments" upperBound="-1"
+        eType="#//EReference" changeable="false" transient="true" derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="action"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eCrossReferences" upperBound="-1"
+        eType="#//EReference" changeable="false" transient="true" derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="action"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllAttributes" upperBound="-1"
         eType="#//EAttribute" changeable="false" transient="true" derived="true">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
@@ -91,12 +103,6 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllReferences" upperBound="-1"
-        eType="#//EReference" changeable="false" transient="true" derived="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
-        <details key="lazy" value="action"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eAllCrossReferences" upperBound="-1"
         eType="#//EReference" changeable="false" transient="true" derived="true">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="lazy" value="action"/>

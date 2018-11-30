@@ -48,12 +48,13 @@ namespace ecore::ext
         //*********************************
         // Initializers
         //*********************************
-        virtual void initEAllAttributes();
-        virtual void initEAllReferences();
         virtual void initEReferences();
         virtual void initEAttributes();
+        virtual void initEContainments();
+        virtual void initECrossReferences();
+        virtual void initEAllAttributes();
+        virtual void initEAllReferences();
         virtual void initEAllContainments();
-        virtual void initEAllCrossReferences();
         virtual void initEAllOperations();
         virtual void initEAllStructuralFeatures();
         virtual void initEAllSuperTypes();
