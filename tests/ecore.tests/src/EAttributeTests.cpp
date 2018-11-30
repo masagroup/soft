@@ -155,7 +155,7 @@ BOOST_AUTO_TEST_CASE( Accessors_EStructuralFeature )
     auto eAttribute = EcoreFactory::eInstance()->createEAttribute();
     BOOST_CHECK( eAttribute );
     BOOST_CHECK_EQUAL( eAttribute->getFeatureID(), -1 );
-    //BOOST_CHECK( eAttribute->getDefaultValue().empty() );
+    BOOST_CHECK( eAttribute->getDefaultValue().empty() );
 }
 
 BOOST_AUTO_TEST_CASE( Accessors_EAttribute )

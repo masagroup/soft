@@ -13,6 +13,11 @@
 #include "ecore/ext/ETypedElementExt.hpp"
 #include "ecore/impl/EStructuralFeatureImpl.hpp"
 
+namespace ecore
+{
+    class EFactory;
+}
+
 namespace ecore::ext
 {
     class EStructuralFeatureExt : public virtual ETypedElementExt, public virtual impl::EStructuralFeatureImpl
@@ -26,6 +31,16 @@ namespace ecore::ext
 
     public:
         virtual ~EStructuralFeatureExt();
+
+        virtual const boost::any& getDefaultValue() const;
+
+        virtual void setDefaultValue( const boost::any& newDefaultValue );
+
+        virtual void setDefaultValueLiteral( const std::string& newDefaultValueLiteral );
+
+    private:
+        mutable boost::any defaultValue_;
+        mutable std::weak_ptr<EFactory> defaultValueFactory_;
     };
 
 }
