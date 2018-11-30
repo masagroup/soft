@@ -23,6 +23,11 @@ namespace ecore::ext
         friend class impl::EcoreFactoryImpl;
         EAttributeExt();
 
+        //*********************************
+        // Attributes
+        //*********************************
+        virtual void setID( bool newID );
+
     public:
         virtual ~EAttributeExt();
     };

@@ -132,9 +132,11 @@ BOOST_AUTO_TEST_CASE( AttributeID )
     eClass->getEStructuralFeatures()->add( eAttribute2 );
     BOOST_CHECK( !eClass->getEIDAttribute() );
 
-    /*eAttribute1->setID( true );
-    BOOST_CHECK_EQUAL( eClass->getEIDAttribute(), eAttribute1 );*/
+    eAttribute1->setID( true );
+    BOOST_CHECK_EQUAL( eClass->getEIDAttribute(), eAttribute1 );
 
+    eAttribute1->setID( false );
+    BOOST_CHECK( !eClass->getEIDAttribute() );
 }
 
 BOOST_AUTO_TEST_CASE( Operations )
