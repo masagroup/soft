@@ -23,6 +23,7 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/AbstractArrayEList.hpp
     src/ecore/impl/ArrayEList.hpp
     src/ecore/impl/BasicEObject.hpp
+    src/ecore/impl/DynamicEObject.hpp
     src/ecore/impl/EObjectEList.hpp
     src/ecore/impl/ImmutableEList.hpp
     src/ecore/impl/Lazy.hpp
@@ -30,10 +31,12 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/NotificationChain.hpp
     src/ecore/impl/Proxy.hpp
     src/ecore/impl/TypeTraits.hpp
+    src/ecore/impl/WeakPtr.hpp
 )
 
 set(SOURCE_ECORE_IMPL_FILES 
     src/ecore/impl/BasicEObject.cpp
+    src/ecore/impl/DynamicEObject.cpp    
     src/ecore/impl/Notification.cpp
     src/ecore/impl/NotificationChain.cpp
 )

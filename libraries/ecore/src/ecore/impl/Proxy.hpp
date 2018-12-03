@@ -14,6 +14,7 @@
 #include "ecore/EObject.hpp"
 #include "ecore/impl/Notification.hpp"
 #include "ecore/impl/TypeTraits.hpp"
+#include "ecore/impl/WeakPtr.hpp"
 #include <memory>
 
 namespace ecore
@@ -137,13 +138,7 @@ namespace ecore::impl
         }
 
     private:
-        template <typename T>
-        bool is_uninitialized( const std::weak_ptr<T>& weak ) const
-        {
-            using wt = std::weak_ptr<T>;
-            return !weak.owner_before( wt{} ) && !wt{}.owner_before( weak );
-        }
-
+        
         template <typename T, typename U>
         inline bool equals( const std::weak_ptr<T>& t, const std::weak_ptr<U>& u ) const
         {
