@@ -50,9 +50,10 @@ namespace [namespaceName/]
             virtual std::shared_ptr<[anEPackage.getInterfaceName()/]> get[anEPackage.getInterfaceName()/]() const;
 
         protected:
-            [anEPackage.eAllContents(EDataType)->sortedBy(name).generateCreateFromStringDeclaration()/]
-            [anEPackage.eAllContents(EDataType)->sortedBy(name).generateConvertToStringDeclaration()/]
-
+            [let dataTypes : Sequence(EDataType) = anEPackage.eAllContents(EDataType)->select( serializable )->sortedBy(name)]
+            [dataTypes.generateCreateFromStringDeclaration()/]
+            [dataTypes.generateConvertToStringDeclaration()/]
+            [/let]
         private:
             static [className/]* create();
     };

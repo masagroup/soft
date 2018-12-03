@@ -94,13 +94,13 @@ std::shared_ptr<[aClass.getInterfaceName()/]> [className/]::create[aClass.name/]
 [/let]
 [/for]
 
-
+[let dataTypes : Sequence(EDataType) = anEPackage.eAllContents(EDataType)->select( serializable )->sortedBy(name)]
 boost::any [className/]::createFromString(const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const std::string& literalValue) const
 {
     int classifierID = eDataType->getClassifierID();
     switch( classifierID )
     {
-[for (aDataType : EDataType | anEPackage.eAllContents(EDataType)->asOrderedSet()->sortedBy(name))]
+[for (aDataType : EDataType | dataTypes)]
         case [anEPackage.getInterfaceName()/]::[aDataType.getClassifierIDName()/]:
             return create[aDataType.name/]FromString(eDataType,literalValue);
 [/for]
@@ -114,7 +114,7 @@ std::string [className/]::convertToString(const std::shared_ptr<[getShortQualifi
     int classifierID = eDataType->getClassifierID();
     switch( classifierID )
     {
-[for (aDataType : EDataType | anEPackage.eAllContents(EDataType)->asOrderedSet()->sortedBy(name))]
+[for (aDataType : EDataType | dataTypes)]
         case [anEPackage.getInterfaceName()/]::[aDataType.getClassifierIDName()/]:
             return convert[aDataType.name/]ToString(eDataType,instanceValue);
 [/for]
@@ -123,7 +123,7 @@ std::string [className/]::convertToString(const std::shared_ptr<[getShortQualifi
     }
 }
 
-[for (aDataType : EDataType | anEPackage.eAllContents(EDataType)->asOrderedSet()->sortedBy(name))]
+[for (aDataType : EDataType | dataTypes)]
 [let createMethodName : String = 'create' + aDataType.name + 'FromString']
 boost::any [className/]::[createMethodName/](const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const std::string& literalValue) const
 {
@@ -143,6 +143,7 @@ std::string [className/]::[convertMethodName/](const std::shared_ptr<[getShortQu
 }
 [/let]
 [/for]
+[/let]
 
 
 std::shared_ptr<[anEPackage.getInterfaceName()/]> [className/]::get[anEPackage.getInterfaceName()/]() const
