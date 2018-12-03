@@ -9,6 +9,7 @@
 #include "ecore/EClassifier.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/EReference.hpp"
+#include "ecore/EDataType.hpp"
 
 using namespace ecore;
 
@@ -52,14 +53,12 @@ namespace
             */
             bookStoreOwner = ecoreFactory->createEAttribute();
             bookStoreOwner->setName( "owner" );
-#if (DISABLE_NOT_WORKING)
             bookStoreOwner->setEType( ecorePackage->getEString() );
-#endif            
+
             bookStoreLocation = ecoreFactory->createEAttribute();
             bookStoreLocation->setName( "location" );
-#if (DISABLE_NOT_WORKING)
             bookStoreLocation->setEType( ecorePackage->getEString() );
-#endif            
+
             bookStore_Books = ecoreFactory->createEReference();
             bookStore_Books->setName( "books" );
             bookStore_Books->setEType( bookEClass );
@@ -71,15 +70,11 @@ namespace
             */
             bookName = ecoreFactory->createEAttribute();
             bookName->setName( "name" );
-#if (DISABLE_NOT_WORKING)
             bookName->setEType( ecorePackage->getEString() );
-#endif
 
             bookISBN = ecoreFactory->createEAttribute();
             bookISBN->setName( "isbn" );
-#if (DISABLE_NOT_WORKING)
             bookISBN->setEType( ecorePackage->getEInt() );
-#endif
 
             /*
             * Add owner, location and books attributes/references
