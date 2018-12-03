@@ -17,7 +17,7 @@
 
 namespace ecore::ext
 {
-    class EClassExt : public virtual EClassifierExt , public virtual impl::EClassImpl
+    class EClassExt : public virtual impl::EClassImpl
     {
     private:
         EClassExt& operator=( EClassExt const& ) = delete;

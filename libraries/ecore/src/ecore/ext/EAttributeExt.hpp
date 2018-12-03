@@ -15,7 +15,7 @@
 
 namespace ecore::ext
 {
-    class EAttributeExt : public virtual EStructuralFeatureExt , public virtual impl::EAttributeImpl
+    class EAttributeExt : public virtual impl::EAttributeImpl
     {
     private:
         EAttributeExt& operator=( EAttributeExt const& ) = delete;

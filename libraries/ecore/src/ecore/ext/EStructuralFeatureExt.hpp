@@ -20,7 +20,7 @@ namespace ecore
 
 namespace ecore::ext
 {
-    class EStructuralFeatureExt : public virtual ETypedElementExt, public virtual impl::EStructuralFeatureImpl
+    class EStructuralFeatureExt : public virtual impl::EStructuralFeatureImpl
     {
     private:
         EStructuralFeatureExt& operator=( EStructuralFeatureExt const& ) = delete;
