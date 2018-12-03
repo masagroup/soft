@@ -19,6 +19,8 @@ namespace ecore::impl {
     template <typename T>
     class ImmutableEList : public EList<T> {
     public:
+        ImmutableEList() = default;
+        
         ImmutableEList( const std::vector<T>&& v )
             : v_( v )
         {
