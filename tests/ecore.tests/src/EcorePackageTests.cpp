@@ -8,7 +8,7 @@ BOOST_AUTO_TEST_SUITE(EcorePackageTests)
 
 BOOST_AUTO_TEST_CASE(Constructor)
 {
-    
+    BOOST_CHECK( EcorePackage::eInstance() );
 }
 
 BOOST_AUTO_TEST_SUITE_END()
