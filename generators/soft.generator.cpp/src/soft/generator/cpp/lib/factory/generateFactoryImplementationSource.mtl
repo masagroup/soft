@@ -53,7 +53,6 @@ using namespace [namespace/];
 //*********************************
 // creators
 //*********************************
-
 std::shared_ptr<[getShortQualifiedName('ecore::EObject',namespaceName)/]> [className/]::create(const std::shared_ptr<[getShortQualifiedName('ecore::EClass',namespaceName)/]>&  eClass) const
 {
     int classID = eClass->getClassifierID();
@@ -94,6 +93,57 @@ std::shared_ptr<[aClass.getInterfaceName()/]> [className/]::create[aClass.name/]
 [/for]
 [/let]
 [/for]
+
+
+boost::any [className/]::createFromString(const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const std::string& literalValue) const
+{
+    int classifierID = eDataType->getClassifierID();
+    switch( classifierID )
+    {
+[for (aDataType : EDataType | anEPackage.eAllContents(EDataType)->asOrderedSet()->sortedBy(name))]
+        case [anEPackage.getInterfaceName()/]::[aDataType.getClassifierIDName()/]:
+            return create[aDataType.name/]FromString(eDataType,literalValue);
+[/for]
+        default:
+            throw "The datatype '" + eDataType->getName() + "' is not a valid classifier";
+    }
+}
+
+std::string [className/]::convertToString(const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const boost::any& instanceValue) const
+{
+    int classifierID = eDataType->getClassifierID();
+    switch( classifierID )
+    {
+[for (aDataType : EDataType | anEPackage.eAllContents(EDataType)->asOrderedSet()->sortedBy(name))]
+        case [anEPackage.getInterfaceName()/]::[aDataType.getClassifierIDName()/]:
+            return convert[aDataType.name/]ToString(eDataType,instanceValue);
+[/for]
+        default:
+            throw "The datatype '" + eDataType->getName() + "' is not a valid classifier";
+    }
+}
+
+[for (aDataType : EDataType | anEPackage.eAllContents(EDataType)->asOrderedSet()->sortedBy(name))]
+[let createMethodName : String = 'create' + aDataType.name + 'FromString']
+boost::any [className/]::[createMethodName/](const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const std::string& literalValue) const
+{
+    // [protected (className +'::' + createMethodName)]
+    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+    throw "NotImplementedException";
+    // [/protected]
+}
+[/let]
+[let convertMethodName : String = 'convert' + aDataType.name + 'ToString']
+std::string [className/]::[convertMethodName/](const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const boost::any& instanceValue) const
+{
+    // [protected (className +'::' + convertMethodName)]
+    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+    throw "NotImplementedException";
+    // [/protected]
+}
+[/let]
+[/for]
+
 
 std::shared_ptr<[anEPackage.getInterfaceName()/]> [className/]::get[anEPackage.getInterfaceName()/]() const
 {

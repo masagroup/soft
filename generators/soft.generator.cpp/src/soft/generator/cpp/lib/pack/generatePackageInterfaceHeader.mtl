@@ -5,7 +5,7 @@
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::generateSingleton /]
 [import soft::generator::cpp::lib::generateCommon /]
-[import soft::generator::cpp::lib::pack::generateDataType /]
+[import soft::generator::cpp::lib::generateDataType /]
 [import soft::generator::cpp::lib::pack::generateElement /]
 
 [template public generatePackageInterfaceHeader(anEPackage : EPackage) { className : String = anEPackage.getInterfaceName() ; namespaceName : String = anEPackage.getInterfaceNamespaceName(); }]

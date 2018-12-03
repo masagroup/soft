@@ -23,3 +23,19 @@
 static const int [aEDatatype.getClassifierIDName()/] = [aEDatatype.getClassifierIDValue()/];
 
 [/template]
+
+[template public generateCreateFromStringDeclaration(aEDatatype : EDataType )]
+virtual boost::any create[aEDatatype.name/]FromString( const std::shared_ptr<ecore::EDataType>& dataType , const std::string& literalValue ) const;
+
+[/template]
+
+[template public generateCreateFromStringDefinition(aEDatatype : EDataType )]
+[/template]
+
+[template public generateConvertToStringDeclaration(aEDatatype : EDataType )]
+virtual std::string convert[aEDatatype.name/]ToString( const std::shared_ptr<ecore::EDataType>& dataType , const boost::any& literalValue ) const;
+
+[/template]
+
+[template public generateConvertToStringDefinition(aEDatatype : EDataType )]
+[/template]

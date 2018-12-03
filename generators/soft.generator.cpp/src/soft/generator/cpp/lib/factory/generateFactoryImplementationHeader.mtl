@@ -4,6 +4,7 @@
 [import soft::generator::cpp::generateClass /]
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::lib::generateCommon/]
+[import soft::generator::cpp::lib::generateDataType/]
 
 [template public generateFactoryImplementationHeader(anEPackage : EPackage) { className : String = anEPackage.getFactoryImplementationName() ; namespaceName : String = anEPackage.getImplementationNamespaceName(); } ]
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getImplementationFolder() + '/' + className + '.hpp', false, 'UTF-8')]
@@ -37,13 +38,20 @@ namespace [namespaceName/]
         public:
             virtual ~[className/]();
 
+            // Operations
             virtual std::shared_ptr<[getShortQualifiedName('ecore::EObject',namespaceName)/]> create(const std::shared_ptr<[getShortQualifiedName('ecore::EClass',namespaceName)/]>&  eClass) const;
-            
+            virtual boost::any createFromString(const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const std::string& literalValue) const;
+            virtual std::string convertToString(const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const boost::any& instanceValue) const;
+
             //Creator functions
             [anEPackage.eAllContents(EClass)->sortedBy(name).generateClassCreate(true)/]
 
             //Package
             virtual std::shared_ptr<[anEPackage.getInterfaceName()/]> get[anEPackage.getInterfaceName()/]() const;
+
+        protected:
+            [anEPackage.eAllContents(EDataType)->sortedBy(name).generateCreateFromStringDeclaration()/]
+            [anEPackage.eAllContents(EDataType)->sortedBy(name).generateConvertToStringDeclaration()/]
 
         private:
             static [className/]* create();

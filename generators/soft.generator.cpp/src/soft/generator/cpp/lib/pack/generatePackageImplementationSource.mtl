@@ -4,7 +4,7 @@
 [import soft::generator::cpp::generateClass /]
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::lib::generateCommon /]
-[import soft::generator::cpp::lib::pack::generateDataType /]
+[import soft::generator::cpp::lib::generateDataType /]
 [import soft::generator::cpp::lib::pack::generateElement /]
 
 [query public metaModelIncludes(anEPackage : EPackage) : Set(EPackage) = OrderedSet{anEPackage.eAllContents(EClass).eAllSuperTypes.ePackage,anEPackage.eAllContents(EStructuralFeature).eType.ePackage,anEPackage.eAllContents(EParameter).eType.ePackage}->flatten() /]
