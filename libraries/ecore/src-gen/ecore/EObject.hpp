@@ -27,6 +27,10 @@ namespace ecore
 {
     template<typename T> class EList;
 }
+namespace ecore 
+{
+    template<typename T> class ECollectionView;
+}
 
 namespace ecore 
 {
@@ -91,7 +95,7 @@ namespace ecore
         
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eContents() const = 0;
         
-        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eAllContents() const = 0;
+        virtual std::shared_ptr<ECollectionView<std::shared_ptr<ecore::EObject>>> eAllContents() const = 0;
         
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eCrossReferences() const = 0;
         

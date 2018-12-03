@@ -37,7 +37,7 @@ namespace ecore::impl
         bool eNotificationRequired();
 
         // Operations
-        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eAllContents() const;
+        virtual std::shared_ptr<ECollectionView<std::shared_ptr<ecore::EObject>>> eAllContents() const;
         virtual std::shared_ptr<ecore::EClass> eClass() const;
         virtual std::shared_ptr<ecore::EObject> eContainer() const;
         virtual std::shared_ptr<ecore::EStructuralFeature> eContainingFeature() const;

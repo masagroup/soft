@@ -174,7 +174,7 @@ boost::any
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? (name = 'ETreeIterator')]
-EList
+ECollectionView
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? (name = 'EJavaClass')]

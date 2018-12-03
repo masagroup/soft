@@ -244,6 +244,12 @@ namespace ecore
     template<typename T> class EList;
 }
 [/if]
+[if anEClass.eOperations->exists( o | o.eGenericType.eClassifier.name ='ETreeIterator')]
+namespace ecore 
+{
+    template<typename T> class ECollectionView;
+}
+[/if]
 [/template]
 
 [template public generateAbstractDataTypesIncludes(anEClass : EClass)]

@@ -1,7 +1,7 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
 
-#include "ecore/EAllContentsView.hpp"
+#include "ecore/ECollectionView.hpp"
 #include "ecore/impl/ImmutableEList.hpp"
 
 #include "ecore/tests/MockObject.hpp"
@@ -28,13 +28,13 @@ namespace std
     }
 }
 
-BOOST_AUTO_TEST_SUITE( EAllContentsViewTests )
+BOOST_AUTO_TEST_SUITE( ECollectionViewTests )
 
 
 BOOST_AUTO_TEST_CASE( Constructor )
 {
     auto mockObject = std::make_shared<MockObject>();
-    EAllContentsView view( mockObject );
+    ECollectionView< std::shared_ptr<EObject> > view( mockObject );
 }
 
 BOOST_AUTO_TEST_CASE( Iterator )
@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE( Iterator )
     MOCK_EXPECT( mockChild2->eContents ).returns( emptyList );
 
 
-    EAllContentsView view( mockObject );
+    ECollectionView< std::shared_ptr<EObject> > view( mockObject );
     std::vector< std::shared_ptr<EObject> > v;
     for( auto o : view )
         v.push_back( o );

@@ -7,17 +7,24 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EALLCONTENTSVIEW_HPP_
-#define ECORE_EALLCONTENTSVIEW_HPP_
+#ifndef ECORE_ECOLLECTIONVIEW_HPP_
+#define ECORE_ECOLLECTIONVIEW_HPP_
 
 #include "ecore/EObject.hpp"
 #include "ecore/ETreeIterator.hpp"
 namespace ecore
 {
-    class EAllContentsView
+    template <typename T>
+    class ECollectionView
+    {
+    };
+
+
+    template <>
+    class ECollectionView<std::shared_ptr<EObject>>
     {
     public:
-        EAllContentsView( const std::shared_ptr<EObject>& eObject )
+        ECollectionView( const std::shared_ptr<EObject>& eObject )
             : eObject_( eObject )
         {
 
@@ -41,4 +48,4 @@ namespace ecore
     };
 }
 
-#endif /* ECORE_EALLCONTENTSVIEW_HPP_ */
+#endif /* ECORE_ECOLLECTIONVIEW_HPP_ */

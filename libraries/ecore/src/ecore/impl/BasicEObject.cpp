@@ -5,6 +5,7 @@
 #include "ecore/Constants.hpp"
 #include "ecore/EAdapter.hpp"
 #include "ecore/EClass.hpp"
+#include "ecore/ECollectionView.hpp"
 #include "ecore/EOperation.hpp"
 #include "ecore/EReference.hpp"
 #include "ecore/EStructuralFeature.hpp"
@@ -69,9 +70,9 @@ bool BasicEObject::eNotificationRequired()
     return eDeliver_ && eAdapters_->size() > 0;
 }
 
-std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eAllContents() const
+std::shared_ptr<ECollectionView<std::shared_ptr<ecore::EObject>>> BasicEObject::eAllContents() const
 {
-    return std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>>();
+    return std::make_shared< ECollectionView<std::shared_ptr<ecore::EObject>>>( getThisPtr() );
 }
 
 std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eContents() const

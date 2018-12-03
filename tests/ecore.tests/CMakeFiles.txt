@@ -7,9 +7,9 @@ set(SOURCE_FILES
     src/DiamondVsMixinsTests.cpp
     src/EcoreFactoryTests.cpp
     src/EcorePackageTests.cpp
-    src/EAllContentsViewTests.cpp
     src/EAttributeTests.cpp
     src/EClassTests.cpp
+    src/ECollectionViewTests.cpp
     src/EObjectEListTests.cpp
     src/LazyTests.cpp
     src/NotificationTests.cpp
