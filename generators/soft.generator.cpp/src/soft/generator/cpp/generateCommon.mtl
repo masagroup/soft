@@ -173,6 +173,7 @@
 
 [query public getFactoryInterfaceName( aPackage : EPackage ) : String = getInterfaceName( getFactoryName() , aPackage )/]
 [query public getFactoryImplementationName( aPackage : EPackage ) : String = getImplementationName( getFactoryName() , aPackage )/]
+[query public getFactoryExtensionName( aPackage : EPackage ) : String = getExtensionName( getFactoryName() , aPackage )/]
 
 [query private getFactoryName( aPackage : EPackage ) : String = aPackage.name.toUpperFirst() + 'Factory'/]
 [query private getPackageName( aPackage : EPackage ) : String = aPackage.name.toUpperFirst() + 'Package'/]
@@ -189,6 +190,7 @@
 
 [query public getFactoryQualifiedInterfaceName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getInterfaceNamespaceName() , aPackage.getFactoryInterfaceName() )/]
 [query public getFactoryQualifiedImplementationName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getImplementationNamespaceName() , aPackage.getFactoryImplementationName() )/]
+[query public getFactoryQualifiedExtensionName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getExtensionNamespaceName() , aPackage.getFactoryExtensionName() )/]
 
 [query public hasContainerAttribute(aClass : EClass) : Boolean =  getContainerAttribute()->notEmpty() /]
 [query public getContainerAttribute(aClass : EClass) : OrderedSet(EReference) =  aClass.eReferences->select(isContainerAttribute())->sortedBy(name) /]

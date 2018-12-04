@@ -100,3 +100,8 @@ std::string EcoreFactoryExt::convertEStringToString( const std::shared_ptr<EData
     auto value = boost::any_cast<std::string>(instanceValue);
     return value;
 }
+
+EcoreFactoryExt * ecore::ext::EcoreFactoryExt::create()
+{
+    return new EcoreFactoryExt();
+}

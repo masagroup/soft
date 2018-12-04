@@ -8,8 +8,12 @@
 [template public generateFactoryInterfaceSource(anEPackage : EPackage)]
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getInterfaceFolder() + '/' + anEPackage.getFactoryInterfaceName() +'.cpp', false, 'UTF-8')]
 [fileComment()/]
+[let extension : Boolean = anEPackage.hasKey('factory') and anEPackage.valueKey('factory') = 'extension']
+[let qualifiedFactoryName : String =  if extension then anEPackage.getFactoryQualifiedExtensionName() else anEPackage.getFactoryQualifiedImplementationName() endif]
+[let namespaceFactoryName : String =  if extension then anEPackage.getExtensionNamespaceName() else anEPackage.getImplementationNamespaceName() endif]
+[let shortFactoryName : String =  if extension then anEPackage.getFactoryExtensionName() else anEPackage.getFactoryImplementationName() endif]
 [let includes : OrderedSet(String) = OrderedSet{ anEPackage.getFactoryQualifiedInterfaceName() 
-                                               , anEPackage.getFactoryQualifiedImplementationName() }]
+                                               , qualifiedFactoryName }]
 [for (include:String | includes )]
 #include "[namespaceToFolder(include)/].hpp"
 [/for]
@@ -17,7 +21,7 @@
 
 [let namespaces : OrderedSet(String) = OrderedSet{ 'ecore' 
                                                  , anEPackage.getInterfaceNamespaceName() 
-                                                 , anEPackage.getImplementationNamespaceName() 
+                                                 , namespaceFactoryName
                                                    }]
 [for (namespace : String | namespaces )]
 using namespace [namespace/];
@@ -25,6 +29,10 @@ using namespace [namespace/];
 [/let]
 
 //static initialisation
-[generateSingletonImplementation( anEPackage.getFactoryInterfaceName() , anEPackage.getFactoryImplementationName() , false)/]
+[generateSingletonImplementation( anEPackage.getFactoryInterfaceName() , shortFactoryName , false)/]
+[/let]
+[/let]
+[/let]
+[/let]
 [/file]
 [/template]

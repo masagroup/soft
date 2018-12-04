@@ -22,6 +22,7 @@ namespace ecore::ext
         EcoreFactoryExt& operator=( EcoreFactoryExt const& ) = delete;
 
     protected:
+        friend class EcoreFactory;
         EcoreFactoryExt();
 
     public:
@@ -48,6 +49,8 @@ namespace ecore::ext
         virtual std::string convertEShortToString( const std::shared_ptr<ecore::EDataType>& dataType, const boost::any& literalValue ) const;
         virtual std::string convertEStringToString( const std::shared_ptr<ecore::EDataType>& dataType, const boost::any& literalValue ) const;
 
+    private:
+        static EcoreFactoryExt* create();
     };
 
 }
