@@ -6,13 +6,16 @@
 [import soft::generator::cpp::lib::generateCommon/]
 [import soft::generator::cpp::lib::generateDataType/]
 
-[template public generateFactoryImplementationHeader(anEPackage : EPackage) { className : String = anEPackage.getFactoryImplementationName() ; namespaceName : String = anEPackage.getImplementationNamespaceName(); } ]
+[template public generateFactoryImplementationHeader(anEPackage : EPackage) { 
+    className : String = anEPackage.getFactoryImplementationName(); 
+    namespaceName : String = anEPackage.getImplementationNamespaceName(); 
+}]
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getImplementationFolder() + '/' + className + '.hpp', false, 'UTF-8')]
 [fileComment()/]
 [startGuard(anEPackage,'FactoryImpl')/]
 
 #include "[namespaceToFolder(anEPackage.getFactoryQualifiedInterfaceName())/].hpp"
-#include "ecore/impl/EFactoryImpl.hpp"
+#include "ecore/ext/EFactoryExt.hpp"
 
 namespace [anEPackage.getInterfaceNamespaceName()/] 
 {
@@ -24,7 +27,7 @@ namespace [anEPackage.getInterfaceNamespaceName()/]
 [comment namespace /]
 namespace [namespaceName/] 
 {
-    class [className/] : public virtual [getShortQualifiedName('ecore::impl::EFactoryImpl' ,namespaceName)/] , public virtual [anEPackage.getFactoryInterfaceName()/] 
+    class [className/] : public virtual [getShortQualifiedName('ecore::ext::EFactoryExt' ,namespaceName)/] , public virtual [anEPackage.getFactoryInterfaceName()/] 
     {
         private:    
             [className/]([className/] const&) = delete;

@@ -208,6 +208,9 @@
         changeable="false" transient="true" resolveProxies="false" eOpposite="#//EEnum/eLiterals"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EFactory" eSuperTypes="#//EModelElement">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
     <eOperations name="create" eType="#//EObject">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="const"/>
