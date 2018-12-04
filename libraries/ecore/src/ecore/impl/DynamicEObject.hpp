@@ -24,6 +24,8 @@ namespace ecore::impl
         
         virtual std::shared_ptr<ecore::EClass> eClass() const;
 
+        void setEClass( const std::shared_ptr<EClass>& eClass );
+
     protected:
         virtual boost::any eGet( int featureID, bool resolve, bool coreType ) const;
         virtual bool eIsSet( int featureID ) const;
@@ -34,6 +36,11 @@ namespace ecore::impl
     private:
         int eStaticFeatureCount() const;
         int eStaticOperationCount() const;
+        void resizeProperties();
+
+    private:
+        class FeaturesAdapter;
+        std::unique_ptr<FeaturesAdapter> featuresAdapter_;
 
     protected:
         std::weak_ptr<EClass> eClass_;
