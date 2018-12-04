@@ -48,6 +48,7 @@ set(HEADER_ECORE_EXT_FILES
     src/ecore/ext/EcoreFactoryExt.hpp
     src/ecore/ext/EFactoryExt.hpp
     src/ecore/ext/EModelElementExt.hpp
+    src/ecore/ext/EPackageExt.hpp
     src/ecore/ext/EStructuralFeatureExt.hpp
     src/ecore/ext/ETypedElementExt.hpp
 )
@@ -59,6 +60,7 @@ set(SOURCE_ECORE_EXT_FILES
     src/ecore/ext/EcoreFactoryExt.cpp
     src/ecore/ext/EFactoryExt.cpp
     src/ecore/ext/EModelElementExt.cpp
+    src/ecore/ext/EPackageExt.cpp
     src/ecore/ext/EStructuralFeatureExt.cpp
     src/ecore/ext/ETypedElementExt.cpp
 )

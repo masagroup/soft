@@ -13,7 +13,7 @@
 
 using namespace ecore;
 
-#define DISABLE_NOT_WORKING 0
+#define DISABLE_NOT_WORKING 1
 
 /*
     Inspired from Example of Dynamic Model : https://www.ibm.com/developerworks/library/os-eclipse-dynamicemf/
@@ -43,11 +43,14 @@ namespace
             * Instantiate EPackage and provide unique URI
             * to identify this package
             */
+            bookStoreEFactory = ecoreFactory->createEFactory();
+
             bookStoreEPackage = ecoreFactory->createEPackage();
             bookStoreEPackage->setName( "BookStorePackage" );
             bookStoreEPackage->setNsPrefix( "bookStore" );
             bookStoreEPackage->setNsURI( "http:///com.ibm.dynamic.example.bookstore.ecore" );
-            
+            bookStoreEPackage->setEFactoryInstance( bookStoreEFactory );
+
             /*
             * Create attributes for BookStore class as specified in the model
             */
@@ -103,6 +106,7 @@ namespace
 
     protected:
         std::shared_ptr<EPackage> bookStoreEPackage;
+        std::shared_ptr<EFactory> bookStoreEFactory;
 
         std::shared_ptr<EClass> bookStoreEClass;
         std::shared_ptr<EAttribute> bookStoreOwner;

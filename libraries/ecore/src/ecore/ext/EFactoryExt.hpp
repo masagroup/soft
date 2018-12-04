@@ -21,12 +21,11 @@ namespace ecore::ext
         EFactoryExt( EFactoryExt const& ) = delete;
         EFactoryExt& operator=( EFactoryExt const& ) = delete;
 
-    protected:
-        friend class impl::EcoreFactoryImpl;
-        EFactoryExt();
-
     public:
+        EFactoryExt();
         virtual ~EFactoryExt();
+
+        void setThisPtr( const std::shared_ptr<EFactoryExt>& thisPtr );
 
         //*********************************
         // Operations

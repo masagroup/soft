@@ -14,7 +14,7 @@
 [startGuard(anEPackage,'PackageImpl')/]
 
 #include "[namespaceToFolder(anEPackage.getQualifiedInterfaceName())/].hpp"
-#include "ecore/impl/EPackageImpl.hpp"
+#include "ecore/ext/EPackageExt.hpp"
 
 namespace [anEPackage.getInterfaceNamespaceName()/] 
 {
@@ -31,7 +31,7 @@ namespace ecore
 
 namespace [namespaceName/]
 {
-    class [className/] : public virtual [getShortQualifiedName('ecore::impl::EPackageImpl' ,namespaceName)/], public virtual [anEPackage.getInterfaceName()/]
+    class [className/] : public virtual [getShortQualifiedName('ecore::ext::EPackageExt' ,namespaceName)/], public virtual [anEPackage.getInterfaceName()/]
     {
         private:
             [className/]([className/] const&) = delete;

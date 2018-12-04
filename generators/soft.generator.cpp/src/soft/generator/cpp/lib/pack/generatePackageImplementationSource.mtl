@@ -39,7 +39,6 @@ using namespace [namespace/];
 
 [className/]::[className/]()
 {
-    setEFactoryInstance([anEPackage.getFactoryInterfaceName()/]::eInstance());
 }
 
 [className/]::~[className/]()
@@ -54,6 +53,7 @@ using namespace [namespace/];
 void [className/]::init(const std::shared_ptr<[className/]>& package)
 {
     setThisPtr(package);
+    setEFactoryInstance( [anEPackage.getFactoryInterfaceName()/]::eInstance() );
     createPackageContents(package);
     initializePackageContents();   
 }
