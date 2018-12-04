@@ -22,6 +22,7 @@
 #include <string>
 #include <boost/any.hpp>
 
+
 //forward declarations
 namespace ecore 
 {

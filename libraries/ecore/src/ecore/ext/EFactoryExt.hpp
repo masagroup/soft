@@ -28,6 +28,11 @@ namespace ecore::ext
     public:
         virtual ~EFactoryExt();
 
+        //*********************************
+        // Operations
+        //*********************************
+        virtual std::shared_ptr<ecore::EObject> create( const std::shared_ptr<ecore::EClass>& eClass ) const;
+
     };
 
 }
