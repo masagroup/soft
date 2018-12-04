@@ -5,6 +5,11 @@
 #include "ecore/ENotification.hpp"
 #include "ecore/EcorePackage.hpp"
 #include "ecore/EList.hpp"
+#include "ecore/EStructuralFeature.hpp"
+#include "ecore/EAttribute.hpp"
+#include "ecore/EReference.hpp"
+#include "ecore/impl/ArrayEList.hpp"
+#include "ecore/impl/EObjectEList.hpp"
 
 #include <boost/assert.hpp>
 #include <string>
@@ -80,7 +85,19 @@ boost::any DynamicEObject::eGet( int featureID, bool resolve, bool coreType ) co
 {
     int dynamicFeatureID = featureID - eStaticFeatureCount();
     if( dynamicFeatureID >= 0 )
-        return properties_[ dynamicFeatureID ];
+    {
+        auto result = properties_[ dynamicFeatureID ];
+        if( result.empty() )
+        {
+            auto eFeature = eDynamicFeature( featureID );
+            if( !eFeature->isTransient() )
+            {
+                if( eFeature->isMany() )
+                    properties_[ dynamicFeatureID ] = result = createList( eFeature );
+            }
+        }
+        return result;
+    }
     return BasicEObject::eGet( featureID, resolve , coreType );
 }
 
@@ -112,7 +129,120 @@ int DynamicEObject::eStaticOperationCount() const
     return eStaticClass()->getOperationCount();
 }
 
+int DynamicEObject::eDynamicFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+{
+    return eClass()->getFeatureID( eStructuralFeature ) - eStaticFeatureCount();
+}
+
+std::shared_ptr<EStructuralFeature> DynamicEObject::eDynamicFeature( int dynamicFeatureID ) const
+{
+    return eClass()->getEStructuralFeature( dynamicFeatureID + eStaticFeatureCount() );
+}
+
 void DynamicEObject::resizeProperties()
 {
     properties_.resize( eClass()->getFeatureCount() - eStaticFeatureCount() );
+}
+
+std::shared_ptr<EList<std::shared_ptr<EObject>>> DynamicEObject::createList( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+{
+    if( auto eAttribute = std::dynamic_pointer_cast<EAttribute>( eStructuralFeature ) )
+    {
+        if( eAttribute->isUnique() )
+            return std::make_shared< ArrayEList<std::shared_ptr<EObject>, true> >();
+        else
+            return std::make_shared< ArrayEList<std::shared_ptr<EObject>, false> >();
+    }
+    else if( auto eReference = std::dynamic_pointer_cast<EReference>( eStructuralFeature ) )
+    {
+        if( eReference->isContainment() )
+        {
+            // containment
+
+            if( auto eReverseFeature = eReference->getEOpposite() )
+            {
+                //  opposite
+
+                if( eReference->eIsProxy() )
+                {
+                    if( eReference->isUnsettable() )
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, true, true, true, true, true>>( getThisPtr(), eReference->getFeatureID(), eReverseFeature->getFeatureID() );
+                    else
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, true, true, true, true, false>>( getThisPtr(), eReference->getFeatureID(), eReverseFeature->getFeatureID() );
+
+                }
+                else
+                {
+                    if( eReference->isUnsettable() )
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, true, true, true, false, true>>( getThisPtr(), eReference->getFeatureID(), eReverseFeature->getFeatureID() );
+                    else
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, true, true, true, false, false>>( getThisPtr(), eReference->getFeatureID(), eReverseFeature->getFeatureID() );
+                }
+            }
+            else
+            {
+                // no opposite
+
+                if( eReference->eIsProxy() )
+                {
+                    if( eReference->isUnsettable() )
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, true, true, false, true, true>>( getThisPtr(), eReference->getFeatureID() );
+                    else
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, true, true, false, true, false>>( getThisPtr(), eReference->getFeatureID() );
+                }
+                else
+                {
+                    if( eReference->isUnsettable() )
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, true, true, false, false, true>>( getThisPtr(), eReference->getFeatureID() );
+                    else
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, true, true, false, false, false>>( getThisPtr(), eReference->getFeatureID() );
+                }
+            }
+        }
+        else
+        {
+            // no containment
+
+            if( auto eReverseFeature = eReference->getEOpposite() )
+            {
+                //  opposite
+
+                if( eReference->eIsProxy() )
+                {
+                    if( eReference->isUnsettable() )
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, true, true, true, true>>( getThisPtr(), eReference->getFeatureID(), eReverseFeature->getFeatureID() );
+                    else
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, true, true, true, false>>( getThisPtr(), eReference->getFeatureID(), eReverseFeature->getFeatureID() );
+
+                }
+                else
+                {
+                    if( eReference->isUnsettable() )
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, true, true, false, true>>( getThisPtr(), eReference->getFeatureID(), eReverseFeature->getFeatureID() );
+                    else
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, true, true, false, false>>( getThisPtr(), eReference->getFeatureID(), eReverseFeature->getFeatureID() );
+                }
+            }
+            else
+            {
+                // no opposite
+
+                if( eReference->eIsProxy() )
+                {
+                    if( eReference->isUnsettable() )
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, false, false, true, true>>( getThisPtr(), eReference->getFeatureID() );
+                    else
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, false, false, true, false>>( getThisPtr(), eReference->getFeatureID() );
+                }
+                else
+                {
+                    if( eReference->isUnsettable() )
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, false, false, false, true>>( getThisPtr(), eReference->getFeatureID() );
+                    else
+                        return std::make_shared<EObjectEList<std::shared_ptr<EObject>, false, false, false, false, false>>( getThisPtr(), eReference->getFeatureID() );
+                }
+            }
+        }
+    }
+    return std::shared_ptr< EList<std::shared_ptr<EObject>> >();
 }

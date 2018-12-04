@@ -399,7 +399,7 @@ void [className/]::[methodName/]([aStructuralFeature.generateParameterType()/] [
 [/template]
 
 [template private getListConstructor( anEAttribute : EAttribute ) post(trim())]
-BasicEList<[anEAttribute.eGenericType.generateCppType()/],[anEAttribute.unique/]>()
+ArrayEList<[anEAttribute.eGenericType.generateCppType()/],[anEAttribute.unique/]>()
 [/template]
 
 [template private getListConstructor( anEReference : EReference ) post(trim())]

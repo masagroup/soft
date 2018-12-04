@@ -36,7 +36,11 @@ namespace ecore::impl
     private:
         int eStaticFeatureCount() const;
         int eStaticOperationCount() const;
+        int eDynamicFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;
+        std::shared_ptr<EStructuralFeature> eDynamicFeature( int dynamicFeatureID ) const;
+        
         void resizeProperties();
+        std::shared_ptr<EList<std::shared_ptr<EObject>>> createList( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;
 
     private:
         class FeaturesAdapter;
@@ -44,7 +48,7 @@ namespace ecore::impl
 
     protected:
         std::weak_ptr<EClass> eClass_;
-        std::vector< boost::any > properties_;
+        mutable std::vector< boost::any > properties_;
     };
 
 }
