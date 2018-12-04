@@ -31,7 +31,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 # Boost
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.68.0 REQUIRED)
+find_package(Boost 1.68.0 REQUIRED date_time)
 
 # Generated sources
 [let namespaceVar : String = getVarName( aPackage.getInterfaceNamespaceName() )] 

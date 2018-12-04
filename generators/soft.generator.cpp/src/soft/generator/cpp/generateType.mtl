@@ -4,6 +4,7 @@
 [import soft::generator::cpp::generateCommon/]
 
 [query public isAny(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then true else (name = 'EEnumerator' or name = 'EDiagnosticChain' or name = 'EJavaObject') endif/]
+[query public isDate(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else name = 'EDate' endif/]
 [query private isShared(aReference : EReference) : Boolean = if (aReference.hasKey('AggregationKind')) then aReference.valueKey('AggregationKind')='shared' else false endif/]
 [query public isBackReference(aReference:EReference) : Boolean = aReference.container or isShared()/]
 [query public needReference(anEDataType : EGenericType) : Boolean = ( not anEDataType.oclIsUndefined() ) and ( anEDataType.eTypeArguments->notEmpty() or needReference(anEDataType.eClassifier) )/]
@@ -162,7 +163,7 @@ EList
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? (name = 'EDate')]
-int
+boost::posix_time::ptime
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? (name = 'EMap')]
