@@ -13,7 +13,7 @@
 
 using namespace ecore;
 
-#define DISABLE_NOT_WORKIN 1
+#define DISABLE_NOT_WORKING 0
 
 /*
     Inspired from Example of Dynamic Model : https://www.ibm.com/developerworks/library/os-eclipse-dynamicemf/

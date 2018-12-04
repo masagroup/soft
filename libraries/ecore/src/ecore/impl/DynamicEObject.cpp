@@ -103,15 +103,29 @@ boost::any DynamicEObject::eGet( int featureID, bool resolve, bool coreType ) co
 
 bool DynamicEObject::eIsSet( int featureID ) const
 {
-    return false;
+    int dynamicFeatureID = featureID - eStaticFeatureCount();
+    if( dynamicFeatureID >= 0 )
+        return !properties_[ dynamicFeatureID ].empty();
+    else
+        return BasicEObject::eIsSet( featureID );
 }
 
 void DynamicEObject::eSet( int featureID, const boost::any & newValue )
 {
+    int dynamicFeatureID = featureID - eStaticFeatureCount();
+    if( dynamicFeatureID >= 0 )
+        properties_[ dynamicFeatureID ] = newValue;
+    else
+        BasicEObject::eSet( featureID, newValue );
 }
 
 void DynamicEObject::eUnset( int featureID )
 {
+    int dynamicFeatureID = featureID - eStaticFeatureCount();
+    if( dynamicFeatureID >= 0 )
+        properties_[ dynamicFeatureID ] = boost::any();
+    else
+        BasicEObject::eUnset( featureID );
 }
 
 boost::any DynamicEObject::eInvoke( int operationID, const std::shared_ptr<EList<boost::any>>& arguments )
