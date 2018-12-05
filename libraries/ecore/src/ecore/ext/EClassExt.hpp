@@ -25,7 +25,8 @@ namespace ecore::ext
     protected:
         friend class impl::EcoreFactoryImpl;
         EClassExt();
-    
+        void setThisPtr( const std::shared_ptr<EClassExt>& thisPtr );
+
     public:
         virtual ~EClassExt();
 

@@ -12,6 +12,9 @@
 
 #include "ecore/impl/EPackageImpl.hpp"
 
+#include <memory>
+#include <unordered_map>
+
 namespace ecore::ext
 {
 
@@ -24,9 +27,17 @@ namespace ecore::ext
     protected:
         friend class impl::EcoreFactoryImpl;
         EPackageExt();
-    
+        void setThisPtr( const std::shared_ptr<EPackageExt>& thisPtr );
+
     public:
         virtual ~EPackageExt();
+
+        virtual std::shared_ptr<ecore::EClassifier> getEClassifier( const std::string& name );
+
+    private:
+        class Adapter;
+        std::unique_ptr<EAdapter> adapter_;
+        std::unique_ptr<std::unordered_map<std::string, std::shared_ptr<ecore::EClassifier>>> nameToClassifierMap_;
     };
 
 }

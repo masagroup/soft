@@ -147,6 +147,11 @@ EClassExt::EClassExt()
     : EClassImpl()
     , eSuperAdapter_( new ESuperAdapter( *this ) )
 {
+}
+
+void EClassExt::setThisPtr( const std::shared_ptr<EClassExt>& thisPtr )
+{
+    EClassImpl::setThisPtr( thisPtr );
     eAdapters().add( eSuperAdapter_.get() );
 }
 
