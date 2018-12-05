@@ -321,7 +321,21 @@ std::shared_ptr<ENotificationChain> [className/]::eBasicInverseAdd( const std::s
             return eBasicSetContainer( otherEnd , [aFeature.getQualifiedFeatureIDName()/], msgs );
         [/if]
     [else]
-            break;
+        [if aFeature.isVolatile() or aFeature.isBackReference()]
+            auto [aFeature.name/] = [if aFeature.isProxy()]basic[aFeature.getGetterName().toUpperFirst()/][else][aFeature.getGetterName()/][/if]();
+        [/if]
+        [let varName : String = aFeature.name + (if aFeature.isVolatile() or aFeature.isBackReference() then '' else '_' endif)]
+            auto msgs = notifications;
+            if ( [varName/] )
+            [if aFeature.isContains()]
+                msgs = [varName/]->eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aFeature.getQualifiedFeatureIDName()/] , msgs );
+            [else]
+                [let reverseFeature : EStructuralFeature = aFeature.oclAsType(EReference).eOpposite]
+                msgs = [varName/]->eInverseRemove( getThisPtr(), [reverseFeature.getQualifiedFeatureIDName()/] , msgs );
+                [/let]
+            [/if] 
+            return basic[aFeature.getSetterName().toUpperFirst()/](std::dynamic_pointer_cast<[aFeature.generateElementType()/]>(otherEnd),msgs);
+        [/let]
     [/if]
         }
 [/for]

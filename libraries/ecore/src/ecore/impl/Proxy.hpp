@@ -103,6 +103,16 @@ namespace ecore::impl
             }
         }
 
+        explicit operator bool() const
+        {
+            return static_cast<bool>(is_uninitialized( ref_ ) ? proxy_ : ref_.lock());
+        }
+
+        typename T::element_type* operator->() const
+        {   
+            return is_uninitialized( ref_ ) ? proxy_.operator ->() : ref_.lock().operator ->();
+        }
+
         Proxy& operator=( const Proxy& o )
         {
             owner_ = o.owner_;

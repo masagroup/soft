@@ -223,7 +223,7 @@ void [className/]::[methodName/]()
     return [aStructuralFeature.name/]_.get();
         [/if]
     [else]
-    return [aStructuralFeature.name/]_;
+    return [aStructuralFeature.name/]_[if aStructuralFeature.isBackReference()].lock()[/if];
     [/if]
 [elseif (hasKey('getterBody'))]
     [valueKey('getterBody')/]
@@ -260,7 +260,7 @@ virtual [aStructuralFeature.generateReturnType()/] [aStructuralFeature.getGetter
     return [aStructuralFeature.name/]_.get();
         [/if]
     [else]
-    return [aStructuralFeature.name/]_;
+    return [aStructuralFeature.name/]_[if aStructuralFeature.isBackReference()].lock()[/if];
     [/if]
 [elseif hasKey('getterBody')]
     [valueKey('getterBody')/]
@@ -299,7 +299,7 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( [aStruct
     return eBasicSetContainer([newVarName/],[aStructuralFeature.getQualifiedFeatureIDName()/],msgs); 
 [elseif not isVolatile()]
     [let oldVarName : String = 'old' + aStructuralFeature.name.toUpperFirst()]
-    auto [oldVarName/] = [newVarName/][if isLazy()].get()[/if];
+    auto [oldVarName/] = [aStructuralFeature.name/]_[if isLazy()].get()[elseif isBackReference()].lock()[/if];
     [aStructuralFeature.name/]_ = [newVarName/];
     auto notifications = msgs;
     if ( eNotificationRequired() )
@@ -352,17 +352,21 @@ void [className/]::[methodName/]([aStructuralFeature.generateParameterType()/] [
     else if ( eNotificationRequired() )
         eNotify( std::make_shared<Notification>(getThisPtr() , Notification::SET, [aStructuralFeature.getQualifiedFeatureIDName()/], [newVarName/], [newVarName/]));
     [elseif isBidirectional() or isContains()]
-    if ( [newVarName/] != [aStructuralFeature.name/]_ )
+        [if aStructuralFeature.isBackReference()]
+    auto [aStructuralFeature.name/] = [aStructuralFeature.name/]_.lock();
+        [/if]
+        [let currentVarName : String = aStructuralFeature.name + ( if aStructuralFeature.isBackReference() then '' else '_' endif)]    
+    if ( [newVarName/] != [currentVarName/] )
     {
         std::shared_ptr<ENotificationChain> notifications;
-        if ( [aStructuralFeature.name/]_ )
+        if ( [currentVarName/] )
         [if not isBidirectional()]
-            notifications = [aStructuralFeature.name/]_->eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aStructuralFeature.getQualifiedFeatureIDName()/] , notifications );
+            notifications = [currentVarName/]->eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aStructuralFeature.getQualifiedFeatureIDName()/] , notifications );
         if ( [newVarName/] )
             notifications = [newVarName/]->eInverseAdd( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aStructuralFeature.getQualifiedFeatureIDName()/] , notifications );
         [else]
             [let reverseFeature : EStructuralFeature = aStructuralFeature.oclAsType(EReference).eOpposite]
-            notifications = [aStructuralFeature.name/]_->eInverseRemove( getThisPtr(), [reverseFeature.getQualifiedFeatureIDName()/] , notifications );
+            notifications = [currentVarName/]->eInverseRemove( getThisPtr(), [reverseFeature.getQualifiedFeatureIDName()/] , notifications );
         if ( [newVarName/] )
             notifications = [newVarName/]->eInverseAdd( getThisPtr(), [reverseFeature.getQualifiedFeatureIDName()/] , notifications );
             [/let]
@@ -373,6 +377,7 @@ void [className/]::[methodName/]([aStructuralFeature.generateParameterType()/] [
     }
         [if isUnSettable()]
         [/if]
+        [/let]
     [else]
         [let oldVarName : String = 'old' + aStructuralFeature.name.toUpperFirst()]
     auto [oldVarName/] = [aStructuralFeature.name/]_[if isLazy()].get()[/if];
