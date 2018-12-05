@@ -11,7 +11,9 @@ set(SOURCE_FILES
     src/EClassTests.cpp
     src/ECollectionViewTests.cpp
     src/EDynamicModelTests.cpp
+    src/EFactoryTests.cpp
     src/EObjectEListTests.cpp
+    src/EPackageTests.cpp
     src/LazyTests.cpp
     src/NotificationTests.cpp
     src/NotificationChainTests.cpp
