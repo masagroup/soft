@@ -365,6 +365,9 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="UniqueParameterNames UniqueTypeParameterNames NoRepeatingVoid"/>
     </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
     <eOperations name="isOverrideOf" eType="#//EBoolean">
       <eParameters name="someOperation" eType="#//EOperation"/>
     </eOperations>
