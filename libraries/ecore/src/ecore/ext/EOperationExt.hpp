@@ -28,6 +28,8 @@ namespace ecore::ext
     
     public:
         virtual ~EOperationExt();
+
+        virtual bool isOverrideOf( const std::shared_ptr<ecore::EOperation>& someOperation );
     };
 
 }
