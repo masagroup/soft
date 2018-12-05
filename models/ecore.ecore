@@ -232,11 +232,7 @@
       <eParameters name="instanceValue" eType="#//EJavaObject"/>
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="ePackage" lowerBound="1"
-        eType="#//EPackage" transient="true" resolveProxies="false" eOpposite="#//EPackage/eFactoryInstance">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
-        <details key="aggregation" value="shared"/>
-      </eAnnotations>
-    </eStructuralFeatures>
+        eType="#//EPackage" transient="true" resolveProxies="false" eOpposite="#//EPackage/eFactoryInstance"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EModelElement" abstract="true">
     <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
@@ -412,7 +408,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="nsURI" eType="#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="nsPrefix" eType="#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eFactoryInstance" lowerBound="1"
-        eType="#//EFactory" transient="true" resolveProxies="false" eOpposite="#//EFactory/ePackage"/>
+        eType="#//EFactory" transient="true" containment="true" resolveProxies="false"
+        eOpposite="#//EFactory/ePackage"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eClassifiers" upperBound="-1"
         eType="#//EClassifier" containment="true" eOpposite="#//EClassifier/ePackage"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eSubPackages" upperBound="-1"
