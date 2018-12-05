@@ -162,7 +162,7 @@ boost::any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& featur
 
 boost::any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& feature, bool resolve ) const
 {
-    return eGet( feature, true );
+    return eGet( feature, resolve, true );
 }
 
 
@@ -213,7 +213,8 @@ void BasicEObject::eSet( const std::shared_ptr<EStructuralFeature>& eFeature, co
     int featureID = eDerivedStructuralFeatureID( eFeature );
     if( featureID >= 0 )
         eSet( featureID, newValue );
-    throw "The feature '" + eFeature->getName() + "' is not a valid feature";
+    else
+        throw "The feature '" + eFeature->getName() + "' is not a valid feature";
 }
 
 void BasicEObject::eSet( int featureID, const boost::any & newValue )
@@ -228,7 +229,8 @@ void BasicEObject::eUnset( const std::shared_ptr<EStructuralFeature>& eFeature )
     int featureID = eDerivedStructuralFeatureID( eFeature );
     if( featureID >= 0 )
         eUnset( featureID );
-    throw "The feature '" + eFeature->getName() + "' is not a valid feature";
+    else
+        throw "The feature '" + eFeature->getName() + "' is not a valid feature";
 }
 
 void BasicEObject::eUnset( int featureID )

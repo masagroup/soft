@@ -13,8 +13,6 @@
 
 using namespace ecore;
 
-#define DISABLE_NOT_WORKING 0
-
 /*
     Inspired from Example of Dynamic Model : https://www.ibm.com/developerworks/library/os-eclipse-dynamicemf/
 */
@@ -101,9 +99,6 @@ namespace
 
         }
 
-
-
-
     protected:
         std::shared_ptr<EPackage> bookStoreEPackage;
         std::shared_ptr<EFactory> bookStoreEFactory;
@@ -127,7 +122,6 @@ BOOST_AUTO_TEST_SUITE( EDynamicModelTests )
 
 BOOST_FIXTURE_TEST_CASE( InstanciateModel , BookStoreModelFixture )
 {
-#if (DISABLE_NOT_WORKING)
     /*
     * Obtain EFactory instance from BookStoreEPackage
     */
@@ -142,8 +136,8 @@ BOOST_FIXTURE_TEST_CASE( InstanciateModel , BookStoreModelFixture )
     /*
     * Set the values of bookStoreObject attributes
     */
-    bookStoreObject->eSet( bookStoreOwner, "David Brown" );
-    bookStoreObject->eSet( bookStoreLocation, "Street#12, Top Town, NY" );
+    bookStoreObject->eSet( bookStoreOwner, std::string("David Brown") );
+    bookStoreObject->eSet( bookStoreLocation, std::string( "Street#12, Top Town, NY") );
     auto anyBooks = bookStoreObject->eGet( bookStore_Books );
     auto allBooks = boost::any_cast<std::shared_ptr<EList< std::shared_ptr<EObject>>>>( anyBooks );
     allBooks->add( bookObject );
@@ -151,7 +145,7 @@ BOOST_FIXTURE_TEST_CASE( InstanciateModel , BookStoreModelFixture )
     /*
     * Set the values of bookObject attributes
     */
-    bookObject->eSet( bookName, "Harry Potter and the Deathly Hallows" );
+    bookObject->eSet( bookName, std::string( "Harry Potter and the Deathly Hallows") );
     bookObject->eSet( bookISBN, 157221 );
 
     /*
@@ -166,13 +160,12 @@ BOOST_FIXTURE_TEST_CASE( InstanciateModel , BookStoreModelFixture )
     /*
     * Read/Get the values of bookObject attributes
     */
-    auto anyName = bookStoreObject->eGet( bookName );
+    auto anyName = bookObject->eGet( bookName );
     auto strName = boost::any_cast<std::string>( anyName );
 
-    auto anyISBN = bookStoreObject->eGet( bookISBN );
-    auto strISBN = boost::any_cast<std::string>( anyISBN );
+    auto anyISBN = bookObject->eGet( bookISBN );
+    auto strISBN = boost::any_cast<int>( anyISBN );
 
-#endif
 }
 
 BOOST_AUTO_TEST_SUITE_END()
