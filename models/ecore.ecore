@@ -165,6 +165,11 @@
     <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
       <details key="extension" value="true"/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceClass">
+      <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaClass">
+        <eTypeArguments/>
+      </eGenericType>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultValue" eType="#//EJavaObject"
         changeable="false" volatile="true" transient="true" derived="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="ePackage" eType="#//EPackage"

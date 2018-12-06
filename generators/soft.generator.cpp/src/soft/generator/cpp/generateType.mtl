@@ -8,7 +8,7 @@
 [query private isShared(aReference : EReference) : Boolean = if (aReference.hasKey('aggregation')) then aReference.valueKey('aggregation')='shared' else false endif/]
 [query public isBackReference(aReference:EReference) : Boolean = aReference.container or isShared()/]
 [query public isBackReference(aStructuralFeature:EStructuralFeature) : Boolean = aStructuralFeature.oclIsKindOf(EReference) and aStructuralFeature.oclAsType(EReference).isBackReference()/]
-[query public needReference(anEDataType : EGenericType) : Boolean = ( not anEDataType.oclIsUndefined() ) and ( anEDataType.eTypeArguments->notEmpty() or needReference(anEDataType.eClassifier) )/]
+[query public needReference(anEDataType : EGenericType) : Boolean = ( not anEDataType.oclIsUndefined() ) and needReference(anEDataType.eClassifier)/]
 [query public needReference(anEClassifier : EClassifier) : Boolean = not oclIsUndefined() and( 
                                                                 (not oclIsKindOf(EDataType)) or 
                                                                 name = 'EString' or 
@@ -180,7 +180,7 @@ ECollectionView
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? (name = 'EJavaClass')]
-void *
+const std::type_info*
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? ((name = 'EEnumerator') or (name = 'EDiagnosticChain'))]
