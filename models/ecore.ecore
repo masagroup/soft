@@ -165,8 +165,14 @@
     <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
       <details key="extension" value="true"/>
     </eAnnotations>
+    <eOperations name="isInstance" eType="#//EBoolean">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const" value="true"/>
+      </eAnnotations>
+      <eParameters name="object" eType="#//EJavaObject"/>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceClass">
-      <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaClass">
+      <eGenericType eClassifier="#//EJavaClass">
         <eTypeArguments/>
       </eGenericType>
     </eStructuralFeatures>

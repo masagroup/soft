@@ -15,6 +15,11 @@ EClassifierExt::~EClassifierExt()
 {
 }
 
+bool EClassifierExt::isInstance( const boost::any & object ) const
+{
+    return getInstanceClass() && getInstanceClass()->operator==( object.type() );
+}
+
 int EClassifierExt::initClassifierID()
 {
     return getEPackage() ? static_cast<int>( getEPackage()->getEClassifiers()->indexOf( getThisPtr() ) ) : -1;
