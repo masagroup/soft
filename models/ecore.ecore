@@ -514,26 +514,28 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="EBoolean" instanceClassName="boolean">
+  <eClassifiers xsi:type="ecore:EDataType" name="EBoolean" instanceTypeName="bool">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="baseType" value="http://www.w3.org/2001/XMLSchema#boolean"/>
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="EChar" instanceClassName="char"/>
-  <eClassifiers xsi:type="ecore:EDataType" name="EDate" instanceClassName="java.util.Date"/>
-  <eClassifiers xsi:type="ecore:EDataType" name="EDiagnosticChain" instanceClassName="org.eclipse.emf.common.util.DiagnosticChain"
-      serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EDate" instanceTypeName="boost::posix_time::ptime">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="include" value="boost/date_time.hpp"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EDiagnosticChain" serializable="false"/>
   <eClassifiers xsi:type="ecore:EDataType" name="EDouble" instanceClassName="double">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="baseType" value="http://www.w3.org/2001/XMLSchema#double"/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="EEList" instanceClassName="org.eclipse.emf.common.util.EList"
+  <eClassifiers xsi:type="ecore:EDataType" name="EEList" instanceTypeName="std::shared_ptr&lt;ecore::EList&lt;ecore::EObject >>"
       serializable="false">
     <eTypeParameters name="E"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="EEnumerator" instanceClassName="org.eclipse.emf.common.util.Enumerator"
-      serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EEnumerator" serializable="false"/>
   <eClassifiers xsi:type="ecore:EDataType" name="EFloat" instanceClassName="float">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="baseType" value="http://www.w3.org/2001/XMLSchema#float"/>
@@ -544,26 +546,24 @@
       <details key="baseType" value="http://www.w3.org/2001/XMLSchema#int"/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="EJavaClass" instanceClassName="java.lang.Class"
+  <eClassifiers xsi:type="ecore:EDataType" name="EJavaClass" instanceTypeName="const std::type_info*"
       serializable="false">
     <eTypeParameters name="T"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="EJavaObject" instanceClassName="java.lang.Object"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EJavaObject" instanceTypeName="boost::any"/>
   <eClassifiers xsi:type="ecore:EDataType" name="ELong" instanceClassName="long">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="baseType" value="http://www.w3.org/2001/XMLSchema#long"/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="EResource" instanceClassName="org.eclipse.emf.ecore.resource.Resource"
-      serializable="false"/>
-  <eClassifiers xsi:type="ecore:EDataType" name="EResourceSet" instanceClassName="org.eclipse.emf.ecore.resource.ResourceSet"
-      serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EResource" serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EResourceSet" serializable="false"/>
   <eClassifiers xsi:type="ecore:EDataType" name="EShort" instanceClassName="short">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="baseType" value="http://www.w3.org/2001/XMLSchema#short"/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="EString" instanceClassName="java.lang.String">
+  <eClassifiers xsi:type="ecore:EDataType" name="EString" instanceTypeName="std::string">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="baseType" value="http://www.w3.org/2001/XMLSchema#string"/>
     </eAnnotations>
@@ -572,7 +572,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="ETreeIterator" instanceClassName="org.eclipse.emf.common.util.TreeIterator"
+  <eClassifiers xsi:type="ecore:EDataType" name="ETreeIterator" instanceTypeName="std::shared_ptr&lt;ecore::ECollectionView&lt;std::shared_ptr&lt;ecore::EObject>>>"
       serializable="false">
     <eTypeParameters name="E"/>
   </eClassifiers>
@@ -599,6 +599,5 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="eBounds" upperBound="-1"
         eType="#//EGenericType" containment="true" resolveProxies="false"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="EInvocationTargetException" instanceClassName="java.lang.reflect.InvocationTargetException"
-      serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EInvocationTargetException" serializable="false"/>
 </ecore:EPackage>

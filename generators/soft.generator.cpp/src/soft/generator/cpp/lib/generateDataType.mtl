@@ -9,10 +9,13 @@
 
 [/template]
 
-[template public generateEDatatypeInitialization(adatatype : EDataType)]
-[adatatype.getElementInstanceName()/]->setName("[adatatype.name/]");
-[if (not adatatype.oclIsKindOf(EEnum))]
-[adatatype.getElementInstanceName()/]->setSerializable([adatatype.serializable.toString()/]);
+[template public generateEDatatypeInitialization(aDataType : EDataType)]
+[aDataType.getElementInstanceName()/]->setName("[aDataType.name/]");
+[if not aDataType.instanceTypeName.oclIsUndefined() and not (aDataType.instanceTypeName = '')] 
+[aDataType.getElementInstanceName()/]->setInstanceClass( &typeid([aDataType.instanceTypeName/]));
+[/if]
+[if (not aDataType.oclIsKindOf(EEnum))]
+[aDataType.getElementInstanceName()/]->setSerializable([aDataType.serializable.toString()/]);
 [/if]
 [/template]
 

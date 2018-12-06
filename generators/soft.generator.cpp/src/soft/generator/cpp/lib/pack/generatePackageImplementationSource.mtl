@@ -24,7 +24,9 @@
 [/let]
 
 #include <cassert>
+[/template]
 
+[template private generatePackageImplementationUsingNamespaces( aPackage : EPackage )]
 [let namespaces : OrderedSet(String) = OrderedSet{ 'ecore' , aPackage.getInterfaceNamespaceName() , aPackage.getImplementationNamespaceName()}]
 [for (namespace : String | namespaces )]
 using namespace [namespace/];
@@ -36,7 +38,7 @@ using namespace [namespace/];
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getImplementationFolder() + '/' + className + '.cpp', false, 'UTF-8')]
 [fileComment()/]
 [generatePackageImplementationIncludes()/]
-
+[generatePackageImplementationUsingNamespaces()/]
 [className/]::[className/]()
 {
 }
@@ -74,7 +76,7 @@ void [className/]::init(const std::shared_ptr<[className/]>& package)
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getImplementationFolder() + '/' + className + '_Creation.cpp', false, 'UTF-8')]
 [fileComment()/]
 [generatePackageImplementationIncludes()/]
-
+[generatePackageImplementationUsingNamespaces()/]
 void [className/]::createPackageContents(const std::shared_ptr<[className/]>& package)
 {
     if (isCreated) 
@@ -110,6 +112,16 @@ void [className/]::createPackageEDataTypes(const std::shared_ptr<EPackage>& pack
 [file (getOutputDirectory().concat('/src-gen/').concat(anEPackage.name).concat('/impl/').concat(className).concat('_Initialization.cpp'), false, 'UTF-8')]
 [fileComment()/]
 [generatePackageImplementationIncludes()/]
+
+[let includes : OrderedSet(String) =  anEPackage.eAllContents(EDataType)->collect( d | if d.hasKey('include') then d.valueKey('include') else '' endif)->asOrderedSet()->sortedBy( s | s)]
+[for ( include : String | includes )]
+[if include <> '']
+#include "[include/]"
+[/if]
+[/for]
+[/let]
+
+[generatePackageImplementationUsingNamespaces()/]
 
 void [className/]::initializePackageContents()
 {
