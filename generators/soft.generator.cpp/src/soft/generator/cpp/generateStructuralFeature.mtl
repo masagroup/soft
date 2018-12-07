@@ -5,17 +5,56 @@
 [import soft::generator::cpp::generateType /]
 
 
+[**
+ * lazy property can be defined as follow lazy = no|lambda|function|action
+ **]
 [query private getLazy( aStructuralFeature : EStructuralFeature ) : String =
 if aStructuralFeature.hasKey('lazy') then 
     aStructuralFeature.valueKey('lazy')
 else
-    if aStructuralFeature.eContainingClass.ePackage.hasKey('lazy') then 
-        aStructuralFeature.eContainingClass.ePackage.valueKey('lazy') 
+    let aPackage : EPackage = aStructuralFeature.eContainingClass.ePackage in
+    if aStructuralFeature.isListType() then
+        aPackage.getLazy('list')
+    else if aStructuralFeature.isProxy() then
+        aPackage.getLazy('proxy')
     else 
-        'no'
+        aPackage.getLazy('')
     endif
-    
+    endif
 endif/]
+
+[**
+ * lazy property can be defined as follow lazy = ((*|list|proxy):(no|lambda|function|action))+
+ **]
+[query private getLazy( aPackage : EPackage , type : String ) : String =
+if aPackage.hasKey('lazy') then
+    let lazy : String = aPackage.valueKey('lazy') in
+    let value : String = lazy.tokenize()->iterate( s ; res: String = '' | (
+        if res = '' then 
+            let index : Integer = s.index( ':' ) in 
+            if index = -1 then
+                s
+            else
+                let t : String = s.substring(1 , index - 1 ) in
+                if t = type then
+                    s.substring( index + 1 )
+                else
+                    ''
+                endif
+            endif
+        else
+            res
+        endif
+    )) in
+    if value = '' then
+        'no'
+    else
+        value
+    endif
+else 
+    'no'
+endif
+/]
 
 [query public isLazy( aStructuralFeature : EStructuralFeature ) : Boolean = aStructuralFeature.getLazy() <> 'no'/] 
 
@@ -178,7 +217,9 @@ virtual [generateDataInitializationMethodReturnType()/] [methodName/]();
 [if isListType()]
     return [getListConstructor()/];
 [elseif isProxy()]
-    return [generateDataType()/]( thisPtr_ , [aStructuralFeature.getQualifiedFeatureIDName()/] );
+    [let thisPtrName : String = aStructuralFeature.eContainingClass.getThisPtrName() + '_']
+    return [generateDataType()/]( [thisPtrName/] , [aStructuralFeature.getQualifiedFeatureIDName()/] );
+    [/let]
 [elseif aStructuralFeature.oclIsKindOf(EAttribute)]
     return [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/];
 [else]
