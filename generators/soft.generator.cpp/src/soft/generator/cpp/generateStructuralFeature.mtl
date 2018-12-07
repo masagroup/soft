@@ -3,30 +3,35 @@
 
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::generateType /]
-[import soft::generator::cpp::generateClass /]
 
 
 [query private getLazy( aStructuralFeature : EStructuralFeature ) : String =
 if aStructuralFeature.hasKey('lazy') then 
     aStructuralFeature.valueKey('lazy')
 else
-    if ( aStructuralFeature.isListType() or aStructuralFeature.isProxy()) then
-        if aStructuralFeature.eContainingClass.ePackage.hasKey('lazy') then 
-            aStructuralFeature.eContainingClass.ePackage.valueKey('lazy') 
-        else 
-            'function'
-        endif
-    else
+    if aStructuralFeature.eContainingClass.ePackage.hasKey('lazy') then 
+        aStructuralFeature.eContainingClass.ePackage.valueKey('lazy') 
+    else 
         'no'
     endif
+    
 endif/]
 
 [query public isLazy( aStructuralFeature : EStructuralFeature ) : Boolean = aStructuralFeature.getLazy() <> 'no'/] 
-[query public hasDataInitializationMethod( aStructuralFeature : EStructuralFeature ) : Boolean = isLazy() and ( let lazyType : String = aStructuralFeature.getLazy() in lazyType = 'action' or lazyType = 'function')/]
+
+[query public hasDataInitializationMethod( aStructuralFeature : EStructuralFeature ) : Boolean = 
+isLazy() and ( let lazyType : String = aStructuralFeature.getLazy() in lazyType = 'action' or lazyType = 'function')/]
+
 [query public getDataInitializationFeatures( aClass : EClass ) : OrderedSet(EStructuralFeature) = 
          aClass.eStructuralFeatures->select( not isVolatile() and hasDataInitializationMethod() and getLazy() = 'function')
 ->addAll(aClass.eStructuralFeatures->select( not isVolatile() and hasDataInitializationMethod() and getLazy() = 'action' ))/]
 
+[query private getMethodInitializationName(feature : EStructuralFeature) : String = 
+if hasKey('MethodInitializationName') then 
+    valueKey('MethodInitializationName') 
+else 
+    'init'.concat(name.toUpperFirst()) 
+endif/]
 
 
 [template public generateDeclaration(aStructuralFeature : EStructuralFeature, impl : Boolean )]
@@ -122,11 +127,11 @@ endif/]
 [/template]
 
 [template public generateDataInitialization(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'function') ]
-[aStructuralFeature.name/]_(['['/]&[']'/](){ return [aStructuralFeature.getLazyInitializationName()/]();})
+[aStructuralFeature.name/]_(['['/]&[']'/](){ return [aStructuralFeature.getMethodInitializationName()/]();})
 [/template]
 
 [template public generateDataInitialization(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'action') ]
-[aStructuralFeature.name/]_(['['/]&[']'/](){ [aStructuralFeature.getLazyInitializationName()/]();})
+[aStructuralFeature.name/]_(['['/]&[']'/](){ [aStructuralFeature.getMethodInitializationName()/]();})
 [/template]
 
 [template private generateDataInitializationValue(aStructuralFeature : EStructuralFeature) post(trim())]
@@ -145,14 +150,14 @@ endif/]
 [/template]
 
 [template public generateDataInitializationMethodDeclaration(aStructuralFeature : EStructuralFeature) ]
-[let methodName : String = aStructuralFeature.getLazyInitializationName()]
+[let methodName : String = aStructuralFeature.getMethodInitializationName()]
 virtual [generateDataInitializationMethodReturnType()/] [methodName/]();
 [/let]
 [/template]
 
 [template public generateDataInitializationMethodDefinition(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'function' )]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
-[let methodName : String = aStructuralFeature.getLazyInitializationName()]
+[let methodName : String = aStructuralFeature.getMethodInitializationName()]
 [generateDataInitializationMethodReturnType()/] [className/]::[methodName/]()
 {
     // [protected (className + '::' + methodName)]
@@ -175,7 +180,7 @@ virtual [generateDataInitializationMethodReturnType()/] [methodName/]();
 
 [template public generateDataInitializationMethodDefinition(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'action' )]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
-[let methodName : String = aStructuralFeature.getLazyInitializationName()]
+[let methodName : String = aStructuralFeature.getMethodInitializationName()]
 void [className/]::[methodName/]()
 {
     // [protected (className + '::' + methodName)]

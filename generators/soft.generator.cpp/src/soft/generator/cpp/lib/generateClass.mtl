@@ -15,34 +15,6 @@ virtual std::shared_ptr<[aEClass.getInterfaceName()/]> create[aEClass.name/]([aR
 [/let]
 [/template]
 
-[template public generateGetThisPtr(aClass : EClass)]
-std::shared_ptr<[aClass.name/]Impl> [generateGetThisPtrPropertyGetterName()/]() const;
-void [generateGetThisPtrPropertySetterName()/](const std::shared_ptr<[aClass.name/]Impl>& [generateGetThisPtrPropertyName()/]);
-[/template]
-
-[template public generateGetThisPtrCPP(aClass: EClass)]
-std::shared_ptr<[aClass.name/]Impl> [aClass.name/]Impl::[generateGetThisPtrPropertyGetterName()/]() const
-{
-    return [generateGetThisPtrPropertyName()/]_.lock();
-}
-
-void [aClass.name/]Impl::[generateGetThisPtrPropertySetterName()/](const std::shared_ptr<[aClass.name/]Impl>& [generateGetThisPtrPropertyName()/])
-{
-    [generateGetThisPtrPropertyName()/]_ = [generateGetThisPtrPropertyName()/];
-    [if aClass.name ='EObject']
-    BasicEObject::setThisPtr([aClass.generateGetThisPtrPropertyName()/]);
-    [else]
-    [for (superClass : EClass | aClass.eSuperTypes->asOrderedSet()->sortedBy(name))]
-    [superClass.name/]Impl::[superClass.generateGetThisPtrPropertySetterName()/]([aClass.generateGetThisPtrPropertyName()/]);
-    [/for]
-    [/if]
-}
-[/template]
-
-[query public generateGetThisPtrPropertyName(anEClass : EClass) : String = 'thisPtr'/]
-[query public generateGetThisPtrPropertySetterName(anEClass : EClass) : String = 'set'.concat(generateGetThisPtrPropertyName().toUpperFirst())/]
-[query public generateGetThisPtrPropertyGetterName(anEClass : EClass) : String = 'get'.concat(generateGetThisPtrPropertyName().toUpperFirst())/]
-
 [template public generateStaticClassID(aEClass : EClass)]
 /**
  * The meta object id for the class [aEClass.name/].

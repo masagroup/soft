@@ -3,8 +3,6 @@
 
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::generateType /]
-[import soft::generator::cpp::generateClass /]
-
 
 [**
  * Reflectives eGet/eSet//eUnSet/eIsSet/eInverseAdd/eInverseRemove
