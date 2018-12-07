@@ -275,16 +275,7 @@ void [className/]::[methodName/]()
     else
         return std::dynamic_pointer_cast<[aStructuralFeature.generateElementType()/]>(eContainer());
 [elseif not isVolatile()]
-    [if isLazy()]
-        [if isProxy() and not isListType()]
-    const auto& proxy = [aStructuralFeature.name/]_.get(); 
-    return proxy.get();
-        [else]
-    return [aStructuralFeature.name/]_.get();
-        [/if]
-    [else]
-    return [aStructuralFeature.name/]_[if aStructuralFeature.isBackReference()].lock()[/if];
-    [/if]
+    return [aStructuralFeature.name/]_[if aStructuralFeature.isLazy()].get()[elseif aStructuralFeature.isBackReference()].lock()[/if];
 [elseif (hasKey('getterBody'))]
     [valueKey('getterBody')/]
 [else]
@@ -312,16 +303,7 @@ virtual [aStructuralFeature.generateReturnType()/] [aStructuralFeature.getGetter
     else
         return std::dynamic_pointer_cast<[aStructuralFeature.generateElementType()/]>(eContainer());
 [elseif not isVolatile()]
-     [if isLazy()]
-        [if isProxy() and not isListType()]
-    const auto& proxy = [aStructuralFeature.name/]_.get(); 
-    return proxy.get();
-        [else]
-    return [aStructuralFeature.name/]_.get();
-        [/if]
-    [else]
-    return [aStructuralFeature.name/]_[if aStructuralFeature.isBackReference()].lock()[/if];
-    [/if]
+    return [aStructuralFeature.name/]_[if aStructuralFeature.isLazy()].get()[elseif aStructuralFeature.isBackReference()].lock()[/if];
 [elseif hasKey('getterBody')]
     [valueKey('getterBody')/]
 [else]
@@ -359,7 +341,7 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( [aStruct
     return eBasicSetContainer([newVarName/],[aStructuralFeature.getQualifiedFeatureIDName()/],msgs); 
 [elseif not isVolatile()]
     [let oldVarName : String = 'old' + aStructuralFeature.name.toUpperFirst()]
-    auto [oldVarName/] = [aStructuralFeature.name/]_[if isLazy()].get()[elseif isBackReference()].lock()[/if];
+    [aStructuralFeature.generateReturnType()/] [oldVarName/] = [aStructuralFeature.name/]_[if isLazy()].get()[elseif isBackReference()].lock()[/if];
     [aStructuralFeature.name/]_ = [newVarName/];
     auto notifications = msgs;
     if ( eNotificationRequired() )
@@ -440,7 +422,7 @@ void [className/]::[methodName/]([aStructuralFeature.generateParameterType()/] [
         [/let]
     [else]
         [let oldVarName : String = 'old' + aStructuralFeature.name.toUpperFirst()]
-    auto [oldVarName/] = [aStructuralFeature.name/]_[if isLazy()].get()[/if];
+    [aStructuralFeature.generateReturnType()/] [oldVarName/] = [aStructuralFeature.name/]_[if isLazy()].get()[elseif isBackReference()].lock()[/if];
     [aStructuralFeature.name/]_ = [newVarName/];
     if ( eNotificationRequired() )
         eNotify( std::make_shared<Notification>(getThisPtr(), Notification::SET, [aStructuralFeature.getQualifiedFeatureIDName()/], [oldVarName/], [newVarName/]));
