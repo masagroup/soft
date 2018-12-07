@@ -103,6 +103,11 @@ namespace ecore::impl
             }
         }
 
+        operator T() const
+        {
+            return get();
+        }
+
         explicit operator bool() const
         {
             return static_cast<bool>(is_uninitialized( ref_ ) ? proxy_ : ref_.lock());
