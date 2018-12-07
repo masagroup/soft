@@ -226,7 +226,9 @@
 [query public isProxy(aStructuralFeature : EStructuralFeature) : Boolean = (not isContainer() and not isContains()) and aStructuralFeature.oclIsKindOf(EReference) and aStructuralFeature.oclAsType(EReference).resolveProxies/]  
 [query public isField(aStructuralFeature : EStructuralFeature) : Boolean = not isContainer() and not isVolatile()/]
 [query private isMap(  aEFeature : EStructuralFeature , n : String  ) : Boolean = let entries : Sequence(String) = Sequence{'java.util.Map.Entry','java.util.Map$Entry'} in entries->includes(n)/]
-[query private requiresList(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else (name = 'ETreeIterator' or name = 'EEList') endif/]
+[query public requiresList(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else name = 'EEList' endif/]
+[query public requiresCollectionView(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else name = 'ETreeIterator' endif/]
+[query public requiresCollectionView(anGenericType : EGenericType) : Boolean = if (oclIsUndefined()) then false else anGenericType.eClassifier.requiresCollectionView() endif/]
 
 [query public isGet(aStructuralFeature : EStructuralFeature) : Boolean = true/]
 [query public isSet(aStructuralFeature : EStructuralFeature) : Boolean = isChangeable() and aStructuralFeature.upperBound = 1/]
@@ -245,28 +247,6 @@
 
 [query public hasKey(aModelElement : EModelElement, aKey:String) : Boolean = if aModelElement.hasGenModel() then aModelElement.getGenModelAnnotation().details->select(key = aKey)->notEmpty() else false endif /]
 [query public valueKey(aModelElement : EModelElement, aKey:String) : String = aModelElement.getGenModelAnnotation().details->select(key = aKey)->first().value /]
-
-
-[template public generateTypesForwardDeclaration(anEClass : EClass)]
-[if (anEClass.eReferences->select(upperBound <> 1)->size() > 0 or anEClass.eOperations.eParameters->select((eType.requiresList()  or upperBound <> 1))->size() > 0)]
-namespace ecore 
-{
-    template<typename T> class EList;
-}
-[/if]
-[if anEClass.eOperations->exists( o | o.eGenericType.eClassifier.name ='ETreeIterator')]
-namespace ecore 
-{
-    template<typename T> class ECollectionView;
-}
-[/if]
-[/template]
-
-[template public generateAbstractDataTypesIncludes(anEClass : EClass)]
-[if (anEClass.eReferences->select(upperBound <> 1)->size() > 0 or anEClass.eOperations.eParameters->select((eType.requiresList()  or upperBound <> 1))->size() > 0)]
-#include "ecore/EList.hpp"
-[/if]
-[/template]
 
 
 [query public getPackageName(aStructural : EStructuralFeature,aClass: EClass) : String = if( aStructural.eContainingClass.ePackage = aClass.ePackage  ) then aStructural.eContainingClass.ePackage.getInterfaceName() else aStructural.eContainingClass.ePackage.getQualifiedInterfaceName() endif/]

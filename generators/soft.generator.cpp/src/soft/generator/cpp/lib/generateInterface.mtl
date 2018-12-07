@@ -7,7 +7,6 @@
 [import soft::generator::cpp::generateStructuralFeature/]
 [import soft::generator::cpp::lib::generateCommon/]
 
-
 [template public generateInterface(aClass : EClass) { className : String = aClass.getInterfaceName(); classNamespace : String = aClass.ePackage.getInterfaceNamespaceName(); } ]
 [file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getInterfaceFolder() + '/' + className +'.hpp', false, 'UTF-8')]
 [fileComment()/]
@@ -35,7 +34,19 @@
 
 
 //forward declarations
-[generateTypesForwardDeclaration()/]
+[if (aClass.eReferences->exists(upperBound <> 1) or aClass.eOperations.eParameters->exists((eType.requiresList()  or upperBound <> 1)))]
+namespace ecore 
+{
+    template<typename T> class EList;
+}
+[/if]
+[if aClass.eOperations->exists( eGenericType.requiresCollectionView() )]
+namespace ecore 
+{
+    template<typename T> class ECollectionView;
+}
+[/if]
+
 [for (aCls : EClass| aClass.getClassIncludes()->selectByKind(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
 namespace [aCls.ePackage.getInterfaceNamespaceName()/] 
 {

@@ -60,7 +60,7 @@
     <eOperations name="getOverride" eType="#//EOperation">
       <eParameters name="operation" eType="#//EOperation"/>
     </eOperations>
-    <eOperations name="getFeatureType" eType="#//EGenericType">
+    <eOperations name="getFeatureType" eType="#//EClassifier">
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="abstract" eType="#//EBoolean"/>
@@ -143,21 +143,6 @@
         <details key="lazy" value="action"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eGenericSuperTypes" upperBound="-1"
-        eType="#//EGenericType" unsettable="true" containment="true" resolveProxies="false">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
-        <details key="issetVisibility" value="no"/>
-        <details key="unsetVisibility" value="no:public"/>
-        <details key="lazy" value="action"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eAllGenericSuperTypes"
-        upperBound="-1" eType="#//EGenericType" changeable="false" transient="true"
-        derived="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
-        <details key="lazy" value="action"/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EClassifier" abstract="true" eSuperTypes="#//ENamedElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
@@ -181,8 +166,6 @@
         changeable="false" volatile="true" transient="true" derived="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="ePackage" eType="#//EPackage"
         changeable="false" transient="true" eOpposite="#//EPackage/eClassifiers"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eTypeParameters" upperBound="-1"
-        eType="#//ETypeParameter" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="classifierID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
         defaultValueLiteral="-1">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
@@ -385,19 +368,10 @@
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eContainingClass" eType="#//EClass"
         changeable="false" transient="true" resolveProxies="false" eOpposite="#//EClass/eOperations"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eTypeParameters" upperBound="-1"
-        eType="#//ETypeParameter" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eParameters" upperBound="-1"
         eType="#//EParameter" containment="true" resolveProxies="false" eOpposite="#//EParameter/eOperation"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eExceptions" upperBound="-1"
         eType="#//EClassifier" unsettable="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
-        <details key="issetVisibility" value="no"/>
-        <details key="unsetVisibility" value="no:public"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eGenericExceptions" upperBound="-1"
-        eType="#//EGenericType" unsettable="true" containment="true" resolveProxies="false">
       <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
         <details key="issetVisibility" value="no"/>
         <details key="unsetVisibility" value="no:public"/>
@@ -507,13 +481,6 @@
         <details key="unsetVisibility" value="no:public"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eGenericType" eType="#//EGenericType"
-        unsettable="true" containment="true" resolveProxies="false">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
-        <details key="issetVisibility" value="no"/>
-        <details key="unsetVisibility" value="no:public"/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="EBoolean" instanceTypeName="bool">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -576,29 +543,6 @@
   <eClassifiers xsi:type="ecore:EDataType" name="ETreeIterator" instanceTypeName="std::shared_ptr&lt;ecore::ECollectionView&lt;std::shared_ptr&lt;ecore::EObject>>>"
       serializable="false">
     <eTypeParameters name="E"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EGenericType">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="ConsistentType ConsistentBounds ConsistentArguments"/>
-    </eAnnotations>
-    <eOperations name="isInstance" eType="#//EBoolean">
-      <eParameters name="object" eType="#//EJavaObject"/>
-    </eOperations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eUpperBound" eType="#//EGenericType"
-        containment="true" resolveProxies="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eTypeArguments" upperBound="-1"
-        eType="#//EGenericType" containment="true" resolveProxies="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eRawType" lowerBound="1"
-        eType="#//EClassifier" changeable="false" transient="true" derived="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eLowerBound" eType="#//EGenericType"
-        containment="true" resolveProxies="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eTypeParameter" eType="#//ETypeParameter"
-        resolveProxies="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eClassifier" eType="#//EClassifier"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ETypeParameter" eSuperTypes="#//ENamedElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eBounds" upperBound="-1"
-        eType="#//EGenericType" containment="true" resolveProxies="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="EInvocationTargetException" serializable="false"/>
 </ecore:EPackage>
