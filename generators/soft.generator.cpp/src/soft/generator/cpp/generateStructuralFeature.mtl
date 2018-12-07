@@ -19,6 +19,8 @@ endif/]
 
 [query public isLazy( aStructuralFeature : EStructuralFeature ) : Boolean = aStructuralFeature.getLazy() <> 'no'/] 
 
+[query public isDataInitializationDefered( aStructuralFeature : EStructuralFeature ) : Boolean = isListType() or isProxy()/]
+
 [query public hasDataInitializationMethod( aStructuralFeature : EStructuralFeature ) : Boolean = 
 isLazy() and ( let lazyType : String = aStructuralFeature.getLazy() in lazyType = 'action' or lazyType = 'function')/]
 
@@ -118,8 +120,12 @@ endif/]
 [/if]
 [/template]
 
-[template public generateDataInitialization(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'no')]
+[template public generateDataInitialization(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'no' and not aStructuralFeature.isDataInitializationDefered() )]
 [aStructuralFeature.name/]_([generateDataInitializationValue()/])
+[/template]
+
+[template public generateDataInitialization(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'no' and aStructuralFeature.isDataInitializationDefered() )]
+[aStructuralFeature.name/]_()
 [/template]
 
 [template public generateDataInitialization(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'lambda') ]
@@ -138,11 +144,19 @@ endif/]
 [if isListType()]
 [aStructuralFeature.getListConstructor()/]
 [elseif isProxy()]
-[generateDataType()/]( thisPtr_ , [aStructuralFeature.getQualifiedFeatureIDName()/] )
+[generateDataType()/]( [aStructuralFeature.eContainingClass.getThisPtrName()/]_ , [aStructuralFeature.getQualifiedFeatureIDName()/] )
 [elseif aStructuralFeature.oclIsKindOf(EAttribute)]
 [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/]
 [else]
 [/if]
+[/template]
+
+[template public generateDataInitializationDefered( aStructuralFeature : EStructuralFeature) ? (not( aStructuralFeature.getLazy() = 'no' and aStructuralFeature.isDataInitializationDefered() ))]
+[/template]
+
+[template public generateDataInitializationDefered( aStructuralFeature : EStructuralFeature) ? (aStructuralFeature.getLazy() = 'no' and aStructuralFeature.isDataInitializationDefered())]
+[aStructuralFeature.name/]_ = [generateDataInitializationValue()/];
+
 [/template]
 
 [template private generateDataInitializationMethodReturnType(aStructuralFeature : EStructuralFeature) post(trim())]
@@ -416,23 +430,25 @@ ArrayEList<[anEAttribute.eGenericType.generateCppType()/],[anEAttribute.unique/]
 [let typeArgument : String = anEReference.eGenericType.generateCppType()]
 [let packageName : String = anEReference.getPackageName(anEReference.eContainingClass)]
 [let featureID : String = anEReference.eContainingClass.getFeatureIDName( anEReference )]
+[let thisPtrName : String = anEReference.eContainingClass.getThisPtrName() + '_']
 [if (anEReference.containment)]
     [if anEReference.eOpposite.oclIsUndefined() ]
-        std::make_shared<EObjectEList<[typeArgument/],true,true,false,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>(thisPtr_, [anEReference.getQualifiedFeatureIDName()/] )
+        std::make_shared<EObjectEList<[typeArgument/],true,true,false,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>([thisPtrName/], [anEReference.getQualifiedFeatureIDName()/] )
     [else]
         [let reverseFeature :EReference = anEReference.eOpposite ]
-        std::make_shared<EObjectEList<[typeArgument/],true,true,true,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>(thisPtr_, [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
+        std::make_shared<EObjectEList<[typeArgument/],true,true,true,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>([thisPtrName/], [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
         [/let]
     [/if]
 [else]
     [if anEReference.eOpposite.oclIsUndefined() ]
-        std::make_shared<EObjectEList<[typeArgument/],false,false,false,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>(thisPtr_, [packageName/]::[featureID/])
+        std::make_shared<EObjectEList<[typeArgument/],false,false,false,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>([thisPtrName/], [packageName/]::[featureID/])
     [else]
         [let reverseFeature :EReference = anEReference.eOpposite ]
-        std::make_shared<EObjectEList<[typeArgument/],false,true,true,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>(thisPtr_, [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
+        std::make_shared<EObjectEList<[typeArgument/],false,true,true,[anEReference.isProxy()/],[anEReference.isUnSettable()/]>>([thisPtrName/], [anEReference.getQualifiedFeatureIDName()/] , [reverseFeature.getQualifiedFeatureIDName()/])
         [/let]
     [/if]
 [/if]
+[/let]
 [/let]
 [/let]
 [/let]

@@ -58,7 +58,7 @@ using namespace [namespace/];
 // Constructor / Destructor
 //*********************************
 [className/]::[className/]()
-[let dataFeatures : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( isField() )]
+[let dataFeatures : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select(isField())]
 [for ( aFeature : EStructuralFeature | dataFeatures ) before(':') separator(',')]
    [aFeature.generateDataInitialization()/]
 [/for]
@@ -83,7 +83,7 @@ using namespace [namespace/];
 //[/protected]
 }
 
-std::shared_ptr<className/]> [className/]::[getThisPtrGetterName()/]() const
+std::shared_ptr<[className/]> [className/]::[getThisPtrGetterName()/]() const
 {
     return [getThisPtrName()/]_.lock();
 }
@@ -92,6 +92,9 @@ void [className/]::[getThisPtrSetterName()/](const std::shared_ptr<[className/]>
 {
     [removeNamespace(aClass.getClassExtends())/]::[getThisPtrSetterName()/]([getThisPtrName()/]);
     [getThisPtrName()/]_ = [getThisPtrName()/];
+[let dataFeatures : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select(isField()) ]
+    [dataFeatures.generateDataInitializationDefered()/]
+[/let]
 }
 
 std::shared_ptr<EClass> [className/]::eStaticClass() const
