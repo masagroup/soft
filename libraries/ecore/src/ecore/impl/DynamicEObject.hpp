@@ -40,6 +40,9 @@ namespace ecore::impl
         int eStaticOperationCount() const;
         int eDynamicFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;
         std::shared_ptr<EStructuralFeature> eDynamicFeature( int dynamicFeatureID ) const;
+        bool isBidirectional( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;
+        bool isContainer( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;
+        bool isContains( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;
         
         void resizeProperties();
         std::shared_ptr<EList<std::shared_ptr<EObject>>> createList( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;

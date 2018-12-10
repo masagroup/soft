@@ -114,7 +114,34 @@ void DynamicEObject::eSet( int featureID, const Any & newValue )
 {
     int dynamicFeatureID = featureID - eStaticFeatureCount();
     if( dynamicFeatureID >= 0 )
-        properties_[ dynamicFeatureID ] = newValue;
+    {
+        auto dynamicFeature = eDynamicFeature( featureID );
+        if( isContainer( dynamicFeature ) )
+        {
+            std::shared_ptr<EObject> newContainer = boost::any_cast<std::shared_ptr<EObject>>( newValue );
+            if( newContainer != eContainer() || ( newContainer && eContainerFeatureID() != featureID ) )
+            {
+                std::shared_ptr<ENotificationChain> notifications;
+                if( eContainer() )
+                    notifications = eBasicRemoveFromContainer( notifications );
+                if( newContainer )
+                    notifications = newContainer->eInverseAdd( getThisPtr(), featureID, notifications );
+                notifications = eBasicSetContainer( newContainer, featureID, notifications );
+                if( notifications )
+                    notifications->dispatch();
+            }
+            else if( eNotificationRequired() )
+                eNotify( std::make_shared<Notification>( getThisPtr(), Notification::SET, featureID, newValue, newValue ) );
+        }
+        else if( isBidirectional( dynamicFeature ) || isContains( dynamicFeature ) )
+        {
+            properties_[ dynamicFeatureID ] = newValue;
+        }
+        else
+        {
+            properties_[ dynamicFeatureID ] = newValue;
+        }
+    }
     else
         BasicEObject::eSet( featureID, newValue );
 }
@@ -151,6 +178,30 @@ int DynamicEObject::eDynamicFeatureID( const std::shared_ptr<EStructuralFeature>
 std::shared_ptr<EStructuralFeature> DynamicEObject::eDynamicFeature( int dynamicFeatureID ) const
 {
     return eClass()->getEStructuralFeature( dynamicFeatureID + eStaticFeatureCount() );
+}
+
+bool DynamicEObject::isBidirectional( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+{
+    if( auto eReference = std::dynamic_pointer_cast<EReference>( eStructuralFeature ) )
+        return static_cast<bool>(eReference->getEOpposite());
+    return false;
+}
+
+bool DynamicEObject::isContainer( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+{
+    if( auto eReference = std::dynamic_pointer_cast<EReference>( eStructuralFeature ) )
+    {
+        if( auto opposite = eReference->getEOpposite() )
+            return static_cast<bool>( opposite->isContainment() );
+    }
+    return false;
+}
+
+bool DynamicEObject::isContains( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+{
+    if( auto eReference = std::dynamic_pointer_cast<EReference>( eStructuralFeature ) )
+        return eReference->isContainment();
+    return false;
 }
 
 void DynamicEObject::resizeProperties()
