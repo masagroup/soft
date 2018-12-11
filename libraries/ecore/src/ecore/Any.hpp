@@ -128,7 +128,7 @@ namespace ecore
             Storage& operator=( const Storage& ) = delete;
 
             void* ptr_;
-            std::aligned_storage<sizeof( ptr_ ), alignof( void* )>::type buffer_;
+            std::aligned_storage< sizeof( void* ), alignof( void* )>::type buffer_;
         };
 
         template<typename T, typename Safe = std::is_nothrow_move_constructible<T>,
