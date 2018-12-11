@@ -25,8 +25,15 @@ namespace ecore
         }
     };
 
+   
     class Any final
     {
+        template<typename T, typename Decayed = std::decay_t<T>>
+        using Decay = std::enable_if_t<!std::is_same<Decayed, Any>::value, Decayed>;
+
+        template <typename T>
+        using IsValidCast = std::disjunction < std::is_reference<T>, std::is_copy_constructible<T> >;
+
     public:
         /// Constructs an object of type any with an empty state.
         Any()
@@ -39,9 +46,7 @@ namespace ecore
             : table_( rhs.table_ )
         {
             if( !rhs.empty() )
-            {
                 rhs.table_->copy( rhs.storage_, this->storage_ );
-            }
         }
 
         /// Constructs an object of type any with a state equivalent to the original state of other.
@@ -56,14 +61,68 @@ namespace ecore
             }
         }
 
+        /// Constructs an object of type any that contains an object of type T direct-initialized with std::forward<ValueType>(value).
+        ///
+        /// T shall satisfy the CopyConstructible requirements, otherwise the program is ill-formed.
+        /// This is because an `any` may be copy constructed into another `any` at any time, so a copy should always be allowed.
+        template <typename ValueType, typename T = Decay<ValueType>, typename TableType = TableType<T>>
+        Any( ValueType&& value )
+        {
+            static_assert( std::is_copy_constructible<T>::value, "T shall satisfy the CopyConstructible requirements." );
+            TableType::create( storage_, std::forward<ValueType>( value ) );
+            table_ = getTable<T>();
+        }
+
         /// Same effect as this->clear().
         ~Any()
         {
-            this->clear();
+            this->reset();
         }
 
+
+        /// Has the same effect as any(rhs).swap(*this). No effects if an exception is thrown.
+        Any& operator=( const Any& rhs )
+        {
+            if( empty() )
+                table_ = nullptr;
+            else
+            {
+                table_ = rhs.table_;
+                table_->copy( rhs.storage_, storage_ );
+            }
+            return *this;
+        }
+
+        /// Has the same effect as any(std::move(rhs)).swap(*this).
+        ///
+        /// The state of *this is equivalent to the original state of rhs and rhs is left in a valid
+        /// but otherwise unspecified state.
+        Any& operator=( Any&& rhs ) noexcept
+        {
+            if( empty() )
+                table_ = nullptr;
+            else
+            {
+                table_ = rhs.table_;
+                table_->move( rhs.storage_, storage_ );
+            }
+            return *this;
+        }
+
+        /// Has the same effect as any(std::forward<ValueType>(value)).swap(*this). No effect if a exception is thrown.
+        ///
+        /// T shall satisfy the CopyConstructible requirements, otherwise the program is ill-formed.
+        /// This is because an `any` may be copy constructed into another `any` at any time, so a copy should always be allowed.
+        template<typename ValueType>
+        std::enable_if_t<std::is_copy_constructible<Decay<ValueType>>::value, Any&> operator=( ValueType&& rhs )
+        {
+            *this = Any( std::forward<ValueType>( rhs ) );
+            return *this;
+        }
+
+
         /// If not empty, destroys the contained object.
-        void clear() noexcept
+        void reset() noexcept
         {
             if( !empty() )
             {
@@ -134,7 +193,7 @@ namespace ecore
         template<typename T, typename Safe = std::is_nothrow_move_constructible<T>,
             bool Fits = ( sizeof( T ) <= sizeof( Storage ) )
             && ( alignof( T ) <= alignof( Storage ) )>
-            using RequiresAllocation = std::integral_constant<bool, Safe::value && Fits>;
+            using IsInternal = std::integral_constant<bool, Safe::value && Fits>;
 
 
         struct Table
@@ -144,6 +203,8 @@ namespace ecore
 
             /// The type of the object this vtable is for.
             const std::type_info& ( *type )( ) noexcept;
+
+            void* ( *access )( Storage& ) noexcept;
 
             /// Destroys the object in the union.
             /// The state of the union after this call is unspecified, caller must ensure not to use src anymore.
@@ -162,28 +223,47 @@ namespace ecore
         };
 
         template <typename T>
-        struct TablePlacement
+        struct TableInternal
         {
+            template<typename Up>
+            static void create( Storage& storage, Up&& value )
+            {
+                void* addr = &storage.buffer_;
+                ::new ( addr ) T( std::forward<Up>( value ) );
+            }
+
+            template<typename... Args>
+            static void create( Storage& storage, Args&&... args )
+            {
+                void* addr = &storage.buffer_;
+                ::new ( addr ) T( std::forward<Args>( args )... );
+            }
+
             static const std::type_info& type() noexcept
             {
                 return typeid( T );
             }
 
+            static void* access( Storage& storage ) noexcept
+            {
+                return &storage.buffer_;
+            }
+
             static void destroy( Storage& storage ) noexcept
             {
-                std::reinterpret_cast<T*>( &storage.buffer_ )->~T();
+                reinterpret_cast<T*>( &storage.buffer_ )->~T();
             }
 
             static void copy( const Storage& src, Storage& dest )
             {
-                new ( &dest.buffer_ ) T( std::reinterpret_cast<const T&>( src.buffer_ ) );
+                new ( &dest.buffer_ ) T( reinterpret_cast<const T&>( src.buffer_ ) );
             }
 
             static void move( Storage& src, Storage& dest ) noexcept
             {
                 // one of the conditions for using vtable_stack is a nothrow move constructor,
                 // so this move constructor will never throw a exception.
-                new ( &dest.buffer_ ) T( std::move( std::reinterpret_cast<T&>( src.buffer_ ) ) );
+                new ( &dest.buffer_ ) T( std::move( reinterpret_cast<T&>( src.buffer_ ) ) );
                 destroy( src );
             }
 
@@ -197,21 +277,38 @@ namespace ecore
         };
 
         template <typename T>
-        struct TableAllocation
+        struct TableExternal
         {
+            template<typename Up>
+            static void create( Storage& storage, Up&& value )
+            {
+                storage.ptr_ = new T( std::forward<Up>( value ) );
+            }
+            
+            template<typename... Args>
+            static void create( Storage& storage, Args&&...args )
+            {
+                storage.ptr_ = new T( std::forward<Args>( args )... );
+            }
+
             static const std::type_info& type() noexcept
             {
                 return typeid( T );
             }
 
+            static void* access( Storage& storage ) noexcept
+            {
+                return storage.ptr_;
+            }
+
             static void destroy( Storage& storage ) noexcept
             {
-                delete std::reinterpret_cast<T*>( storage.ptr_ );
+                delete reinterpret_cast<T*>( storage.ptr_ );
             }
 
             static void copy( const Storage& src, Storage& dest )
             {
-                dest.ptr_ = new T( *std::reinterpret_cast<const T*>( src.ptr_ ) );
+                dest.ptr_ = new T( *reinterpret_cast<const T*>( src.ptr_ ) );
             }
 
             static void move( Storage& src, Storage& dest ) noexcept
@@ -226,24 +323,108 @@ namespace ecore
             }
         };
 
+        template <typename T>
+        using TableType = typename std::conditional_t<IsInternal<T>::value, TableInternal<T>, TableExternal<T> >;
+
         /// Returns the pointer to the Table of the type T.
         template<typename T>
         static Table* getTable()
         {
-            using TableType = typename std::conditional<RequiresAllocation<T>::value, TableAllocation<T>, TablePlacement<T>>::type;
+            using TableType = TableType<T>;
             static Table table = {
-                TableType::type, TableType::destroy,
-                TableType::copy, TableType::move,
-                TableType::swap,
+                TableType::type,TableType::access,
+                TableType::destroy,TableType::copy,
+                TableType::move,TableType::swap,
             };
             return &table;
         }
 
+    protected:
+
+        template<typename T>
+        friend const T* _anyCast( const Any* operand ) noexcept;
+        
+        template<typename T>
+        friend T* _anyCast( Any* operand ) noexcept;
+
+
+        /// Casts (with no type_info checks) the storage pointer as void*.
+        template<typename T>
+        T* cast() noexcept
+        {
+            if( table_ == getTable<T>() )
+                return reinterpret_cast<T*>(table_->access( storage_ ));
+            return nullptr;
+        }
+
+        
     private:
         Storage storage_; // on offset(0) so no padding for align
         Table* table_;
     };
 
+    /// Exchange the states of two @c any objects.
+    inline void swap( Any& x, Any& y ) noexcept
+    {
+        x.swap( y );
+    }
+
+
+    template<typename ValueType>
+    inline ValueType anyCast( const Any& any )
+    {
+        using Up = typename std::remove_reference_t<ValueType>;
+        static_assert( Any::IsValidCast<ValueType>(),
+                       "Template argument must be a reference or CopyConstructible type" );
+        static_assert( std::is_constructible_v<ValueType, const Up&>,
+                       "Template argument must be constructible from a const value." );
+
+        auto p = _anyCast<Up>( &any );
+        if( p )
+            return static_cast<ValueType>( *p );
+        throw BadAnyCast();
+    }
+
+    template<typename ValueType>
+    inline ValueType anyCast( Any& any )
+    {
+        using Up = typename std::remove_reference_t<ValueType>;
+        static_assert( Any::IsValidCast<ValueType>(),
+                       "Template argument must be a reference or CopyConstructible type" );
+        static_assert( std::is_constructible_v<ValueType, Up&>,
+                       "Template argument must be constructible from an lvalue." );
+
+        auto p = _anyCast<Up>( &any );
+        if( p )
+            return static_cast<ValueType>( *p );
+        throw BadAnyCast();
+    }
+
+    template<typename ValueType>
+    inline ValueType anyCast( Any&& any )
+    {
+        using Up = typename std::remove_reference_t<ValueType>;
+        static_assert( Any::IsValidCast<ValueType>(),
+                       "Template argument must be a reference or CopyConstructible type" );
+        static_assert( std::is_constructible_v<ValueType, Up>,
+                       "Template argument must be constructible from an rvalue." );
+        auto p = _anyCast<Up>( &any );
+        if( p )
+            return static_cast<ValueType>( std::move( *p ) );
+        throw BadAnyCast();
+    }
+
+    template<typename ValueType>
+    inline ValueType* _anyCast( Any* any ) noexcept
+    {
+        return any ? static_cast<ValueType*>( any->cast<ValueType>() ) : nullptr;
+    }
+
+    template<typename ValueType>
+    inline const ValueType* _anyCast( const Any* any ) noexcept
+    {
+        return any ? static_cast<const ValueType*>( const_cast<Any*>(any)->cast<ValueType>() ) : nullptr;
+    }
 
 
     static const Any NO_VALUE;

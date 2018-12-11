@@ -9,10 +9,111 @@ using namespace ecore::tests;
 
 BOOST_AUTO_TEST_SUITE( AnyTests )
 
-BOOST_AUTO_TEST_CASE( Constructor )
+BOOST_AUTO_TEST_CASE( Constructor_Default )
 {
     Any a;
     BOOST_CHECK( a.empty() );
+    BOOST_CHECK_EQUAL( &a.type(), &typeid( void ) );
+}
+
+BOOST_AUTO_TEST_CASE( Constructor_Value_Small )
+{
+    Any a( 1 );
+    BOOST_CHECK( !a.empty() );
+    BOOST_CHECK_EQUAL( &a.type() , &typeid(int) );
+}
+
+BOOST_AUTO_TEST_CASE( Constructor_Value_Big )
+{
+    Any a( std::make_shared<MockObject>() );
+    BOOST_CHECK( !a.empty() );
+    BOOST_CHECK_EQUAL( &a.type(), &typeid( std::shared_ptr<MockObject>));
+}
+
+BOOST_AUTO_TEST_CASE( Constructor_Value_Move )
+{
+    Any a( std::make_shared<MockObject>() );
+    BOOST_CHECK( !a.empty() );
+    BOOST_CHECK_EQUAL( &a.type(), &typeid( std::shared_ptr<MockObject> ) );
+}
+
+BOOST_AUTO_TEST_CASE( Constructor_Copy_Small )
+{
+    Any a( 1 );
+    Any b( a );
+    BOOST_CHECK( !b.empty() );
+    BOOST_CHECK_EQUAL( &b.type(), &typeid( int ) );
+}
+
+BOOST_AUTO_TEST_CASE( Constructor_Copy_Big )
+{
+    Any a( std::make_shared<MockObject>() );
+    Any b( a );
+    BOOST_CHECK( !b.empty() );
+    BOOST_CHECK_EQUAL( &b.type(), &typeid( std::shared_ptr<MockObject> ) );
+}
+
+BOOST_AUTO_TEST_CASE( Constructor_Move_Small )
+{
+    Any a( 1 );
+    Any b( std::move( a ) );
+    BOOST_CHECK( a.empty() );
+    BOOST_CHECK( !b.empty() );
+    BOOST_CHECK_EQUAL( &b.type(), &typeid( int ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( Constructor_Move_Big )
+{
+    Any a( std::make_shared<MockObject>() );
+    Any b( std::move( a ) );
+    BOOST_CHECK( a.empty() );
+    BOOST_CHECK( !b.empty() );
+    BOOST_CHECK_EQUAL( &b.type(), &typeid( std::shared_ptr<MockObject> ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( AnyCast )
+{
+    {
+        Any a( 1 );
+        BOOST_CHECK_EQUAL( anyCast<int>( a ), 1 );
+    }
+    {
+        auto m = std::make_shared<MockObject>();
+        Any a( m );
+        BOOST_CHECK_EQUAL( anyCast<std::shared_ptr<MockObject>>( a ), m );
+    }
+    {
+        std::string w = "test";
+        Any a( w );
+        BOOST_CHECK_EQUAL( anyCast<std::string>( a ), w );
+    }
+}
+
+BOOST_AUTO_TEST_CASE( BadCast )
+{
+    {
+        Any a( 1 );
+        BOOST_CHECK_THROW( anyCast<long>( a ), BadAnyCast );
+    }
+}
+
+BOOST_AUTO_TEST_CASE( Reset )
+{
+    Any a( 1 );
+    a.reset();
+    BOOST_CHECK( a.empty() );
+}
+
+BOOST_AUTO_TEST_CASE( Swap )
+{
+    Any a( 1 );
+    Any b( std::make_shared<MockObject>() );
+    swap( a, b );
+    BOOST_CHECK_EQUAL( &a.type(), &typeid( std::shared_ptr<MockObject> ) );
+    BOOST_CHECK_EQUAL( &b.type(), &typeid( int ) );
+    BOOST_CHECK_EQUAL( anyCast<int>( b ), 1 );
 }
 
 BOOST_AUTO_TEST_SUITE_END()
