@@ -13,22 +13,6 @@ using namespace ecore::tests;
 
 namespace std
 {
-    bool operator ==( const Any& lhs, const Any& rhs ) {
-        if (lhs.type() != rhs.type())
-            return false;
-
-        if (lhs.type() == typeid(std::string))
-            return anyCast<std::string>(lhs) == anyCast<std::string>(rhs);
-
-        if (lhs.type() == typeid(std::size_t))
-            return anyCast<std::size_t>(lhs) == anyCast<std::size_t>(rhs);
-
-        if (lhs.type() == typeid(std::shared_ptr<MockObject>))
-            return anyCast<std::shared_ptr<MockObject>>(lhs) == anyCast<std::shared_ptr<MockObject>>(rhs);
-
-        return false;
-    }
-
     template<class T>
     bool out_to_stream( std::ostream& os, const Any& any_value )
     {

@@ -169,6 +169,23 @@ namespace ecore
             }
         }
 
+        bool operator ==( const Any& rhs ) const
+        {
+            if( table_ == rhs.table_ )
+            {
+                if( table_ )
+                    return table_->equals( storage_, rhs.storage_ );
+                else
+                    return true;
+            }
+            return false;
+        }
+
+
+        bool operator !=( const Any& rhs ) const
+        {
+            return !operator ==( rhs );
+        }
 
     private:
         // Holds either pointer to a heap object or the contained object itself.
@@ -216,6 +233,8 @@ namespace ecore
 
             /// Exchanges the storage between lhs and rhs.
             void( *swap )( Storage& lhs, Storage& rhs ) noexcept;
+
+            bool (* equals )( const Storage& lhs, const Storage& rhs ) noexcept;
         };
 
         template <typename T>
@@ -270,6 +289,13 @@ namespace ecore
                 move( lhs, rhs );
                 move( tmp, lhs );
             }
+
+            static bool equals( const Storage& lhs, const Storage& rhs ) noexcept
+            {
+                const auto& l = *reinterpret_cast<const T*>( &lhs.buffer_ );
+                const auto& r = *reinterpret_cast<const T*>( &rhs.buffer_ );
+                return l == r;
+            }
         };
 
         template <typename T>
@@ -317,6 +343,13 @@ namespace ecore
             {
                 std::swap( lhs.ptr_, rhs.ptr_ );
             }
+
+            static bool equals( const Storage& lhs, const Storage& rhs ) noexcept
+            {
+                const auto& l = *reinterpret_cast<const T*>( lhs.ptr_ );
+                const auto& r = *reinterpret_cast<const T*>( rhs.ptr_ );
+                return l == r;
+            }
         };
 
         template <typename T>
@@ -331,6 +364,7 @@ namespace ecore
                 TableType::type,TableType::access,
                 TableType::destroy,TableType::copy,
                 TableType::move,TableType::swap,
+                TableType::equals
             };
             return &table;
         }
@@ -342,7 +376,6 @@ namespace ecore
         
         template<typename T>
         friend T* _anyCast( Any* operand ) noexcept;
-
 
         /// Casts (with no type_info checks) the storage pointer as void*.
         template<typename T>
@@ -421,7 +454,6 @@ namespace ecore
     {
         return any ? static_cast<const ValueType*>( const_cast<Any*>(any)->cast<ValueType>() ) : nullptr;
     }
-
 
     static const Any NO_VALUE;
 

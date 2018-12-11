@@ -142,4 +142,19 @@ BOOST_AUTO_TEST_CASE( Affectation_Value )
     }
 }
 
+BOOST_AUTO_TEST_CASE( Comparison )
+{
+    {
+        Any a;
+        Any b;
+        BOOST_CHECK( a == b );
+    }
+    {
+        Any a( std::make_shared<MockObject>() );
+        Any b( 1 );
+        BOOST_CHECK( a != b );
+    }
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
