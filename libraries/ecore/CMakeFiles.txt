@@ -4,7 +4,8 @@ set(SOURCE_ECORE_FILES
     src/ecore/EAdapter.cpp
 )
 
-set(HEADER_ECORE_FILES 
+set(HEADER_ECORE_FILES
+    src/ecore/Any.hpp 
     src/ecore/EList.hpp
     src/ecore/Constants.hpp
     src/ecore/EAdapter.hpp
