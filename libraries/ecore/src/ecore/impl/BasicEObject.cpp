@@ -155,12 +155,12 @@ int BasicEObject::eResource() const
 }
 
 
-boost::any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& feature ) const
+Any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& feature ) const
 {
     return eGet( feature, true );
 }
 
-boost::any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& feature, bool resolve ) const
+Any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& feature, bool resolve ) const
 {
     return eGet( feature, resolve, true );
 }
@@ -178,7 +178,7 @@ int BasicEObject::eDerivedOperationID( const std::shared_ptr<EOperation>& eOpera
     return eOperation->getOperationID();
 }
 
-boost::any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& eFeature, bool resolve, bool coreType ) const
+Any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& eFeature, bool resolve, bool coreType ) const
 {
     int featureID = eDerivedStructuralFeatureID( eFeature );
     if( featureID >= 0 )
@@ -186,11 +186,11 @@ boost::any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& eFeatu
     throw "The feature '" + eFeature->getName() + "' is not a valid feature";
 }
 
-boost::any BasicEObject::eGet( int featureID, bool resolve, bool coreType ) const
+Any BasicEObject::eGet( int featureID, bool resolve, bool coreType ) const
 {
     std::shared_ptr<EStructuralFeature> eFeature = eClass()->getEStructuralFeature( featureID );
     BOOST_ASSERT_MSG( eFeature , ( static_cast<std::ostringstream&>( std::stringstream() << "Invalid featureID:  " << featureID ) ).str().c_str() );
-    return boost::any();
+    return Any();
 }
 
 bool BasicEObject::eIsSet( const std::shared_ptr<EStructuralFeature>& eFeature ) const
@@ -208,7 +208,7 @@ bool BasicEObject::eIsSet( int featureID ) const
     return false;
 }
 
-void BasicEObject::eSet( const std::shared_ptr<EStructuralFeature>& eFeature, const boost::any & newValue )
+void BasicEObject::eSet( const std::shared_ptr<EStructuralFeature>& eFeature, const Any & newValue )
 {
     int featureID = eDerivedStructuralFeatureID( eFeature );
     if( featureID >= 0 )
@@ -217,7 +217,7 @@ void BasicEObject::eSet( const std::shared_ptr<EStructuralFeature>& eFeature, co
         throw "The feature '" + eFeature->getName() + "' is not a valid feature";
 }
 
-void BasicEObject::eSet( int featureID, const boost::any & newValue )
+void BasicEObject::eSet( int featureID, const Any & newValue )
 {
     std::shared_ptr<EStructuralFeature> eFeature = eClass()->getEStructuralFeature( featureID );
     BOOST_ASSERT_MSG( eFeature , ( static_cast<std::ostringstream&>( std::stringstream() << "Invalid featureID:  " << featureID ) ).str().c_str() );
@@ -239,7 +239,7 @@ void BasicEObject::eUnset( int featureID )
     BOOST_ASSERT_MSG( eFeature , ( static_cast<std::ostringstream&>( std::stringstream() << "Invalid featureID:  " << featureID ) ).str().c_str() );
 }
 
-boost::any BasicEObject::eInvoke( const std::shared_ptr<EOperation>& eOperation, const std::shared_ptr<EList<boost::any>>& arguments )
+Any BasicEObject::eInvoke( const std::shared_ptr<EOperation>& eOperation, const std::shared_ptr<EList<Any>>& arguments )
 {
     int operationID = eDerivedOperationID( eOperation );
     if( operationID >= 0 )
@@ -247,11 +247,11 @@ boost::any BasicEObject::eInvoke( const std::shared_ptr<EOperation>& eOperation,
     throw "The operation '" + eOperation->getName() + "' is not a valid operation";
 }
 
-boost::any BasicEObject::eInvoke( int operationID, const std::shared_ptr<EList<boost::any>>& arguments )
+Any BasicEObject::eInvoke( int operationID, const std::shared_ptr<EList<Any>>& arguments )
 {
     std::shared_ptr<EOperation> eOperation = eClass()->getEOperation( operationID );
     BOOST_ASSERT_MSG( eOperation, ( static_cast<std::ostringstream&>( std::stringstream() << "Invalid operationID:  " << operationID ) ).str().c_str() );
-    return boost::any();
+    return Any();
 }
 
 std::shared_ptr<ENotificationChain> BasicEObject::eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )

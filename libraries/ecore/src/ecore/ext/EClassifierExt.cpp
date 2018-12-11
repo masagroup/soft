@@ -15,7 +15,7 @@ EClassifierExt::~EClassifierExt()
 {
 }
 
-bool EClassifierExt::isInstance( const boost::any & object ) const
+bool EClassifierExt::isInstance( const Any& object ) const
 {
     return getInstanceClass() && getInstanceClass()->operator==( object.type() );
 }

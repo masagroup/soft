@@ -28,7 +28,7 @@ static const int [aEDatatype.getClassifierIDName()/] = [aEDatatype.getClassifier
 [/template]
 
 [template public generateCreateFromStringDeclaration(aEDatatype : EDataType )]
-virtual boost::any create[aEDatatype.name/]FromString( const std::shared_ptr<ecore::EDataType>& dataType , const std::string& literalValue ) const;
+virtual ecore::Any create[aEDatatype.name/]FromString( const std::shared_ptr<ecore::EDataType>& dataType , const std::string& literalValue ) const;
 
 [/template]
 
@@ -36,7 +36,7 @@ virtual boost::any create[aEDatatype.name/]FromString( const std::shared_ptr<eco
 [/template]
 
 [template public generateConvertToStringDeclaration(aEDatatype : EDataType )]
-virtual std::string convert[aEDatatype.name/]ToString( const std::shared_ptr<ecore::EDataType>& dataType , const boost::any& literalValue ) const;
+virtual std::string convert[aEDatatype.name/]ToString( const std::shared_ptr<ecore::EDataType>& dataType , const ecore::Any& literalValue ) const;
 
 [/template]
 

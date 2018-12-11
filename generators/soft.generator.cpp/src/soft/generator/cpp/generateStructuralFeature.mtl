@@ -223,7 +223,9 @@ virtual [generateDataInitializationMethodReturnType()/] [methodName/]();
 [elseif aStructuralFeature.oclIsKindOf(EAttribute)]
     return [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/];
 [else]
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+#if defined(__FUNCSIG__)
+    std::cout << __FUNCSIG__  << std::endl;
+#endif
     throw "NotImplementedException";    
 [/if]
     // [/protected]
@@ -245,7 +247,9 @@ void [className/]::[methodName/]()
 [elseif aStructuralFeature.oclIsKindOf(EAttribute)]
     [aStructuralFeature.name/]_ = [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/];
 [else]
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+#if defined(__FUNCSIG__)
+    std::cout << __FUNCSIG__  << std::endl;
+#endif
     throw "NotImplementedException";    
 [/if]
     // [/protected]
@@ -279,7 +283,9 @@ void [className/]::[methodName/]()
 [elseif (hasKey('getterBody'))]
     [valueKey('getterBody')/]
 [else]
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+#if defined(__FUNCSIG__)
+    std::cout << __FUNCSIG__  << std::endl;
+#endif
     throw "NotImplementedException";    
 [/if]
     // [/protected]
@@ -307,7 +313,9 @@ virtual [aStructuralFeature.generateReturnType()/] [aStructuralFeature.getGetter
 [elseif hasKey('getterBody')]
     [valueKey('getterBody')/]
 [else]
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+#if defined(__FUNCSIG__)
+    std::cout << __FUNCSIG__  << std::endl;
+#endif
     throw "NotImplementedException";
 [/if]
     // [/protected]
@@ -357,7 +365,9 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( [aStruct
 [elseif (hasKey('setterBody'))]
     [valueKey('setterBody')/]
 [else]
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+#if defined(__FUNCSIG__)
+    std::cout << __FUNCSIG__  << std::endl;
+#endif
     throw "NotImplementedException";    
 [/if]
     // [/protected]
@@ -431,7 +441,9 @@ void [className/]::[methodName/]([aStructuralFeature.generateParameterType()/] [
 [elseif hasKey('setterBody')]
     [valueKey('setterBody')/] 
 [else]
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+#if defined(__FUNCSIG__)
+    std::cout << __FUNCSIG__  << std::endl;
+#endif
     throw "NotImplementedException";    
 [/if]
     // [/protected]
@@ -503,7 +515,7 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( const st
     auto notifications = msgs;
     if ( eNotificationRequired())
     {
-        auto notification = std::make_shared<Notification>(getThisPtr() , Notification::UNSET, [aStructuralFeature.getQualifiedFeatureIDName()/], boost::any(), boost::any());
+        auto notification = std::make_shared<Notification>(getThisPtr() , Notification::UNSET, [aStructuralFeature.getQualifiedFeatureIDName()/], ecore::Any(), ecore::Any());
         if ( notifications )
             notifications->add( notification );
         else
@@ -511,7 +523,9 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( const st
     }
     return notifications;
 [else]
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+#if defined(__FUNCSIG__)
+    std::cout << __FUNCSIG__  << std::endl;
+#endif
     throw "NotImplementedException";
 [/if] 
     // [/protected]
@@ -554,15 +568,17 @@ void [className/]::[methodName/]()
             notifications->dispatch();
     }
     else if ( eNotificationRequired() )
-        eNotify( std::make_shared<Notification>(getThisPtr() , Notification::UNSET, [aStructuralFeature.getQualifiedFeatureIDName()/], boost::any(), boost::any()));
+        eNotify( std::make_shared<Notification>(getThisPtr() , Notification::UNSET, [aStructuralFeature.getQualifiedFeatureIDName()/], ecore::Any(), ecore::Any()));
     [else]
         if ( eNotificationRequired() )
-        eNotify( std::make_shared<Notification>(getThisPtr() , Notification::UNSET, [aStructuralFeature.getQualifiedFeatureIDName()/], boost::any(), boost::any()));
+        eNotify( std::make_shared<Notification>(getThisPtr() , Notification::UNSET, [aStructuralFeature.getQualifiedFeatureIDName()/], ecore::Any(), ecore::Any()));
     [/if]
 [elseif hasKey('unsetterBody')]
     [valueKey('unsetterBody')/] 
 [else]
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+#if defined(__FUNCSIG__)
+    std::cout << __FUNCSIG__  << std::endl;
+#endif
     throw "NotImplementedException";    
 [/if]
     // [/protected]

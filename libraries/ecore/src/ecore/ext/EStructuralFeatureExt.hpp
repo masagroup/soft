@@ -32,14 +32,14 @@ namespace ecore::ext
     public:
         virtual ~EStructuralFeatureExt();
 
-        virtual const boost::any& getDefaultValue() const;
+        virtual const Any& getDefaultValue() const;
 
-        virtual void setDefaultValue( const boost::any& newDefaultValue );
+        virtual void setDefaultValue( const Any& newDefaultValue );
 
         virtual void setDefaultValueLiteral( const std::string& newDefaultValueLiteral );
 
     private:
-        mutable boost::any defaultValue_;
+        mutable Any defaultValue_;
         mutable std::weak_ptr<EFactory> defaultValueFactory_;
     };
 

@@ -20,7 +20,7 @@
 #include <list>
 #include <memory>
 #include <string>
-#include <boost/any.hpp>
+#include "ecore/Any.hpp"
 
 
 //forward declarations
@@ -100,17 +100,17 @@ namespace ecore
         
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eCrossReferences() const = 0;
         
-        virtual boost::any eGet(const std::shared_ptr<ecore::EStructuralFeature>& feature) const = 0;
+        virtual ecore::Any eGet(const std::shared_ptr<ecore::EStructuralFeature>& feature) const = 0;
         
-        virtual boost::any eGet(const std::shared_ptr<ecore::EStructuralFeature>& feature,bool resolve) const = 0;
+        virtual ecore::Any eGet(const std::shared_ptr<ecore::EStructuralFeature>& feature,bool resolve) const = 0;
         
-        virtual void eSet(const std::shared_ptr<ecore::EStructuralFeature>& feature,const boost::any& newValue) = 0;
+        virtual void eSet(const std::shared_ptr<ecore::EStructuralFeature>& feature,const ecore::Any& newValue) = 0;
         
         virtual bool eIsSet(const std::shared_ptr<ecore::EStructuralFeature>& feature) const = 0;
         
         virtual void eUnset(const std::shared_ptr<ecore::EStructuralFeature>& feature) = 0;
         
-        virtual boost::any eInvoke(const std::shared_ptr<ecore::EOperation>& operation,const std::shared_ptr<EList<boost::any>>& arguments) = 0;
+        virtual ecore::Any eInvoke(const std::shared_ptr<ecore::EOperation>& operation,const std::shared_ptr<EList<ecore::Any>>& arguments) = 0;
         
         
         // Start of user code EObject

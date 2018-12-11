@@ -16,7 +16,7 @@ EStructuralFeatureExt::~EStructuralFeatureExt()
 {
 }
 
-const boost::any & EStructuralFeatureExt::getDefaultValue() const
+const Any & EStructuralFeatureExt::getDefaultValue() const
 {
     auto eType = getEType();
     auto literal = getDefaultValueLiteral();
@@ -42,7 +42,7 @@ const boost::any & EStructuralFeatureExt::getDefaultValue() const
 }
 
 
-void EStructuralFeatureExt::setDefaultValue( const boost::any & newDefaultValue )
+void EStructuralFeatureExt::setDefaultValue( const Any& newDefaultValue )
 {
     auto eType = getEType();
     if( auto eDataType = std::dynamic_pointer_cast<EDataType>( eType ) )

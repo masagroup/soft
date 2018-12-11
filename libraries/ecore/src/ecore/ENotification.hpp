@@ -11,10 +11,10 @@
 #define ECORE_ENOTIFICATION_HPP_
 
 #include <memory>
-#include <boost/any.hpp>
 
 namespace ecore
 {
+    class Any;
     class ENotifier;
     class EStructuralFeature;
 
@@ -71,7 +71,7 @@ namespace ecore
         * For a move, this represents the old position of the moved value.
         * @return the old value of the notifier's feature.
         */
-        virtual const boost::any& getOldValue() const = 0;
+        virtual const Any& getOldValue() const = 0;
         
         /**
         * Returns the value of the notifier's feature after the change occurred.
@@ -81,7 +81,7 @@ namespace ecore
         * or empty otherwise.
         * @return the new value of the notifier's feature.
         */
-        virtual const boost::any& getNewValue() const = 0;
+        virtual const Any& getNewValue() const = 0;
         
         /**
         * Returns the position within a list-based feature at which the change occurred.

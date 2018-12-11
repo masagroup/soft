@@ -70,8 +70,8 @@ BOOST_FIXTURE_TEST_CASE( Accessors_ENamedElement_Notifications, AttributeNotific
     {
         return n->getNotifier() == eAttribute
             && n->getFeatureID() == EcorePackage::EATTRIBUTE__NAME
-            && boost::any_cast<std::string>(n->getOldValue()) == ""
-            && boost::any_cast<std::string>(n->getNewValue()) == "toto"
+            && anyCast<std::string>(n->getOldValue()) == ""
+            && anyCast<std::string>(n->getNewValue()) == "toto"
             && n->getPosition() == -1;
     } ).once();
 
@@ -111,8 +111,8 @@ BOOST_FIXTURE_TEST_CASE( Accessors_ETypedElement_Setters_Notifications, Attribut
     {
         return n->getNotifier() == eAttribute
             && n->getFeatureID() == EcorePackage::EATTRIBUTE__UPPER_BOUND
-            && boost::any_cast<int>(n->getOldValue()) == 1
-            && boost::any_cast<int>(n->getNewValue()) == UNBOUNDED_MULTIPLICITY
+            && anyCast<int>(n->getOldValue()) == 1
+            && anyCast<int>(n->getNewValue()) == UNBOUNDED_MULTIPLICITY
             && n->getPosition() == -1;
     } ).once();
     eAttribute->setUpperBound( UNBOUNDED_MULTIPLICITY );
@@ -121,8 +121,8 @@ BOOST_FIXTURE_TEST_CASE( Accessors_ETypedElement_Setters_Notifications, Attribut
     {
         return n->getNotifier() == eAttribute
             && n->getFeatureID() == EcorePackage::EATTRIBUTE__LOWER_BOUND
-            && boost::any_cast<int>(n->getOldValue()) == 0
-            && boost::any_cast<int>(n->getNewValue()) == 1
+            && anyCast<int>(n->getOldValue()) == 0
+            && anyCast<int>(n->getNewValue()) == 1
             && n->getPosition() == -1;
     } ).once();
     eAttribute->setLowerBound( 1 );
@@ -131,8 +131,8 @@ BOOST_FIXTURE_TEST_CASE( Accessors_ETypedElement_Setters_Notifications, Attribut
     {
         return n->getNotifier() == eAttribute
             && n->getFeatureID() == EcorePackage::EATTRIBUTE__UNIQUE
-            && boost::any_cast<bool>(n->getOldValue()) == true
-            && boost::any_cast<bool>(n->getNewValue()) == false
+            && anyCast<bool>(n->getOldValue()) == true
+            && anyCast<bool>(n->getNewValue()) == false
             && n->getPosition() == -1;
     } ).once();
     eAttribute->setUnique( false );
@@ -141,8 +141,8 @@ BOOST_FIXTURE_TEST_CASE( Accessors_ETypedElement_Setters_Notifications, Attribut
     {
         return n->getNotifier() == eAttribute
             && n->getFeatureID() == EcorePackage::EATTRIBUTE__ORDERED
-            && boost::any_cast<bool>(n->getOldValue()) == true
-            && boost::any_cast<bool>(n->getNewValue()) == false
+            && anyCast<bool>(n->getOldValue()) == true
+            && anyCast<bool>(n->getNewValue()) == false
             && n->getPosition() == -1;
     } ).once();
     eAttribute->setOrdered( false );

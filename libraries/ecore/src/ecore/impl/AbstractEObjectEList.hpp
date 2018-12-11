@@ -210,9 +210,9 @@ namespace ecore::impl
 
     private:
 
-        static boost::any toAny( const EList<ValueType>& l )
+        static Any toAny( const EList<ValueType>& l )
         {
-            std::vector<boost::any> v;
+            std::vector<Any> v;
             std::transform( l.begin(), l.end(), v.end(), []( const ValueType& i ) { return i; } );
             return v;
         }
@@ -232,13 +232,13 @@ namespace ecore::impl
             return std::make_shared<NotificationChain>();
         }
 
-        std::shared_ptr< Notification > createNotification( ENotification::EventType eventType, const boost::any& oldValue, const boost::any& newValue, std::size_t position )
+        std::shared_ptr< Notification > createNotification( ENotification::EventType eventType, const Any& oldValue, const Any& newValue, std::size_t position )
         {
             auto owner = owner_.lock();
             return owner ? std::make_shared<Notification>( owner, eventType, featureID_, oldValue, newValue, position ) : nullptr;
         }
 
-        std::shared_ptr<ENotificationChain> createAndAddNotification( const std::shared_ptr<ENotificationChain>& ns, ENotification::EventType eventType, const boost::any& oldValue, const boost::any& newValue, std::size_t position )
+        std::shared_ptr<ENotificationChain> createAndAddNotification( const std::shared_ptr<ENotificationChain>& ns, ENotification::EventType eventType, const Any& oldValue, const Any& newValue, std::size_t position )
         {
             std::shared_ptr<ENotificationChain> notifications = ns;
             if (isNotificationRequired())
@@ -252,7 +252,7 @@ namespace ecore::impl
             return notifications;
         }
 
-        void createAndDispatchNotification( const std::shared_ptr<ENotificationChain>& notifications, ENotification::EventType eventType, const boost::any& oldValue, const boost::any& newValue, std::size_t position )
+        void createAndDispatchNotification( const std::shared_ptr<ENotificationChain>& notifications, ENotification::EventType eventType, const Any& oldValue, const Any& newValue, std::size_t position )
         {
             createAndDispatchNotification( notifications, [&]() { return createNotification( eventType, oldValue, newValue, position ); } );
         }

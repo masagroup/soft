@@ -8,6 +8,8 @@
 #include "ecore/impl/EOperationImpl.hpp"
 #include "ecore/impl/EStructuralFeatureImpl.hpp"
 
+#include <algorithm>
+
 using namespace ecore;
 using namespace ecore::ext;
 using namespace ecore::impl;
@@ -45,10 +47,10 @@ public:
                     case ENotification::SET:
                     case ENotification::RESOLVE:
                     {
-                        boost::any oldValue = notification->getOldValue();
+                        Any oldValue = notification->getOldValue();
                         if( !oldValue.empty() )
                         {
-                            auto eClass = boost::any_cast<std::shared_ptr<EClass>>( oldValue );
+                            auto eClass = anyCast<std::shared_ptr<EClass>>( oldValue );
                             auto eClassImpl = std::dynamic_pointer_cast<EClassExt>( eClass );
                             auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
                             auto it = std::find_if( subClasses.begin(), subClasses.end(), [ = ]( const auto& w )
@@ -58,10 +60,10 @@ public:
                             if( it != subClasses.end() )
                                 subClasses.erase( it );
                         }
-                        boost::any newValue = notification->getNewValue();
+                        Any newValue = notification->getNewValue();
                         if( !newValue.empty() )
                         {
-                            auto eClass = boost::any_cast<std::shared_ptr<EClass>>( newValue );
+                            auto eClass = anyCast<std::shared_ptr<EClass>>( newValue );
                             auto eClassImpl = std::dynamic_pointer_cast<EClassExt>( eClass );
                             auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
                             subClasses.push_back( eNotifier );
@@ -70,10 +72,10 @@ public:
                     }
                     case ENotification::ADD:
                     {
-                        boost::any newValue = notification->getNewValue();
+                        Any newValue = notification->getNewValue();
                         if( !newValue.empty() )
                         {
-                            auto eClass = boost::any_cast<std::shared_ptr<EClass>>( newValue );
+                            auto eClass = anyCast<std::shared_ptr<EClass>>( newValue );
                             auto eClassImpl = std::dynamic_pointer_cast<EClassExt>( eClass );
                             auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
                             subClasses.push_back( eNotifier );
@@ -82,10 +84,10 @@ public:
                     }
                     case ENotification::ADD_MANY:
                     {
-                        boost::any newValue = notification->getNewValue();
+                        Any newValue = notification->getNewValue();
                         if( !newValue.empty() )
                         {
-                            auto eCollection = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<EClass>>>>( newValue );
+                            auto eCollection = anyCast<std::shared_ptr<EList<std::shared_ptr<EClass>>>>( newValue );
                             for( const auto& eClass : *eCollection )
                             {
                                 auto eClassImpl = std::dynamic_pointer_cast<EClassExt>( eClass );
@@ -97,10 +99,10 @@ public:
                     }
                     case ENotification::REMOVE:
                     {
-                        boost::any oldValue = notification->getOldValue();
+                        Any oldValue = notification->getOldValue();
                         if( !oldValue.empty() )
                         {
-                            auto eClass = boost::any_cast<std::shared_ptr<EClass>>( oldValue );
+                            auto eClass = anyCast<std::shared_ptr<EClass>>( oldValue );
                             auto eClassImpl = std::dynamic_pointer_cast<EClassExt>( eClass );
                             auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
                             auto it = std::find_if( subClasses.begin(), subClasses.end(), [ = ]( const auto& w )
@@ -114,10 +116,10 @@ public:
                     }
                     case ENotification::REMOVE_MANY:
                     {
-                        boost::any oldValue = notification->getOldValue();
+                        Any oldValue = notification->getOldValue();
                         if( !oldValue.empty() )
                         {
-                            auto eCollection = boost::any_cast<std::shared_ptr<EList<std::shared_ptr<EClass>>>>( oldValue );
+                            auto eCollection = anyCast<std::shared_ptr<EList<std::shared_ptr<EClass>>>>( oldValue );
                             for( const auto& eClass : *eCollection )
                             {
                                 auto eClassImpl = std::dynamic_pointer_cast<EClassExt>( eClass );
@@ -341,7 +343,7 @@ void EClassExt::initEAllOperations()
     for( const auto& operation : *getEOperations() )
     {
         auto operationImpl = std::dynamic_pointer_cast<EOperationImpl>( operation );
-        BOOST_ASSERT( operationImpl );
+        _ASSERT( operationImpl );
         operationImpl->setOperationID( operationID++ );
         allOperations.push_back( operationImpl );
     }
@@ -367,7 +369,7 @@ void EClassExt::initEAllStructuralFeatures()
     for( const auto& feature : *getEStructuralFeatures() )
     {
         auto featureImpl = std::dynamic_pointer_cast<EStructuralFeatureImpl>( feature );
-        BOOST_ASSERT( featureImpl );
+        _ASSERT( featureImpl );
         featureImpl->setFeatureID( featureID++ );
         allFeatures.push_back( featureImpl );
     }

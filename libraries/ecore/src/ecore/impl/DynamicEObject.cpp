@@ -81,7 +81,7 @@ void DynamicEObject::setEClass( const std::shared_ptr<EClass>& newClass )
         eClass->eAdapters().add( featuresAdapter_.get() );
 }
 
-boost::any DynamicEObject::eGet( int featureID, bool resolve, bool coreType ) const
+Any DynamicEObject::eGet( int featureID, bool resolve, bool coreType ) const
 {
     int dynamicFeatureID = featureID - eStaticFeatureCount();
     if( dynamicFeatureID >= 0 )
@@ -110,7 +110,7 @@ bool DynamicEObject::eIsSet( int featureID ) const
         return BasicEObject::eIsSet( featureID );
 }
 
-void DynamicEObject::eSet( int featureID, const boost::any & newValue )
+void DynamicEObject::eSet( int featureID, const Any & newValue )
 {
     int dynamicFeatureID = featureID - eStaticFeatureCount();
     if( dynamicFeatureID >= 0 )
@@ -123,14 +123,14 @@ void DynamicEObject::eUnset( int featureID )
 {
     int dynamicFeatureID = featureID - eStaticFeatureCount();
     if( dynamicFeatureID >= 0 )
-        properties_[ dynamicFeatureID ] = boost::any();
+        properties_[ dynamicFeatureID ] = Any();
     else
         BasicEObject::eUnset( featureID );
 }
 
-boost::any DynamicEObject::eInvoke( int operationID, const std::shared_ptr<EList<boost::any>>& arguments )
+Any DynamicEObject::eInvoke( int operationID, const std::shared_ptr<EList<Any>>& arguments )
 {
-    return boost::any();
+    return Any();
 }
 
 int DynamicEObject::eStaticFeatureCount() const

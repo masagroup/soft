@@ -26,7 +26,7 @@ namespace ecore::ext
     public:
         virtual ~EClassifierExt();
 
-        virtual bool isInstance( const boost::any& object ) const;
+        virtual bool isInstance( const ecore::Any& object ) const;
 
     protected:
         virtual int initClassifierID();

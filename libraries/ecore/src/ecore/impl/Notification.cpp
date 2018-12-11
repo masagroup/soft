@@ -49,7 +49,7 @@ bool Notification::merge( const std::shared_ptr<ENotification>& notification )
                         std::size_t originalPosition = getPosition();
                         std::size_t notificationPosition = notification->getPosition();
                         eventType_ = REMOVE_MANY;
-                        std::vector<boost::any> removedValues;
+                        std::vector<Any> removedValues;
                         if (originalPosition <= notificationPosition)
                         {
                             removedValues.push_back( oldValue_ );
@@ -80,7 +80,7 @@ bool Notification::merge( const std::shared_ptr<ENotification>& notification )
                     if (notifier_ == notification->getNotifier() && feature_ == notification->getFeature())
                     {
                         std::size_t notificationPosition = notification->getPosition();
-                        std::vector<std::size_t> positions = std::move( boost::any_cast<std::vector<std::size_t>>(newValue_) );
+                        std::vector<std::size_t> positions = std::move( anyCast<std::vector<std::size_t>>(newValue_) );
                         std::vector<std::size_t> newPositions( positions.size() + 1 );
 
                         int index = 0;
@@ -96,7 +96,7 @@ bool Notification::merge( const std::shared_ptr<ENotification>& notification )
                                 break;
                         }
 
-                        std::vector<boost::any> oldValue = std::move( boost::any_cast<std::vector<boost::any>>(oldValue_) );
+                        std::vector<Any> oldValue = std::move( anyCast<std::vector<Any>>(oldValue_) );
                         oldValue.insert( oldValue.begin() + index, notification->getOldValue() );
 
                         newPositions[index] = notificationPosition;

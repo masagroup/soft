@@ -2,6 +2,8 @@
 #include "ecore/EAnnotation.hpp"
 #include "ecore/EList.hpp"
 
+#include <algorithm>
+
 using namespace ecore;
 using namespace ecore::ext;
 using namespace ecore::impl;

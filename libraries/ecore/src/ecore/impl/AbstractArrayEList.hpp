@@ -13,6 +13,7 @@
 #include "ecore/impl/AbstractEList.hpp"
 
 #include <vector>
+#include <functional>
 #include <type_traits>
 
 namespace ecore::impl

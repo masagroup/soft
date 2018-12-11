@@ -35,7 +35,7 @@ std::shared_ptr<[anEDataType.eClassifier.generateType()/]>[else]
 [template public generateGenericArgumentType(anEDataType : EGenericType) post (trim())]
 [if (anEDataType.oclIsUndefined())]
 void[elseif (anEDataType.eClassifier.oclIsUndefined())]
-boost::any[elseif (not anEDataType.eClassifier.oclIsKindOf(EDataType))]
+ecore::Any[elseif (not anEDataType.eClassifier.oclIsKindOf(EDataType))]
 std::shared_ptr<[anEDataType.eClassifier.generateType()/]>[else]
 [anEDataType.eClassifier.generateType()/][/if]
 [/template]
@@ -116,7 +116,7 @@ std::shared_ptr
  * Transformation Java Types to C++
 */]
 [template public generateType(anEClassifier : EClassifier) ? (oclIsUndefined())]
-boost::any
+ecore::Any
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? ((name = 'EBoolean') or (name = 'EBooleanObject') or (name = 'Boolean'))]
@@ -172,7 +172,7 @@ std::map
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? (name = 'EJavaObject')]
-boost::any
+ecore::Any
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? (name = 'ETreeIterator')]
@@ -184,7 +184,7 @@ const std::type_info*
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? ((name = 'EEnumerator') or (name = 'EDiagnosticChain'))]
-boost::any
+ecore::Any
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? ((name = 'EString') or (name = 'String'))]

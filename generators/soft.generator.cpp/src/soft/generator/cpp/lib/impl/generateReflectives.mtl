@@ -50,7 +50,7 @@
 [/template]
 
 [template private generateEGetDeclaration(aClass : EClass)]
-virtual boost::any eGet(int featureID, bool resolve, bool coreType) const;
+virtual ecore::Any eGet(int featureID, bool resolve, bool coreType) const;
 [/template]
 
 [template private generateEIsSetDeclaration(aClass : EClass)]
@@ -58,7 +58,7 @@ virtual bool eIsSet(int featureID) const;
 [/template]
 
 [template private generateESetDeclaration(aClass : EClass)]
-virtual void eSet(int featureID, const boost::any& newValue);
+virtual void eSet(int featureID, const ecore::Any& newValue);
 [/template]
 
 [template private generateEUnSetDeclaration(aClass : EClass)]
@@ -66,7 +66,7 @@ virtual void eUnset(int featureID);
 [/template]
 
 [template private generateEInvokeDeclaration(aClass : EClass)]
-virtual boost::any eInvoke( int operationID, const std::shared_ptr<EList<boost::any>>& arguments );
+virtual ecore::Any eInvoke( int operationID, const std::shared_ptr<EList<ecore::Any>>& arguments );
 [/template]
 
 [template private generateEInverseAddDeclaration(aClass : EClass)]
@@ -122,7 +122,7 @@ virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shar
 
 [template private generateEGetDefinition(aClass : EClass)]
 [let className : String = aClass.getImplementationName()]
-boost::any [className/]::eGet(int featureID, bool resolve, bool coreType) const
+ecore::Any [className/]::eGet(int featureID, bool resolve, bool coreType) const
 {
     switch(featureID)
     {
@@ -160,7 +160,7 @@ bool [aClass.getImplementationName()/]::eIsSet(int featureID) const
 
 
 [template private generateESetDefinition(aClass : EClass)]
-void [aClass.getImplementationName()/]::eSet(int featureID, const boost::any& newValue)
+void [aClass.getImplementationName()/]::eSet(int featureID, const ecore::Any& newValue)
 {
     switch(featureID)
     {
@@ -168,7 +168,7 @@ void [aClass.getImplementationName()/]::eSet(int featureID, const boost::any& ne
         case [anStructFeature.getQualifiedFeatureIDName()/]:
         {
     [let varName : String = anStructFeature.name.first(1)]
-            [anStructFeature.generateEffectiveType()/] [varName/] = boost::any_cast<[anStructFeature.generateEffectiveType()/]>(newValue);
+            [anStructFeature.generateEffectiveType()/] [varName/] = ecore::anyCast<[anStructFeature.generateEffectiveType()/]>(newValue);
     [if anStructFeature.isListType()]
             [anStructFeature.getGetterName()/]()->clear();
             [anStructFeature.getGetterName()/]()->addAll(*[varName/]);
@@ -213,7 +213,7 @@ void [className/]::eUnset(int featureID)
 
 [template private generateEInvokeDefinition(aClass : EClass)]
 [let className : String = aClass.getImplementationName()]
-boost::any [className/]::eInvoke(int operationID, const std::shared_ptr<EList<boost::any>>& arguments)
+ecore::Any [className/]::eInvoke(int operationID, const std::shared_ptr<EList<ecore::Any>>& arguments)
 {
     // [protected ( className + '::eInvoke')]
     switch( operationID )
@@ -223,21 +223,21 @@ boost::any [className/]::eInvoke(int operationID, const std::shared_ptr<EList<bo
         {
             [if eOperation.isVoid() ]
             [eOperation.generateOperationInvoke()/]
-            return boost::any();
+            return ecore::Any();
             [else]
             return [eOperation.generateOperationInvoke()/] 
             [/if]
         }
     [/for]
     }
-    return boost::any();
+    return ecore::Any();
     // [/protected]
 }
 [/let]
 [/template]
 
 [template private generateOperationInvoke(eOperation : EOperation )]
-[if eOperation.getVisibilityType(true) = 'no' and eOperation.eContainingClass.name = 'EObject']BasicEObject::[/if][eOperation.name/]([for (eParameter : EParameter | eOperation.eParameters) separator (',')][let needCast : Boolean = not(not eParameter.oclIsUndefined() and eParameter.upperBound = 1 and not eParameter.eGenericType.oclIsUndefined() and eParameter.eGenericType.eClassifier.isAny())][if needCast]boost::any_cast<[eParameter.generateEffectiveType()/]>([/if]arguments->get([i-1/])[if needCast])[/if][/let][/for]);
+[if eOperation.getVisibilityType(true) = 'no' and eOperation.eContainingClass.name = 'EObject']BasicEObject::[/if][eOperation.name/]([for (eParameter : EParameter | eOperation.eParameters) separator (',')][let needCast : Boolean = not(not eParameter.oclIsUndefined() and eParameter.upperBound = 1 and not eParameter.eGenericType.oclIsUndefined() and eParameter.eGenericType.eClassifier.isAny())][if needCast]ecore::anyCast<[eParameter.generateEffectiveType()/]>([/if]arguments->get([i-1/])[if needCast])[/if][/let][/for]);
 [/template]
 
 

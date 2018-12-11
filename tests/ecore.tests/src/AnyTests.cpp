@@ -116,4 +116,12 @@ BOOST_AUTO_TEST_CASE( Swap )
     BOOST_CHECK_EQUAL( anyCast<int>( b ), 1 );
 }
 
+BOOST_AUTO_TEST_CASE( Affectation_Value )
+{
+    Any a( std::make_shared<MockObject>() );
+    a = std::vector < std::size_t> { 1, 2 };
+}
+
+
+
 BOOST_AUTO_TEST_SUITE_END()

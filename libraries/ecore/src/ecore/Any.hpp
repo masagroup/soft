@@ -83,13 +83,7 @@ namespace ecore
         /// Has the same effect as any(rhs).swap(*this). No effects if an exception is thrown.
         Any& operator=( const Any& rhs )
         {
-            if( empty() )
-                table_ = nullptr;
-            else
-            {
-                table_ = rhs.table_;
-                table_->copy( rhs.storage_, storage_ );
-            }
+            *this = Any( rhs );
             return *this;
         }
 
@@ -99,12 +93,14 @@ namespace ecore
         /// but otherwise unspecified state.
         Any& operator=( Any&& rhs ) noexcept
         {
-            if( empty() )
-                table_ = nullptr;
-            else
+            if( rhs.empty() )
+                reset();
+            else if ( this != &rhs )
             {
+                reset();
                 table_ = rhs.table_;
                 table_->move( rhs.storage_, storage_ );
+                rhs.table_ = nullptr;
             }
             return *this;
         }

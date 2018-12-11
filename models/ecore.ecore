@@ -518,7 +518,7 @@
       serializable="false">
     <eTypeParameters name="T"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="EJavaObject" instanceTypeName="boost::any"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EJavaObject" instanceTypeName="ecore::Any"/>
   <eClassifiers xsi:type="ecore:EDataType" name="ELong" instanceClassName="long">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="baseType" value="http://www.w3.org/2001/XMLSchema#long"/>

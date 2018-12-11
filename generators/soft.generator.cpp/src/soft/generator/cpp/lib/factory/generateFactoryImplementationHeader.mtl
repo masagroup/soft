@@ -43,8 +43,8 @@ namespace [namespaceName/]
 
             // Operations
             virtual std::shared_ptr<[getShortQualifiedName('ecore::EObject',namespaceName)/]> create(const std::shared_ptr<[getShortQualifiedName('ecore::EClass',namespaceName)/]>&  eClass) const;
-            virtual boost::any createFromString(const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const std::string& literalValue) const;
-            virtual std::string convertToString(const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const boost::any& instanceValue) const;
+            virtual ecore::Any createFromString(const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const std::string& literalValue) const;
+            virtual std::string convertToString(const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const ecore::Any& instanceValue) const;
 
             //Creator functions
             [anEPackage.eAllContents(EClass)->sortedBy(name).generateClassCreate(true)/]

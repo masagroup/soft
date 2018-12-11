@@ -11,6 +11,7 @@
 #define ECORE_NOTIFICATION_HPP_
 
 
+#include "ecore/Any.hpp"
 #include "ecore/ENotification.hpp"
 #include "ecore/ENotificationChain.hpp"
 #include "ecore/EObject.hpp"
@@ -26,8 +27,8 @@ namespace ecore::impl
         Notification( const std::shared_ptr<EObject>& notifier,
             EventType type,
             const std::shared_ptr<EStructuralFeature>& feature,
-            const boost::any& oldValue,
-            const boost::any& newValue,
+            const Any& oldValue,
+            const Any& newValue,
             std::size_t position = NO_INDEX ) :
             eventType_( type ), notifier_( notifier ), feature_( feature ), featureID_(-1),
             oldValue_( oldValue ), newValue_( newValue ), position_( position ), next_()
@@ -37,8 +38,8 @@ namespace ecore::impl
         Notification( const std::shared_ptr<EObject>& notifier,
             EventType type,
             int featureID,
-            const boost::any& oldValue,
-            const boost::any& newValue,
+            const Any& oldValue,
+            const Any& newValue,
             std::size_t position = NO_INDEX ) :
             eventType_( type ), notifier_( notifier ), feature_(), featureID_( featureID ),
             oldValue_( oldValue ), newValue_( newValue ), position_( position ), next_()
@@ -69,11 +70,11 @@ namespace ecore::impl
             return featureID_ != -1 ? featureID_ : ( feature_ ? feature_->getFeatureID() : -1 );
         }
 
-        const boost::any& getOldValue() const
+        const Any& getOldValue() const
         {
             return oldValue_;
         }
-        const boost::any& getNewValue() const
+        const Any& getNewValue() const
         {
             return newValue_;
         }
@@ -95,8 +96,8 @@ namespace ecore::impl
         std::shared_ptr<EObject> notifier_;
         std::shared_ptr<EStructuralFeature> feature_;
         int featureID_;
-        boost::any oldValue_;
-        boost::any newValue_;
+        Any oldValue_;
+        Any newValue_;
         std::size_t position_;
         std::shared_ptr<ENotificationChain> next_;
     };

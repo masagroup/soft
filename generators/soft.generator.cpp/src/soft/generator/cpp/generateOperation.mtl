@@ -20,7 +20,9 @@ virtual [anEOperation.generateReturnType()/] [anEOperation.name/]([anEOperation.
 [if (hasKey('body'))]
     [valueKey('body')/]
 [else]
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+#if defined(__FUNCSIG__)
+    std::cout << __FUNCSIG__  << std::endl;
+#endif
     throw "NotImplementedException";
 [/if]
     // [/protected]

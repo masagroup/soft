@@ -44,13 +44,13 @@ namespace ecore::impl
         virtual std::shared_ptr<ecore::EReference> eContainmentFeature() const;
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eContents() const;
         virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eCrossReferences() const;
-        virtual boost::any eGet( const std::shared_ptr<ecore::EStructuralFeature>& feature ) const;
-        virtual boost::any eGet( const std::shared_ptr<ecore::EStructuralFeature>& feature, bool resolve ) const;
-        virtual boost::any eGet( const std::shared_ptr<ecore::EStructuralFeature>& feature, bool resolve, bool coreType ) const;
+        virtual Any eGet( const std::shared_ptr<ecore::EStructuralFeature>& feature ) const;
+        virtual Any eGet( const std::shared_ptr<ecore::EStructuralFeature>& feature, bool resolve ) const;
+        virtual Any eGet( const std::shared_ptr<ecore::EStructuralFeature>& feature, bool resolve, bool coreType ) const;
         virtual bool eIsSet( const std::shared_ptr<ecore::EStructuralFeature>& feature ) const;
-        virtual void eSet( const std::shared_ptr<ecore::EStructuralFeature>& feature, const boost::any& newValue );
+        virtual void eSet( const std::shared_ptr<ecore::EStructuralFeature>& feature, const Any& newValue );
         virtual void eUnset( const std::shared_ptr<ecore::EStructuralFeature>& feature );
-        virtual boost::any eInvoke( const std::shared_ptr<ecore::EOperation>& operation, const std::shared_ptr<EList<boost::any>>& arguments );
+        virtual Any eInvoke( const std::shared_ptr<ecore::EOperation>& operation, const std::shared_ptr<EList<Any>>& arguments );
         virtual bool eIsProxy() const;
         virtual int eResource() const;
 
@@ -68,11 +68,11 @@ namespace ecore::impl
         virtual int eDerivedStructuralFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;
         virtual int eDerivedOperationID( const std::shared_ptr<EOperation>& eOperation ) const;
 
-        virtual boost::any eGet( int featureID, bool resolve, bool coreType ) const;
+        virtual Any eGet( int featureID, bool resolve, bool coreType ) const;
         virtual bool eIsSet( int featureID ) const;
-        virtual void eSet( int featureID, const boost::any& newValue );
+        virtual void eSet( int featureID, const Any& newValue );
         virtual void eUnset( int featureID );
-        virtual boost::any eInvoke( int operationID, const std::shared_ptr<EList<boost::any>>& arguments );
+        virtual Any eInvoke( int operationID, const std::shared_ptr<EList<Any>>& arguments );
 
         virtual std::shared_ptr<ENotificationChain> eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
         virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );

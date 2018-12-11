@@ -139,7 +139,7 @@ BOOST_FIXTURE_TEST_CASE( InstanciateModel , BookStoreModelFixture )
     bookStoreObject->eSet( bookStoreOwner, std::string("David Brown") );
     bookStoreObject->eSet( bookStoreLocation, std::string( "Street#12, Top Town, NY") );
     auto anyBooks = bookStoreObject->eGet( bookStore_Books );
-    auto allBooks = boost::any_cast<std::shared_ptr<EList< std::shared_ptr<EObject>>>>( anyBooks );
+    auto allBooks = anyCast<std::shared_ptr<EList< std::shared_ptr<EObject>>>>( anyBooks );
     allBooks->add( bookObject );
 
     /*
@@ -152,19 +152,19 @@ BOOST_FIXTURE_TEST_CASE( InstanciateModel , BookStoreModelFixture )
     * Read/Get the values of bookStoreObject attributes
     */
     auto anyOwner = bookStoreObject->eGet( bookStoreOwner );
-    auto strOwner = boost::any_cast<std::string>( anyOwner );
+    auto strOwner = anyCast<std::string>( anyOwner );
 
     auto anyLocation = bookStoreObject->eGet( bookStoreLocation );
-    auto strLocation = boost::any_cast<std::string>( anyLocation );
+    auto strLocation = anyCast<std::string>( anyLocation );
 
     /*
     * Read/Get the values of bookObject attributes
     */
     auto anyName = bookObject->eGet( bookName );
-    auto strName = boost::any_cast<std::string>( anyName );
+    auto strName = anyCast<std::string>( anyName );
 
     auto anyISBN = bookObject->eGet( bookISBN );
-    auto strISBN = boost::any_cast<int>( anyISBN );
+    auto strISBN = anyCast<int>( anyISBN );
 
 }
 

@@ -24,7 +24,6 @@
 [/let]
 
 #include <iostream>
-#include <boost/current_function.hpp>
 
 [comment namespace /]
 [let namespaces : OrderedSet(String) = OrderedSet{ 'ecore' , anEPackage.getInterfaceNamespaceName() , anEPackage.getImplementationNamespaceName(), anEPackage.getExtensionNamespaceName() }]
@@ -63,7 +62,7 @@ std::shared_ptr<[getShortQualifiedName('ecore::EObject',namespaceName)/]> [class
             return this->create[aClass.name/]();
     [/for]
     default:
-            std::cerr << BOOST_CURRENT_FUNCTION << " ID " << classID <<" not found" << std::endl;
+            std::cerr << "[className/]::create: " << classID <<" not found" << std::endl;
     }
     return nullptr;
 }
@@ -95,7 +94,7 @@ std::shared_ptr<[aClass.getInterfaceName()/]> [className/]::create[aClass.name/]
 [/for]
 
 [let dataTypes : Sequence(EDataType) = anEPackage.eAllContents(EDataType)->select( serializable )->sortedBy(name)]
-boost::any [className/]::createFromString(const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const std::string& literalValue) const
+ecore::Any [className/]::createFromString(const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const std::string& literalValue) const
 {
     int classifierID = eDataType->getClassifierID();
     switch( classifierID )
@@ -109,7 +108,7 @@ boost::any [className/]::createFromString(const std::shared_ptr<[getShortQualifi
     }
 }
 
-std::string [className/]::convertToString(const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const boost::any& instanceValue) const
+std::string [className/]::convertToString(const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const ecore::Any& instanceValue) const
 {
     int classifierID = eDataType->getClassifierID();
     switch( classifierID )
@@ -125,19 +124,23 @@ std::string [className/]::convertToString(const std::shared_ptr<[getShortQualifi
 
 [for (aDataType : EDataType | dataTypes)]
 [let createMethodName : String = 'create' + aDataType.name + 'FromString']
-boost::any [className/]::[createMethodName/](const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const std::string& literalValue) const
+ecore::Any [className/]::[createMethodName/](const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const std::string& literalValue) const
 {
     // [protected (className +'::' + createMethodName)]
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+#if defined(__FUNCSIG__)
+    std::cout << __FUNCSIG__  << std::endl;
+#endif
     throw "NotImplementedException";
     // [/protected]
 }
 [/let]
 [let convertMethodName : String = 'convert' + aDataType.name + 'ToString']
-std::string [className/]::[convertMethodName/](const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const boost::any& instanceValue) const
+std::string [className/]::[convertMethodName/](const std::shared_ptr<[getShortQualifiedName('ecore::EDataType',namespaceName)/]>& eDataType,const ecore::Any& instanceValue) const
 {
     // [protected (className +'::' + convertMethodName)]
-    std::cout << BOOST_CURRENT_FUNCTION  << std::endl;
+#if defined(__FUNCSIG__)
+    std::cout << __FUNCSIG__  << std::endl;
+#endif
     throw "NotImplementedException";
     // [/protected]
 }

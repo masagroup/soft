@@ -47,7 +47,7 @@ namespace
                 return n->getNotifier() == owner
                     && n->getFeature() == mockFeature
                     && n->getOldValue().empty()
-                    && boost::any_cast<std::shared_ptr<EObject>>( n->getNewValue() ) == object
+                    && anyCast<std::shared_ptr<EObject>>( n->getNewValue() ) == object
                     && n->getPosition() == 0;
             } ).once();
         }

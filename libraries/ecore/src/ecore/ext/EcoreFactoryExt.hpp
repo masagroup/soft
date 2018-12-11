@@ -29,25 +29,25 @@ namespace ecore::ext
         virtual ~EcoreFactoryExt();
 
     protected:
-        virtual boost::any createEBooleanFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
-        virtual boost::any createECharFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
-        virtual boost::any createEDateFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
-        virtual boost::any createEDoubleFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
-        virtual boost::any createEFloatFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
-        virtual boost::any createEIntFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
-        virtual boost::any createELongFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
-        virtual boost::any createEShortFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
-        virtual boost::any createEStringFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
+        virtual Any createEBooleanFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
+        virtual Any createECharFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
+        virtual Any createEDateFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
+        virtual Any createEDoubleFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
+        virtual Any createEFloatFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
+        virtual Any createEIntFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
+        virtual Any createELongFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
+        virtual Any createEShortFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
+        virtual Any createEStringFromString( const std::shared_ptr<ecore::EDataType>& dataType, const std::string& literalValue ) const;
 
-        virtual std::string convertEBooleanToString( const std::shared_ptr<ecore::EDataType>& dataType, const boost::any& literalValue ) const;
-        virtual std::string convertECharToString( const std::shared_ptr<ecore::EDataType>& dataType, const boost::any& literalValue ) const;
-        virtual std::string convertEDateToString( const std::shared_ptr<ecore::EDataType>& dataType, const boost::any& literalValue ) const;
-        virtual std::string convertEDoubleToString( const std::shared_ptr<ecore::EDataType>& dataType, const boost::any& literalValue ) const;
-        virtual std::string convertEFloatToString( const std::shared_ptr<ecore::EDataType>& dataType, const boost::any& literalValue ) const;
-        virtual std::string convertEIntToString( const std::shared_ptr<ecore::EDataType>& dataType, const boost::any& literalValue ) const;
-        virtual std::string convertELongToString( const std::shared_ptr<ecore::EDataType>& dataType, const boost::any& literalValue ) const;
-        virtual std::string convertEShortToString( const std::shared_ptr<ecore::EDataType>& dataType, const boost::any& literalValue ) const;
-        virtual std::string convertEStringToString( const std::shared_ptr<ecore::EDataType>& dataType, const boost::any& literalValue ) const;
+        virtual std::string convertEBooleanToString( const std::shared_ptr<ecore::EDataType>& dataType, const Any& literalValue ) const;
+        virtual std::string convertECharToString( const std::shared_ptr<ecore::EDataType>& dataType, const Any& literalValue ) const;
+        virtual std::string convertEDateToString( const std::shared_ptr<ecore::EDataType>& dataType, const Any& literalValue ) const;
+        virtual std::string convertEDoubleToString( const std::shared_ptr<ecore::EDataType>& dataType, const Any& literalValue ) const;
+        virtual std::string convertEFloatToString( const std::shared_ptr<ecore::EDataType>& dataType, const Any& literalValue ) const;
+        virtual std::string convertEIntToString( const std::shared_ptr<ecore::EDataType>& dataType, const Any& literalValue ) const;
+        virtual std::string convertELongToString( const std::shared_ptr<ecore::EDataType>& dataType, const Any& literalValue ) const;
+        virtual std::string convertEShortToString( const std::shared_ptr<ecore::EDataType>& dataType, const Any& literalValue ) const;
+        virtual std::string convertEStringToString( const std::shared_ptr<ecore::EDataType>& dataType, const Any& literalValue ) const;
 
     private:
         static EcoreFactoryExt* create();
