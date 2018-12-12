@@ -318,6 +318,17 @@ namespace ecore {
         };
     };
 
+    template <typename T>
+    bool operator ==( const EList<T>& lhs, const EList<T>& rhs )
+    {
+        return lhs.size() == rhs.size() && std::equal( lhs.begin(), lhs.end(), rhs.begin() );
+    }
+
+    template <typename T>
+    bool operator !=( const EList<T>& lhs, const EList<T>& rhs )
+    {
+        return !(lhs == rhs);
+    }
 }
 
 #endif /* ECORE_ELIST_HPP_ */

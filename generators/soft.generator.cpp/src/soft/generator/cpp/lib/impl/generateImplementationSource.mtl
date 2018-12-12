@@ -40,6 +40,7 @@
 #include <sstream>
 [if (aClass.eAttributes.eType->select(isAny())->size() = 0 and aClass.eOperations.eParameters.eType->select(isAny())->size() > 0)]
 #include "ecore/Any.hpp"
+#include "ecore/Stream.hpp"
 [/if]
 
 //[protected (className + ' [definition-includes]')]

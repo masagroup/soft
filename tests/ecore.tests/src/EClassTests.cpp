@@ -1,6 +1,7 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
 
+#include "ecore/Stream.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/EAttribute.hpp"
 #include "ecore/EOperation.hpp"
@@ -16,42 +17,13 @@ namespace std
     template <typename T>
     bool operator ==( const std::shared_ptr<EList<T>>& lhs, const std::vector<T>& rhs )
     {
-        if (lhs->size() != rhs.size())
-            return false;
-        for (int i = 0; i < lhs->size(); ++i)
-        {
-            if (lhs->get( i ) != rhs.at( i ))
-                return false;
-        }
-        return true;
+        return lhs->size() == rhs.size() && std::equal( lhs->begin(), lhs->end(), rhs.begin() );
     }
 
     template <typename T>
     ostream& operator <<( ostream& os, const std::shared_ptr<EList<T>>& v )
     {
-        bool first = true;
-        os << "[";
-        for (auto b : *v)
-        {
-            os << (first ? "" : ",") << b;
-            first = false;
-        }
-        os << "]";
-        return os;
-    }
-
-    template <typename T>
-    ostream& operator <<( ostream& os, const std::vector<T>& v )
-    {
-        bool first = true;
-        os << "[";
-        for (auto b : v)
-        {
-            os << (first ? "" : ",") << b;
-            first = false;
-        }
-        os << "]";
-        return os;
+        return print_container(os,*v);
     }
 
 }

@@ -16,6 +16,7 @@ set(HEADER_ECORE_FILES
     src/ecore/ENotifyingList.hpp
     src/ecore/ETreeIterator.hpp
     src/ecore/EUnsettableList.hpp
+    src/ecore/Stream.hpp
 )
 
 set(HEADER_ECORE_IMPL_FILES 

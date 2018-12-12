@@ -13,6 +13,7 @@
 #include <type_traits>
 #include <stdexcept>
 #include <typeinfo>
+#include <iostream>
 
 namespace ecore
 {
@@ -25,7 +26,6 @@ namespace ecore
         }
     };
 
-   
     class Any final
     {
         template<typename T, typename Decayed = std::decay_t<T>>
@@ -181,10 +181,14 @@ namespace ecore
             return false;
         }
 
-
         bool operator !=( const Any& rhs ) const
         {
             return !operator ==( rhs );
+        }
+
+        friend inline std::ostream&operator << ( std::ostream& s, const Any& obj )
+        {
+            return obj.table_ ? obj.table_->stream_out( s, obj.storage_ ) : s;
         }
 
     private:
@@ -235,6 +239,8 @@ namespace ecore
             void( *swap )( Storage& lhs, Storage& rhs ) noexcept;
 
             bool (* equals )( const Storage& lhs, const Storage& rhs ) noexcept;
+
+            std::ostream& (*stream_out)(std::ostream&, const Storage& lhs);
         };
 
         template <typename T>
@@ -296,6 +302,12 @@ namespace ecore
                 const auto& r = *reinterpret_cast<const T*>( &rhs.buffer_ );
                 return l == r;
             }
+
+            static std::ostream& stream_out(std::ostream& s, const Storage& lhs)
+            {
+                s << *reinterpret_cast<const T*>(&lhs.buffer_);
+                return s;
+            }
         };
 
         template <typename T>
@@ -350,6 +362,12 @@ namespace ecore
                 const auto& r = *reinterpret_cast<const T*>( rhs.ptr_ );
                 return l == r;
             }
+
+            static std::ostream& stream_out( std::ostream& s, const Storage& lhs )
+            {
+                s << *reinterpret_cast<const T*>(lhs.ptr_);
+                return s;
+            }
         };
 
         template <typename T>
@@ -364,7 +382,7 @@ namespace ecore
                 TableType::type,TableType::access,
                 TableType::destroy,TableType::copy,
                 TableType::move,TableType::swap,
-                TableType::equals
+                TableType::equals,TableType::stream_out
             };
             return &table;
         }
@@ -385,7 +403,6 @@ namespace ecore
                 return reinterpret_cast<T*>(table_->access( storage_ ));
             return nullptr;
         }
-
         
     private:
         Storage storage_; // on offset(0) so no padding for align

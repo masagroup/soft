@@ -244,6 +244,15 @@ std::string
             (name = 'EChar') or 
             (name = 'ECharacterObject')) 
         then getDefaultCharValue() 
+        else getDefaultValueCheckAny()
+        endif
+/]
+
+[query private getDefaultValueCheckAny(anEClassifier : EClassifier) : String = 
+        if ((name = 'EJavaObject') or
+            (name = 'EEnumerator') or
+            (name = 'EDiagnosticChain') ) 
+        then getDefaultAnyValue() 
         else getDefaultPointerValue()
         endif
 /]
@@ -252,5 +261,6 @@ std::string
 [query private getDefaultCharValue(anEClassifier : EClassifier) : String = '\'\''/]
 [query private getDefaultNumberValue(anEClassifier : EClassifier) : String = '0'/]
 [query private getDefaultPointerValue(anEClassifier : EClassifier) : String = 'nullptr'/]
+[query private getDefaultAnyValue(anEClassifier : EClassifier) : String = 'NO_VALUE'/]
 [query private getDefaultStringValue(anEClassifier : EClassifier) : String = '""'/]
 

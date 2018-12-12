@@ -1,5 +1,6 @@
 #include <boost/test/auto_unit_test.hpp>
 
+#include "ecore/Stream.hpp"
 #include "ecore/impl/Notification.hpp"
 #include "ecore/tests/MockNotifier.hpp"
 #include "ecore/tests/MockNotification.hpp"
@@ -13,56 +14,10 @@ using namespace ecore::tests;
 
 namespace std
 {
-    template<class T>
-    bool out_to_stream( std::ostream& os, const Any& any_value )
-    {
-        try {
-            T v = anyCast<T>(any_value);
-            os << v;
-            return true;
-        }
-        catch (BadAnyCast&) {
-            return false;
-        }
-    }
-
-    template<>
-    bool out_to_stream<std::string>( std::ostream& os, const Any& any_value )
-    {
-        try {
-            std::string v = std::move( anyCast<std::string>(any_value) );
-            os << "'" << v << "'";
-            return true;
-        }
-        catch (BadAnyCast&) {
-            return false;
-        }
-    }
-
-    ostream& operator <<( ostream& os, const Any& any_value )
-    {
-        //list all types you want to try
-        if (!out_to_stream<int>( os, any_value ))
-            if (!out_to_stream<double>( os, any_value ))
-                if (!out_to_stream<bool>( os, any_value ))
-                    if (!out_to_stream<std::string>( os, any_value ))
-                        if (!out_to_stream<std::shared_ptr<MockObject>>( os, any_value ))
-                            os << "{unknown}"; // all cast are failed, an unknown type of any
-        return os;
-    }
-
     template <typename T>
     ostream& operator <<( ostream& os, const std::vector<T>& v )
     {
-        bool first = true;
-        os << "[";
-        for (auto b : v)
-        {
-            os << (first ? "" : ",") << b;
-            first = false;
-        }
-        os << "]";
-        return os;
+        return print_container(os,v);
     }
 
 }
@@ -134,8 +89,8 @@ BOOST_AUTO_TEST_CASE( Merge )
     {
         auto obj1 = std::make_shared<MockObject>();
         auto obj2 = std::make_shared<MockObject>();
-        auto notification = std::make_shared<Notification>( notifier, ENotification::REMOVE, feature, obj1, nullptr, 2 );
-        auto other = std::make_shared<Notification>( notifier, ENotification::REMOVE, feature, obj2, nullptr, 2 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::REMOVE, feature, obj1, NO_VALUE, 2 );
+        auto other = std::make_shared<Notification>( notifier, ENotification::REMOVE, feature, obj2, NO_VALUE, 2 );
         BOOST_CHECK( notification->merge( other ) );
         BOOST_CHECK_EQUAL( notification->getEventType(), ENotification::REMOVE_MANY );
         auto oldValue = anyCast<std::vector<Any>>(notification->getOldValue());
@@ -148,7 +103,7 @@ BOOST_AUTO_TEST_CASE( Merge )
         auto obj2 = std::make_shared<MockObject>();
         auto obj3 = std::make_shared<MockObject>();
         auto notification = std::make_shared<Notification>( notifier, ENotification::REMOVE_MANY, feature, std::vector<Any>( { obj1 , obj2 } ), std::vector<std::size_t>( { 2, 3 } ) );
-        auto other = std::make_shared<Notification>( notifier, ENotification::REMOVE, feature, obj3, nullptr, 2 );
+        auto other = std::make_shared<Notification>( notifier, ENotification::REMOVE, feature, obj3, NO_VALUE, 2 );
         BOOST_CHECK( notification->merge( other ) );
         BOOST_CHECK_EQUAL( notification->getEventType(), ENotification::REMOVE_MANY );
         auto oldValue = std::move( anyCast<std::vector<Any>>(notification->getOldValue()) );
@@ -174,8 +129,8 @@ BOOST_AUTO_TEST_CASE( Add )
     {
         auto obj1 = std::make_shared<MockObject>();
         auto obj2 = std::make_shared<MockObject>();
-        auto notification = std::make_shared<Notification>( notifier, ENotification::ADD, feature, nullptr, obj1 );
-        auto other = std::make_shared<Notification>( notifier, ENotification::ADD, feature, nullptr, obj2 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::ADD, feature, NO_VALUE, obj1 );
+        auto other = std::make_shared<Notification>( notifier, ENotification::ADD, feature, NO_VALUE, obj2 );
         BOOST_CHECK( notification->add( other ) );
         MOCK_EXPECT( notifier->eNotify ).with( notification ).once();
         MOCK_EXPECT( notifier->eNotify ).with( other ).once();
@@ -184,7 +139,7 @@ BOOST_AUTO_TEST_CASE( Add )
     {
         auto obj1 = std::make_shared<MockObject>();
         auto obj2 = std::make_shared<MockObject>();
-        auto notification = std::make_shared<Notification>( notifier, ENotification::ADD, feature, nullptr, obj1 );
+        auto notification = std::make_shared<Notification>( notifier, ENotification::ADD, feature, NO_VALUE, obj1 );
         auto other = std::make_shared<MockNotification>();
         auto otherNotifier = std::make_shared<MockNotifier>();
         MOCK_EXPECT( other->getEventType ).returns( ENotification::SET );

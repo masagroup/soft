@@ -7,8 +7,10 @@
 //
 // *****************************************************************************
 
+
 #include "ecore/impl/Notification.hpp"
 #include "ecore/impl/NotificationChain.hpp"
+#include "ecore/Stream.hpp"
 #include "ecore/ENotifier.hpp"
 
 using namespace ecore;

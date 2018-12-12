@@ -1,31 +1,14 @@
 #include <boost/test/auto_unit_test.hpp>
 
+#include "ecore/Stream.hpp"
 #include "ecore/ECollectionView.hpp"
 #include "ecore/impl/ImmutableEList.hpp"
 
 #include "ecore/tests/MockObject.hpp"
 
-
 using namespace ecore;
 using namespace ecore::impl;
 using namespace ecore::tests;
-
-namespace std
-{
-    template <typename T>
-    ostream& operator <<( ostream& os, const std::vector<T>& v )
-    {
-        bool first = true;
-        os << "[";
-        for( auto b : v )
-        {
-            os << ( first ? "" : "," ) << b;
-            first = false;
-        }
-        os << "]";
-        return os;
-    }
-}
 
 BOOST_AUTO_TEST_SUITE( ECollectionViewTests )
 
