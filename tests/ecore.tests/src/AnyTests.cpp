@@ -157,5 +157,28 @@ BOOST_AUTO_TEST_CASE( Comparison )
     }
 }
 
+BOOST_AUTO_TEST_CASE( Serialization )
+{
+    {
+        Any a(1);
+        std::ostringstream s;
+        s << a;
+        BOOST_CHECK_EQUAL( s.str() , "1" );
+    }
+    {
+        Any a;
+        std::ostringstream s;
+        s << a;
+        BOOST_CHECK_EQUAL( s.str(), "" );
+    }
+    {
+        Any a( std::vector<int>{ 1, 2} );
+        std::ostringstream s;
+        s << a;
+        BOOST_CHECK_EQUAL( s.str(), "[1,2]" );
+    }
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END()
