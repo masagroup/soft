@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <vector>
+#include <memory>
 #include "ecore/EList.hpp"
 
 namespace ecore
@@ -20,6 +21,13 @@ namespace ecore
     {
         return os << (void*) nullptr;
     }
+
+    template<typename C, typename T, typename U>
+    std::basic_ostream<C, T>& operator<<( std::basic_ostream<C, T>& os, const std::weak_ptr<U>& ptr )
+    {
+        return os << ptr.lock();
+    }
+
 
     template<typename C, typename T, typename Container >
     std::basic_ostream<C, T>& print_container( std::basic_ostream<C, T>& os, const Container& c )

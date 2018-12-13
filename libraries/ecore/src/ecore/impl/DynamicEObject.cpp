@@ -1,5 +1,4 @@
 #include "ecore/impl/DynamicEObject.hpp"
-#include "ecore/impl/WeakPtr.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/EAdapter.hpp"
 #include "ecore/ENotification.hpp"
@@ -8,17 +7,27 @@
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/EAttribute.hpp"
 #include "ecore/EReference.hpp"
+#include "ecore/Stream.hpp"
 #include "ecore/impl/ArrayEList.hpp"
 #include "ecore/impl/EObjectEList.hpp"
 #include "ecore/impl/Proxy.hpp"
+#include "ecore/impl/WeakPtr.hpp"
 
 #include <string>
 #include <sstream>
 
 using namespace ecore;
 using namespace ecore::impl;
-
 using EObjectProxy = Proxy< std::shared_ptr<EObject> >;
+
+namespace std
+{
+    template <typename T>
+    bool operator ==( const std::weak_ptr<T>& lhs, const std::weak_ptr<T>& rhs )
+    {
+        return !lhs.owner_before( rhs ) && !rhs.owner_before( lhs );
+    }
+}
 
 class DynamicEObject::FeaturesAdapter : public EAdapter
 {
@@ -95,15 +104,22 @@ Any DynamicEObject::eGet( int featureID, bool resolve, bool coreType ) const
         {
             if( eFeature->isMany() )
                 properties_[ dynamicFeatureID ] = result = createList( eFeature );
-            else if ( eFeature->eIsProxy() )
+            else if( isProxy( eFeature ) )
                 properties_[ dynamicFeatureID ] = result = std::make_shared<EObjectProxy>();
+            else if( isBackReference( eFeature ) )
+                properties_[ dynamicFeatureID ] = result = std::weak_ptr<EObject>();
         }
         
-        // proxy 
-        if( eFeature->eIsProxy() )
+        // convert internal value to ouput value
+        if( isProxy( eFeature ) )
         {
             auto proxy = anyCast<std::shared_ptr<EObjectProxy>>( result );
             result = proxy->get();
+        }
+        else if( isBackReference( eFeature ) )
+        {
+            auto weak = anyCast<std::weak_ptr<EObject>>( result );
+            result = weak.lock();
         }
         
         return result;
@@ -149,14 +165,20 @@ void DynamicEObject::eSet( int featureID, const Any & newValue )
         else if( isBidirectional( dynamicFeature ) || isContains( dynamicFeature ) )
         {
             _ASSERT_EXPR( newValue.type() == typeid( std::shared_ptr<EObject>() ), " Feature defined as birectional or containment : value must be a std::shared_ptr<EObject>" );
-
+            
             // inverse - opposite
             auto oldValue = properties_[ dynamicFeatureID ];
             if( oldValue != newValue )
             {
                 std::shared_ptr<ENotificationChain> notifications;
-                auto oldObject = dynamicFeature->eIsProxy() ? anyCast<std::shared_ptr<EObjectProxy>>( oldValue )->get()  
-                                                            : anyCast<std::shared_ptr<EObject>>( oldValue );
+                std::shared_ptr<EObject> oldObject;
+                if( isProxy( dynamicFeature ) )
+                    oldObject = anyCast<std::shared_ptr<EObjectProxy>>( oldValue )->get();
+                else if( isBackReference(dynamicFeature) )
+                    oldObject = anyCast<std::weak_ptr<EObject>>( oldValue ).lock();
+                else
+                    oldObject = anyCast<std::shared_ptr<EObject>>( oldValue );
+                
                 auto newObject = anyCast<std::shared_ptr<EObject>>( newValue );
                 
                 if( !isBidirectional( dynamicFeature ) )
@@ -178,13 +200,20 @@ void DynamicEObject::eSet( int featureID, const Any & newValue )
                         notifications = newObject->eInverseAdd( getThisPtr(), reverseFeature->getFeatureID(), notifications );
                 }
                 // basic set
-                if( dynamicFeature->eIsProxy() )
+                if( isProxy( dynamicFeature ) )
                 {
                     auto proxy = anyCast < std::shared_ptr<EObjectProxy> >( oldValue );
                     proxy->set( newObject );
                 }
+                else if( isBackReference( dynamicFeature ) )
+                {
+                    properties_[ dynamicFeatureID ] = std::weak_ptr<EObject>( newObject) ;
+                }
                 else
+                {
                     properties_[ dynamicFeatureID ] = newValue;
+                }
+                    
                 
                 // create notification
                 if( eNotificationRequired() )
@@ -207,13 +236,20 @@ void DynamicEObject::eSet( int featureID, const Any & newValue )
             // basic set
             auto oldValue = properties_[ dynamicFeatureID ];
 
-            if( dynamicFeature->eIsProxy() )
+            if( isProxy(dynamicFeature) )
             {
                 _ASSERT_EXPR( newValue.type() == typeid( std::shared_ptr<EObject>() ), " Feature defined as reference proxy : value must be a std::shared_ptr<EObject>" );
-
                 auto newObject = anyCast<std::shared_ptr<EObject>>( newValue );
+                
                 auto proxy = anyCast < std::shared_ptr<EObjectProxy> >( oldValue );
                 proxy->set( newObject );
+            }
+            else if( isBackReference( dynamicFeature ) )
+            {
+                _ASSERT_EXPR( newValue.type() == typeid( std::shared_ptr<EObject>() ), " Feature defined as a back reference : value must be a std::shared_ptr<EObject>" );
+                auto newObject = anyCast<std::shared_ptr<EObject>>( newValue );
+
+                properties_[ dynamicFeatureID ] = std::weak_ptr<EObject>( newObject );
             }
             else
                 properties_[ dynamicFeatureID ] = newValue;
@@ -282,6 +318,22 @@ bool DynamicEObject::isContains( const std::shared_ptr<EStructuralFeature>& eStr
 {
     if( auto eReference = std::dynamic_pointer_cast<EReference>( eStructuralFeature ) )
         return eReference->isContainment();
+    return false;
+}
+
+bool DynamicEObject::isBackReference( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+{
+    if( auto eReference = std::dynamic_pointer_cast<EReference>( eStructuralFeature ) )
+        return eReference->isContainer();
+    return false;
+}
+
+bool DynamicEObject::isProxy( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+{
+    if( isContainer( eStructuralFeature ) || isContains( eStructuralFeature ) )
+        return false;
+    if( auto eReference = std::dynamic_pointer_cast<EReference>( eStructuralFeature ) )
+        return eReference->isResolveProxies();
     return false;
 }
 
