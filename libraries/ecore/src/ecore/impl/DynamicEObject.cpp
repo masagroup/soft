@@ -267,7 +267,14 @@ void DynamicEObject::eUnset( int featureID )
 {
     int dynamicFeatureID = featureID - eStaticFeatureCount();
     if( dynamicFeatureID >= 0 )
+    {
+        auto oldValue = properties_[ dynamicFeatureID ];
+        
         properties_[ dynamicFeatureID ].reset();
+        
+        if( eNotificationRequired() )
+            eNotify( std::make_shared<Notification>( getThisPtr(), Notification::UNSET, featureID, oldValue, NO_VALUE ) );
+    }
     else
         BasicEObject::eUnset( featureID );
 }
