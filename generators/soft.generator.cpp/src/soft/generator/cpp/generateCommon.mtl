@@ -21,10 +21,10 @@
 [query public abstractSufix(impl : Boolean) : String = if (impl = false) then '= 0' else '' endif/]
 [query public getterPrefix(feature : EStructuralFeature) : String = if feature.eType.name = 'EBoolean' then 'is' else 'get' endif/]
 
-[query public getSetterName(feature : EStructuralFeature) : String = if hasKey('SetterName') then valueKey('SetterName') else 'set'.concat(name.toUpperFirst()) endif/]
-[query public getGetterName(feature : EStructuralFeature) : String = if hasKey('GetterName') then valueKey('GetterName') else getterPrefix().concat(name.toUpperFirst()) endif/]
-[query public getUnSetterName(feature : EStructuralFeature) : String = if hasKey('UnSetterName') then valueKey('UnSetterName') else 'unset'.concat(name.toUpperFirst()) endif/]
-[query public getIsSetName(feature : EStructuralFeature) : String = if hasKey('IsSetName') then valueKey('IsSetName') else 'isSet'.concat(name.toUpperFirst()) endif/]
+[query public getSetterName(feature : EStructuralFeature) : String = if hasKey('setterName') then valueKey('setterName') else 'set'.concat(name.toUpperFirst()) endif/]
+[query public getGetterName(feature : EStructuralFeature) : String = if hasKey('getterName') then valueKey('getterName') else getterPrefix().concat(name.toUpperFirst()) endif/]
+[query public getUnSetterName(feature : EStructuralFeature) : String = if hasKey('unSetterName') then valueKey('unSetterName') else 'unset'.concat(name.toUpperFirst()) endif/]
+[query public getIsSetName(feature : EStructuralFeature) : String = if hasKey('isSetName') then valueKey('isSetName') else 'isSet'.concat(name.toUpperFirst()) endif/]
 
 [**
  * File Comments 
