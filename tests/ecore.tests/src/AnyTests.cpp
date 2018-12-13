@@ -95,6 +95,10 @@ BOOST_AUTO_TEST_CASE( AnyCast )
 BOOST_AUTO_TEST_CASE( BadCast )
 {
     {
+        Any a;
+        BOOST_CHECK_THROW( anyCast<long>( a ), BadAnyCast );
+    }
+    {
         Any a( 1 );
         BOOST_CHECK_THROW( anyCast<long>( a ), BadAnyCast );
     }
