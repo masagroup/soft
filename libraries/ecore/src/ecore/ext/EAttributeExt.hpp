@@ -10,7 +10,6 @@
 #ifndef ECORE_EATTRIBUTE_EATTRIBUTEEXT_HPP
 #define ECORE_EATTRIBUTE_EATTRIBUTEEXT_HPP
 
-#include "ecore/ext/EStructuralFeatureExt.hpp"
 #include "ecore/impl/EAttributeImpl.hpp"
 
 namespace ecore::ext

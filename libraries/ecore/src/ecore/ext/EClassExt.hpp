@@ -10,7 +10,6 @@
 #ifndef ECORE_ECLASS_ECLASSEXT_HPP
 #define ECORE_ECLASS_ECLASSEXT_HPP
 
-#include "ecore/ext/EClassifierExt.hpp"
 #include "ecore/impl/EClassImpl.hpp"
 
 #include <unordered_map>
