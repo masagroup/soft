@@ -109,7 +109,7 @@ Any DynamicEObject::eGet( int featureID, bool resolve, bool coreType ) const
             else if( isBackReference( eFeature ) )
                 properties_[ dynamicFeatureID ] = result = std::weak_ptr<EObject>();
         }
-        
+
         // convert internal value to ouput value
         if( isProxy( eFeature ) )
         {
@@ -213,7 +213,6 @@ void DynamicEObject::eSet( int featureID, const Any & newValue )
                 {
                     properties_[ dynamicFeatureID ] = newValue;
                 }
-                    
                 
                 // create notification
                 if( eNotificationRequired() )

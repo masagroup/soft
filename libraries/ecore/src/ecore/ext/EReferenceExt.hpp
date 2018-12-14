@@ -31,6 +31,8 @@ namespace ecore::ext
     public:
         virtual ~EReferenceExt();
 
+        virtual bool isContainer() const;
+
     };
 
 }
