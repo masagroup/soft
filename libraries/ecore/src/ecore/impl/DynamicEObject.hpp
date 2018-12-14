@@ -28,6 +28,13 @@ namespace ecore::impl
 
         void setEClass( const std::shared_ptr<EClass>& eClass );
 
+    public:
+        using EObject::eGet;
+        using EObject::eSet;
+        using EObject::eIsSet;
+        using EObject::eUnset;
+        using EObject::eInvoke;
+
     protected:
         virtual Any eGet( int featureID, bool resolve, bool coreType ) const;
         virtual bool eIsSet( int featureID ) const;

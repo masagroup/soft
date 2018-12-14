@@ -6,6 +6,7 @@ set(SOURCE_FILES
     src/AnyTests.cpp
     src/ArrayEListTests.cpp
     src/DiamondVsMixinsTests.cpp
+    src/DynamicEObjectTests.cpp
     src/EcoreFactoryTests.cpp
     src/EcorePackageTests.cpp
     src/EAttributeTests.cpp
