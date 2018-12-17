@@ -28,7 +28,7 @@ namespace ecore
         }
 
 
-        explicit ETreeIterator( const T& obj , std::function< std::shared_ptr<EList<T>>( const T& )> getChildren )
+        explicit ETreeIterator( const T& obj , std::function< std::shared_ptr<const EList<T>>( const T& )> getChildren )
             : getChildren_( getChildren )
         {
             auto l = getChildren_( obj );
@@ -105,9 +105,9 @@ namespace ecore
         }
     
     private:
-        std::function< std::shared_ptr<EList<T>>( const T& )> getChildren_;
+        std::function< std::shared_ptr<const EList<T>>( const T& )> getChildren_;
         T current_;
-        std::stack<typename EList<T>::iterator> stack_;
+        std::stack<typename EList<T>::const_iterator> stack_;
     };
 }
 

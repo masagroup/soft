@@ -222,16 +222,116 @@ namespace ecore {
             return std::make_shared<DelegateEList< Q, T >>( *this );
         }
 
+        template< typename Q >
+        inline std::shared_ptr<const EList< Q >> asEListOf() const
+        {
+            return std::make_shared<ConstDelegateEList< Q, T >>( *this );
+        }
+
     };
 
+
     template< typename T, typename Q >
-    class DelegateEList : public EList< T >
+    class ConstDelegateEList : public EList< T >
     {
     public:
         typedef EList< Q > T_ListDelegate;
 
-        DelegateEList( T_ListDelegate& delegate ) :
+        ConstDelegateEList( const T_ListDelegate& delegate ):
             delegate_( delegate )
+        {
+        }
+
+        virtual ~ConstDelegateEList()
+        {
+        }
+
+        virtual bool add( const T& e )
+        {
+            throw "UnsupportedOperationException";
+        }
+
+        virtual void add( std::size_t pos, const T& e )
+        {
+            throw "UnsupportedOperationException";
+        }
+
+        virtual bool addAll( const EList<T>& l )
+        {
+            throw "UnsupportedOperationException";
+        }
+
+        virtual bool addAll( std::size_t pos, const EList<T>& l )
+        {
+            throw "UnsupportedOperationException";
+        }
+
+        virtual T get( std::size_t pos ) const
+        {
+            return cast< Q, T >::do_cast( delegate_.get( pos ) );
+        }
+
+        virtual void set( std::size_t pos, const T& e )
+        {
+            throw "UnsupportedOperationException";
+        }
+
+        virtual T remove( std::size_t pos )
+        {
+            throw "UnsupportedOperationException";
+        }
+
+        virtual bool remove( const T& e )
+        {
+            throw "UnsupportedOperationException";
+        }
+
+        virtual std::size_t size() const
+        {
+            return delegate_.size();
+        }
+
+        virtual void clear()
+        {
+            throw "UnsupportedOperationException";
+        }
+
+        virtual bool empty() const
+        {
+            return delegate_.empty();
+        }
+
+    protected:
+
+        const T_ListDelegate& delegate_;
+
+        template< typename A, typename B >
+        struct cast
+        {
+            static inline B do_cast( const A& a )
+            {
+                return std::dynamic_pointer_cast<typename B::element_type>( a );
+            }
+        };
+
+        template< typename A >
+        struct cast< A, A >
+        {
+            static inline A do_cast( const A& a )
+            {
+                return a;
+            }
+        };
+    };
+
+    template< typename T, typename Q >
+    class DelegateEList : public ConstDelegateEList< T , Q >
+    {
+    public:
+        
+        DelegateEList( T_ListDelegate& delegate )
+            : ConstDelegateEList< T, Q >( delegate )
+            , delegate_( delegate )
         {
         }
 
@@ -251,18 +351,14 @@ namespace ecore {
 
         virtual bool addAll( const EList<T>& l )
         {
-            auto transformed = const_cast<EList<T>&>(l).asEListOf<Q>();
+            auto transformed = const_cast<EList<T>&>( l ).asEListOf<Q>();
             return delegate_.addAll( *transformed );
         }
 
         virtual bool addAll( std::size_t pos, const EList<T>& l )
         {
-            auto transformed = const_cast<EList<T>&>(l).asEListOf<Q>();
+            auto transformed = const_cast<EList<T>&>( l ).asEListOf<Q>();
             return delegate_.addAll( pos, *transformed );
-        }
-
-        virtual T get( std::size_t pos ) const {
-            return cast< Q, T >::do_cast( delegate_.get( pos ) );
         }
 
         virtual void set( std::size_t pos, const T& e )
@@ -280,43 +376,17 @@ namespace ecore {
             return delegate_.remove( cast< T, Q >::do_cast( e ) );
         }
 
-        virtual std::size_t size() const
-        {
-            return delegate_.size();
-        }
-
         virtual void clear()
         {
             delegate_.clear();
         }
-
-        virtual bool empty() const
-        {
-            return delegate_.empty();
-        }
-
+     
     protected:
 
         T_ListDelegate& delegate_;
-
-        template< typename A, typename B >
-        struct cast
-        {
-            static inline B do_cast( const A& a )
-            {
-                return std::dynamic_pointer_cast<typename B::element_type>(a);
-            }
-        };
-
-        template< typename A >
-        struct cast< A, A >
-        {
-            static inline A do_cast( const A& a )
-            {
-                return a;
-            }
-        };
     };
+
+    
 
     template <typename T>
     bool operator ==( const EList<T>& lhs, const EList<T>& rhs )

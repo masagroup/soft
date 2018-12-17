@@ -21,6 +21,12 @@ namespace std
     }
 
     template <typename T>
+    bool operator ==( const std::shared_ptr<const EList<T>>& lhs, const std::vector<T>& rhs )
+    {
+        return lhs->size() == rhs.size() && std::equal( lhs->begin(), lhs->end(), rhs.begin() );
+    }
+
+    template <typename T>
     ostream& operator <<( ostream& os, const std::shared_ptr<EList<T>>& v )
     {
         return print_container(os,*v);

@@ -19,17 +19,21 @@
                                                                 name = 'EJavaObject' )/]
 
 [template public generateCppType(anEDataType : EGenericType) post (trim())]
-[generateCppType(true)/]
+[generateCppType(true,false)/]
 [/template]
 
-[template private generateCppType(anEDataType : EGenericType , decorate : Boolean ) post (trim())]
+[template private generateCppType(anEDataType : EGenericType , decorate : Boolean, const : Boolean ) post (trim())]
 [if (anEDataType.oclIsUndefined())]
-void[else]
-[if (anEDataType.eTypeArguments->notEmpty())]
-[anEDataType.generateGenericType()/]
-[elseif (decorate and not anEDataType.eClassifier.oclIsKindOf(EDataType))]
-std::shared_ptr<[anEDataType.eClassifier.generateType()/]>[else]
-[anEDataType.eClassifier.generateType()/][/if][/if]
+void
+[else]
+    [if (anEDataType.eTypeArguments->notEmpty())]
+        [anEDataType.generateGenericType(const)/]
+    [elseif (decorate and not anEDataType.eClassifier.oclIsKindOf(EDataType))]
+        std::shared_ptr<[if const]const [/if][anEDataType.eClassifier.generateType()/]>
+    [else]
+        [anEDataType.eClassifier.generateType()/]
+    [/if]
+[/if]
 [/template]
 
 [template public generateGenericArgumentType(anEDataType : EGenericType) post (trim())]
@@ -40,16 +44,22 @@ std::shared_ptr<[anEDataType.eClassifier.generateType()/]>[else]
 [anEDataType.eClassifier.generateType()/][/if]
 [/template]
 
-[template public generateGenericType(anEDataType : EGenericType) post (trim())]
-[if (anEDataType.eClassifier.name = 'EJavaClass')][anEDataType.eClassifier.generateType()/][else]
-std::shared_ptr<[anEDataType.eClassifier.generateType()/]<[for (g : EGenericType | anEDataType.eTypeArguments) separator (',')][g.generateGenericArgumentType()/][/for]>>[/if]
+[template public generateGenericType(anEDataType : EGenericType, const : Boolean) post (trim())]
+[if (anEDataType.eClassifier.name = 'EJavaClass')]
+[if const]const [/if][anEDataType.eClassifier.generateType()/]
+[else]
+std::shared_ptr<[if const]const [/if][anEDataType.eClassifier.generateType()/]<[for (g : EGenericType | anEDataType.eTypeArguments) separator (',')][g.generateGenericArgumentType()/][/for]>>[/if]
 [/template]
 
-[template public generateEffectiveType(eElement : ETypedElement) post(trim())]
+[template public generateEffectiveType(eElement : ETypedElement ) post(trim())]
+[eElement.generateEffectiveType(hasKey('const') and valueKey('const') = 'return')/]
+[/template]
+
+[template public generateEffectiveType(eElement : ETypedElement, const : Boolean ) post(trim())]
 [if (isListType())]
-std::shared_ptr<EList<[eElement.eGenericType.generateCppType()/]>>
+std::shared_ptr<[if const]const [/if]EList<[eElement.eGenericType.generateCppType()/]>>
 [else]
-[eElement.eGenericType.generateCppType()/]
+[eElement.eGenericType.generateCppType(true,const)/]
 [/if]
 [/template]
 
@@ -83,7 +93,7 @@ const [aAttribute.generateEffectiveType()/]&
 [/template]
 
 [template public generateElementType(aStructuralFeature : EStructuralFeature) post (trim())]
-[aStructuralFeature.eGenericType.generateCppType(false)/]
+[aStructuralFeature.eGenericType.generateCppType(false,false)/]
 [/template]
 
 [template public generateDataType(aStructuralFeature : EStructuralFeature) post (trim())]

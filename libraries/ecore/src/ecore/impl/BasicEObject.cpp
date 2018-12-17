@@ -69,17 +69,17 @@ bool BasicEObject::eNotificationRequired()
     return eDeliver_ && eAdapters_->size() > 0;
 }
 
-std::shared_ptr<ECollectionView<std::shared_ptr<ecore::EObject>>> BasicEObject::eAllContents() const
+std::shared_ptr<const ECollectionView<std::shared_ptr<ecore::EObject>>> BasicEObject::eAllContents() const
 {
     return std::make_shared< ECollectionView<std::shared_ptr<ecore::EObject>>>( getThisPtr() );
 }
 
-std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eContents() const
+std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eContents() const
 {
     return eClass()->getEContainments()->asEListOf<std::shared_ptr<EObject>>();
 }
 
-std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eCrossReferences() const
+std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eCrossReferences() const
 {
     return eClass()->getECrossReferences()->asEListOf<std::shared_ptr<EObject>>();
 }

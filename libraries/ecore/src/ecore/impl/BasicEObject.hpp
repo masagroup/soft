@@ -37,13 +37,13 @@ namespace ecore::impl
         bool eNotificationRequired();
 
         // Operations
-        virtual std::shared_ptr<ECollectionView<std::shared_ptr<ecore::EObject>>> eAllContents() const;
         virtual std::shared_ptr<ecore::EClass> eClass() const;
         virtual std::shared_ptr<ecore::EObject> eContainer() const;
         virtual std::shared_ptr<ecore::EStructuralFeature> eContainingFeature() const;
         virtual std::shared_ptr<ecore::EReference> eContainmentFeature() const;
-        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eContents() const;
-        virtual std::shared_ptr<EList<std::shared_ptr<ecore::EObject>>> eCrossReferences() const;
+        virtual std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> eContents() const;
+        virtual std::shared_ptr<const ECollectionView<std::shared_ptr<ecore::EObject>>> eAllContents() const;
+        virtual std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> eCrossReferences() const;
         virtual Any eGet( const std::shared_ptr<ecore::EStructuralFeature>& feature ) const;
         virtual Any eGet( const std::shared_ptr<ecore::EStructuralFeature>& feature, bool resolve ) const;
         virtual Any eGet( const std::shared_ptr<ecore::EStructuralFeature>& feature, bool resolve, bool coreType ) const;
