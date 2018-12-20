@@ -11,140 +11,56 @@
 #include "ecore/impl/Notification.hpp"
 #include "ecore/impl/NotificationChain.hpp"
 #include "ecore/Stream.hpp"
-#include "ecore/ENotifier.hpp"
+#include "ecore/EObject.hpp"
+#include "ecore/EClass.hpp"
+#include "ecore/EStructuralFeature.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
 
-bool Notification::merge( const std::shared_ptr<ENotification>& notification )
+Notification::Notification( const std::shared_ptr<EObject>& notifier
+                            , EventType type
+                            , const std::shared_ptr<EStructuralFeature>& feature
+                            , const Any & oldValue
+                            , const Any & newValue
+                            , std::size_t position )
+    : AbstractNotification( type, oldValue, newValue, position )
+    , notifier_( notifier )
+    , feature_( feature )
+    , featureID_( -1 )
 {
-    switch (eventType_)
-    {
-        case SET:
-        case UNSET:
-        {
-            EventType notificationEventType = notification->getEventType();
-            switch (notificationEventType)
-            {
-                case SET:
-                case UNSET:
-                {
-                    if (notifier_ == notification->getNotifier() && feature_ == notification->getFeature())
-                    {
-                        newValue_ = notification->getNewValue();
-                        if (notification->getEventType() == SET)
-                            eventType_ = SET;
-                        return true;
-                    }
-                }
-            }
-        }
-        case REMOVE:
-        {
-            EventType notificationEventType = notification->getEventType();
-            switch (notificationEventType)
-            {
-                case REMOVE:
-                {
-                    if (notifier_ == notification->getNotifier() && feature_ == notification->getFeature())
-                    {
-                        std::size_t originalPosition = getPosition();
-                        std::size_t notificationPosition = notification->getPosition();
-                        eventType_ = REMOVE_MANY;
-                        std::vector<Any> removedValues;
-                        if (originalPosition <= notificationPosition)
-                        {
-                            removedValues.push_back( oldValue_ );
-                            removedValues.push_back( notification->getOldValue() );
-                            newValue_ = std::vector<std::size_t>{ position_ = originalPosition, notificationPosition + 1 };
-                        }
-                        else
-                        {
-                            removedValues.push_back( notification->getOldValue() );
-                            removedValues.push_back( oldValue_ );
-                            newValue_ = std::vector<std::size_t>{ position_ = notificationPosition, originalPosition };
-                        }
-                        oldValue_ = removedValues;
-                        return true;
-                    }
-                    break;
-                }
-            }
-            break;
-        }
-        case REMOVE_MANY:
-        {
-            EventType notificationEventType = notification->getEventType();
-            switch (notificationEventType)
-            {
-                case REMOVE:
-                {
-                    if (notifier_ == notification->getNotifier() && feature_ == notification->getFeature())
-                    {
-                        std::size_t notificationPosition = notification->getPosition();
-                        std::vector<std::size_t> positions = std::move( anyCast<std::vector<std::size_t>>(newValue_) );
-                        std::vector<std::size_t> newPositions( positions.size() + 1 );
-
-                        int index = 0;
-                        while (index < positions.size())
-                        {
-                            std::size_t oldPosition = positions[index];
-                            if (oldPosition <= notificationPosition)
-                            {
-                                newPositions[index++] = oldPosition;
-                                ++notificationPosition;
-                            }
-                            else
-                                break;
-                        }
-
-                        std::vector<Any> oldValue = std::move( anyCast<std::vector<Any>>(oldValue_) );
-                        oldValue.insert( oldValue.begin() + index, notification->getOldValue() );
-
-                        newPositions[index] = notificationPosition;
-                        while (++index < positions.size() + 1)
-                            newPositions[index] = positions[index - 1];
-
-                        oldValue_ = oldValue;
-                        newValue_ = newPositions;
-                        return true;
-                    }
-                    break;
-                }
-            }
-            break;
-        }
-    }
-    return false;
 }
 
-bool Notification::add( const std::shared_ptr<ENotification>& notification )
+
+
+Notification::Notification( const std::shared_ptr<EObject>& notifier,
+              EventType type,
+              int featureID,
+              const Any& oldValue,
+              const Any& newValue,
+              std::size_t position )
+    : AbstractNotification( type, oldValue, newValue, position )
+    , notifier_( notifier )
+    , feature_()
+    , featureID_( featureID )
 {
-    if (!notification)
-        return false;
-    if (merge( notification ))
-        return false;
-    if (!next_)
-    {
-        if (auto n = std::dynamic_pointer_cast<Notification>(notification))
-        {
-            next_ = n;
-            return true;
-        }
-        else
-        {
-            next_ = std::make_shared<NotificationChain>();
-            return next_->add( notification );
-        }
-    }
-    else
-        return next_->add( notification );
 }
 
-void Notification::dispatch()
+Notification::~Notification()
 {
-    if (notifier_ && eventType_ != -1)
-        notifier_->eNotify( std::enable_shared_from_this<Notification>::shared_from_this() );
-    if (next_)
-        next_->dispatch();
+}
+
+std::shared_ptr<ENotifier> Notification::getNotifier() const
+{
+    return notifier_;
+}
+
+std::shared_ptr<EStructuralFeature> Notification::getFeature() const
+{
+    return feature_ ? feature_ : notifier_->eClass()->getEStructuralFeature( featureID_ );
+}
+
+int Notification::getFeatureID() const
+{
+    return featureID_ != -1 ? featureID_ : ( feature_ ? feature_->getFeatureID() : -1 );
 }

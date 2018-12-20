@@ -1,5 +1,6 @@
 #include "ecore/ext/EOperationExt.hpp"
 #include "ecore/EParameter.hpp"
+#include "ecore/EClass.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;

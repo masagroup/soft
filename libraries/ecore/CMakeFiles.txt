@@ -24,6 +24,7 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/AbstractEObjectEList.hpp
     src/ecore/impl/AbstractArrayEList.hpp
     src/ecore/impl/ArrayEList.hpp
+    src/ecore/impl/AbstractNotification.hpp
     src/ecore/impl/BasicEObject.hpp
     src/ecore/impl/DynamicEObject.hpp
     src/ecore/impl/EObjectEList.hpp
@@ -37,6 +38,7 @@ set(HEADER_ECORE_IMPL_FILES
 )
 
 set(SOURCE_ECORE_IMPL_FILES 
+    src/ecore/impl/AbstractNotification.cpp
     src/ecore/impl/BasicEObject.cpp
     src/ecore/impl/DynamicEObject.cpp    
     src/ecore/impl/Notification.cpp
