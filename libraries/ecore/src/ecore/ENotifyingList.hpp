@@ -16,7 +16,9 @@
 
 namespace ecore
 {
+    class ENotifier;
     class ENotificationChain;
+    class EStructuralFeature;
 
     template <typename T>
     class ENotifyingList : public EList<T>
@@ -26,6 +28,12 @@ namespace ecore
 
         using EList::add;
         using EList::remove;
+
+        virtual std::shared_ptr<ENotifier> getNotifier() const = 0;
+
+        virtual std::shared_ptr<EStructuralFeature> getFeature() const = 0;
+
+        virtual int getFeatureID() const = 0;
 
         virtual std::shared_ptr<ENotificationChain> add( const T& t, const std::shared_ptr<ENotificationChain>& notifications ) = 0;
 

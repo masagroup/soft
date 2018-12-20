@@ -21,6 +21,7 @@ set(HEADER_ECORE_FILES
 
 set(HEADER_ECORE_IMPL_FILES 
     src/ecore/impl/AbstractEList.hpp
+    src/ecore/impl/AbstractENotifyingList.hpp
     src/ecore/impl/AbstractEObjectEList.hpp
     src/ecore/impl/AbstractArrayEList.hpp
     src/ecore/impl/ArrayEList.hpp

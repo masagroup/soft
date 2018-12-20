@@ -24,6 +24,8 @@ namespace ecore
 
         static const std::size_t NO_INDEX = -1;
 
+        static const int NO_FEATURE_ID = -1;
+
         enum EventType
         {
             CREATE,
