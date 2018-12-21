@@ -37,7 +37,7 @@ namespace ecore::impl
         virtual void detached( const std::shared_ptr<EObject>& object );
 
     private:
-        virtual std::shared_ptr< EList< std::shared_ptr< EObject > > > initContents() const;
+        virtual std::shared_ptr< EList< std::shared_ptr< EObject > > > initContents();
 
     private:
         std::weak_ptr<Resource> thisPtr_;

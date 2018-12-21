@@ -1,6 +1,7 @@
 #include "ecore/impl/Resource.hpp"
 #include "ecore/impl/AbstractENotifyingList.hpp"
 #include "ecore/ENotifyingList.hpp"
+#include "ecore/EObject.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -45,12 +46,12 @@ void Resource::detached( const std::shared_ptr<EObject>& object )
 {
 }
 
-std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::initContents() const
+std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::initContents()
 {
     class ContentsEList : public AbstractENotifyingList< ENotifyingList< std::shared_ptr<EObject> >, std::shared_ptr<EObject> >
     {
     public:
-        ContentsEList( const Resource& resource )
+        ContentsEList( Resource& resource )
             : resource_( resource )
         {
 
@@ -73,13 +74,19 @@ std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::initContents() const
 
     protected:
 
-        virtual std::shared_ptr<ENotificationChain> inverseAdd( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications ) const
+        virtual std::shared_ptr<ENotificationChain> inverseAdd( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<ENotificationChain>& n ) const
         {
+            auto notifications = n;
+            notifications = eObject->eSetResource( getThisPtr(), notifications );
+            resource_.attached( eObject );
             return notifications;
         }
 
-        virtual std::shared_ptr<ENotificationChain> inverseRemove( const std::shared_ptr<EObject>& object, const std::shared_ptr<ENotificationChain>& notifications ) const
+        virtual std::shared_ptr<ENotificationChain> inverseRemove( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<ENotificationChain>& n ) const
         {
+            auto notifications = n;
+            resource_.detached( eObject );
+            notifications = eObject->eSetResource( nullptr, notifications );
             return notifications;
         }
 
@@ -91,7 +98,7 @@ std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::initContents() const
         }
 
     private:
-        const Resource& resource_;
+        Resource& resource_;
     };
 
 
