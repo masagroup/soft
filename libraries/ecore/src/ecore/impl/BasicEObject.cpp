@@ -18,9 +18,7 @@ using namespace ecore;
 using namespace ecore::impl;
 
 BasicEObject::BasicEObject()
-    : eDeliver_( true )
-    , eAdapters_( new ArrayEList<EAdapter*>() )
-    , eContainer_()
+    : eContainer_()
     , eContainerFeatureID_( -1 )
     , thisPtr_()
 {
@@ -40,33 +38,6 @@ void BasicEObject::setThisPtr( const std::shared_ptr<BasicEObject>& thisPtr )
 std::shared_ptr<BasicEObject> BasicEObject::getThisPtr() const
 {
     return thisPtr_.lock();
-}
-
-
-EList<EAdapter*>& BasicEObject::eAdapters() const
-{
-    return *eAdapters_;
-}
-
-bool BasicEObject::eDeliver() const
-{
-    return eDeliver_;
-}
-
-void BasicEObject::eSetDeliver( bool deliver )
-{
-    eDeliver_ = deliver;
-}
-
-void BasicEObject::eNotify( const std::shared_ptr<ENotification>& notification )
-{
-    for( auto eAdapter : *eAdapters_ )
-        eAdapter->notifyChanged( notification );
-}
-
-bool BasicEObject::eNotificationRequired()
-{
-    return eDeliver_ && eAdapters_->size() > 0;
 }
 
 std::shared_ptr<const ECollectionView<std::shared_ptr<ecore::EObject>>> BasicEObject::eAllContents() const

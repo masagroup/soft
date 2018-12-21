@@ -20,12 +20,13 @@ set(HEADER_ECORE_FILES
 )
 
 set(HEADER_ECORE_IMPL_FILES 
+    src/ecore/impl/AbstractArrayEList.hpp
+    src/ecore/impl/ArrayEList.hpp
     src/ecore/impl/AbstractEList.hpp
     src/ecore/impl/AbstractENotifyingList.hpp
     src/ecore/impl/AbstractEObjectEList.hpp
-    src/ecore/impl/AbstractArrayEList.hpp
-    src/ecore/impl/ArrayEList.hpp
     src/ecore/impl/AbstractNotification.hpp
+    src/ecore/impl/AbstractNotifier.hpp
     src/ecore/impl/BasicEObject.hpp
     src/ecore/impl/DynamicEObject.hpp
     src/ecore/impl/EObjectEList.hpp

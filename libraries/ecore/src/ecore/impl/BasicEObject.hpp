@@ -11,6 +11,7 @@
 #define ECORE_BASICEOBJECT_HPP_
 
 #include "ecore/EObject.hpp"
+#include "ecore/impl/AbstractNotifier.hpp"
 
 namespace ecore
 {
@@ -20,21 +21,15 @@ namespace ecore
 namespace ecore::impl
 {
 
-    class BasicEObject : public virtual EObject
+    class BasicEObject : public virtual AbstractNotifier<EObject>
     {
     public:
         BasicEObject();
         virtual ~BasicEObject();
 
+        // ThisPtr
         void setThisPtr( const std::shared_ptr<BasicEObject>& thisPtr );
         std::shared_ptr<BasicEObject> getThisPtr() const;
-
-        // Notification
-        virtual EList<EAdapter*>& eAdapters() const;
-        virtual bool eDeliver() const;
-        virtual void eSetDeliver( bool deliver );
-        virtual void eNotify( const std::shared_ptr<ENotification>& notification );
-        bool eNotificationRequired();
 
         // Operations
         virtual std::shared_ptr<ecore::EClass> eClass() const;
@@ -81,8 +76,7 @@ namespace ecore::impl
         std::shared_ptr<ENotificationChain> eBasicRemoveFromContainerFeature( const std::shared_ptr<ENotificationChain>& notifications );
         static std::shared_ptr<EReference> eContainmentFeature( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EObject>& eContainer, int eContainerFeatureID );
     protected:
-        std::unique_ptr< EList<EAdapter*> > eAdapters_;
-        bool eDeliver_;
+        
         std::weak_ptr<EObject> eContainer_;
         int eContainerFeatureID_;
 
