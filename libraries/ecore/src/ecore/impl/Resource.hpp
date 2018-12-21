@@ -18,7 +18,7 @@
 
 namespace ecore::impl
 {
-    class Resource : public virtual AbstractNotifier< EResource > , private std::enable_shared_from_this<Resource>
+    class Resource : public virtual AbstractNotifier< EResource >
     {
     public:
         Resource();
