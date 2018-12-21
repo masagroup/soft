@@ -26,6 +26,7 @@ BOOST_AUTO_TEST_CASE( Accessors_Package )
 
     auto eFactory = ecoreFactory->createEFactory();
     auto mockPackage = std::make_shared<MockPackage>();
+    MOCK_EXPECT( mockPackage->eResource ).returns( nullptr );
     MOCK_EXPECT( mockPackage->eInverseAdd ).with( eFactory, EcorePackage::EFACTORY__EPACKAGE, nullptr ).returns(nullptr);
     eFactory->setEPackage( mockPackage );
     BOOST_CHECK_EQUAL( eFactory->getEPackage(), mockPackage );

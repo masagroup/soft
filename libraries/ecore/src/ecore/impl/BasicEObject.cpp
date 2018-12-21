@@ -123,18 +123,26 @@ bool BasicEObject::eIsProxy() const
 
 std::shared_ptr<EResource> BasicEObject::eResource() const
 {
-    return eResource_.lock();
+    auto eResource = eResource_.lock();
+    if( !eResource )
+    {
+        auto eContainer = eContainer_.lock();
+        if( eContainer )
+            eResource = eContainer->eResource();
+    }
+    return eResource;
 }
 
 std::shared_ptr<ENotificationChain> BasicEObject::eSetResource( const std::shared_ptr<EResource>& newResource, const std::shared_ptr<ENotificationChain>& n )
 {
     auto notifications = n;
     auto oldResource = eResource_.lock();
+    auto thisPtr = thisPtr_.lock();
     if( oldResource && newResource )
     {
         auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
         _ASSERTE( list );
-        notifications = list->remove( getThisPtr(), notifications );
+        notifications = list->remove( thisPtr, notifications );
 
         oldResource->detached( getThisPtr() );
     }
@@ -149,10 +157,10 @@ std::shared_ptr<ENotificationChain> BasicEObject::eSetResource( const std::share
             {
                 // If we're not setting a new resource, attach it to the old container's resource.
                 if( !newResource )
-                    oldContainerResource->attached( getThisPtr() );
+                    oldContainerResource->attached( thisPtr );
                 // If we didn't detach it from an old resource already, detach it from the old container's resource.
                 else if (!oldResource )
-                    oldContainerResource->detached( getThisPtr() );
+                    oldContainerResource->detached( thisPtr );
             }
         }
         else
@@ -304,11 +312,48 @@ std::shared_ptr<EObject> BasicEObject::eResolveProxy( const std::shared_ptr<EObj
 std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std::shared_ptr<EObject>& newContainer, int newContainerFeatureID, const std::shared_ptr<ENotificationChain>& n )
 {
     auto notifications = n;
+    auto thisPtr = thisPtr_.lock();
     auto oldContainer = eContainer_.lock();
+    auto oldResource = eResource_.lock();
+
+    // resource
+    std::shared_ptr<EResource> newResource;
+    if( oldResource )
+    {
+        if( newContainer && !eContainmentFeature( thisPtr, newContainer, newContainerFeatureID ) )
+        {
+            auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
+            _ASSERTE( list );
+            notifications = list->remove( thisPtr, notifications );
+
+            eResource_.reset();
+
+            newResource = newContainer->eResource();
+        }
+        else
+            oldResource = nullptr;
+    }
+    else
+    {
+        if( oldContainer )
+            oldResource = oldContainer->eResource();
+        
+        if( newContainer )
+            newResource = newContainer->eResource();
+    }
+
+    if( oldResource && oldResource != newResource )
+        oldResource->detached( thisPtr );
+    
+    if( newResource && newResource != oldResource )
+        newResource->attached( thisPtr );
+ 
+    // basic set
     int oldContainerFeatureID = eContainerFeatureID_;
     eContainer_ = newContainer;
     eContainerFeatureID_ = newContainerFeatureID;
 
+    // notification
     if( eNotificationRequired() )
     {
         if( oldContainer  && oldContainerFeatureID >= 0 && oldContainerFeatureID != newContainerFeatureID )
