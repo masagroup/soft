@@ -537,7 +537,8 @@
       <details key="baseType" value="http://www.w3.org/2001/XMLSchema#long"/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="EResource" serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EResource" instanceTypeName="std::shared_ptr&lt;ecore::EResource>"
+      serializable="false"/>
   <eClassifiers xsi:type="ecore:EDataType" name="EResourceSet" serializable="false"/>
   <eClassifiers xsi:type="ecore:EDataType" name="EShort" instanceClassName="short">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">

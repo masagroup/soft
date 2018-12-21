@@ -32,6 +32,10 @@ namespace ecore
 {
     template<typename T> class ECollectionView;
 }
+namespace ecore 
+{
+    class EResource;
+}
 
 namespace ecore 
 {
@@ -86,7 +90,7 @@ namespace ecore
         
         virtual bool eIsProxy() const = 0;
         
-        virtual int eResource() const = 0;
+        virtual std::shared_ptr<ecore::EResource> eResource() const = 0;
         
         virtual std::shared_ptr<ecore::EObject> eContainer() const = 0;
         
@@ -120,6 +124,10 @@ namespace ecore
         virtual std::shared_ptr<ENotificationChain> eInverseRemove( const std::shared_ptr<EObject>& otherEnd
                                                                   , int featureID
                                                                   , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
+        
+        virtual std::shared_ptr<ENotificationChain> eSetResource( const std::shared_ptr < EResource>& resource
+                                                                , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
+        
         virtual std::shared_ptr<EObject> eResolveProxy( const std::shared_ptr<EObject>& proxy ) const = 0;
         // End of user code
     };

@@ -47,9 +47,10 @@ namespace ecore::impl
         virtual void eUnset( const std::shared_ptr<ecore::EStructuralFeature>& feature );
         virtual Any eInvoke( const std::shared_ptr<ecore::EOperation>& operation, const std::shared_ptr<EList<Any>>& arguments );
         virtual bool eIsProxy() const;
-        virtual int eResource() const;
+        virtual std::shared_ptr<EResource> eResource() const;
 
-        int eContainerFeatureID() const;
+        // Resource
+        virtual std::shared_ptr<ENotificationChain> eSetResource( const std::shared_ptr < EResource>& resource, const std::shared_ptr<ENotificationChain>& notifications );
 
         // Container
         std::shared_ptr<ENotificationChain> eInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID , const std::shared_ptr<ENotificationChain>& notifications  );
@@ -57,6 +58,8 @@ namespace ecore::impl
 
         // Proxy
         virtual std::shared_ptr<EObject> eResolveProxy( const std::shared_ptr<EObject>& proxy ) const;
+
+        int eContainerFeatureID() const;
 
     protected:
         virtual std::shared_ptr<EClass> eStaticClass() const;
@@ -75,8 +78,9 @@ namespace ecore::impl
         std::shared_ptr<ENotificationChain> eBasicRemoveFromContainer( const std::shared_ptr<ENotificationChain>& notifications );
         std::shared_ptr<ENotificationChain> eBasicRemoveFromContainerFeature( const std::shared_ptr<ENotificationChain>& notifications );
         static std::shared_ptr<EReference> eContainmentFeature( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EObject>& eContainer, int eContainerFeatureID );
+    
     protected:
-        
+        std::weak_ptr<EResource> eResource_;
         std::weak_ptr<EObject> eContainer_;
         int eContainerFeatureID_;
 

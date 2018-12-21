@@ -6,8 +6,10 @@
 #include "ecore/EAdapter.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/ECollectionView.hpp"
+#include "ecore/ENotifyingList.hpp"
 #include "ecore/EOperation.hpp"
 #include "ecore/EReference.hpp"
+#include "ecore/EResource.hpp"
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/EcorePackage.hpp"
 
@@ -119,11 +121,51 @@ bool BasicEObject::eIsProxy() const
     return false;
 }
 
-int BasicEObject::eResource() const
+std::shared_ptr<EResource> BasicEObject::eResource() const
 {
-    return 0;
+    return eResource_.lock();
 }
 
+std::shared_ptr<ENotificationChain> BasicEObject::eSetResource( const std::shared_ptr<EResource>& newResource, const std::shared_ptr<ENotificationChain>& n )
+{
+    auto notifications = n;
+    auto oldResource = eResource_.lock();
+    if( oldResource && newResource )
+    {
+        auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
+        _ASSERTE( list );
+        notifications = list->remove( getThisPtr(), notifications );
+
+        oldResource->detached( getThisPtr() );
+    }
+
+    auto eContainer = eContainer_.lock();
+    if( eContainer )
+    {
+        if( eContainmentFeature()->isResolveProxies() )
+        {
+            auto oldContainerResource = eContainer->eResource();
+            if( oldContainerResource )
+            {
+                // If we're not setting a new resource, attach it to the old container's resource.
+                if( !newResource )
+                    oldContainerResource->attached( getThisPtr() );
+                // If we didn't detach it from an old resource already, detach it from the old container's resource.
+                else if (!oldResource )
+                    oldContainerResource->detached( getThisPtr() );
+            }
+        }
+        else
+        {
+            notifications = eBasicRemoveFromContainer( notifications );
+            notifications = eBasicSetContainer( nullptr , -1, notifications );
+        }
+    }
+
+    eResource_ = newResource;
+
+    return notifications;
+}
 
 Any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& feature ) const
 {

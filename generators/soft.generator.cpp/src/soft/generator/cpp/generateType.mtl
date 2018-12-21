@@ -138,7 +138,7 @@ int
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? (name = 'EResource')]
-int
+std::shared_ptr<ecore::EResource>
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? ((name = 'EInt') or (name = 'EIntegerObject') or (name = 'EBigInteger') or (name = 'Integer'))]

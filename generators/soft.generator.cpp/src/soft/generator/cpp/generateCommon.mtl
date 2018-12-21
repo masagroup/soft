@@ -229,6 +229,9 @@
 [query public requiresList(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else name = 'EEList' endif/]
 [query public requiresCollectionView(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else name = 'ETreeIterator' endif/]
 [query public requiresCollectionView(anGenericType : EGenericType) : Boolean = if (oclIsUndefined()) then false else anGenericType.eClassifier.requiresCollectionView() endif/]
+[query public requiresResource(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else name = 'EResource' endif/]
+[query public requiresResource(anGenericType : EGenericType) : Boolean = if (oclIsUndefined()) then false else anGenericType.eClassifier.requiresResource() endif/]
+
 
 [query public isGet(aStructuralFeature : EStructuralFeature) : Boolean = true/]
 [query public isSet(aStructuralFeature : EStructuralFeature) : Boolean = isChangeable() and aStructuralFeature.upperBound = 1/]
