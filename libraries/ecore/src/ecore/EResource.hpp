@@ -26,6 +26,18 @@ namespace ecore
     class EResource : public virtual ENotifier
     {
     public:
+        /**
+        * The {@link #getURI} feature {@link ENotification#getFeatureID ID}.
+        */
+        static const int RESOURCE__URI = 1;
+
+        /**
+        * The {@link #getContents} feature {@link ENotification#getFeatureID ID}.
+        */
+        static const int RESOURCE__CONTENTS = 2;
+
+
+    public:
         virtual ~EResource() = default;
 
         virtual std::shared_ptr< EList< std::shared_ptr< EObject > > > getContents() const = 0;
