@@ -41,7 +41,19 @@
         </unzip>
     </target>
     
-    <target name="initialize" depends="aria2.initialize,cmake.initialize"/>
+    <target name="ninja.initialize">
+        <local name="file"/>
+        <local name="version"/>
+        <property name="file" value ="ninja-win"/>  
+        <property name="version" value ="1.8.2"/>
+        <mkdir dir="${cache.dir}"/>
+        <download url="https://github.com/ninja-build/ninja/releases/download/v${version}/${file}.zip"/>
+        <unzip src="${cache.dir}/${file}.zip" dest="${bin.dir}/ninja">
+            <globmapper from="${file}/*" to="*"/>
+        </unzip>
+    </target>
+    
+    <target name="initialize" depends="aria2.initialize,cmake.initialize,ninja.initialize"/>
     
     <target name="generators.build.cpp">
         <exec executable="cmd" dir="${generators.dir}/soft.generator.cpp" failonerror="true">
