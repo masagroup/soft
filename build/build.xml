@@ -36,6 +36,19 @@
         </sequential>
     </macrodef>
     
+    
+    <target name="ant.initialize">
+        <local name="file"/>
+        <local name="version"/>
+        <property name="file" value ="ant-contrib-1.0b3-bin"/>  
+        <property name="version" value ="1.0b3"/>
+        <mkdir dir="${cache.dir}"/>
+        <download url="https://sourceforge.net/projects/ant-contrib/files/ant-contrib/${version}/${file}.zip"/>
+        <unzip src="${cache.dir}/${file}.zip" dest="${bin.dir}/ant-contrib">
+            <globmapper from="ant-contrib/*" to="*"/>
+        </unzip>
+    </target>
+    
     <target name="cmake.initialize">
         <local name="file"/>
         <local name="version"/>
@@ -74,23 +87,37 @@
         </unzip>
     </target>
     
+    <target name="initialize" depends="aria2.initialize
+                                      ,ant.initialize
+                                      ,cmake.initialize
+                                      ,maven.initialize
+                                      ,ninja.initialize"/>
     
+    <target name="ant.contrib">
+        <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+            <classpath>
+                <pathelement location="${bin.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
+            </classpath>
+        </taskdef>
+    </target>    
     
-    <target name="initialize" depends="aria2.initialize,cmake.initialize,maven.initialize,ninja.initialize"/>
-    
-    <target name="generators.build.cpp">
+    <target name="generators.build.cpp" depends="ant.contrib">
+        <local name="command"/>
+        <propertyregex property="command" input="../${bin.dir}/maven/bin/mvn.cmd" regexp="/" replace="\\\\"/>
         <exec executable="cmd" dir="${generators.dir}/soft.generator.cpp" failonerror="true">
             <arg value="/C"/>
-            <arg value="mvn.cmd"/>
+            <arg value="${command}"/>
             <arg value="-Dproject.target=../${out.dir}/soft.generator.cpp"/>
             <arg line="clean verify" />
         </exec>
     </target>
     
-    <target name="generators.clean.cpp">
+    <target name="generators.clean.cpp" depends="ant.contrib">
+        <local name="command"/>
+        <propertyregex property="command" input="../${bin.dir}/maven/bin/mvn.cmd" regexp="/" replace="\\\\"/>
         <exec executable="cmd" dir="${generators.dir}/soft.generator.cpp" failonerror="true">
             <arg value="/C"/>
-            <arg value="mvn.cmd"/>
+            <arg value="${command}"/>
             <arg value="-Dproject.target=../${out.dir}/soft.generator.cpp"/>
             <arg line="clean" />
         </exec>
@@ -142,7 +169,7 @@
     <target name = "sources.clean" depends="sources.clean.ecore"/> 
     
     <target name="build.generate">
-        <exec taskname="cmake" executable="cmake.exe" dir="${build.dir}/cmake" failonerror="true">
+        <exec taskname="cmake" executable="${bin.dir}/cmake/bin/cmake.exe" dir="${build.dir}/cmake" failonerror="true">
             <arg value="-G"/>
             <arg value="Visual Studio 14 2015 Win64"/>
             <arg value="-B../vs2015"/>
