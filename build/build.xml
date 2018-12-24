@@ -1,7 +1,27 @@
 <?xml version="1.0"?>
 <project name="soft" default="all">
 
+    <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+
     <property file="build.properties"/>
+    
+    <macrodef name="property-to-location">
+        <attribute name="name"/>
+        <sequential>
+            <echo taskname="property-to-location" level="debug" message="@{name} : ${@{name}}"/>
+            <var name="tmp.dir" value="${@{name}}"/>
+            <var name="@{name}" unset="true"/>
+            <property name="@{name}" location="${tmp.dir}"/>
+            <echo taskname="property-to-location" level="debug" message="    -> ${@{name}}"/>
+        </sequential>
+    </macrodef>
+
+    <propertyselector property="dirs" match="\A.*\.dir\z" distinct="true"/>
+    <for list="${dirs}" param="dir">
+        <sequential>
+            <property-to-location name="@{dir}"/>
+        </sequential>
+    </for>
     
     <target name="aria2.initialize">
         <local name="file"/>
@@ -21,7 +41,7 @@
     
     <macrodef name="download">
         <attribute name="url"/>
-        <attribute name="dir" default="../${cache.dir}"/>
+        <attribute name="dir" default="${cache.dir}"/>
         <element name="args" implicit="yes" optional="yes"/>
         <sequential>
             <exec taskname="download" executable="${bin.dir}/aria2/aria2c.exe" dir="${bin.dir}/aria2" failonerror="true">
@@ -79,13 +99,8 @@
         <attribute name="dir"/>
         <element name="args" implicit="yes" optional="yes"/>
         <sequential>
-            <taskdef resource="net/sf/antcontrib/antcontrib.properties">
-                <classpath>
-                    <pathelement location="${bin.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
-                </classpath>
-            </taskdef>
             <local name="command"/>
-            <propertyregex property="command" input="../${bin.dir}/maven/bin/mvn.cmd" regexp="/" replace="\\\\"/>
+            <propertyregex property="command" input="${bin.dir}/maven/bin/mvn.cmd" regexp="/" replace="\\\\"/>
             <exec executable="cmd" dir="@{dir}" failonerror="true">
                 <arg value="/C"/>
                 <arg value="${command}"/>
@@ -107,14 +122,13 @@
     </target>
     
     <target name="initialize" depends="aria2.initialize
-                                      ,ant.initialize
                                       ,cmake.initialize
                                       ,maven.initialize
                                       ,ninja.initialize"/>
     
     <target name="generators.build.cpp">
             <maven dir="${generators.dir}/soft.generator.cpp">
-            <arg value="-Dproject.target=../${out.dir}/soft.generator.cpp"/>
+            <arg value="-Dproject.target=../../out/soft.generator.cpp"/>
             <arg line="clean verify" />
         </maven>
     
@@ -122,7 +136,7 @@
     
     <target name="generators.clean.cpp">
         <maven dir="${generators.dir}/soft.generator.cpp">
-            <arg value="-Dproject.target=../${out.dir}/soft.generator.cpp"/>
+            <arg value="-Dproject.target=../../out/soft.generator.cpp"/>
             <arg line="clean" />
         </maven>
     </target>
@@ -172,7 +186,7 @@
     <target name = "sources.generate" depends="sources.generate.ecore"/>
     <target name = "sources.clean" depends="sources.clean.ecore"/> 
     
-    <target name="build.generate">
+    <target name="build.generate.vs2015">
         <exec taskname="cmake" executable="${bin.dir}/cmake/bin/cmake.exe" dir="${build.dir}/cmake" failonerror="true">
             <arg value="-G"/>
             <arg value="Visual Studio 14 2015 Win64"/>
@@ -180,6 +194,19 @@
             <arg value="-H."/>
         </exec>
     </target>
+    
+    <target name="build.generate.ninja">
+        <mkdir dir="${build.dir}/ninja"/>
+        <exec taskname="cmake" executable="${bin.dir}/cmake/bin/cmake.exe" dir="${build.dir}/cmake" failonerror="true">
+            <arg value="-G"/>
+            <arg value="Ninja"/>
+            <arg value="-DCMAKE_MAKE_PROGRAM=${bin.dir}/ninja/ninja.exe"/>
+            <arg value="-B../ninja"/>
+            <arg value="-H."/>
+        </exec>
+    </target>
+    
+    <target name="build.generate" depends="build.generate.vs2015,build.generate.ninja"/>
     
     <target name="build.clean">
         <exec executable="git" dir="${build.dir}" failonerror="true">
