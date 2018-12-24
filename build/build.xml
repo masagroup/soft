@@ -22,9 +22,16 @@
     <macrodef name="download">
         <attribute name="url"/>
         <attribute name="dir" default="../${cache.dir}"/>
+        <element name="args" implicit="yes" optional="yes"/>
         <sequential>
             <exec taskname="download" executable="${bin.dir}/aria2/aria2c.exe" dir="${bin.dir}/aria2" failonerror="true">
-                <arg line="--continue=true --allow-overwrite=false --auto-file-renaming=false --dir @{dir} @{url}"/>
+                <arg value="--continue=true"/>
+                <arg value="--allow-overwrite=false"/>
+                <arg value="--auto-file-renaming=false"/>
+                <arg value="--dir"/>
+                <arg value="@{dir}"/>
+                <args/>
+                <arg value="@{url}"/>
             </exec>
         </sequential>
     </macrodef>
@@ -41,6 +48,20 @@
         </unzip>
     </target>
     
+    <target name="maven.initialize">
+        <local name="file"/>
+        <local name="version"/>
+        <property name="file" value ="apache-maven-3.6.0-bin"/>  
+        <property name="version" value ="3.6.0"/>
+        <mkdir dir="${cache.dir}"/>
+        <download url="https://www-us.apache.org/dist/maven/maven-3/${version}/binaries/${file}.zip">
+            <arg value="--checksum=sha-512=7d14ab2b713880538974aa361b987231473fbbed20e83586d542c691ace1139026f232bd46fdcce5e8887f528ab1c3fbfc1b2adec90518b6941235952d3868e9"/>
+        </download>
+        <unzip src="${cache.dir}/${file}.zip" dest="${bin.dir}/maven">
+            <globmapper from="apache-maven-3.6.0/*" to="*"/>
+        </unzip>
+    </target>
+    
     <target name="ninja.initialize">
         <local name="file"/>
         <local name="version"/>
@@ -53,7 +74,9 @@
         </unzip>
     </target>
     
-    <target name="initialize" depends="aria2.initialize,cmake.initialize,ninja.initialize"/>
+    
+    
+    <target name="initialize" depends="aria2.initialize,cmake.initialize,maven.initialize,ninja.initialize"/>
     
     <target name="generators.build.cpp">
         <exec executable="cmd" dir="${generators.dir}/soft.generator.cpp" failonerror="true">
