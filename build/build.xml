@@ -75,6 +75,25 @@
         </unzip>
     </target>
     
+    <macrodef name="maven">
+        <attribute name="dir"/>
+        <element name="args" implicit="yes" optional="yes"/>
+        <sequential>
+            <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+                <classpath>
+                    <pathelement location="${bin.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
+                </classpath>
+            </taskdef>
+            <local name="command"/>
+            <propertyregex property="command" input="../${bin.dir}/maven/bin/mvn.cmd" regexp="/" replace="\\\\"/>
+            <exec executable="cmd" dir="@{dir}" failonerror="true">
+                <arg value="/C"/>
+                <arg value="${command}"/>
+                <args/>
+            </exec>
+        </sequential>
+    </macrodef>
+    
     <target name="ninja.initialize">
         <local name="file"/>
         <local name="version"/>
@@ -93,34 +112,19 @@
                                       ,maven.initialize
                                       ,ninja.initialize"/>
     
-    <target name="ant.contrib">
-        <taskdef resource="net/sf/antcontrib/antcontrib.properties">
-            <classpath>
-                <pathelement location="${bin.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
-            </classpath>
-        </taskdef>
-    </target>    
-    
-    <target name="generators.build.cpp" depends="ant.contrib">
-        <local name="command"/>
-        <propertyregex property="command" input="../${bin.dir}/maven/bin/mvn.cmd" regexp="/" replace="\\\\"/>
-        <exec executable="cmd" dir="${generators.dir}/soft.generator.cpp" failonerror="true">
-            <arg value="/C"/>
-            <arg value="${command}"/>
+    <target name="generators.build.cpp">
+            <maven dir="${generators.dir}/soft.generator.cpp">
             <arg value="-Dproject.target=../${out.dir}/soft.generator.cpp"/>
             <arg line="clean verify" />
-        </exec>
+        </maven>
+    
     </target>
     
-    <target name="generators.clean.cpp" depends="ant.contrib">
-        <local name="command"/>
-        <propertyregex property="command" input="../${bin.dir}/maven/bin/mvn.cmd" regexp="/" replace="\\\\"/>
-        <exec executable="cmd" dir="${generators.dir}/soft.generator.cpp" failonerror="true">
-            <arg value="/C"/>
-            <arg value="${command}"/>
+    <target name="generators.clean.cpp">
+        <maven dir="${generators.dir}/soft.generator.cpp">
             <arg value="-Dproject.target=../${out.dir}/soft.generator.cpp"/>
             <arg line="clean" />
-        </exec>
+        </maven>
     </target>
     
     <target name="generators.install.cpp">
