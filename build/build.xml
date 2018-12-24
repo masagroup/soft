@@ -4,22 +4,44 @@
     <property file="build.properties"/>
     
     <target name="aria2.initialize">
-        <local name="aria2.file"/>
-        <local name="aria2.version"/>
-        <property name="aria2.file" value ="aria2-1.34.0-win-64bit-build1"/>  
-        <property name="aria2.version" value ="1.34.0"/>  
+        <local name="file"/>
+        <local name="version"/>
+        <property name="file" value ="aria2-1.34.0-win-64bit-build1"/>  
+        <property name="version" value ="1.34.0"/>  
         <mkdir dir="${cache.dir}"/>
-        <get src="https://github.com/aria2/aria2/releases/download/release-${aria2.version}/${aria2.file}.zip"
+        <get src="https://github.com/aria2/aria2/releases/download/release-${version}/${file}.zip"
              dest="${cache.dir}"
              verbose="true"
              usetimestamp="true"/>
         <mkdir dir="${bin.dir}/aria2"/>
-        <unzip src="${cache.dir}/${aria2.file}.zip" dest="${bin.dir}/aria2">
-            <globmapper from="${aria2.file}/*" to="*"/>
+        <unzip src="${cache.dir}/${file}.zip" dest="${bin.dir}/aria2">
+            <globmapper from="${file}/*" to="*"/>
         </unzip>
     </target>
     
-    <target name="initialize" depends="aria2.initialize"/>
+    <macrodef name="download">
+        <attribute name="url"/>
+        <attribute name="dir" default="../${cache.dir}"/>
+        <sequential>
+            <exec taskname="download" executable="${bin.dir}/aria2/aria2c.exe" dir="${bin.dir}/aria2" failonerror="true">
+                <arg line="--continue=true --allow-overwrite=false --auto-file-renaming=false --dir @{dir} @{url}"/>
+            </exec>
+        </sequential>
+    </macrodef>
+    
+    <target name="cmake.initialize">
+        <local name="file"/>
+        <local name="version"/>
+        <property name="file" value ="cmake-3.13.2-win64-x64"/>  
+        <property name="version" value ="3.13.2"/>
+        <mkdir dir="${cache.dir}"/>
+        <download url="https://github.com/Kitware/CMake/releases/download/v${version}/${file}.zip"/>
+        <unzip src="${cache.dir}/${file}.zip" dest="${bin.dir}/cmake">
+            <globmapper from="${file}/*" to="*"/>
+        </unzip>
+    </target>
+    
+    <target name="initialize" depends="aria2.initialize,cmake.initialize"/>
     
     <target name="generators.build.cpp">
         <exec executable="cmd" dir="${generators.dir}/soft.generator.cpp" failonerror="true">
