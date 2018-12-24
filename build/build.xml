@@ -186,7 +186,7 @@
     <target name = "sources.generate" depends="sources.generate.ecore"/>
     <target name = "sources.clean" depends="sources.clean.ecore"/> 
     
-    <target name="build.generate.vs2015">
+    <target name="cmake.generate.vs2015">
         <exec taskname="cmake" executable="${bin.dir}/cmake/bin/cmake.exe" dir="${build.dir}/cmake" failonerror="true">
             <arg value="-G"/>
             <arg value="Visual Studio 14 2015 Win64"/>
@@ -195,7 +195,7 @@
         </exec>
     </target>
     
-    <target name="build.generate.ninja">
+    <target name="cmake.generate.ninja">
         <mkdir dir="${build.dir}/ninja"/>
         <exec taskname="cmake" executable="${bin.dir}/cmake/bin/cmake.exe" dir="${build.dir}/cmake" failonerror="true">
             <arg value="-G"/>
@@ -206,7 +206,23 @@
         </exec>
     </target>
     
-    <target name="build.generate" depends="build.generate.vs2015,build.generate.ninja"/>
+    <target name="cmake.generate" depends="cmake.generate.vs2015,cmake.generate.ninja"/>
+    
+    <target name="cmake.build">
+        <exec taskname="build" executable="${bin.dir}/ninja/ninja.exe" dir="${build.dir}/ninja" failonerror="true">
+                <arg line="all"/>
+                <arg value="-j"/>
+                <arg value="4"/>
+        </exec>
+    </target>
+    
+    <target name="cmake.tests">
+        <exec taskname="tests" executable="${bin.dir}/cmake/bin/ctest.exe" dir="${build.dir}/ninja" failonerror="true">
+            <arg value="."/>
+            <arg value="--output-on-failure"/>
+            <arg line="--tests-regex .*"/>
+        </exec>
+    </target>
     
     <target name="build.clean">
         <exec executable="git" dir="${build.dir}" failonerror="true">
@@ -216,10 +232,14 @@
     
     <target name="generators" depends="generators.build,generators.dist,generators.install"/>
     
-    <target name="generates" depends="sources.generate,build.generate"/>
+    <target name="generates" depends="sources.generate,cmake.generate"/>
+    
+    <target name="build" depends="cmake.build"/>
+    
+    <target name="tests" depends="cmake.tests"/>
     
     <target name="clean" depends="generators.clean,sources.clean,build.clean"/>
     
-    <target name="all" depends="initialize,generators,generates"/>
+    <target name="all" depends="initialize,generators,generates,build,tests"/>
     
 </project>

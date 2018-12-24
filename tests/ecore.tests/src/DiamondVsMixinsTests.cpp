@@ -10,8 +10,6 @@ const int NB_ITERATIONS = 1000000;
 
 #define LOG 0
 
-#ifdef BENCHMARK
-
 namespace diamond
 {
     class IA
@@ -200,6 +198,7 @@ BOOST_AUTO_TEST_SUITE( DiamondVsMixinsTests )
 
 BOOST_AUTO_TEST_CASE( Performance )
 {
+#ifdef BENCHMARK
     cpu_timer timer;
     cpu_times diamondTimes , mixinTimes;
     {
@@ -290,8 +289,9 @@ BOOST_AUTO_TEST_CASE( Performance )
 #endif
     }
     BOOST_CHECK_GE( diamondTimes.user, mixinTimes.user );
+
+#endif
 }
 
 BOOST_AUTO_TEST_SUITE_END()
 
-#endif
