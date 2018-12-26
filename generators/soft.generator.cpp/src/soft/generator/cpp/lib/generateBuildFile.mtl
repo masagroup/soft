@@ -58,9 +58,9 @@ set(GENERATED_HEADER_[namespaceVar/]_FILES
 set(GENERATED_SOURCE_[namespaceVar/]_FILES
     src-gen/[namespaceToFolder(aPackage.getFactoryQualifiedImplementationName())/].cpp
 [let packageImpl : String = namespaceToFolder(aPackage.getQualifiedImplementationName())]
-	src-gen/[packageImpl/].cpp
-	src-gen/[packageImpl/]_Creation.cpp
-	src-gen/[packageImpl/]_Initialization.cpp
+    src-gen/[packageImpl/].cpp
+    src-gen/[packageImpl/]_Creation.cpp
+    src-gen/[packageImpl/]_Initialization.cpp
 [/let]
 [for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
     src-gen/[namespaceToFolder(aClass.getQualifiedImplementationName())/].cpp
@@ -96,15 +96,26 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 [generateSourceGroup(namespaces)/]
 
 #-----------------------------------------------------
-# DELIVERING binaries and header to delivery
+# Install binaries and header
 #-----------------------------------------------------
-install(TARGETS ${PROJECT_NAME} DESTINATION dist/lib )
+install(TARGETS ${PROJECT_NAME} DESTINATION lib )
 [for ( namespace : String | namespaces )]
 [let namespaceVar : String = getVarName(namespace)]
-install(FILES [getVarName('HEADER',namespaceVar,'FILES')/] [getVarName('GENERATED_HEADER',namespaceVar,'FILES')/] DESTINATION dist/include[if namespace<>'']/[namespaceToFolder(namespace)/][/if])
+install(FILES [getVarName('HEADER',namespaceVar,'FILES')/] [getVarName('GENERATED_HEADER',namespaceVar,'FILES')/] DESTINATION include[if namespace<>'']/[namespaceToFolder(namespace)/][/if])
 [/let]
 [/for]
 [/let]
+
+
+#-----------------------------------------------------
+# Package binaries and header
+#-----------------------------------------------------
+set(CPACK_GENERATOR "ZIP")
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+
+include(CPack)
+
 [/file]
 [/template]
+
 

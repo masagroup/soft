@@ -198,6 +198,7 @@
             <exec taskname="cmake" executable="${bin.dir}/cmake/bin/cmake.exe" dir="${out.dir}/@{generator}/@{configuration}" failonerror="true">
                 <arg value="-G"/>
                 <arg value="${cmake.generator.@{generator}}"/>
+                <arg value="-DCMAKE_INSTALL_PREFIX=${root.dir}/deps"/>
                 <elements/>
                 <arg value="${build.dir}/cmake"/>
             </exec>
@@ -229,13 +230,14 @@
     
     <macrodef name="ninja_exec">
         <attribute name="dir"/>
+        <attribute name="target" default="all"/>
         <sequential>
             <property environment="env"/>
             <condition property="cores.count" value="${env.NUMBER_OF_PROCESSORS}" else="4">
                 <os family="windows" />
             </condition>
             <exec taskname="build" executable="${bin.dir}/ninja/ninja.exe" dir="@{dir}" failonerror="true">
-                <arg line="all"/>
+                <arg line="@{target}"/>
                 <arg value="-j"/>
                 <arg value="${cores.count}"/>
             </exec>
@@ -273,10 +275,14 @@
     
     <target name="cmake.tests" depends="cmake.tests.debug,cmake.tests.release"/>
     
-    <target name="build.clean">
-        <exec executable="git" dir="${build.dir}" failonerror="true">
-            <arg line="clean -xfd" />
-        </exec>
+    <target name="cmake.install">
+        <ninja_exec dir="${out.dir}/ninja/release" target="install"/>
+        <ninja_exec dir="${out.dir}/ninja/debug" target="install"/>
+    </target>
+    
+    <target name="cmake.package">
+        <ninja_exec dir="${out.dir}/ninja/release" target="package"/>
+        <ninja_exec dir="${out.dir}/ninja/debug" target="package"/>
     </target>
     
     <target name="generators" depends="generators.build,generators.dist,generators.install"/>
@@ -284,6 +290,12 @@
     <target name="generates" depends="sources.generate,cmake.configure"/>
     
     <target name="build" depends="cmake.build"/>
+    
+    <target name="build.clean">
+        <exec executable="git" dir="${out.dir}" failonerror="true">
+            <arg line="clean -xfd" />
+        </exec>
+    </target>
     
     <target name="tests" depends="cmake.tests"/>
     
