@@ -54,7 +54,14 @@ namespace ecore {
 
         /** Iterator interfaces for an EList<T>. */
         template <typename ListType >
-        class EListIterator : public std::iterator<std::random_access_iterator_tag, T> {
+        class EListIterator {
+        public:
+            using iterator_category = std::random_access_iterator_tag;
+            using difference_type   = std::ptrdiff_t;
+            using value_type        = typename ListType::ValueType;
+            using pointer           = typename ListType::ValueType*;
+            using reference         = typename ListType::ValueType&;
+            
         public:
             EListIterator( ListType* eList, std::size_t index )
                 : eList_( eList )
@@ -98,19 +105,19 @@ namespace ecore {
                 return (*this += -offset);
             }
 
-            EListIterator operator+( const difference_type& offset )
+            EListIterator operator+( const difference_type& offset ) const
             {
                 EListIterator tmp = *this;
                 return (tmp += offset);
             }
 
-            EListIterator operator-( const difference_type& rhs )
+            EListIterator operator-( const difference_type& rhs ) const
             {
                 EListIterator tmp = *this;
                 return (tmp -= offset);
             }
 
-            difference_type operator-( const EListIterator& rhs )
+            difference_type operator-( const EListIterator& rhs ) const
             {
                 _Compat( rhs );
                 return index_ - rhs.index_;
