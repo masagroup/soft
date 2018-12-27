@@ -23,27 +23,28 @@
         </sequential>
     </for>
     
-    <target name="aria2.initialize">
+    <target name="aria2.install">
         <local name="file"/>
         <local name="version"/>
         <property name="file" value ="aria2-1.34.0-win-64bit-build1"/>  
         <property name="version" value ="1.34.0"/>  
-        <mkdir dir="${cache.dir}"/>
+        <mkdir dir="${downloads.dir}"/>
         <get src="https://github.com/aria2/aria2/releases/download/release-${version}/${file}.zip"
-             dest="${cache.dir}"
+             dest="${downloads.dir}"
              verbose="true"
              usetimestamp="true"/>
         <mkdir dir="${bin.dir}/aria2"/>
-        <unzip src="${cache.dir}/${file}.zip" dest="${bin.dir}/aria2">
+        <unzip src="${downloads.dir}/${file}.zip" dest="${bin.dir}/aria2">
             <globmapper from="${file}/*" to="*"/>
         </unzip>
     </target>
     
     <macrodef name="download">
         <attribute name="url"/>
-        <attribute name="dir" default="${cache.dir}"/>
+        <attribute name="dir" default="${downloads.dir}"/>
         <element name="args" implicit="yes" optional="yes"/>
         <sequential>
+            <mkdir dir="@{dir}"/>
             <exec taskname="download" executable="${bin.dir}/aria2/aria2c.exe" dir="${bin.dir}/aria2" failonerror="true">
                 <arg value="--continue=true"/>
                 <arg value="--allow-overwrite=false"/>
@@ -57,40 +58,70 @@
     </macrodef>
     
     
-    <target name="ant.initialize">
+    <target name="ant.install">
         <local name="file"/>
         <local name="version"/>
         <property name="file" value ="ant-contrib-1.0b3-bin"/>  
         <property name="version" value ="1.0b3"/>
-        <mkdir dir="${cache.dir}"/>
         <download url="https://sourceforge.net/projects/ant-contrib/files/ant-contrib/${version}/${file}.zip"/>
-        <unzip src="${cache.dir}/${file}.zip" dest="${bin.dir}/ant-contrib">
+        <unzip src="${downloads.dir}/${file}.zip" dest="${bin.dir}/ant-contrib">
             <globmapper from="ant-contrib/*" to="*"/>
         </unzip>
     </target>
     
-    <target name="cmake.initialize">
+    <target name="cmake.install">
         <local name="file"/>
         <local name="version"/>
         <property name="file" value ="cmake-3.13.2-win64-x64"/>  
         <property name="version" value ="3.13.2"/>
-        <mkdir dir="${cache.dir}"/>
         <download url="https://github.com/Kitware/CMake/releases/download/v${version}/${file}.zip"/>
-        <unzip src="${cache.dir}/${file}.zip" dest="${bin.dir}/cmake">
+        <unzip src="${downloads.dir}/${file}.zip" dest="${bin.dir}/cmake">
             <globmapper from="${file}/*" to="*"/>
         </unzip>
     </target>
     
-    <target name="maven.initialize">
+    <property name = "cmake.generator.vs2015" value = "Visual Studio 14 2015 Win64"/>
+    <property name = "cmake.generator.ninja" value = "Ninja"/>
+    
+    <macrodef name="cmake_exec">
+        <attribute name="generator"/>
+        <attribute name="project" default= "${ant.project.name}"/>
+        <attribute name="configuration" default=""/>
+        <attribute name="input" default="${build.dir}/cmake"/>
+        <attribute name="output" default="${out.dir}/@{generator}/@{project}/@{configuration}"/>
+        <element name="elements" implicit="true" optional="true"/>
+        <sequential>
+            <mkdir dir="@{output}"/>
+            <exec taskname="cmake" executable="${bin.dir}/cmake/bin/cmake.exe" dir="@{output}" failonerror="true">
+                <arg value="-G"/>
+                <arg value="${cmake.generator.@{generator}}"/>
+                <arg value="-DCMAKE_INSTALL_PREFIX=${root.dir}/deps"/>
+                <elements/>
+                <arg value="@{input}"/>
+            </exec>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="ctest_exec">
+        <attribute name="dir"/>
+        <sequential>
+            <exec taskname="tests" executable="${bin.dir}/cmake/bin/ctest.exe" dir="@{dir}" failonerror="true">
+                <arg value="."/>
+                <arg value="--output-on-failure"/>
+                <arg line="--tests-regex .*"/>
+            </exec>
+        </sequential>
+    </macrodef>
+    
+    <target name="maven.install">
         <local name="file"/>
         <local name="version"/>
         <property name="file" value ="apache-maven-3.6.0-bin"/>  
         <property name="version" value ="3.6.0"/>
-        <mkdir dir="${cache.dir}"/>
         <download url="https://www-us.apache.org/dist/maven/maven-3/${version}/binaries/${file}.zip">
             <arg value="--checksum=sha-512=7d14ab2b713880538974aa361b987231473fbbed20e83586d542c691ace1139026f232bd46fdcce5e8887f528ab1c3fbfc1b2adec90518b6941235952d3868e9"/>
         </download>
-        <unzip src="${cache.dir}/${file}.zip" dest="${bin.dir}/maven">
+        <unzip src="${downloads.dir}/${file}.zip" dest="${bin.dir}/maven">
             <globmapper from="apache-maven-3.6.0/*" to="*"/>
         </unzip>
     </target>
@@ -109,124 +140,16 @@
         </sequential>
     </macrodef>
     
-    <target name="ninja.initialize">
+    <target name="ninja.install">
         <local name="file"/>
         <local name="version"/>
         <property name="file" value ="ninja-win"/>  
         <property name="version" value ="1.8.2"/>
-        <mkdir dir="${cache.dir}"/>
         <download url="https://github.com/ninja-build/ninja/releases/download/v${version}/${file}.zip"/>
-        <unzip src="${cache.dir}/${file}.zip" dest="${bin.dir}/ninja">
+        <unzip src="${downloads.dir}/${file}.zip" dest="${bin.dir}/ninja">
             <globmapper from="${file}/*" to="*"/>
         </unzip>
     </target>
-    
-    <target name="initialize" depends="aria2.initialize
-                                      ,cmake.initialize
-                                      ,maven.initialize
-                                      ,ninja.initialize"/>
-    
-    <target name="generators.build.cpp">
-            <maven dir="${generators.dir}/soft.generator.cpp">
-            <arg value="-Dproject.target=../../out/soft.generator.cpp"/>
-            <arg line="clean verify" />
-        </maven>
-    
-    </target>
-    
-    <target name="generators.clean.cpp">
-        <maven dir="${generators.dir}/soft.generator.cpp">
-            <arg value="-Dproject.target=../../out/soft.generator.cpp"/>
-            <arg line="clean" />
-        </maven>
-    </target>
-    
-    <target name="generators.install.cpp">
-        <unzip src="${out.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" dest="${bin.dir}/soft.generator.cpp"/>
-    </target>
-    
-    <target name="generators.dist.cpp">
-        <copy file="${out.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" todir="${dist.dir}"/>
-    </target>
-    
-    <target name="generators.build" depends="generators.build.cpp"/>
-    <target name="generators.clean" depends="generators.clean.cpp"/>
-    <target name="generators.install" depends="generators.install.cpp"/>
-    <target name="generators.dist" depends="generators.dist.cpp"/>
-    
-    <macrodef name="generator.cpp">
-        <attribute name="input"/>
-        <attribute name="output"/>
-        <sequential>
-            <java jar="${bin.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.jar"
-                  fork="true"
-                  failonerror="true"
-                  maxmemory="128m">
-                  <arg value="-m"/>
-                  <arg value="@{input}"/>
-                  <arg value="-o"/>
-                  <arg value="@{output}"/>
-            </java>
-        </sequential>
-    </macrodef>
-    
-    <target name="sources.generate.ecore">
-        <generator.cpp input="${models.dir}/ecore.ecore" output="${root.dir}"/>
-    </target>
-    
-    <target name="sources.clean.ecore">
-        <exec executable="git" dir="${libraries.dir}/ecore" failonerror="true">
-            <arg line="clean -xfd" />
-        </exec>
-        <exec executable="git" dir="${tests.dir}/ecore.tests" failonerror="true">
-            <arg line="clean -xfd" />
-        </exec>
-    </target>
-    
-    <target name = "sources.generate" depends="sources.generate.ecore"/>
-    <target name = "sources.clean" depends="sources.clean.ecore"/> 
-    
-    <property name = "cmake.generator.vs2015" value = "Visual Studio 14 2015 Win64"/>
-    <property name = "cmake.generator.ninja" value = "Ninja"/>
-    
-    <macrodef name="cmake_exec">
-        <attribute name="generator"/>
-        <attribute name="configuration" default=""/>
-        <element name="elements" implicit="true" optional="true"/>
-        <sequential>
-            <mkdir dir="${out.dir}/@{generator}/@{configuration}"/>
-            <exec taskname="cmake" executable="${bin.dir}/cmake/bin/cmake.exe" dir="${out.dir}/@{generator}/@{configuration}" failonerror="true">
-                <arg value="-G"/>
-                <arg value="${cmake.generator.@{generator}}"/>
-                <arg value="-DCMAKE_INSTALL_PREFIX=${root.dir}/deps"/>
-                <elements/>
-                <arg value="${build.dir}/cmake"/>
-            </exec>
-        </sequential>
-    </macrodef>
-    
-    <target name="cmake.configure.vs2015">
-        <cmake_exec generator="vs2015"/>
-    </target>
-    
-    <target name="cmake.configure.ninja.release">
-        <mkdir dir="${out.dir}/ninja/release"/>
-        <cmake_exec generator="ninja" configuration="release">
-            <arg value="-DCMAKE_MAKE_PROGRAM=${bin.dir}/ninja/ninja.exe"/>
-            <arg value="-DCMAKE_BUILD_TYPE=RelWithDebInfo"/>
-        </cmake_exec>
-    </target>
-    
-    <target name="cmake.configure.ninja.debug">
-        <cmake_exec generator="ninja" configuration="debug">
-            <arg value="-DCMAKE_MAKE_PROGRAM=${bin.dir}/ninja/ninja.exe"/>
-            <arg value="-DCMAKE_BUILD_TYPE=Debug"/>
-        </cmake_exec>
-    </target>
-    
-    <target name="cmake.configure.ninja" depends="cmake.configure.ninja.release,cmake.configure.ninja.debug"/>
-    
-    <target name="cmake.configure" depends="cmake.configure.vs2015,cmake.configure.ninja"/>
     
     <macrodef name="ninja_exec">
         <attribute name="dir"/>
@@ -244,52 +167,129 @@
         </sequential>
     </macrodef>
     
-    <target name="cmake.build.debug">
-        <ninja_exec dir="${out.dir}/ninja/debug"/>
+    <target name="tools.install" depends="aria2.install
+                                        ,cmake.install
+                                        ,maven.install
+                                        ,ninja.install"/>
+    
+    <target name="generator.cpp.build">
+            <maven dir="${generators.dir}/soft.generator.cpp">
+            <arg value="-Dproject.target=../../out/soft.generator.cpp"/>
+            <arg line="clean verify" />
+        </maven>
+    
     </target>
     
-    <target name="cmake.build.release">
-        <ninja_exec dir="${out.dir}/ninja/release"/>
+    <target name="generator.cpp.clean">
+        <maven dir="${generators.dir}/soft.generator.cpp">
+            <arg value="-Dproject.target=../../out/soft.generator.cpp"/>
+            <arg line="clean" />
+        </maven>
     </target>
     
-    <target name="cmake.build" depends="cmake.build.debug,cmake.build.release"/>
+    <target name="generator.cpp.install">
+        <unzip src="${out.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" dest="${bin.dir}/soft.generator.cpp"/>
+    </target>
     
-     <macrodef name="ctest_exec">
-        <attribute name="dir"/>
+    <target name="generator.cpp.dist">
+        <copy file="${out.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" todir="${dist.dir}"/>
+    </target>
+    
+    <target name="generators.build" depends="generator.cpp.build"/>
+    <target name="generators.clean" depends="generator.cpp.clean"/>
+    <target name="generators.install" depends="generator.cpp.install"/>
+    <target name="generators.dist" depends="generator.cpp.dist"/>
+    
+    <macrodef name="generator.cpp">
+        <attribute name="input"/>
+        <attribute name="output"/>
         <sequential>
-            <exec taskname="tests" executable="${bin.dir}/cmake/bin/ctest.exe" dir="@{dir}" failonerror="true">
-                <arg value="."/>
-                <arg value="--output-on-failure"/>
-                <arg line="--tests-regex .*"/>
-            </exec>
+            <java jar="${bin.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.jar"
+                  fork="true"
+                  failonerror="true"
+                  maxmemory="128m">
+                  <arg value="-m"/>
+                  <arg value="@{input}"/>
+                  <arg value="-o"/>
+                  <arg value="@{output}"/>
+            </java>
         </sequential>
     </macrodef>
     
-    <target name="cmake.tests.debug">
-        <ctest_exec dir="${out.dir}/ninja/debug"/>
+    <target name="ecore.generate">
+        <generator.cpp input="${models.dir}/ecore.ecore" output="${root.dir}"/>
     </target>
     
-    <target name="cmake.tests.release">
-        <ctest_exec dir="${out.dir}/ninja/release"/>
+    <target name="ecore.clean">
+        <exec executable="git" dir="${libraries.dir}/ecore" failonerror="true">
+            <arg line="clean -xfd" />
+        </exec>
+        <exec executable="git" dir="${tests.dir}/ecore.tests" failonerror="true">
+            <arg line="clean -xfd" />
+        </exec>
     </target>
     
-    <target name="cmake.tests" depends="cmake.tests.debug,cmake.tests.release"/>
+    <target name="sources.generate" depends="ecore.generate"/>
     
-    <target name="cmake.install">
-        <ninja_exec dir="${out.dir}/ninja/release" target="install"/>
-        <ninja_exec dir="${out.dir}/ninja/debug" target="install"/>
+    <target name="sources.clean" depends="ecore.clean"/> 
+    
+    <target name="project.configure.vs2015">
+        <cmake_exec generator="vs2015"/>
     </target>
     
-    <target name="cmake.package">
-        <ninja_exec dir="${out.dir}/ninja/release" target="package"/>
-        <ninja_exec dir="${out.dir}/ninja/debug" target="package"/>
+    <target name="project.configure.ninja.release">
+        <cmake_exec generator="ninja" configuration="release">
+            <arg value="-DCMAKE_MAKE_PROGRAM=${bin.dir}/ninja/ninja.exe"/>
+            <arg value="-DCMAKE_BUILD_TYPE=RelWithDebInfo"/>
+        </cmake_exec>
+    </target>
+    
+    <target name="project.configure.ninja.debug">
+        <cmake_exec generator="ninja" configuration="debug">
+            <arg value="-DCMAKE_MAKE_PROGRAM=${bin.dir}/ninja/ninja.exe"/>
+            <arg value="-DCMAKE_BUILD_TYPE=Debug"/>
+        </cmake_exec>
+    </target>
+    
+    <target name="project.configure.ninja" depends="project.configure.ninja.release,project.configure.ninja.debug"/>
+    
+    <target name="project.configure" depends="project.configure.vs2015,project.configure.ninja"/>
+    
+    <target name="project.build.debug">
+        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/debug"/>
+    </target>
+    
+    <target name="project.build.release">
+        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/release"/>
+    </target>
+    
+    <target name="project.build" depends="project.build.debug,project.build.release"/>
+    
+    <target name="project.tests.debug">
+        <ctest_exec dir="${out.dir}/ninja/${ant.project.name}/debug"/>
+    </target>
+    
+    <target name="project.tests.release">
+        <ctest_exec dir="${out.dir}/ninja/${ant.project.name}/release"/>
+    </target>
+    
+    <target name="project.tests" depends="project.tests.debug,project.tests.release"/>
+    
+    <target name="project.install">
+        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/release" target="install"/>
+        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/debug" target="install"/>
+    </target>
+    
+    <target name="project.package">
+        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/release" target="package"/>
+        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/debug" target="package"/>
     </target>
     
     <target name="generators" depends="generators.build,generators.dist,generators.install"/>
     
-    <target name="generates" depends="sources.generate,cmake.configure"/>
+    <target name="generates" depends="sources.generate,project.configure"/>
     
-    <target name="build" depends="cmake.build"/>
+    <target name="build" depends="project.build"/>
     
     <target name="build.clean">
         <exec executable="git" dir="${out.dir}" failonerror="true">
@@ -297,10 +297,10 @@
         </exec>
     </target>
     
-    <target name="tests" depends="cmake.tests"/>
+    <target name="tests" depends="project.tests"/>
     
     <target name="clean" depends="generators.clean,sources.clean,build.clean"/>
     
-    <target name="all" depends="initialize,generators,generates,build,tests"/>
+    <target name="all" depends="tools.install,generators,generates,build,tests"/>
     
 </project>
