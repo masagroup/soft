@@ -93,6 +93,7 @@
     </target>
     
     <property name = "cmake.generator.vs2015" value = "Visual Studio 14 2015 Win64"/>
+    <property name = "cmake.generator.vs2017" value = "Visual Studio 15 2017 Win64"/>
     <property name = "cmake.generator.ninja" value = "Ninja"/>
     
     <macrodef name="cmake_exec">
@@ -260,6 +261,10 @@
     -->
     <target name="project.configure.vs2015">
         <cmake_exec generator="vs2015"/>
+    </target>
+    
+    <target name="project.configure.vs2017">
+        <cmake_exec generator="vs2017"/>
     </target>
     
     <target name="project.configure.ninja.release">
