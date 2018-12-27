@@ -23,6 +23,11 @@
         </sequential>
     </for>
     
+    <!--
+    ============================================================================
+      Aria
+    ============================================================================
+    -->
     <target name="aria2.install">
         <local name="file"/>
         <local name="version"/>
@@ -57,27 +62,34 @@
         </sequential>
     </macrodef>
     
+    <macrodef name="install">
+        <attribute name="name"/>
+        <attribute name="url"/>
+        <attribute name="dir" default="${bin.dir}/@{name}"/>
+        <element name="args" implicit="yes" optional="yes"/>
+        <sequential>
+            <download url="@{url}" dir="${downloads.dir}">
+                <args/>
+            </download>
+            <local name="filename"/>
+            <basename property="filename" file="@{url}"/>
+            <unzip src="${downloads.dir}/${filename}" dest="@{dir}">
+                <cutdirsmapper dirs="1"/>
+            </unzip>
+        </sequential>
+    </macrodef>
     
-    <target name="ant.install">
-        <local name="file"/>
-        <local name="version"/>
-        <property name="file" value ="ant-contrib-1.0b3-bin"/>  
-        <property name="version" value ="1.0b3"/>
-        <download url="https://sourceforge.net/projects/ant-contrib/files/ant-contrib/${version}/${file}.zip"/>
-        <unzip src="${downloads.dir}/${file}.zip" dest="${bin.dir}/ant-contrib">
-            <globmapper from="ant-contrib/*" to="*"/>
-        </unzip>
+    <target name="ant.install" depends="aria2.install">
+        <install name="ant" url="https://sourceforge.net/projects/ant-contrib/files/ant-contrib/1.0b3/ant-contrib-1.0b3-bin.zip"/>
     </target>
     
-    <target name="cmake.install">
-        <local name="file"/>
-        <local name="version"/>
-        <property name="file" value ="cmake-3.13.2-win64-x64"/>  
-        <property name="version" value ="3.13.2"/>
-        <download url="https://github.com/Kitware/CMake/releases/download/v${version}/${file}.zip"/>
-        <unzip src="${downloads.dir}/${file}.zip" dest="${bin.dir}/cmake">
-            <globmapper from="${file}/*" to="*"/>
-        </unzip>
+    <!--
+    ============================================================================
+      Cmake
+    ============================================================================
+    -->
+    <target name="cmake.install" depends="aria2.install">
+        <install name="cmake" url="https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2-win64-x64.zip"/>
     </target>
     
     <property name = "cmake.generator.vs2015" value = "Visual Studio 14 2015 Win64"/>
@@ -113,20 +125,18 @@
         </sequential>
     </macrodef>
     
-    <target name="maven.install">
-        <local name="file"/>
-        <local name="version"/>
-        <property name="file" value ="apache-maven-3.6.0-bin"/>  
-        <property name="version" value ="3.6.0"/>
-        <download url="https://www-us.apache.org/dist/maven/maven-3/${version}/binaries/${file}.zip">
+    <!--
+    ============================================================================
+      Maven
+    ============================================================================
+    -->
+    <target name="maven.install" depends="aria2.install">
+        <install name="maven" url="https://www-us.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.zip">
             <arg value="--checksum=sha-512=7d14ab2b713880538974aa361b987231473fbbed20e83586d542c691ace1139026f232bd46fdcce5e8887f528ab1c3fbfc1b2adec90518b6941235952d3868e9"/>
-        </download>
-        <unzip src="${downloads.dir}/${file}.zip" dest="${bin.dir}/maven">
-            <globmapper from="apache-maven-3.6.0/*" to="*"/>
-        </unzip>
+        </install>
     </target>
     
-    <macrodef name="maven">
+    <macrodef name="maven_exec">
         <attribute name="dir"/>
         <element name="args" implicit="yes" optional="yes"/>
         <sequential>
@@ -140,15 +150,13 @@
         </sequential>
     </macrodef>
     
-    <target name="ninja.install">
-        <local name="file"/>
-        <local name="version"/>
-        <property name="file" value ="ninja-win"/>  
-        <property name="version" value ="1.8.2"/>
-        <download url="https://github.com/ninja-build/ninja/releases/download/v${version}/${file}.zip"/>
-        <unzip src="${downloads.dir}/${file}.zip" dest="${bin.dir}/ninja">
-            <globmapper from="${file}/*" to="*"/>
-        </unzip>
+    <!--
+    ============================================================================
+      Ninja
+    ============================================================================
+    -->
+    <target name="ninja.install" depends="aria2.install">
+        <install name="ninja" url="https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-win.zip"/>
     </target>
     
     <macrodef name="ninja_exec">
@@ -168,23 +176,30 @@
     </macrodef>
     
     <target name="tools.install" depends="aria2.install
-                                        ,cmake.install
-                                        ,maven.install
-                                        ,ninja.install"/>
+                                         ,cmake.install
+                                         ,maven.install
+                                         ,ninja.install"/>
     
+    
+    
+    <!--
+    ============================================================================
+      Generator
+    ============================================================================
+    -->
     <target name="generator.cpp.build">
-            <maven dir="${generators.dir}/soft.generator.cpp">
+        <maven_exec dir="${generators.dir}/soft.generator.cpp">
             <arg value="-Dproject.target=../../out/soft.generator.cpp"/>
             <arg line="clean verify" />
-        </maven>
+        </maven_exec>
     
     </target>
     
     <target name="generator.cpp.clean">
-        <maven dir="${generators.dir}/soft.generator.cpp">
+        <maven_exec dir="${generators.dir}/soft.generator.cpp">
             <arg value="-Dproject.target=../../out/soft.generator.cpp"/>
             <arg line="clean" />
-        </maven>
+        </maven_exec>
     </target>
     
     <target name="generator.cpp.install">
@@ -216,6 +231,11 @@
         </sequential>
     </macrodef>
     
+    <!--
+    ============================================================================
+      Sources Generation
+    ============================================================================
+    -->
     <target name="ecore.generate">
         <generator.cpp input="${models.dir}/ecore.ecore" output="${root.dir}"/>
     </target>
@@ -233,6 +253,11 @@
     
     <target name="sources.clean" depends="ecore.clean"/> 
     
+    <!--
+    ============================================================================
+      Project Configure/Build/Tests
+    ============================================================================
+    -->
     <target name="project.configure.vs2015">
         <cmake_exec generator="vs2015"/>
     </target>
