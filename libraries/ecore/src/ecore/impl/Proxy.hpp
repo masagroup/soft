@@ -174,25 +174,25 @@ namespace ecore::impl
     };
 
     template<typename T>
-    bool operator==( std::nullptr_t, const Proxy<T>& right ) _NOEXCEPT
+    bool operator==( std::nullptr_t, const Proxy<T>& right ) noexcept
     {	// test if nullptr == shared_ptr
         return ( nullptr == right.getNoResolution() );
     }
 
     template<typename T>
-    bool operator==( const Proxy<T>& left, nullptr_t ) _NOEXCEPT
+    bool operator==( const Proxy<T>& left, nullptr_t ) noexcept
     {	// test if nullptr == shared_ptr
         return ( left.getNoResolution() == nullptr );
     }
 
     template<typename T>
-    bool operator!=( const Proxy<T>& left, std::nullptr_t right ) _NOEXCEPT
+    bool operator!=( const Proxy<T>& left, std::nullptr_t right ) noexcept
     {	// test if shared_ptr != nullptr
         return ( !( left == right ) );
     }
 
     template<typename T>
-    bool operator!=( std::nullptr_t left, const Proxy<T>& right ) _NOEXCEPT
+    bool operator!=( std::nullptr_t left, const Proxy<T>& right ) noexcept
     {	// test if nullptr != shared_ptr
         return ( !( left == right ) );
     }

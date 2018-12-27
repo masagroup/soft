@@ -102,49 +102,49 @@ namespace ecore::impl
     };
 
     template<typename T, typename Q, typename O>
-    bool operator==( const O& left, const Lazy<T, Q>& right ) _NOEXCEPT
+    bool operator==( const O& left, const Lazy<T, Q>& right ) noexcept
     {	
         return ( left == right.value() );
     }
 
     template<typename T, typename Q , typename O>
-    bool operator==( const Lazy<T, Q>& left, const O& right ) _NOEXCEPT
+    bool operator==( const Lazy<T, Q>& left, const O& right ) noexcept
     {	
         return ( left.value() == right );
     }
 
     template<typename T, typename Q, typename O>
-    bool operator!=( const Lazy<T, Q>& left, const O& right ) _NOEXCEPT
+    bool operator!=( const Lazy<T, Q>& left, const O& right ) noexcept
     {	
         return ( !( left == right ) );
     }
 
     template<typename T, typename Q, typename O>
-    bool operator!=( const O& left, const Lazy<T, Q>& right ) _NOEXCEPT
+    bool operator!=( const O& left, const Lazy<T, Q>& right ) noexcept
     {	
         return ( !( left == right ) );
     }
 
     template<typename T, typename Q>
-    bool operator==( std::nullptr_t, const Lazy<T, Q>& right ) _NOEXCEPT
+    bool operator==( std::nullptr_t, const Lazy<T, Q>& right ) noexcept
     {
         return ( nullptr == right.value() );
     }
 
     template<typename T, typename Q>
-    bool operator==( const Lazy<T, Q>& left, std::nullptr_t ) _NOEXCEPT
+    bool operator==( const Lazy<T, Q>& left, std::nullptr_t ) noexcept
     {
         return ( left.value() == nullptr );
     }
 
     template<typename T, typename Q>
-    bool operator!=( const Lazy<T, Q>& left, std::nullptr_t ) _NOEXCEPT
+    bool operator!=( const Lazy<T, Q>& left, std::nullptr_t ) noexcept
     {
         return ( !( left == nullptr ) );
     }
 
     template<typename T, typename Q>
-    bool operator!=( std::nullptr_t, const Lazy<T, Q>& right ) _NOEXCEPT
+    bool operator!=( std::nullptr_t, const Lazy<T, Q>& right ) noexcept
     {
         return ( !( nullptr == right ) );
     }
@@ -270,26 +270,26 @@ namespace ecore::impl
     };
 
     template<typename T, typename Q>
-    bool operator==( std::nullptr_t, const Lazy<std::shared_ptr<T>,Q>& right ) _NOEXCEPT
+    bool operator==( std::nullptr_t, const Lazy<std::shared_ptr<T>,Q>& right ) noexcept
     {	// test if nullptr == shared_ptr
         return ( nullptr == right.value() );
     }
 
     template<typename T, typename Q>
-    bool operator==( const Lazy<std::shared_ptr<T>, Q>& left, nullptr_t ) _NOEXCEPT
+    bool operator==( const Lazy<std::shared_ptr<T>, Q>& left, nullptr_t ) noexcept
     {	// test if nullptr == shared_ptr
         return ( left.value() == nullptr );
     }
 
     template<typename T, typename Q>
-    bool operator!=( const Lazy<std::shared_ptr<T>, Q>& left, std::nullptr_t right ) _NOEXCEPT
+    bool operator!=( const Lazy<std::shared_ptr<T>, Q>& left, std::nullptr_t right ) noexcept
     {	// test if shared_ptr != nullptr
         return ( !( left == right ) );
     }
 
     template<typename T, typename Q>
     bool operator!=( std::nullptr_t left,
-                     const Lazy<std::shared_ptr<T>, Q>& right ) _NOEXCEPT
+                     const Lazy<std::shared_ptr<T>, Q>& right ) noexcept
     {	// test if nullptr != shared_ptr
         return ( !( left == right ) );
     }
@@ -396,26 +396,26 @@ namespace ecore::impl
     };
 
     template<typename T, typename Q>
-    bool operator==( std::nullptr_t, const Lazy<std::unique_ptr<T>, Q>& right ) _NOEXCEPT
+    bool operator==( std::nullptr_t, const Lazy<std::unique_ptr<T>, Q>& right ) noexcept
     {	// test if nullptr == shared_ptr
         return ( nullptr == right.value() );
     }
 
     template<typename T, typename Q>
-    bool operator==( const Lazy<std::unique_ptr<T>, Q>& left, nullptr_t ) _NOEXCEPT
+    bool operator==( const Lazy<std::unique_ptr<T>, Q>& left, nullptr_t ) noexcept
     {	// test if nullptr == shared_ptr
         return ( left.value() == nullptr );
     }
 
     template<typename T, typename Q>
-    bool operator!=( const Lazy<std::unique_ptr<T>, Q>& left, std::nullptr_t right ) _NOEXCEPT
+    bool operator!=( const Lazy<std::unique_ptr<T>, Q>& left, std::nullptr_t right ) noexcept
     {	// test if shared_ptr != nullptr
         return ( !( left == right ) );
     }
 
     template<typename T, typename Q>
     bool operator!=( std::nullptr_t left,
-                     const Lazy<std::unique_ptr<T>, Q>& right ) _NOEXCEPT
+                     const Lazy<std::unique_ptr<T>, Q>& right ) noexcept
     {	// test if nullptr != shared_ptr
         return ( !( left == right ) );
     }
