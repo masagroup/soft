@@ -29,7 +29,7 @@
 #include "ecore/Any.hpp"
 [/if]
 [if (aClass.eAttributes.eType->select(isDate())->size() = 0 and aClass.eOperations.eParameters.eType->select(isDate())->size() > 0)]
-#include <boost/date_time.hpp>
+#include <ctime>
 [/if]
 
 

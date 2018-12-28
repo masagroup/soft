@@ -174,7 +174,7 @@ EList
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? (name = 'EDate')]
-boost::posix_time::ptime
+std::time_t
 [/template]
 
 [template public generateType(anEClassifier : EClassifier) ? (name = 'EMap')]

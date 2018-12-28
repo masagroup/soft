@@ -29,7 +29,7 @@ set(CMAKE_DEBUG_POSTFIX d)
 set(CMAKE_CXX_STANDARD 17)
 
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.68.0 REQUIRED COMPONENTS unit_test_framework timer date_time)
+find_package(Boost 1.68.0 REQUIRED COMPONENTS unit_test_framework timer)
 find_package(Turtle 2.3.0)
 
 [let namespaceVar : String = getVarName( aPackage.getTestsNamespaceName() )]
@@ -60,7 +60,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${Turtle_INCLUDE_DIRS})
 target_compile_options(${PROJECT_NAME} PRIVATE /wd4250 /bigobj)
 target_compile_options(${PROJECT_NAME} PRIVATE "/MP")
 target_link_libraries(${PROJECT_NAME} [packageName/])
-target_link_libraries(${PROJECT_NAME} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${Boost_TIMER_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
 [generateSourceGroup(namespaces)/]
 [/let]

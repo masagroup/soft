@@ -1,8 +1,7 @@
 #include "ecore/ext/EcoreFactoryExt.hpp"
+#include <ctime>
+#include <sstream>
 
-#include <boost/date_time.hpp>
-
-using namespace boost::posix_time;
 using namespace ecore;
 using namespace ecore::impl;
 using namespace ecore::ext;
@@ -35,12 +34,17 @@ std::string EcoreFactoryExt::convertECharToString( const std::shared_ptr<EDataTy
 }
 Any EcoreFactoryExt::createEDateFromString( const std::shared_ptr<EDataType>& eDataType, const std::string& literalValue ) const
 {
-    return from_iso_string( literalValue );
+    std::istringstream stream( literalValue );
+    std::time_t t;
+    stream >> t;
+    return t;
 }
 std::string EcoreFactoryExt::convertEDateToString( const std::shared_ptr<EDataType>& eDataType, const Any& instanceValue ) const
 {
-    auto value = anyCast<ptime>(instanceValue);
-    return to_iso_string( value );
+    auto value = anyCast<std::time_t>(instanceValue);
+    std::ostringstream stream;
+    stream << value;
+    return stream.str();
 }
 Any EcoreFactoryExt::createEDoubleFromString( const std::shared_ptr<EDataType>& eDataType, const std::string& literalValue ) const
 {

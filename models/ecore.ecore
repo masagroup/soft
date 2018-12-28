@@ -501,9 +501,9 @@
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="EChar" instanceClassName="char"/>
-  <eClassifiers xsi:type="ecore:EDataType" name="EDate" instanceTypeName="boost::posix_time::ptime">
+  <eClassifiers xsi:type="ecore:EDataType" name="EDate" instanceTypeName="std::time_t">
     <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
-      <details key="include" value="boost/date_time.hpp"/>
+      <details key="include" value="ctime"/>
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="EDiagnosticChain" serializable="false"/>
