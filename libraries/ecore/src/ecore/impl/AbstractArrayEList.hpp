@@ -139,7 +139,7 @@ namespace ecore::impl
 
         virtual ValueType remove( std::size_t pos )
         {
-            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos < size() );
+            VERIFY( pos < size() , "out of range");
             auto it = v_.begin() + pos;
             auto oldObject = from_( std::move( *it ) );
             v_.erase( it );

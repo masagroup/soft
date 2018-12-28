@@ -11,6 +11,7 @@
 #define ECORE_ELIST_HPP_
 
 #include <memory>
+#include "ecore/Assert.hpp"
 
 namespace ecore {
 
@@ -166,27 +167,14 @@ namespace ecore {
             }
 
         private:
-#if _ITERATOR_DEBUG_LEVEL == 2
             void _Compat( const EListIterator& rhs ) const
-            {   // test for compatible iterator pair
-                if ( eList_ != rhs.eList_)
-                {
-                    _ASSERTE( "vector iterators incompatible" && 0 );
-                    _SCL_SECURE_INVALID_ARGUMENT;
-                }
+            {
+#if _ITERATOR_DEBUG_LEVEL == 0
+                (void)rhs;
+#else
+                VERIFY( eList_ == rhs.eList_, "vector iterators incompatible" );
+#endif
             }
-
-#elif _ITERATOR_DEBUG_LEVEL == 1
-            void _Compat( const EListIterator& rhs ) const
-            {	// test for compatible iterator pair
-                _SCL_SECURE_VALIDATE_RANGE( eList_ == rhs.eList_ );
-            }
-
-#else /* _ITERATOR_DEBUG_LEVEL == 0 */
-            void _Compat( const EListIterator& ) const
-            {	// test for compatible iterator pair
-            }
-#endif /* _ITERATOR_DEBUG_LEVEL */
 
         private:
             ListType* eList_;

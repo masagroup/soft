@@ -46,13 +46,13 @@ namespace ecore::impl
 
         virtual void add( std::size_t pos, const ValueType& e )
         {
-            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
+            VERIFY( pos <= size() , "out of range" );
             doAdd( pos, e );
         }
 
         virtual bool addAll( std::size_t pos, const EList<ValueType>& l )
         {
-            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos <= size() );
+            VERIFY( pos <= size(), "out of range" );
             return doAddAll( pos, l );
         }
 
@@ -66,7 +66,7 @@ namespace ecore::impl
 
         virtual void set( std::size_t pos, const ValueType& e )
         {
-            _SCL_SECURE_ALWAYS_VALIDATE_RANGE( pos < size() );
+            VERIFY( pos < size(), "out of range" );
             doSet( pos, e );
         }
 
