@@ -23,42 +23,32 @@
         </sequential>
     </for>
     
-    <!--
-    ============================================================================
-      Aria
-    ============================================================================
-    -->
-    <target name="aria2.install">
-        <local name="file"/>
-        <local name="version"/>
-        <property name="file" value ="aria2-1.34.0-win-64bit-build1"/>  
-        <property name="version" value ="1.34.0"/>  
-        <mkdir dir="${downloads.dir}"/>
-        <get src="https://github.com/aria2/aria2/releases/download/release-${version}/${file}.zip"
-             dest="${downloads.dir}"
-             verbose="true"
-             usetimestamp="true"/>
-        <mkdir dir="${bin.dir}/aria2"/>
-        <unzip src="${downloads.dir}/${file}.zip" dest="${bin.dir}/aria2">
-            <globmapper from="${file}/*" to="*"/>
-        </unzip>
-    </target>
-    
     <macrodef name="download">
         <attribute name="url"/>
         <attribute name="dir" default="${downloads.dir}"/>
         <element name="args" implicit="yes" optional="yes"/>
         <sequential>
             <mkdir dir="@{dir}"/>
-            <exec taskname="download" executable="${bin.dir}/aria2/aria2c.exe" dir="${bin.dir}/aria2" failonerror="true">
-                <arg value="--continue=true"/>
-                <arg value="--allow-overwrite=false"/>
-                <arg value="--auto-file-renaming=false"/>
-                <arg value="--dir"/>
-                <arg value="@{dir}"/>
-                <args/>
-                <arg value="@{url}"/>
-            </exec>
+            <if>
+                <available file="${bin.dir}/aria2/aria2c.exe"/>
+                <then>
+                    <exec taskname="download" executable="${bin.dir}/aria2/aria2c.exe" dir="${bin.dir}/aria2" failonerror="true">
+                        <arg value="--continue=true"/>
+                        <arg value="--allow-overwrite=false"/>
+                        <arg value="--auto-file-renaming=false"/>
+                        <arg value="--dir"/>
+                        <arg value="@{dir}"/>
+                        <args/>
+                        <arg value="@{url}"/>
+                    </exec>
+                </then>
+                <else>
+                    <get src="@{url}"
+                         dest="@{dir}"
+                         verbose="true"
+                         usetimestamp="true"/>
+                </else>
+            </if>
         </sequential>
     </macrodef>
     
@@ -78,6 +68,15 @@
             </unzip>
         </sequential>
     </macrodef>
+    
+    <!--
+    ============================================================================
+      Aria2
+    ============================================================================
+    -->
+    <target name="aria2.install">
+        <install name="aria2" url="https://github.com/aria2/aria2/releases/download/release-1.34.0/aria2-1.34.0-win-64bit-build1.zip"/>
+    </target>
     
     <target name="ant.install" depends="aria2.install">
         <install name="ant" url="https://sourceforge.net/projects/ant-contrib/files/ant-contrib/1.0b3/ant-contrib-1.0b3-bin.zip"/>
