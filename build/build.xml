@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
-<project name="soft" default="all">
+<project name="soft" default="all" xmlns:if="ant:if" xmlns:unless="ant:unless">
 
     <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
+    <property file="${user.home}/build.properties"/>
     <property file="build.properties"/>
-  
+    
     <macrodef name="property-to-location">
         <attribute name="name"/>
         <sequential>
@@ -26,25 +27,38 @@
     <macrodef name="download">
         <attribute name="url"/>
         <attribute name="dir" default="${downloads.dir}"/>
+        <attribute name="output" default=""/>
         <element name="args" implicit="yes" optional="yes"/>
         <sequential>
             <mkdir dir="@{dir}"/>
+            <!-- if output is undefined , output is the basename of the url -->
+            <local name="output"/>
+            <if>
+                <equals arg1="@{output}" arg2=""/>
+                <then>
+                    <basename property="output" file="@{url}"/>
+                </then>
+                <else>
+                    <property name="output" value="@{output}"/>
+                </else>
+            </if>
             <if>
                 <available file="${bin.dir}/aria2/aria2c.exe"/>
                 <then>
                     <exec taskname="download" executable="${bin.dir}/aria2/aria2c.exe" dir="${bin.dir}/aria2" failonerror="true">
                         <arg value="--continue=true"/>
-                        <arg value="--allow-overwrite=false"/>
+                        <arg value="--allow-overwrite=true"/>
                         <arg value="--auto-file-renaming=false"/>
                         <arg value="--dir"/>
                         <arg value="@{dir}"/>
+                        <arg value="--out=${output}"/>
                         <args/>
                         <arg value="@{url}"/>
                     </exec>
                 </then>
                 <else>
                     <get src="@{url}"
-                         dest="@{dir}"
+                         dest="@{dir}/${output}"
                          verbose="true"
                          usetimestamp="true"/>
                 </else>
@@ -55,15 +69,25 @@
     <macrodef name="install">
         <attribute name="name"/>
         <attribute name="url"/>
+        <attribute name="output" default=""/>
         <attribute name="dir" default="${bin.dir}/@{name}"/>
         <element name="args" implicit="yes" optional="yes"/>
         <sequential>
-            <download url="@{url}" dir="${downloads.dir}">
+            <!-- if output is undefined , output is the basename of the url -->
+            <local name="output"/>
+            <if>
+                <equals arg1="@{output}" arg2=""/>
+                <then>
+                    <basename property="output" file="@{url}"/>
+                </then>
+                <else>
+                    <property name="output" value="@{output}"/>
+                </else>
+            </if>
+            <download url="@{url}" dir="${downloads.dir}" output="${output}">
                 <args/>
             </download>
-            <local name="filename"/>
-            <basename property="filename" file="@{url}"/>
-            <unzip src="${downloads.dir}/${filename}" dest="@{dir}">
+            <unzip src="${downloads.dir}/${output}" dest="@{dir}">
                 <cutdirsmapper dirs="1"/>
             </unzip>
         </sequential>
@@ -93,6 +117,7 @@
     
     <property name = "cmake.generator.vs2015" value = "Visual Studio 14 2015 Win64"/>
     <property name = "cmake.generator.vs2017" value = "Visual Studio 15 2017 Win64"/>
+    <property name = "cmake.generator.vs2019" value = "Visual Studio 16 2019 Win64"/>
     <property name = "cmake.generator.ninja" value = "Ninja"/>
     
     <macrodef name="cmake_exec">
@@ -181,6 +206,20 @@
                                          ,ninja.install"/>
     
     
+    <!--
+    ============================================================================
+      VcPkg
+    ============================================================================
+    -->
+    <target name="test.vcpkg">
+        <available file="${vcpkg.dir}/scripts/buildsystems/vcpkg.cmake" property="vcpkg.present"/>
+    </target>
+    
+    <target name="vcpkg.install" depends="test.vcpkg" unless="vcpkg.present">
+        <install name="vcpkg" dir="${vcpkg.dir}" url="https://github.com/SokaDance/vcpkg/archive/turtle.zip" output="vcpkg-turtle.zip"/>
+    </target>
+    
+    <target name="install" depends="tools.install,vcpkg.install"/>
     
     <!--
     ============================================================================
