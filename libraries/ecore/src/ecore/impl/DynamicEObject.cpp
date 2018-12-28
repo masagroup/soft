@@ -144,7 +144,7 @@ void DynamicEObject::eSet( int featureID, const Any & newValue )
         auto dynamicFeature = eDynamicFeature( featureID );
         if( isContainer( dynamicFeature ) )
         {
-            _ASSERT_EXPR( newValue.type() == typeid(std::shared_ptr<EObject>()), " Feature defined as a container : value must be a std::shared_ptr<EObject>" );
+            ASSERT( newValue.type() == typeid(std::shared_ptr<EObject>()), " Feature defined as a container : value must be a std::shared_ptr<EObject>" );
 
             // container
             std::shared_ptr<EObject> newContainer = anyCast<std::shared_ptr<EObject>>( newValue );
@@ -164,7 +164,7 @@ void DynamicEObject::eSet( int featureID, const Any & newValue )
         }
         else if( isBidirectional( dynamicFeature ) || isContains( dynamicFeature ) )
         {
-            _ASSERT_EXPR( newValue.type() == typeid( std::shared_ptr<EObject>() ), " Feature defined as birectional or containment : value must be a std::shared_ptr<EObject>" );
+            ASSERT( newValue.type() == typeid( std::shared_ptr<EObject>() ), " Feature defined as birectional or containment : value must be a std::shared_ptr<EObject>" );
             
             // inverse - opposite
             auto oldValue = properties_[ dynamicFeatureID ];
@@ -237,7 +237,7 @@ void DynamicEObject::eSet( int featureID, const Any & newValue )
 
             if( isProxy(dynamicFeature) )
             {
-                _ASSERT_EXPR( newValue.type() == typeid( std::shared_ptr<EObject>() ), " Feature defined as reference proxy : value must be a std::shared_ptr<EObject>" );
+                ASSERT( newValue.type() == typeid( std::shared_ptr<EObject>() ), " Feature defined as reference proxy : value must be a std::shared_ptr<EObject>" );
                 auto newObject = anyCast<std::shared_ptr<EObject>>( newValue );
                 
                 auto proxy = anyCast < std::shared_ptr<EObjectProxy> >( oldValue );
@@ -245,7 +245,7 @@ void DynamicEObject::eSet( int featureID, const Any & newValue )
             }
             else if( isBackReference( dynamicFeature ) )
             {
-                _ASSERT_EXPR( newValue.type() == typeid( std::shared_ptr<EObject>() ), " Feature defined as a back reference : value must be a std::shared_ptr<EObject>" );
+                ASSERT( newValue.type() == typeid( std::shared_ptr<EObject>() ), " Feature defined as a back reference : value must be a std::shared_ptr<EObject>" );
                 auto newObject = anyCast<std::shared_ptr<EObject>>( newValue );
 
                 properties_[ dynamicFeatureID ] = std::weak_ptr<EObject>( newObject );

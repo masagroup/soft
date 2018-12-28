@@ -381,8 +381,6 @@ namespace ecore {
         T_ListDelegate& delegate_;
     };
 
-    
-
     template <typename T>
     bool operator ==( const EList<T>& lhs, const EList<T>& rhs )
     {

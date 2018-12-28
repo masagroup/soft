@@ -149,7 +149,7 @@ namespace ecore::impl
         template <bool u = unique>
         typename std::enable_if< u, void >::type doAdd( std::size_t pos, const ValueType& e )
         {
-            _SCL_SECURE_ALWAYS_VALIDATE( !contains( e ) );
+            VERIFY( !contains( e ) , "element already in list" );
             addUnique( pos, e );
         }
 
@@ -189,7 +189,7 @@ namespace ecore::impl
         typename std::enable_if< u, void >::type doSet( std::size_t pos, const ValueType& e )
         {
             std::size_t currentIndex = indexOf( e );
-            _SCL_SECURE_ALWAYS_VALIDATE( currentIndex == -1 || currentIndex == pos );
+            VERIFY( currentIndex == -1 || currentIndex == pos , "element already in list");
             setUnique( pos, e );
         }
 

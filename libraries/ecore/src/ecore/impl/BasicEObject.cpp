@@ -188,13 +188,13 @@ Any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& feature, bool
 
 int BasicEObject::eDerivedStructuralFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
 {
-    _ASSERT_EXPR( eClass()->getEAllStructuralFeatures()->contains( eStructuralFeature ), ( static_cast<std::ostringstream&>( std::stringstream() << "The feature '" << eStructuralFeature->getName() << "' is not a valid feature" ) ).str().c_str() );
+    VERIFYN( eClass()->getEAllStructuralFeatures()->contains( eStructuralFeature ), "The feature '%s' is not a valid feature" , eStructuralFeature->getName() .c_str() );
     return eStructuralFeature->getFeatureID();
 }
 
 int BasicEObject::eDerivedOperationID( const std::shared_ptr<EOperation>& eOperation ) const
 {
-    _ASSERT_EXPR( eClass()->getEAllOperations()->contains( eOperation ), ( static_cast<std::ostringstream&>( std::stringstream() << "The operation '" << eOperation->getName() << "' is not a valid operation" ) ).str().c_str() );
+    VERIFYN( eClass()->getEAllOperations()->contains( eOperation ), "The operation '%s' is not a valid operation", eOperation->getName().c_str() );
     return eOperation->getOperationID();
 }
 
@@ -209,7 +209,7 @@ Any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& eFeature, boo
 Any BasicEObject::eGet( int featureID, bool resolve, bool coreType ) const
 {
     std::shared_ptr<EStructuralFeature> eFeature = eClass()->getEStructuralFeature( featureID );
-    _ASSERT_EXPR( eFeature , ( static_cast<std::ostringstream&>( std::stringstream() << "Invalid featureID:  " << featureID ) ).str().c_str() );
+    VERIFYN( eFeature, "Invalid featureID: %i ", featureID );
     return Any();
 }
 
@@ -224,7 +224,7 @@ bool BasicEObject::eIsSet( const std::shared_ptr<EStructuralFeature>& eFeature )
 bool BasicEObject::eIsSet( int featureID ) const
 {
     std::shared_ptr<EStructuralFeature> eFeature = eClass()->getEStructuralFeature( featureID );
-    _ASSERT_EXPR( eFeature , ( static_cast<std::ostringstream&>( std::stringstream() << "Invalid featureID:  " << featureID ) ).str().c_str() );
+    VERIFYN( eFeature, "Invalid featureID: %i ", featureID );
     return false;
 }
 
@@ -240,7 +240,7 @@ void BasicEObject::eSet( const std::shared_ptr<EStructuralFeature>& eFeature, co
 void BasicEObject::eSet( int featureID, const Any & newValue )
 {
     std::shared_ptr<EStructuralFeature> eFeature = eClass()->getEStructuralFeature( featureID );
-    _ASSERT_EXPR( eFeature , ( static_cast<std::ostringstream&>( std::stringstream() << "Invalid featureID:  " << featureID ) ).str().c_str() );
+    VERIFYN( eFeature, "Invalid featureID: %i ", featureID );
 }
 
 
@@ -256,7 +256,7 @@ void BasicEObject::eUnset( const std::shared_ptr<EStructuralFeature>& eFeature )
 void BasicEObject::eUnset( int featureID )
 {
     std::shared_ptr<EStructuralFeature> eFeature = eClass()->getEStructuralFeature( featureID );
-    _ASSERT_EXPR( eFeature , ( static_cast<std::ostringstream&>( std::stringstream() << "Invalid featureID:  " << featureID ) ).str().c_str() );
+    VERIFYN( eFeature, "Invalid featureID: %i ", featureID );
 }
 
 Any BasicEObject::eInvoke( const std::shared_ptr<EOperation>& eOperation, const std::shared_ptr<EList<Any>>& arguments )
@@ -270,7 +270,7 @@ Any BasicEObject::eInvoke( const std::shared_ptr<EOperation>& eOperation, const 
 Any BasicEObject::eInvoke( int operationID, const std::shared_ptr<EList<Any>>& arguments )
 {
     std::shared_ptr<EOperation> eOperation = eClass()->getEOperation( operationID );
-    _ASSERT_EXPR( eOperation, ( static_cast<std::ostringstream&>( std::stringstream() << "Invalid operationID:  " << operationID ) ).str().c_str() );
+    VERIFYN( eOperation, "Invalid operationID: %i ", operationID );
     return Any();
 }
 
