@@ -212,11 +212,25 @@
     ============================================================================
     -->
     <target name="test.vcpkg">
-        <available file="${vcpkg.dir}/scripts/buildsystems/vcpkg.cmake" property="vcpkg.present"/>
+        <available file="${vcpkg.dir}/.vcpkg-root" property="vcpkg.present"/>
     </target>
     
     <target name="vcpkg.install" depends="test.vcpkg" unless="vcpkg.present">
         <install name="vcpkg" dir="${vcpkg.dir}" url="https://github.com/SokaDance/vcpkg/archive/turtle.zip" output="vcpkg-turtle.zip"/>
+        <!-- build -->
+        <exec taskname="vcpkg-build" executable="cmd" dir="${vcpkg.dir}" failonerror="true">
+            <arg value="/C"/>
+            <arg value="bootstrap-vcpkg.bat"/>
+        </exec>
+        <!-- install -->
+        <exec taskname="vcpkg-install" executable="${vcpkg.dir}/vcpkg.exe" dir="${vcpkg.dir}" failonerror="true">
+            <arg value="--triplet"/>
+            <arg value="x64-windows"/>
+            <arg value="--vcpkg-root"/>
+            <arg value="${vcpkg.dir}"/>
+            <arg value="install"/>
+            <arg value="turtle"/>
+        </exec>
     </target>
     
     <target name="install" depends="tools.install,vcpkg.install"/>
