@@ -133,6 +133,7 @@
                 <arg value="-G"/>
                 <arg value="${cmake.generator.@{generator}}"/>
                 <arg value="-DCMAKE_INSTALL_PREFIX=${root.dir}/deps"/>
+                <arg value="-DVCPKG_ROOT=${vcpkg.dir}"/>
                 <elements/>
                 <arg value="@{input}"/>
             </exec>
