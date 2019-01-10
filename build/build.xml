@@ -384,6 +384,6 @@
     
     <target name="clean" depends="generators.clean,sources.clean,build.clean"/>
     
-    <target name="all" depends="tools.install,generators,generates,build,tests"/>
+    <target name="all" depends="install,generators,generates,build,tests"/>
     
 </project>
