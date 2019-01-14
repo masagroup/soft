@@ -2,6 +2,7 @@
 # Sources
 set(SOURCE_ECORE_FILES
     src/ecore/EAdapter.cpp
+    src/ecore/Uri.cpp
 )
 
 set(HEADER_ECORE_FILES
@@ -19,6 +20,8 @@ set(HEADER_ECORE_FILES
     src/ecore/ETreeIterator.hpp
     src/ecore/EUnsettableList.hpp
     src/ecore/Stream.hpp
+    src/ecore/Uri.hpp
+    src/ecore/Uri.inl
 )
 
 set(HEADER_ECORE_IMPL_FILES 
