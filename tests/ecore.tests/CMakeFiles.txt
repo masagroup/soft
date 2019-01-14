@@ -20,6 +20,7 @@ set(SOURCE_FILES
     src/NotificationTests.cpp
     src/NotificationChainTests.cpp
     src/ProxyTests.cpp
+    src/UriTests.cpp
 )
 
 set(SOURCE_ECORE_TESTS_FILES
