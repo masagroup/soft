@@ -20,15 +20,15 @@ namespace ecore
     public:
         explicit Uri( const std::string& str );
 
-        const std::string& scheme() const
+        const std::string& getScheme() const
         {
             return scheme_;
         }
-        const std::string& username() const
+        const std::string& getUsername() const
         {
             return username_;
         }
-        const std::string& password() const
+        const std::string& getPassword() const
         {
             return password_;
         }
@@ -36,7 +36,7 @@ namespace ecore
         * Get host part of URI. If host is an IPv6 address, square brackets will be
         * returned, for example: "[::1]".
         */
-        const std::string& host() const
+        const std::string& getHost() const
         {
             return host_;
         }
@@ -49,26 +49,26 @@ namespace ecore
         * or API that connects to that host/port; e.g. getaddrinfo() only understands
         * IPv6 host without square brackets
         */
-        std::string hostname() const;
+        std::string getHostname() const;
 
-        uint16_t port() const
+        uint16_t getPort() const
         {
             return port_;
         }
-        const std::string& path() const
+        const std::string& getPath() const
         {
             return path_;
         }
-        const std::string& query() const
+        const std::string& getQuery() const
         {
             return query_;
         }
-        const std::string& fragment() const
+        const std::string& getFragment() const
         {
             return fragment_;
         }
 
-        std::string authority() const;
+        std::string getAuthority() const;
 
         std::string toString() const;
 

@@ -31,7 +31,7 @@ Uri::Uri( const std::string& str )
 
     std::smatch match;
     if( !std::regex_match( str.begin(), str.end(), match, uriRegex ) ) 
-        throw std::invalid_argument( "invalid URI :" + str );
+        throw std::invalid_argument( "invalid URI :'" + str +"'");
  
     scheme_ = submatch( match, 1 );
     std::transform( scheme_.begin(), scheme_.end(), scheme_.begin(), ::tolower );
@@ -80,27 +80,27 @@ Uri::Uri( const std::string& str )
     fragment_ = submatch( match, 4 );
 }
 
-std::string Uri::authority() const
+std::string Uri::getAuthority() const
 {
     std::stringstream s;
-    if( !username().empty() || !password().empty() )
+    if( !username_.empty() || !password_.empty() )
     {
-        s << username();
+        s << username_;
         
-        if( !password().empty() )
-            s << ':' << password();
+        if( !password_.empty() )
+            s << ':' << password_;
         
         s << '@';
     }
 
-    s << host();
-    if( port() != 0 )
-        s << ':' << port();
+    s <<host_;
+    if( port_ != 0 )
+        s << ':' << port_;
     
     return s.str();
 }
 
-std::string Uri::hostname() const
+std::string Uri::getHostname() const
 {
     if( host_.size() > 0 && host_[ 0 ] == '[' )
     {

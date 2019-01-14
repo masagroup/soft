@@ -31,14 +31,14 @@ namespace ecore
         inline UriTuple as_tuple( const Uri& k )
         {
             return UriTuple(
-                k.scheme(),
-                k.username(),
-                k.password(),
-                k.host(),
-                k.port(),
-                k.path(),
-                k.query(),
-                k.fragment() );
+                k.getScheme(),
+                k.getUsername(),
+                k.getPassword(),
+                k.getHost(),
+                k.getPort(),
+                k.getPath(),
+                k.getQuery(),
+                k.getFragment() );
         }
     }
 
