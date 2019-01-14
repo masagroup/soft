@@ -23,6 +23,8 @@ namespace ecore
 
     class EObject;
 
+    class Uri;
+
     class EResource : public virtual ENotifier
     {
     public:
@@ -39,6 +41,10 @@ namespace ecore
 
     public:
         virtual ~EResource() = default;
+
+        virtual const Uri& getUri() const = 0;
+
+        virtual void setUri( const Uri& uri ) = 0;
 
         virtual std::shared_ptr< EList< std::shared_ptr< EObject > > > getContents() const = 0;
 

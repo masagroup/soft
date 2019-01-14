@@ -11,6 +11,7 @@
 #define ECORE_RESOURCE_HPP_
 
 #include "ecore/EResource.hpp"
+#include "ecore/Uri.hpp"
 #include "ecore/impl/AbstractNotifier.hpp"
 #include "ecore/impl/Lazy.hpp"
 
@@ -28,6 +29,10 @@ namespace ecore::impl
         void setThisPtr( const std::shared_ptr<Resource>& resource );
         std::shared_ptr<Resource> getThisPtr() const;
 
+        virtual const Uri& getUri() const;
+
+        virtual void setUri( const Uri& uri );
+
         virtual std::shared_ptr< EList< std::shared_ptr< EObject > > > getContents() const;
 
         virtual std::shared_ptr<const ECollectionView<std::shared_ptr<EObject>>> getAllContents() const;
@@ -40,7 +45,11 @@ namespace ecore::impl
         virtual std::shared_ptr< EList< std::shared_ptr< EObject > > > initContents();
 
     private:
+        class Notification;
+
+    private:
         std::weak_ptr<Resource> thisPtr_;
+        Uri uri_;
         Lazy< std::shared_ptr< EList< std::shared_ptr< EObject > > > > eContents_;
     };
 

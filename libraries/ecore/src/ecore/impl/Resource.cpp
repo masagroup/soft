@@ -1,10 +1,48 @@
 #include "ecore/impl/Resource.hpp"
 #include "ecore/impl/AbstractENotifyingList.hpp"
+#include "ecore/impl/AbstractNotification.hpp"
 #include "ecore/ENotifyingList.hpp"
 #include "ecore/EObject.hpp"
+#include "ecore/Stream.hpp"
+
 
 using namespace ecore;
 using namespace ecore::impl;
+
+
+class Resource::Notification : public AbstractNotification
+{
+public:
+    Notification( const std::weak_ptr<ENotifier>& notifier , EventType type,
+                  int featureID,
+                  const Any& oldValue,
+                  const Any& newValue,
+                  std::size_t position = NO_INDEX )
+        : AbstractNotification( type, oldValue , newValue, position ) 
+        , notifier_( notifier )
+        , featureID_( featureID )
+    {
+    }
+
+    virtual std::shared_ptr<ENotifier> getNotifier() const
+    {
+        return notifier_.lock();
+    }
+
+    virtual int getFeatureID() const
+    {
+        return featureID_;
+    }
+
+    virtual std::shared_ptr<EStructuralFeature> getFeature() const
+    {
+        return nullptr;
+    }
+
+private:
+    std::weak_ptr<ENotifier> notifier_;
+    int featureID_;
+};
 
 Resource::Resource()
     : eContents_( [ & ]()
@@ -26,6 +64,19 @@ void Resource::setThisPtr( const std::shared_ptr<Resource>& resource )
 std::shared_ptr<Resource> Resource::getThisPtr() const
 {
     return thisPtr_.lock();
+}
+
+const Uri& Resource::getUri() const
+{
+    return uri_;
+}
+
+void Resource::setUri( const Uri& uri )
+{
+    Uri oldUri = uri_;
+    uri_ = uri;
+    if( eNotificationRequired() )
+        eNotify( std::make_shared<Notification>( thisPtr_, Notification::SET, RESOURCE__URI, oldUri , uri_) );
 }
 
 std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::getContents() const
