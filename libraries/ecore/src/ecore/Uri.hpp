@@ -18,6 +18,8 @@ namespace ecore
     class Uri
     {
     public:
+        explicit Uri();
+
         explicit Uri( const std::string& str );
 
         const std::string& getScheme() const
@@ -99,6 +101,10 @@ namespace ecore
         */
         const std::vector<std::pair<std::string, std::string>>& getQueryParams();
 
+        bool operator ==( const Uri& other ) const;
+
+        bool operator !=( const Uri& other ) const;
+
     private:
         std::string scheme_;
         std::string username_;
@@ -111,6 +117,9 @@ namespace ecore
         std::string fragment_;
         std::vector<std::pair<std::string, std::string>> queryParams_;
     };
+
+    
+
 }
 
 #include "ecore/Uri.inl"

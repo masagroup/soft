@@ -18,6 +18,10 @@ namespace
 
 }
 
+Uri::Uri()
+{
+}
+
 Uri::Uri( const std::string& str )
     : hasAuthority_( false )
     , port_( 0 )

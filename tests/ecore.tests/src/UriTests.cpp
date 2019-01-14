@@ -9,8 +9,8 @@ using namespace ecore;
 
 namespace std
 {
-    template <typename T,typename U >
-    ostream& operator <<( ostream& os, const std::pair<T,U>& p )
+    template <typename T, typename U >
+    ostream& operator <<( ostream& os, const std::pair<T, U>& p )
     {
         return os << "(" << p.first << "," << p.second << ")";
     }
@@ -76,5 +76,20 @@ BOOST_AUTO_TEST_CASE( Uri_Constructor_QueryParameters )
     std::vector< std::pair<std::string, std::string> > expected = { std::make_pair( "key1","foo" ) , std::make_pair( "key2","" ), std::make_pair( "key3","" ) };
     BOOST_CHECK_EQUAL( uri.getQueryParams(), expected );
 }
+
+BOOST_AUTO_TEST_CASE( Uri_Equals )
+{
+    Uri uri1{ "http://host:10020/path/path2?key1=foo&key2=&key3&=bar&=bar=" };
+    Uri uri2{ "http://host:10020/path/path2?key1=foo&key2=&key3&=bar&=bar=" };
+    BOOST_CHECK_EQUAL( uri1, uri2 );
+}
+
+BOOST_AUTO_TEST_CASE( Uri_Difference )
+{
+    Uri uri1{ "http://host:10020/path/path2?key1=foo&key2=&key3&=bar&=bar=" };
+    Uri uri2{};
+    BOOST_CHECK_NE( uri1, uri2 );
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()

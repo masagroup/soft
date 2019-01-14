@@ -42,12 +42,21 @@ namespace ecore
         }
     }
 
-    
+    inline bool Uri::operator ==( const Uri& other ) const
+    {
+        return ecore::detail::as_tuple( *this ) == ecore::detail::as_tuple( other );
+    }
+
+    inline bool Uri::operator !=( const Uri& other ) const
+    {
+        return !operator ==(other);
+    }
 
 } 
 
 namespace std
 {
+    
     template <>
     struct equal_to<ecore::Uri>
     {
