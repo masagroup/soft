@@ -110,8 +110,8 @@ namespace ecore
         std::string username_;
         std::string password_;
         std::string host_;
-        bool hasAuthority_;
-        uint16_t port_;
+        bool hasAuthority_{ false };
+        uint16_t port_{0};
         std::string path_;
         std::string query_;
         std::string fragment_;

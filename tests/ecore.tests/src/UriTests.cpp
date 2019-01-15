@@ -24,18 +24,29 @@ namespace std
 
 BOOST_AUTO_TEST_SUITE( UriTests )
 
-BOOST_AUTO_TEST_CASE( Uri_Constructor_Empty )
+BOOST_AUTO_TEST_CASE( Constructor )
+{
+    Uri uri;
+    BOOST_CHECK_EQUAL( uri.getScheme(), "" );
+    BOOST_CHECK_EQUAL( uri.getHost(), "" );
+    BOOST_CHECK_EQUAL( uri.getPort(), 0 );
+    BOOST_CHECK_EQUAL( uri.getPath(), "" );
+    BOOST_CHECK_EQUAL( uri.getQuery(), "" );
+    BOOST_CHECK_EQUAL( uri.getFragment(), "" );
+}
+
+BOOST_AUTO_TEST_CASE( Constructor_Invalid )
 {
     BOOST_CHECK_THROW( Uri uri{ "" }, std::invalid_argument );
 }
 
-BOOST_AUTO_TEST_CASE( Uri_Constructor_Scheme )
+BOOST_AUTO_TEST_CASE( Constructor_Scheme )
 {
     Uri uri{ "http://" };
     BOOST_CHECK_EQUAL( uri.getScheme(), "http" );
 }
 
-BOOST_AUTO_TEST_CASE( Uri_Constructor_Host )
+BOOST_AUTO_TEST_CASE( Constructor_Host )
 {
     Uri uri{ "http://host" };
     BOOST_CHECK_EQUAL( uri.getScheme(), "http" );
@@ -43,7 +54,7 @@ BOOST_AUTO_TEST_CASE( Uri_Constructor_Host )
     BOOST_CHECK_EQUAL( uri.getPort(), 0 );
 }
 
-BOOST_AUTO_TEST_CASE( Uri_Constructor_HostPort )
+BOOST_AUTO_TEST_CASE( Constructor_HostPort )
 {
     Uri uri{ "http://host:10020" };
     BOOST_CHECK_EQUAL( uri.getScheme(), "http" );
@@ -51,7 +62,7 @@ BOOST_AUTO_TEST_CASE( Uri_Constructor_HostPort )
     BOOST_CHECK_EQUAL( uri.getPort(), 10020 );
 }
 
-BOOST_AUTO_TEST_CASE( Uri_Constructor_Path )
+BOOST_AUTO_TEST_CASE( Constructor_Path )
 {
     Uri uri{ "http://host:10020/path/path2" };
     BOOST_CHECK_EQUAL( uri.getScheme(), "http" );
@@ -60,7 +71,7 @@ BOOST_AUTO_TEST_CASE( Uri_Constructor_Path )
     BOOST_CHECK_EQUAL( uri.getPath(), "/path/path2" );
 }
 
-BOOST_AUTO_TEST_CASE( Uri_Constructor_Query )
+BOOST_AUTO_TEST_CASE( Constructor_Query )
 {
     Uri uri{ "http://host:10020/path/path2?key1=foo&key2=&key3&=bar&=bar=" };
     BOOST_CHECK_EQUAL( uri.getScheme(), "http" );
@@ -70,21 +81,29 @@ BOOST_AUTO_TEST_CASE( Uri_Constructor_Query )
     BOOST_CHECK_EQUAL( uri.getQuery(), "key1=foo&key2=&key3&=bar&=bar=" );
 }
 
-BOOST_AUTO_TEST_CASE( Uri_Constructor_QueryParameters )
+BOOST_AUTO_TEST_CASE( Constructor_QueryParameters )
 {
     Uri uri{ "http://host:10020/path/path2?key1=foo&key2=&key3&=bar&=bar=" };
     std::vector< std::pair<std::string, std::string> > expected = { std::make_pair( "key1","foo" ) , std::make_pair( "key2","" ), std::make_pair( "key3","" ) };
     BOOST_CHECK_EQUAL( uri.getQueryParams(), expected );
 }
 
-BOOST_AUTO_TEST_CASE( Uri_Equals )
+BOOST_AUTO_TEST_CASE( Equals_Empty )
+{
+    Uri uri1;
+    Uri uri2;
+    BOOST_CHECK_EQUAL( uri1, uri2 );
+}
+
+
+BOOST_AUTO_TEST_CASE( Equals )
 {
     Uri uri1{ "http://host:10020/path/path2?key1=foo&key2=&key3&=bar&=bar=" };
     Uri uri2{ "http://host:10020/path/path2?key1=foo&key2=&key3&=bar&=bar=" };
     BOOST_CHECK_EQUAL( uri1, uri2 );
 }
 
-BOOST_AUTO_TEST_CASE( Uri_Difference )
+BOOST_AUTO_TEST_CASE( Difference )
 {
     Uri uri1{ "http://host:10020/path/path2?key1=foo&key2=&key3&=bar&=bar=" };
     Uri uri2{};
