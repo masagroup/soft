@@ -5,8 +5,10 @@
 #include "ecore/Stream.hpp"
 #include "ecore/Uri.hpp"
 #include "ecore/ENotification.hpp"
+#include "ecore/ENotificationChain.hpp"
 #include "ecore/impl/Resource.hpp"
 #include "ecore/tests/MockAdapter.hpp"
+#include "ecore/tests/MockObject.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -69,6 +71,18 @@ BOOST_FIXTURE_TEST_CASE( Attribute_Uri_Notifications , NotificationsFixture  )
 
     resource->setUri( uri );
     BOOST_CHECK_EQUAL( resource->getUri(), uri );
+}
+
+BOOST_AUTO_TEST_CASE( Contents )
+{
+    auto resource = std::make_shared<Resource>();
+    resource->setThisPtr( resource );
+
+    auto mockObject = std::make_shared<MockObject>();
+    MOCK_EXPECT( mockObject->eSetResource ).once().with( resource, std::shared_ptr<ENotificationChain>() ).returns( std::shared_ptr<ENotificationChain>() );
+
+    auto contents = resource->getContents();
+    contents->add( mockObject );
 }
 
 BOOST_AUTO_TEST_SUITE_END()
