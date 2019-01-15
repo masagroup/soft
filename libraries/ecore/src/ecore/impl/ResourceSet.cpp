@@ -56,16 +56,14 @@ std::shared_ptr<EList<std::shared_ptr<EResource>>> ResourceSet::initResources()
                                                               , const std::shared_ptr<ENotificationChain>& notifications ) const
         {
             auto resource = std::dynamic_pointer_cast<Resource>( object );
-            _ASSERTE( resource );
-            return resource->basicSetResourceSet( resourceSet_.lock(), notifications );
+            return resource ? resource->basicSetResourceSet( resourceSet_.lock(), notifications ) : notifications;
         }
 
         virtual std::shared_ptr<ENotificationChain> inverseRemove( const std::shared_ptr<EResource>& object
                                                                  , const std::shared_ptr<ENotificationChain>& notifications ) const
         {
             auto resource = std::dynamic_pointer_cast<Resource>( object );
-            _ASSERTE( resource );
-            return resource->basicSetResourceSet( nullptr, notifications );
+            return resource ? resource->basicSetResourceSet( nullptr, notifications ) : notifications;
         }
 
     private:

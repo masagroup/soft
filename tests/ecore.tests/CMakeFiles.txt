@@ -30,5 +30,6 @@ set(SOURCE_ECORE_TESTS_FILES
     src/ecore/tests/MockList.hpp
     src/ecore/tests/MockNotifier.hpp
     src/ecore/tests/MockNotification.hpp
+    src/ecore/tests/MockResource.hpp
 )
 
