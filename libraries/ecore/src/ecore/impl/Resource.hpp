@@ -17,6 +17,13 @@
 
 #include <memory>
 
+namespace ecore
+{
+    class ENotificationChain;
+    
+    class EResourceSet;
+}
+
 namespace ecore::impl
 {
     class Resource : public virtual AbstractNotifier< EResource >
@@ -28,6 +35,8 @@ namespace ecore::impl
 
         void setThisPtr( const std::shared_ptr<Resource>& resource );
         std::shared_ptr<Resource> getThisPtr() const;
+
+        virtual std::shared_ptr<EResourceSet> getResourceSet() const;
 
         virtual const Uri& getUri() const;
 
@@ -41,6 +50,9 @@ namespace ecore::impl
 
         virtual void detached( const std::shared_ptr<EObject>& object );
 
+        std::shared_ptr<ENotificationChain> basicSetResourceSet( const std::shared_ptr<EResourceSet> resourceSet
+                                                               , const std::shared_ptr<ENotificationChain>& notifications );
+
     private:
         virtual std::shared_ptr< EList< std::shared_ptr< EObject > > > initContents();
 
@@ -49,6 +61,7 @@ namespace ecore::impl
 
     private:
         std::weak_ptr<Resource> thisPtr_;
+        std::weak_ptr<EResourceSet> resourceSet_;
         Uri uri_;
         Lazy< std::shared_ptr< EList< std::shared_ptr< EObject > > > > eContents_;
     };

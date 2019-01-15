@@ -23,11 +23,18 @@ namespace ecore
 
     class EObject;
 
+    class EResourceSet;
+
     class Uri;
 
     class EResource : public virtual ENotifier
     {
     public:
+        /**
+        * The {@link #getResourceSet} feature {@link ENotification#getFeatureID ID}.
+        */
+        static const int RESOURCE__RESOURCE_SET = 0;
+
         /**
         * The {@link #getURI} feature {@link ENotification#getFeatureID ID}.
         */
@@ -41,6 +48,8 @@ namespace ecore
 
     public:
         virtual ~EResource() = default;
+
+        virtual std::shared_ptr<EResourceSet> getResourceSet() const = 0;
 
         virtual const Uri& getUri() const = 0;
 

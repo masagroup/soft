@@ -18,7 +18,7 @@ namespace ecore
 {
     class EResource;
 
-    class EResourceSet
+    class EResourceSet : public virtual ENotifier
     {
     public:
         virtual ~EResourceSet() = default;

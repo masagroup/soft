@@ -3,6 +3,7 @@
 #include "ecore/impl/AbstractNotification.hpp"
 #include "ecore/ENotifyingList.hpp"
 #include "ecore/EObject.hpp"
+#include "ecore/EResourceSet.hpp"
 #include "ecore/Stream.hpp"
 
 
@@ -66,6 +67,11 @@ std::shared_ptr<Resource> Resource::getThisPtr() const
     return thisPtr_.lock();
 }
 
+std::shared_ptr<EResourceSet> Resource::getResourceSet() const
+{
+    return resourceSet_.lock();
+}
+
 const Uri& Resource::getUri() const
 {
     return uri_;
@@ -95,6 +101,27 @@ void Resource::attached( const std::shared_ptr<EObject>& object )
 
 void Resource::detached( const std::shared_ptr<EObject>& object )
 {
+}
+
+std::shared_ptr<ENotificationChain> Resource::basicSetResourceSet( const std::shared_ptr<EResourceSet> resourceSet, const std::shared_ptr<ENotificationChain>& msgs )
+{
+    auto notifications = msgs;
+    auto oldResourceSet = resourceSet_.lock();
+    if( oldResourceSet )
+    {
+        auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EResource>>>( oldResourceSet->getResources() );
+        _ASSERTE( list );
+        notifications = list->add( thisPtr_.lock(), notifications );
+    }
+    resourceSet_ = resourceSet;
+    if ( eNotificationRequired() )
+    {
+        if( !notifications )
+            notifications = std::make_shared<NotificationChain>();
+        
+        notifications->add( std::make_shared<Notification>( thisPtr_, Notification::SET, RESOURCE__RESOURCE_SET, oldResourceSet, resourceSet ) );
+    }
+    return notifications;
 }
 
 std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::initContents()
