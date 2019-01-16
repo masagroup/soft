@@ -20,6 +20,8 @@ set(HEADER_ECORE_FILES
     src/ecore/EResourceSet.hpp
     src/ecore/ETreeIterator.hpp
     src/ecore/EUnsettableList.hpp
+    src/ecore/EUriConverter.hpp
+    src/ecore/EUriHandler.hpp
     src/ecore/Stream.hpp
     src/ecore/Uri.hpp
     src/ecore/Uri.inl
