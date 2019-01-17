@@ -189,6 +189,81 @@ Uri Uri::normalize() const
     return normalize( *this );
 }
 
+Uri Uri::normalize( const Uri & u )
+{
+    if( u.isOpaque() || u.path_.empty() )
+        return u;
+
+    auto np = normalize( u.path_ );
+    if( np == u.path_ )
+        return u;
+
+    Uri v;
+    v.scheme_ = u.scheme_;
+    v.fragment_ = u.fragment_;
+    v.username_ = u.username_;
+    v.password_ = u.password_;
+    v.host_ = u.host_;
+    v.port_ = u.port_;
+    v.path_ = np;
+    v.query_ = u.query_;
+    v.hasAuthority_ = u.hasAuthority_;
+    return v;
+}
+
+// The following algorithm for path normalization avoids the creation of a
+// string object for each segment, as well as the use of a string buffer to
+// compute the final result, by using a single char array and editing it in
+// place.  The array is first split into segments, replacing each slash
+// with '\0' and creating a segment-index array, each element of which is
+// the index of the first char in the corresponding segment.  We then walk
+// through both arrays, removing ".", "..", and other segments as necessary
+// by setting their entries in the index array to -1.  Finally, the two
+// arrays are used to rejoin the segments and compute the final result.
+//
+// This code is based upon src/solaris/native/java/io/canonicalize_md.c
+
+std::string Uri::normalize( const std::string & ps )
+{
+    // Does this path need normalization?
+
+    int ns = needsNormalization( ps );        // Number of segments
+    if( ns < 0 )
+        // Nope -- just return it
+        return ps;
+
+    std::string path = ps;
+    std::vector<int> segs( ns, 0 );
+    split( path, segs );
+
+
+    // Remove dots
+    removeDots( path, segs );
+
+
+    // Prevent scheme-name confusion
+    maybeAddLeadingDot( path, segs );
+
+
+    // Join the remaining segments and return the result
+    int newSize = join( path, segs );
+    path.resize( newSize );
+    
+    if( path == ps )
+        // string was already normalized
+        return ps;
+    
+    return path;
+}
+
+// Check the given path to see if it might need normalization.  A path
+// might need normalization if it contains duplicate slashes, a "."
+// segment, or a ".." segment.  Return -1 if no further normalization is
+// possible, otherwise return the number of segments found.
+//
+// This method takes a string argument rather than a char array so that
+// this test can be performed without invoking path.toCharArray().
+//
 int Uri::needsNormalization( const std::string & path )
 {
     bool normal = true;
@@ -196,7 +271,7 @@ int Uri::needsNormalization( const std::string & path )
     int end = (int)path.length() - 1;   // Index of last char in path
     int p = 0;                          // Index of next char in path
 
-    // Skip initial slashes
+                                        // Skip initial slashes
     while( p <= end )
     {
         if( path[ p ] != '/' )
@@ -244,63 +319,17 @@ int Uri::needsNormalization( const std::string & path )
     return normal ? -1 : ns;
 }
 
+// Split the given path into segments, replacing slashes with nulls and
+// filling in the given segment-index array.
+//
+// Preconditions:
+//   segs.length == Number of segments in path
+//
 
-
-Uri Uri::normalize( const Uri & u )
-{
-    if( u.isOpaque() || u.path_.empty() )
-        return u;
-
-    auto np = normalize( u.path_ );
-    if( np == u.path_ )
-        return u;
-
-    Uri v;
-    v.scheme_ = u.scheme_;
-    v.fragment_ = u.fragment_;
-    v.username_ = u.username_;
-    v.password_ = u.password_;
-    v.host_ = u.host_;
-    v.port_ = u.port_;
-    v.path_ = np;
-    v.query_ = u.query_;
-    v.hasAuthority_ = u.hasAuthority_;
-    return v;
-}
-
-std::string Uri::normalize( const std::string & ps )
-{
-    // Does this path need normalization?
-
-    int ns = needsNormalization( ps );        // Number of segments
-    if( ns < 0 )
-        // Nope -- just return it
-        return ps;
-
-    std::string path = ps;
-    std::vector<int> segs( ns, 0 );
-    split( path, segs );
-
-
-    // Remove dots
-    removeDots( path, segs );
-
-
-    // Prevent scheme-name confusion
-    maybeAddLeadingDot( path, segs );
-
-
-    // Join the remaining segments and return the result
-    int newSize = join( path, segs );
-    path.resize( newSize );
-    
-    if( path == ps )
-        // string was already normalized
-        return ps;
-    
-    return path;
-}
-
+// Postconditions:
+//   All slashes in path replaced by '\0'
+//   segs[i] == Index of first char in segment i (0 <= i < segs.length)
+//
 void Uri::split( std::string& path, std::vector<int>& segs )
 {
     int end = (int)path.size() - 1;      // Index of last char in path
@@ -342,6 +371,9 @@ void Uri::split( std::string& path, std::vector<int>& segs )
     _ASSERT( i == segs.size() );
 }
 
+// Remove "." segments from the given path, and remove segment pairs
+// consisting of a non-".." segment followed by a ".." segment.
+//
 void Uri::removeDots( std::string& path, std::vector<int>& segs )
 {
     int ns = (int)segs.size();
@@ -349,7 +381,8 @@ void Uri::removeDots( std::string& path, std::vector<int>& segs )
     for( int i = 0; i < ns; i++ )
     {
         int dots = 0;               // Number of dots found (0, 1, or 2)
-                                    // Find next occurrence of "." or ".."
+        
+        // Find next occurrence of "." or ".."
         do
         {
             int p = segs[ i ];
@@ -412,6 +445,9 @@ void Uri::removeDots( std::string& path, std::vector<int>& segs )
     }
 }
 
+// DEVIATION: If the normalized path is relative, and if the first
+// segment could be parsed as a scheme name, then prepend a "." segment
+//
 void Uri::maybeAddLeadingDot( std::string& path, std::vector<int>& segs )
 {
     if( path[ 0 ] == '\0' )
@@ -448,6 +484,18 @@ void Uri::maybeAddLeadingDot( std::string& path, std::vector<int>& segs )
     segs[ 0 ] = 0;
 }
 
+// Join the segments in the given path according to the given segment-index
+// array, ignoring those segments whose index entries have been set to -1,
+// and inserting slashes as needed.  Return the length of the resulting
+// path.
+//
+// Preconditions:
+//   segs[i] == -1 implies segment i is to be ignored
+//   path computed by split, as above, with '\0' having replaced '/'
+//
+// Postconditions:
+//   path[0] .. path[return value] == Resulting path
+//
 int Uri::join( std::string & path, std::vector<int>& segs )
 {
     int ns = (int)segs.size();           // Number of segments
