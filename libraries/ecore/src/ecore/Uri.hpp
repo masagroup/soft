@@ -129,8 +129,10 @@ namespace ecore
         static void maybeAddLeadingDot( std::string& path, std::vector<int>& segs );
         static int join( std::string& path, std::vector<int>& segs );
 
+        // relativize
         static Uri relativize( const Uri& base, const Uri& child );
 
+        // resolve
         static Uri resolve( const Uri& base, const Uri& child );
         static std::string  resolvePath( const std::string& base, const std::string& child, bool isAbsolute );
 
