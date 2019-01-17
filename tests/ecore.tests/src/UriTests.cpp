@@ -110,5 +110,24 @@ BOOST_AUTO_TEST_CASE( Difference )
     BOOST_CHECK_NE( uri1, uri2 );
 }
 
+BOOST_AUTO_TEST_CASE( Normalize )
+{
+    {
+        Uri uri{ "http://host:10020/path/../path2" };
+        Uri expected{ "http://host:10020/path2" };
+        BOOST_CHECK_EQUAL( uri.normalize(), expected );
+    }
+    {
+        Uri uri{ "http://host:10020/./path" };
+        Uri expected{ "http://host:10020/path" };
+        BOOST_CHECK_EQUAL( uri.normalize(), expected );
+    }
+    {
+        Uri uri{ "http://host:10020/path/./path2" };
+        Uri expected{ "http://host:10020/path/path2" };
+        BOOST_CHECK_EQUAL( uri.normalize(), expected );
+    }
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
