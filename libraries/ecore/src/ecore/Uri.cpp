@@ -186,12 +186,12 @@ Uri Uri::normalize() const
 
 Uri Uri::resolve( const Uri & uri ) const
 {
-    return Uri();
+    return resolve(*this,uri);
 }
 
 Uri Uri::resolve( const std::string & str ) const
 {
-    return Uri();
+    return resolve( *this, Uri(str) );
 }
 
 Uri Uri::relativize( const Uri & uri ) const
@@ -258,11 +258,11 @@ std::string Uri::normalize( const std::string & ps )
     // Join the remaining segments and return the result
     int newSize = join( path, segs );
     path.resize( newSize );
-    
+
     if( path == ps )
         // string was already normalized
         return ps;
-    
+
     return path;
 }
 
@@ -391,7 +391,7 @@ void Uri::removeDots( std::string& path, std::vector<int>& segs )
     for( int i = 0; i < ns; i++ )
     {
         int dots = 0;               // Number of dots found (0, 1, or 2)
-        
+
         // Find next occurrence of "." or ".."
         do
         {
@@ -514,7 +514,7 @@ int Uri::join( std::string & path, std::vector<int>& segs )
     if( path[ p ] == '\0' )
         // Restore initial slash for absolute paths
         path[ p++ ] = '/';
- 
+
     for( int i = 0; i < ns; i++ )
     {
         int q = segs[ i ];            // Current segment
@@ -593,10 +593,10 @@ Uri Uri::relativize( const Uri & base, const Uri & child )
     std::string cp = normalize( child.path_ );
     if( bp != cp )
     {
-        if( !endWith(bp , "/" ) )
+        if( !endWith( bp, "/" ) )
             bp = bp + "/";
 
-        if( !startsWith( cp , bp ) )
+        if( !startsWith( cp, bp ) )
             return child;
     }
 
@@ -605,4 +605,98 @@ Uri Uri::relativize( const Uri & base, const Uri & child )
     v.query_ = child.query_;
     v.fragment_ = child.fragment_;
     return v;
+}
+
+Uri Uri::resolve( const Uri & base, const Uri & child )
+{
+    // check if child if opaque first so that NPE is thrown
+    // if child is null.
+    if( child.isOpaque() || base.isOpaque() )
+        return child;
+
+
+    // Reference to current document (lone fragment)
+    if( ( child.scheme_.empty() ) && child.getAuthority().empty()
+        && child.path_.empty() && !child.fragment_.empty()
+        && ( child.query_.empty() ) )
+    {
+        if( !base.fragment_.empty() && child.fragment_ == base.fragment_ )
+            return base;
+
+        Uri ru;
+        ru.scheme_ = base.scheme_;
+        ru.username_ = base.username_;
+        ru.password_ = base.password_;
+        ru.host_ = base.host_;
+        ru.port_ = base.port_;
+        ru.path_ = base.path_;
+        ru.fragment_ = child.fragment_;
+        ru.query_ = base.query_;
+        return ru;
+    }
+
+
+    // Child is absolute
+    if( !child.scheme_.empty() )
+        return child;
+
+
+    Uri ru; // Resolved URI
+    ru.scheme_ = base.scheme_;
+    ru.query_ = child.query_;
+    ru.fragment_ = child.fragment_;
+
+
+    // Authority
+    if( child.getAuthority().empty() )
+    {
+        ru.host_ = base.host_;
+        ru.username_ = base.username_;
+        ru.password_ = base.password_;
+        ru.port_ = base.port_;
+        std::string cp = child.path_.empty() ? "" : child.path_;
+        if( ( cp.length() > 0 ) && ( cp[ 0 ] == '/' ) )
+        {
+            // Child path is absolute
+            ru.path_ = child.path_;
+
+        }
+        else
+        {
+            // Resolve relative path
+            ru.path_ = resolvePath( base.path_, cp, base.isAbsolute() );
+        }
+    }
+    else
+    {
+        ru.host_ = child.host_;
+        ru.username_ = child.username_;
+        ru.password_ = child.password_;
+        ru.port_ = child.port_;
+        ru.path_ = child.path_;
+    }
+    // Recombine (nothing to do here)
+    return ru;
+}
+
+std::string Uri::resolvePath( const std::string& base, const std::string& child, bool isAbsolute )
+{
+    int i = (int)base.find_last_of( '/' );
+    int cn = (int)child.size();
+
+    std::string path;
+    if( cn == 0 )
+    {
+        if( i >= 0 )
+            path = base.substr( 0, i + 1 );
+    }
+    else
+    {
+        path.reserve( base.size() + cn );
+        if( i >= 0 )
+            path.append( base.substr( 0, i + 1 ) );
+
+        path.append( child );
+    }
+    return  normalize( path );
 }

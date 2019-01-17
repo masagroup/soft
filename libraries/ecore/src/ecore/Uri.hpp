@@ -131,6 +131,9 @@ namespace ecore
 
         static Uri relativize( const Uri& base, const Uri& child );
 
+        static Uri resolve( const Uri& base, const Uri& child );
+        static std::string  resolvePath( const std::string& base, const std::string& child, bool isAbsolute );
+
     private:
         std::string scheme_;
         std::string username_;
