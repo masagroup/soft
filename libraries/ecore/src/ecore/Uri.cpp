@@ -1,9 +1,11 @@
 #include "ecore/Uri.hpp"
+#include "ecore/Assert.hpp"
 
 #include <algorithm>
 #include <cctype>
 #include <regex>
 #include <sstream>
+
 
 using namespace ecore;
 
@@ -34,9 +36,9 @@ Uri::Uri( const std::string& str )
     static const std::regex authorityAndPathRegex( "//([^/]*)(/.*)?" );
 
     std::smatch match;
-    if( !std::regex_match( str.begin(), str.end(), match, uriRegex ) ) 
-        throw std::invalid_argument( "invalid URI :'" + str +"'");
- 
+    if( !std::regex_match( str.begin(), str.end(), match, uriRegex ) )
+        throw std::invalid_argument( "invalid URI :'" + str + "'" );
+
     scheme_ = submatch( match, 1 );
     std::transform( scheme_.begin(), scheme_.end(), scheme_.begin(), ::tolower );
 
@@ -67,12 +69,12 @@ Uri::Uri( const std::string& str )
             authority.second,
             authorityMatch,
             authorityRegex ) )
-            throw std::invalid_argument("invalid URI authority " + std::string( authority.first, authority.second ) );
-       
+            throw std::invalid_argument( "invalid URI authority " + std::string( authority.first, authority.second ) );
+
         std::string port( authorityMatch[ 4 ].first, authorityMatch[ 4 ].second );
         if( !port.empty() )
-            port_ = stoi(port);
-       
+            port_ = stoi( port );
+
         hasAuthority_ = true;
         username_ = submatch( authorityMatch, 1 );
         password_ = submatch( authorityMatch, 2 );
@@ -90,17 +92,17 @@ std::string Uri::getAuthority() const
     if( !username_.empty() || !password_.empty() )
     {
         s << username_;
-        
+
         if( !password_.empty() )
             s << ':' << password_;
-        
+
         s << '@';
     }
 
-    s <<host_;
+    s << host_;
     if( port_ != 0 )
         s << ':' << port_;
-    
+
     return s.str();
 }
 
@@ -166,12 +168,330 @@ std::string Uri::toString() const
     }
     else
         s << scheme_ << ':';
-    
+
     s << path_;
     if( !query_.empty() )
         s << '?' << query_;
     if( !fragment_.empty() )
         s << '#' << fragment_;
-    
+
     return s.str();
 }
+
+
+Uri Uri::relativize( const Uri & base, const Uri & child )
+{
+    return Uri();
+}
+
+Uri Uri::normalize() const
+{
+    return normalize( *this );
+}
+
+int Uri::needsNormalization( const std::string & path )
+{
+    bool normal = true;
+    int ns = 0;                         // Number of segments
+    int end = (int)path.length() - 1;   // Index of last char in path
+    int p = 0;                          // Index of next char in path
+
+    // Skip initial slashes
+    while( p <= end )
+    {
+        if( path[ p ] != '/' )
+            break;
+        p++;
+    }
+
+    if( p > 1 )
+        normal = false;
+
+    // Scan segments
+
+    while( p <= end )
+    {
+        // Looking at "." or ".." ?
+        if( ( path[ p ] == '.' )
+            && ( ( p == end )
+                 || ( ( path[ p + 1 ] == '/' )
+                      || ( ( path[ p + 1 ] == '.' )
+                           && ( ( p + 1 == end )
+                                || ( path[ p + 2 ] == '/' ) ) ) ) ) )
+        {
+            normal = false;
+        }
+        ns++;
+
+        // Find beginning of next segment
+        while( p <= end )
+        {
+            if( path[ p++ ] != '/' )
+                continue;
+
+            // Skip redundant slashes
+            while( p <= end )
+            {
+                if( path[ p ] != '/' )
+                    break;
+
+                normal = false;
+                p++;
+            }
+            break;
+        }
+    }
+    return normal ? -1 : ns;
+}
+
+
+
+Uri Uri::normalize( const Uri & u )
+{
+    if( u.isOpaque() || u.path_.empty() )
+        return u;
+
+    auto np = normalize( u.path_ );
+    if( np == u.path_ )
+        return u;
+
+    Uri v;
+    v.scheme_ = u.scheme_;
+    v.fragment_ = u.fragment_;
+    v.username_ = u.username_;
+    v.password_ = u.password_;
+    v.host_ = u.host_;
+    v.port_ = u.port_;
+    v.path_ = np;
+    v.query_ = u.query_;
+    v.hasAuthority_ = u.hasAuthority_;
+    return v;
+}
+
+std::string Uri::normalize( const std::string & ps )
+{
+    // Does this path need normalization?
+
+    int ns = needsNormalization( ps );        // Number of segments
+    if( ns < 0 )
+        // Nope -- just return it
+        return ps;
+
+    std::string path = ps;
+    std::vector<int> segs( ns, 0 );
+    split( path, segs );
+
+
+    // Remove dots
+    removeDots( path, segs );
+
+
+    // Prevent scheme-name confusion
+    maybeAddLeadingDot( path, segs );
+
+
+    // Join the remaining segments and return the result
+    int newSize = join( path, segs );
+    path.resize( newSize );
+    
+    if( path == ps )
+        // string was already normalized
+        return ps;
+    
+    return path;
+}
+
+void Uri::split( std::string& path, std::vector<int>& segs )
+{
+    int end = (int)path.size() - 1;      // Index of last char in path
+    int p = 0;                      // Index of next char in path
+    int i = 0;                      // Index of current segment
+
+    // Skip initial slashes
+    while( p <= end )
+    {
+        if( path[ p ] != '/' )
+            break;
+        path[ p ] = '\0';
+        p++;
+    }
+
+    while( p <= end )
+    {
+        // Note start of segment
+        segs[ i++ ] = p++;
+
+        // Find beginning of next segment
+        while( p <= end )
+        {
+            if( path[ p++ ] != '/' )
+                continue;
+
+            path[ p - 1 ] = '\0';
+
+            // Skip redundant slashes
+            while( p <= end )
+            {
+                if( path[ p ] != '/' )
+                    break;
+                path[ p++ ] = '\0';
+            }
+            break;
+        }
+    }
+    _ASSERT( i == segs.size() );
+}
+
+void Uri::removeDots( std::string& path, std::vector<int>& segs )
+{
+    int ns = (int)segs.size();
+    int end = (int)path.size() - 1;
+    for( int i = 0; i < ns; i++ )
+    {
+        int dots = 0;               // Number of dots found (0, 1, or 2)
+                                    // Find next occurrence of "." or ".."
+        do
+        {
+            int p = segs[ i ];
+            if( path[ p ] == '.' )
+            {
+                if( p == end )
+                {
+                    dots = 1;
+                    break;
+                }
+                else if( path[ p + 1 ] == '\0' )
+                {
+                    dots = 1;
+                    break;
+                }
+                else if( ( path[ p + 1 ] == '.' )
+                         && ( ( p + 1 == end )
+                              || ( path[ p + 2 ] == '\0' ) ) )
+                {
+                    dots = 2;
+                    break;
+                }
+            }
+            i++;
+
+        } while( i < ns );
+
+        if( ( i > ns ) || ( dots == 0 ) )
+            break;
+
+        if( dots == 1 )
+        {
+            // Remove this occurrence of "."
+            segs[ i ] = -1;
+        }
+        else
+        {
+            // If there is a preceding non-".." segment, remove both that
+            // segment and this occurrence of ".."; otherwise, leave this
+            // ".." segment as-is.
+            int j;
+            for( j = i - 1; j >= 0; j-- )
+            {
+                if( segs[ j ] != -1 )
+                    break;
+            }
+
+            if( j >= 0 )
+            {
+                int q = segs[ j ];
+                if( !( ( path[ q ] == '.' )
+                       && ( path[ q + 1 ] == '.' )
+                       && ( path[ q + 2 ] == '\0' ) ) )
+                {
+                    segs[ i ] = -1;
+                    segs[ j ] = -1;
+                }
+            }
+        }
+    }
+}
+
+void Uri::maybeAddLeadingDot( std::string& path, std::vector<int>& segs )
+{
+    if( path[ 0 ] == '\0' )
+        // The path is absolute
+        return;
+
+    int ns = (int)segs.size();
+    int f = 0;                      // Index of first segment
+    while( f < ns )
+    {
+        if( segs[ f ] >= 0 )
+            break;
+        f++;
+    }
+
+    if( ( f >= ns ) || ( f == 0 ) )
+        // The path is empty, or else the original first segment survived,
+        // in which case we already know that no leading "." is needed
+        return;
+
+
+    int p = segs[ f ];
+    while( ( p < path.size() ) && ( path[ p ] != ':' ) && ( path[ p ] != '\0' ) ) p++;
+
+    if( p >= path.size() || path[ p ] == '\0' )
+        // No colon in first segment, so no "." needed
+        return;
+
+
+    // At this point we know that the first segment is unused,
+    // hence we can insert a "." segment at that position
+    path[ 0 ] = '.';
+    path[ 1 ] = '\0';
+    segs[ 0 ] = 0;
+}
+
+int Uri::join( std::string & path, std::vector<int>& segs )
+{
+    int ns = (int)segs.size();           // Number of segments
+    int end = (int)path.size() - 1;      // Index of last char in path
+    int p = 0;                      // Index of next path char to write
+    if( path[ p ] == '\0' )
+        // Restore initial slash for absolute paths
+        path[ p++ ] = '/';
+ 
+    for( int i = 0; i < ns; i++ )
+    {
+        int q = segs[ i ];            // Current segment
+        if( q == -1 )
+            // Ignore this segment
+            continue;
+
+        if( p == q )
+        {
+            // We're already at this segment, so just skip to its end
+            while( ( p <= end ) && ( path[ p ] != '\0' ) )
+                p++;
+
+            if( p <= end )
+            {
+                // Preserve trailing slash
+                path[ p++ ] = '/';
+            }
+        }
+        else if( p < q )
+        {
+            // Copy q down to p
+            while( ( q <= end ) && ( path[ q ] != '\0' ) )
+                path[ p++ ] = path[ q++ ];
+
+            if( q <= end )
+            {
+                // Preserve trailing slash
+                path[ p++ ] = '/';
+            }
+        }
+        else
+            _ASSERT( false );
+    }
+    return p;
+}
+
+

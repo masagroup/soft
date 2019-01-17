@@ -13,6 +13,7 @@
 
 #include <functional>
 #include <tuple>
+#include "Uri.hpp"
 
 namespace ecore
 {
@@ -51,6 +52,18 @@ namespace ecore
     {
         return !operator ==(other);
     }
+
+    inline bool Uri::isAbsolute() const
+    {
+        return scheme_.empty();
+    }
+
+    inline bool Uri::isOpaque() const
+    {
+        return path_.empty();
+    }
+
+    
 
 } 
 

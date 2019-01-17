@@ -105,6 +105,25 @@ namespace ecore
 
         bool operator !=( const Uri& other ) const;
 
+        bool isAbsolute()  const;
+        
+        bool isOpaque() const;
+        
+        Uri normalize() const;
+
+
+    private:
+        static Uri relativize( const Uri& base, const Uri& child );
+
+        static int needsNormalization( const std::string& path );
+        static Uri normalize( const Uri& uri );
+        static std::string normalize( const std::string& ps );
+
+        static void split( std::string& path, std::vector<int>& segs );
+        static void removeDots( std::string& path, std::vector<int>& segs );
+        static void maybeAddLeadingDot( std::string& path, std::vector<int>& segs );
+        static int join( std::string& path, std::vector<int>& segs );
+
     private:
         std::string scheme_;
         std::string username_;
