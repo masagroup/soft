@@ -179,14 +179,24 @@ std::string Uri::toString() const
 }
 
 
-Uri Uri::relativize( const Uri & base, const Uri & child )
+Uri Uri::normalize() const
+{
+    return normalize( *this );
+}
+
+Uri Uri::resolve( const Uri & uri ) const
 {
     return Uri();
 }
 
-Uri Uri::normalize() const
+Uri Uri::resolve( const std::string & str ) const
 {
-    return normalize( *this );
+    return Uri();
+}
+
+Uri Uri::relativize( const Uri & uri ) const
+{
+    return relativize( *this, uri );
 }
 
 Uri Uri::normalize( const Uri & u )
@@ -542,4 +552,57 @@ int Uri::join( std::string & path, std::vector<int>& segs )
     return p;
 }
 
+namespace
+{
+    bool endWith( const std::string& text, const std::string& token )
+    {
+        if( text.size() >= token.size() &&
+            text.compare( text.size() - token.size(), token.size(), token ) == 0 )
+            return true;
+        else
+            return false;
+    }
 
+    bool startsWith( const std::string& text, const std::string& token )
+    {
+        if( text.length() < token.length() )
+            return false;
+        return ( text.compare( 0, token.length(), token ) == 0 );
+    }
+}
+
+// If both URIs are hierarchical, their scheme and authority components are
+// identical, and the base path is a prefix of the child's path, then
+// return a relative URI that, when resolved against the base, yields the
+// child; otherwise, return the child.
+//
+Uri Uri::relativize( const Uri & base, const Uri & child )
+{
+    // check if child if opaque first so that NPE is thrown
+
+    // if child is null.
+
+    if( child.isOpaque() || base.isOpaque() )
+        return child;
+
+    if( base.scheme_ != child.scheme_ || base.getAuthority() != child.getAuthority() )
+        return child;
+
+
+    std::string bp = normalize( base.path_ );
+    std::string cp = normalize( child.path_ );
+    if( bp != cp )
+    {
+        if( !endWith(bp , "/" ) )
+            bp = bp + "/";
+
+        if( !startsWith( cp , bp ) )
+            return child;
+    }
+
+    Uri v;
+    v.path_ = cp.substr( bp.length() );
+    v.query_ = child.query_;
+    v.fragment_ = child.fragment_;
+    return v;
+}

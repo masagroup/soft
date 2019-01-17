@@ -111,10 +111,15 @@ namespace ecore
         
         Uri normalize() const;
 
+        Uri resolve( const Uri& uri ) const;
+
+        Uri resolve( const std::string& str ) const;
+
+        Uri relativize( const Uri& uri ) const;
 
     private:
-        static Uri relativize( const Uri& base, const Uri& child );
-
+       
+        // normalization
         static int needsNormalization( const std::string& path );
         static Uri normalize( const Uri& uri );
         static std::string normalize( const std::string& ps );
@@ -123,6 +128,8 @@ namespace ecore
         static void removeDots( std::string& path, std::vector<int>& segs );
         static void maybeAddLeadingDot( std::string& path, std::vector<int>& segs );
         static int join( std::string& path, std::vector<int>& segs );
+
+        static Uri relativize( const Uri& base, const Uri& child );
 
     private:
         std::string scheme_;
