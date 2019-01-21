@@ -182,4 +182,14 @@ BOOST_AUTO_TEST_CASE( Resolve )
     }
 }
 
+BOOST_AUTO_TEST_CASE( Relativize )
+{
+    {
+        Uri uri{"http://host:10020/path/"};
+        Uri uri2{"http://host:10020/path/path2"};
+        Uri expected{"path2"};
+        BOOST_CHECK_EQUAL( uri.relativize( uri2 ), expected );
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
