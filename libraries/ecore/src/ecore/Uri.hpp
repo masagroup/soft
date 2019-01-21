@@ -43,7 +43,7 @@ namespace ecore
          * or API that connects to that host/port; e.g. getaddrinfo() only understands
          * IPv6 host without square brackets
          */
-        std::string getHostname() const;
+        std::string getHostName() const;
 
         uint16_t getPort() const;
         

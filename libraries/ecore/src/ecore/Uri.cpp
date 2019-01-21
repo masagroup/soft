@@ -493,7 +493,7 @@ std::string Uri::getAuthority() const
     return s.str();
 }
 
-std::string Uri::getHostname() const
+std::string Uri::getHostName() const
 {
     if( host_.size() > 0 && host_[0] == '[' )
     {
