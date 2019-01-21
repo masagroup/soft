@@ -82,7 +82,6 @@ namespace
     //
     // This code is based upon src/solaris/native/java/io/canonicalize_md.c
 
-    
     // Check the given path to see if it might need normalization.  A path
     // might need normalization if it contains duplicate slashes, a "."
     // segment, or a ".." segment.  Return -1 if no further normalization is
@@ -416,46 +415,44 @@ namespace
 
 } // namespace
 
-decltype( hexTable ) hexTable = make_array_with<256>( string_table_hex_make_item{} );
+decltype( ecore::detail::hexTable ) hexTable = make_array_with<256>( string_table_hex_make_item{} );
 
-decltype( uriEscapeTable ) uriEscapeTable = make_array_with<256>( string_table_uri_escape_make_item{} );
+decltype( ecore::detail::uriEscapeTable ) uriEscapeTable = make_array_with<256>( string_table_uri_escape_make_item{} );
 
 Uri::Uri()
 {
 }
 
 Uri::Uri( const std::string& str )
-    : hasAuthority_( false )
-    , port_( 0 )
+    : port_( 0 )
 {
-    static const std::regex uriRegex( "([a-zA-Z][a-zA-Z0-9+.-]*):" // scheme:
-                                      "([^?#]*)"                   // authority and path
-                                      "(?:\\?([^#]*))?"            // ?query
-                                      "(?:#(.*))?" );              // #fragment
+    static const std::regex uriRegex( "(([a-zA-Z][a-zA-Z0-9+.-]*):)?" // scheme:
+                                      "([^?#]*)"                      // authority and path
+                                      "(?:\\?([^#]*))?"               // ?query
+                                      "(?:#(.*))?" );                 // #fragment
     static const std::regex authorityAndPathRegex( "//([^/]*)(/.*)?" );
 
     std::smatch match;
     if( !std::regex_match( str.begin(), str.end(), match, uriRegex ) )
         throw std::invalid_argument( "invalid URI :'" + str + "'" );
 
-    scheme_ = submatch( match, 1 );
+    scheme_ = submatch( match, 2 );
     std::transform( scheme_.begin(), scheme_.end(), scheme_.begin(), ::tolower );
 
-    const std::string authorityAndPath( match[2].first, match[2].second );
+    const std::string authorityAndPath( match[3].first, match[3].second );
     std::smatch authorityAndPathMatch;
     if( !std::regex_match(
             authorityAndPath.begin(), authorityAndPath.end(), authorityAndPathMatch, authorityAndPathRegex ) )
     {
         // Does not start with //, doesn't have authority
-        hasAuthority_ = false;
         path_ = authorityAndPath;
     }
     else
     {
-        static const std::regex authorityRegex( "(?:([^@:]*)(?::([^@]*))?@)?" // username, password
-                                                "(\\[[^\\]]*\\]|[^\\[:]*)"    // host (IP-literal (e.g. '['+IPv6+']',
-                                                                              // dotted-IPv4, or named host)
-                                                "(?::(\\d*))?" );             // port
+        static const std::regex authorityRegex(
+            "(?:([^@:]*)(?::([^@]*))?@)?" // username, password
+            "(\\[[^\\]]*\\]|[^\\[:]*)"    // host (IP-literal (e.g. '['+IPv6+']',dotted-IPv4, or named host)
+            "(?::(\\d*))?" );             // port
 
         const auto authority = authorityAndPathMatch[1];
         std::smatch authorityMatch;
@@ -466,15 +463,14 @@ Uri::Uri( const std::string& str )
         if( !port.empty() )
             port_ = stoi( port );
 
-        hasAuthority_ = true;
         username_ = submatch( authorityMatch, 1 );
         password_ = submatch( authorityMatch, 2 );
         host_ = submatch( authorityMatch, 3 );
         path_ = submatch( authorityAndPathMatch, 2 );
     }
 
-    query_ = submatch( match, 3 );
-    fragment_ = submatch( match, 4 );
+    query_ = submatch( match, 4 );
+    fragment_ = submatch( match, 5 );
 }
 
 std::string Uri::getAuthority() const
@@ -501,8 +497,7 @@ std::string Uri::getHostname() const
 {
     if( host_.size() > 0 && host_[0] == '[' )
     {
-        // If it starts with '[', then it should end with ']', this is ensured by
-        // regex
+        // If it starts with '[', then it should end with ']', this is ensured by regex
         return host_.substr( 1, host_.size() - 2 );
     }
     return host_;
@@ -517,7 +512,7 @@ const std::vector<std::pair<std::string, std::string>>& Uri::getQueryParams()
             "(^|&)"      /*start of query or start of parameter "&"*/
             "([^=&]*)=?" /*parameter name and "=" if value is expected*/
             "([^=&]*)"   /*parameter value*/
-            "(?=(&|$))" /*forward reference, next should be end of query or start of next parameter*/ );
+            "(?=(&|$))"  /*forward reference, next should be end of query or start of next parameter*/ );
         const std::cregex_iterator paramBeginItr( query_.data(), query_.data() + query_.size(), queryParamRegex );
         std::cregex_iterator paramEndItr;
         for( auto itr = paramBeginItr; itr != paramEndItr; ++itr )
@@ -538,30 +533,29 @@ const std::vector<std::pair<std::string, std::string>>& Uri::getQueryParams()
 std::string Uri::toString() const
 {
     std::stringstream s;
-    if( hasAuthority_ )
-    {
-        s << scheme_ << "://";
-        if( !password_.empty() )
-        {
-            s << username_ << ':' << password_ << '@';
-        }
-        else if( !username_.empty() )
-        {
-            s << username_ << '@';
-        }
-        s << host_;
-        if( port_ != 0 )
-            s << ':' << port_;
-    }
+
+    if( scheme_.empty() )
+        s << path_;
     else
-        s << scheme_ << ':';
+    {
+        s << scheme_;
+        s << ':';
 
-    s << path_;
-    if( !query_.empty() )
-        s << '?' << query_;
-    if( !fragment_.empty() )
-        s << '#' << fragment_;
+        std::string auth = getAuthority();
+        if( !auth.empty() || scheme_ == "file" )
+        {
+            s << "//";
+            s << auth;
+        }
 
+        s << path_;
+
+        if( !query_.empty() )
+            s << '?' << query_;
+
+        if( !fragment_.empty() )
+            s << '#' << fragment_;
+    }
     return s.str();
 }
 
@@ -603,10 +597,8 @@ Uri Uri::normalize( const Uri& u )
     v.port_ = u.port_;
     v.path_ = np;
     v.query_ = u.query_;
-    v.hasAuthority_ = u.hasAuthority_;
     return v;
 }
-
 
 namespace
 {
@@ -726,5 +718,3 @@ Uri Uri::resolve( const Uri& base, const Uri& child )
     // Recombine (nothing to do here)
     return ru;
 }
-
-

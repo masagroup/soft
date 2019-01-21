@@ -108,7 +108,7 @@ namespace ecore
 
     inline bool Uri::isAbsolute() const
     {
-        return scheme_.empty();
+        return !scheme_.empty();
     }
 
     inline bool Uri::isOpaque() const
