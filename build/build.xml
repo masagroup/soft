@@ -336,7 +336,7 @@
     
     <target name="project.configure.ninja" depends="project.configure.ninja.release,project.configure.ninja.debug"/>
     
-    <target name="project.configure" depends="project.configure.vs2015,project.configure.ninja"/>
+    <target name="project.configure" depends="project.configure.vs2017,project.configure.ninja"/>
     
     <target name="project.build.debug">
         <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/debug"/>
