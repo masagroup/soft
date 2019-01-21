@@ -97,22 +97,14 @@ namespace ecore
 
     private:
         // normalization
-        static int needsNormalization( const std::string& path );
         static Uri normalize( const Uri& uri );
-        static std::string normalize( const std::string& ps );
-
-        static void split( std::string& path, std::vector<int>& segs );
-        static void removeDots( std::string& path, std::vector<int>& segs );
-        static void maybeAddLeadingDot( std::string& path, std::vector<int>& segs );
-        static int join( std::string& path, std::vector<int>& segs );
-
+        
         // relativize
         static Uri relativize( const Uri& base, const Uri& child );
 
         // resolve
         static Uri resolve( const Uri& base, const Uri& child );
-        static std::string resolvePath( const std::string& base, const std::string& child, bool isAbsolute );
-
+        
     private:
         std::string scheme_;
         std::string username_;
