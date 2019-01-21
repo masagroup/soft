@@ -6,7 +6,6 @@
 #include <regex>
 #include <sstream>
 
-
 using namespace ecore;
 
 namespace
@@ -14,11 +13,11 @@ namespace
 
     std::string submatch( const std::smatch& m, int idx )
     {
-        const auto& sub = m[ idx ];
+        const auto& sub = m[idx];
         return std::string( sub.first, sub.second );
     }
 
-}
+} // namespace
 
 Uri::Uri()
 {
@@ -28,11 +27,10 @@ Uri::Uri( const std::string& str )
     : hasAuthority_( false )
     , port_( 0 )
 {
-    static const std::regex uriRegex(
-        "([a-zA-Z][a-zA-Z0-9+.-]*):" // scheme:
-        "([^?#]*)" // authority and path
-        "(?:\\?([^#]*))?" // ?query
-        "(?:#(.*))?" ); // #fragment
+    static const std::regex uriRegex( "([a-zA-Z][a-zA-Z0-9+.-]*):" // scheme:
+                                      "([^?#]*)"                   // authority and path
+                                      "(?:\\?([^#]*))?"            // ?query
+                                      "(?:#(.*))?" );              // #fragment
     static const std::regex authorityAndPathRegex( "//([^/]*)(/.*)?" );
 
     std::smatch match;
@@ -42,13 +40,10 @@ Uri::Uri( const std::string& str )
     scheme_ = submatch( match, 1 );
     std::transform( scheme_.begin(), scheme_.end(), scheme_.begin(), ::tolower );
 
-    const std::string authorityAndPath( match[ 2 ].first, match[ 2 ].second );
+    const std::string authorityAndPath( match[2].first, match[2].second );
     std::smatch authorityAndPathMatch;
     if( !std::regex_match(
-        authorityAndPath.begin(),
-        authorityAndPath.end(),
-        authorityAndPathMatch,
-        authorityAndPathRegex ) )
+            authorityAndPath.begin(), authorityAndPath.end(), authorityAndPathMatch, authorityAndPathRegex ) )
     {
         // Does not start with //, doesn't have authority
         hasAuthority_ = false;
@@ -56,22 +51,17 @@ Uri::Uri( const std::string& str )
     }
     else
     {
-        static const std::regex authorityRegex(
-            "(?:([^@:]*)(?::([^@]*))?@)?" // username, password
-            "(\\[[^\\]]*\\]|[^\\[:]*)" // host (IP-literal (e.g. '['+IPv6+']',
-                                       // dotted-IPv4, or named host)
-            "(?::(\\d*))?" ); // port
+        static const std::regex authorityRegex( "(?:([^@:]*)(?::([^@]*))?@)?" // username, password
+                                                "(\\[[^\\]]*\\]|[^\\[:]*)"    // host (IP-literal (e.g. '['+IPv6+']',
+                                                                              // dotted-IPv4, or named host)
+                                                "(?::(\\d*))?" );             // port
 
-        const auto authority = authorityAndPathMatch[ 1 ];
+        const auto authority = authorityAndPathMatch[1];
         std::smatch authorityMatch;
-        if( !std::regex_match(
-            authority.first,
-            authority.second,
-            authorityMatch,
-            authorityRegex ) )
+        if( !std::regex_match( authority.first, authority.second, authorityMatch, authorityRegex ) )
             throw std::invalid_argument( "invalid URI authority " + std::string( authority.first, authority.second ) );
 
-        std::string port( authorityMatch[ 4 ].first, authorityMatch[ 4 ].second );
+        std::string port( authorityMatch[4].first, authorityMatch[4].second );
         if( !port.empty() )
             port_ = stoi( port );
 
@@ -108,7 +98,7 @@ std::string Uri::getAuthority() const
 
 std::string Uri::getHostname() const
 {
-    if( host_.size() > 0 && host_[ 0 ] == '[' )
+    if( host_.size() > 0 && host_[0] == '[' )
     {
         // If it starts with '[', then it should end with ']', this is ensured by
         // regex
@@ -123,13 +113,11 @@ const std::vector<std::pair<std::string, std::string>>& Uri::getQueryParams()
     {
         // Parse query string
         static const std::regex queryParamRegex(
-            "(^|&)" /*start of query or start of parameter "&"*/
+            "(^|&)"      /*start of query or start of parameter "&"*/
             "([^=&]*)=?" /*parameter name and "=" if value is expected*/
-            "([^=&]*)" /*parameter value*/
-            "(?=(&|$))" /*forward reference, next should be end of query or
-                        start of next parameter*/ );
-        const std::cregex_iterator paramBeginItr(
-            query_.data(), query_.data() + query_.size(), queryParamRegex );
+            "([^=&]*)"   /*parameter value*/
+            "(?=(&|$))" /*forward reference, next should be end of query or start of next parameter*/ );
+        const std::cregex_iterator paramBeginItr( query_.data(), query_.data() + query_.size(), queryParamRegex );
         std::cregex_iterator paramEndItr;
         for( auto itr = paramBeginItr; itr != paramEndItr; ++itr )
         {
@@ -138,9 +126,8 @@ const std::vector<std::pair<std::string, std::string>>& Uri::getQueryParams()
                 // key is empty, ignore it
                 continue;
             }
-            queryParams_.emplace_back(
-                std::string( ( *itr )[ 2 ].first, ( *itr )[ 2 ].second ), // parameter name
-                std::string( ( *itr )[ 3 ].first, ( *itr )[ 3 ].second ) // parameter value
+            queryParams_.emplace_back( std::string( ( *itr )[2].first, ( *itr )[2].second ), // parameter name
+                                       std::string( ( *itr )[3].first, ( *itr )[3].second )  // parameter value
             );
         }
     }
@@ -164,7 +151,6 @@ std::string Uri::toString() const
         s << host_;
         if( port_ != 0 )
             s << ':' << port_;
-
     }
     else
         s << scheme_ << ':';
@@ -178,28 +164,27 @@ std::string Uri::toString() const
     return s.str();
 }
 
-
 Uri Uri::normalize() const
 {
     return normalize( *this );
 }
 
-Uri Uri::resolve( const Uri & uri ) const
+Uri Uri::resolve( const Uri& uri ) const
 {
-    return resolve(*this,uri);
+    return resolve( *this, uri );
 }
 
-Uri Uri::resolve( const std::string & str ) const
+Uri Uri::resolve( const std::string& str ) const
 {
-    return resolve( *this, Uri(str) );
+    return resolve( *this, Uri( str ) );
 }
 
-Uri Uri::relativize( const Uri & uri ) const
+Uri Uri::relativize( const Uri& uri ) const
 {
     return relativize( *this, uri );
 }
 
-Uri Uri::normalize( const Uri & u )
+Uri Uri::normalize( const Uri& u )
 {
     if( u.isOpaque() || u.path_.empty() )
         return u;
@@ -233,11 +218,11 @@ Uri Uri::normalize( const Uri & u )
 //
 // This code is based upon src/solaris/native/java/io/canonicalize_md.c
 
-std::string Uri::normalize( const std::string & ps )
+std::string Uri::normalize( const std::string& ps )
 {
     // Does this path need normalization?
 
-    int ns = needsNormalization( ps );        // Number of segments
+    int ns = needsNormalization( ps ); // Number of segments
     if( ns < 0 )
         // Nope -- just return it
         return ps;
@@ -246,14 +231,11 @@ std::string Uri::normalize( const std::string & ps )
     std::vector<int> segs( ns, 0 );
     split( path, segs );
 
-
     // Remove dots
     removeDots( path, segs );
 
-
     // Prevent scheme-name confusion
     maybeAddLeadingDot( path, segs );
-
 
     // Join the remaining segments and return the result
     int newSize = join( path, segs );
@@ -274,17 +256,17 @@ std::string Uri::normalize( const std::string & ps )
 // This method takes a string argument rather than a char array so that
 // this test can be performed without invoking path.toCharArray().
 //
-int Uri::needsNormalization( const std::string & path )
+int Uri::needsNormalization( const std::string& path )
 {
     bool normal = true;
-    int ns = 0;                         // Number of segments
-    int end = (int)path.length() - 1;   // Index of last char in path
-    int p = 0;                          // Index of next char in path
+    int ns = 0;                       // Number of segments
+    int end = (int)path.length() - 1; // Index of last char in path
+    int p = 0;                        // Index of next char in path
 
-                                        // Skip initial slashes
+    // Skip initial slashes
     while( p <= end )
     {
-        if( path[ p ] != '/' )
+        if( path[p] != '/' )
             break;
         p++;
     }
@@ -297,12 +279,10 @@ int Uri::needsNormalization( const std::string & path )
     while( p <= end )
     {
         // Looking at "." or ".." ?
-        if( ( path[ p ] == '.' )
+        if( ( path[p] == '.' )
             && ( ( p == end )
-                 || ( ( path[ p + 1 ] == '/' )
-                      || ( ( path[ p + 1 ] == '.' )
-                           && ( ( p + 1 == end )
-                                || ( path[ p + 2 ] == '/' ) ) ) ) ) )
+                 || ( ( path[p + 1] == '/' )
+                      || ( ( path[p + 1] == '.' ) && ( ( p + 1 == end ) || ( path[p + 2] == '/' ) ) ) ) ) )
         {
             normal = false;
         }
@@ -311,13 +291,13 @@ int Uri::needsNormalization( const std::string & path )
         // Find beginning of next segment
         while( p <= end )
         {
-            if( path[ p++ ] != '/' )
+            if( path[p++] != '/' )
                 continue;
 
             // Skip redundant slashes
             while( p <= end )
             {
-                if( path[ p ] != '/' )
+                if( path[p] != '/' )
                     break;
 
                 normal = false;
@@ -342,38 +322,38 @@ int Uri::needsNormalization( const std::string & path )
 //
 void Uri::split( std::string& path, std::vector<int>& segs )
 {
-    int end = (int)path.size() - 1;      // Index of last char in path
+    int end = (int)path.size() - 1; // Index of last char in path
     int p = 0;                      // Index of next char in path
     int i = 0;                      // Index of current segment
 
     // Skip initial slashes
     while( p <= end )
     {
-        if( path[ p ] != '/' )
+        if( path[p] != '/' )
             break;
-        path[ p ] = '\0';
+        path[p] = '\0';
         p++;
     }
 
     while( p <= end )
     {
         // Note start of segment
-        segs[ i++ ] = p++;
+        segs[i++] = p++;
 
         // Find beginning of next segment
         while( p <= end )
         {
-            if( path[ p++ ] != '/' )
+            if( path[p++] != '/' )
                 continue;
 
-            path[ p - 1 ] = '\0';
+            path[p - 1] = '\0';
 
             // Skip redundant slashes
             while( p <= end )
             {
-                if( path[ p ] != '/' )
+                if( path[p] != '/' )
                     break;
-                path[ p++ ] = '\0';
+                path[p++] = '\0';
             }
             break;
         }
@@ -390,27 +370,25 @@ void Uri::removeDots( std::string& path, std::vector<int>& segs )
     int end = (int)path.size() - 1;
     for( int i = 0; i < ns; i++ )
     {
-        int dots = 0;               // Number of dots found (0, 1, or 2)
+        int dots = 0; // Number of dots found (0, 1, or 2)
 
         // Find next occurrence of "." or ".."
         do
         {
-            int p = segs[ i ];
-            if( path[ p ] == '.' )
+            int p = segs[i];
+            if( path[p] == '.' )
             {
                 if( p == end )
                 {
                     dots = 1;
                     break;
                 }
-                else if( path[ p + 1 ] == '\0' )
+                else if( path[p + 1] == '\0' )
                 {
                     dots = 1;
                     break;
                 }
-                else if( ( path[ p + 1 ] == '.' )
-                         && ( ( p + 1 == end )
-                              || ( path[ p + 2 ] == '\0' ) ) )
+                else if( ( path[p + 1] == '.' ) && ( ( p + 1 == end ) || ( path[p + 2] == '\0' ) ) )
                 {
                     dots = 2;
                     break;
@@ -426,7 +404,7 @@ void Uri::removeDots( std::string& path, std::vector<int>& segs )
         if( dots == 1 )
         {
             // Remove this occurrence of "."
-            segs[ i ] = -1;
+            segs[i] = -1;
         }
         else
         {
@@ -436,19 +414,17 @@ void Uri::removeDots( std::string& path, std::vector<int>& segs )
             int j;
             for( j = i - 1; j >= 0; j-- )
             {
-                if( segs[ j ] != -1 )
+                if( segs[j] != -1 )
                     break;
             }
 
             if( j >= 0 )
             {
-                int q = segs[ j ];
-                if( !( ( path[ q ] == '.' )
-                       && ( path[ q + 1 ] == '.' )
-                       && ( path[ q + 2 ] == '\0' ) ) )
+                int q = segs[j];
+                if( !( ( path[q] == '.' ) && ( path[q + 1] == '.' ) && ( path[q + 2] == '\0' ) ) )
                 {
-                    segs[ i ] = -1;
-                    segs[ j ] = -1;
+                    segs[i] = -1;
+                    segs[j] = -1;
                 }
             }
         }
@@ -460,15 +436,15 @@ void Uri::removeDots( std::string& path, std::vector<int>& segs )
 //
 void Uri::maybeAddLeadingDot( std::string& path, std::vector<int>& segs )
 {
-    if( path[ 0 ] == '\0' )
+    if( path[0] == '\0' )
         // The path is absolute
         return;
 
     int ns = (int)segs.size();
-    int f = 0;                      // Index of first segment
+    int f = 0; // Index of first segment
     while( f < ns )
     {
-        if( segs[ f ] >= 0 )
+        if( segs[f] >= 0 )
             break;
         f++;
     }
@@ -478,20 +454,19 @@ void Uri::maybeAddLeadingDot( std::string& path, std::vector<int>& segs )
         // in which case we already know that no leading "." is needed
         return;
 
+    int p = segs[f];
+    while( ( p < path.size() ) && ( path[p] != ':' ) && ( path[p] != '\0' ) )
+        p++;
 
-    int p = segs[ f ];
-    while( ( p < path.size() ) && ( path[ p ] != ':' ) && ( path[ p ] != '\0' ) ) p++;
-
-    if( p >= path.size() || path[ p ] == '\0' )
+    if( p >= path.size() || path[p] == '\0' )
         // No colon in first segment, so no "." needed
         return;
 
-
     // At this point we know that the first segment is unused,
     // hence we can insert a "." segment at that position
-    path[ 0 ] = '.';
-    path[ 1 ] = '\0';
-    segs[ 0 ] = 0;
+    path[0] = '.';
+    path[1] = '\0';
+    segs[0] = 0;
 }
 
 // Join the segments in the given path according to the given segment-index
@@ -506,18 +481,18 @@ void Uri::maybeAddLeadingDot( std::string& path, std::vector<int>& segs )
 // Postconditions:
 //   path[0] .. path[return value] == Resulting path
 //
-int Uri::join( std::string & path, std::vector<int>& segs )
+int Uri::join( std::string& path, std::vector<int>& segs )
 {
-    int ns = (int)segs.size();           // Number of segments
-    int end = (int)path.size() - 1;      // Index of last char in path
+    int ns = (int)segs.size();      // Number of segments
+    int end = (int)path.size() - 1; // Index of last char in path
     int p = 0;                      // Index of next path char to write
-    if( path[ p ] == '\0' )
+    if( path[p] == '\0' )
         // Restore initial slash for absolute paths
-        path[ p++ ] = '/';
+        path[p++] = '/';
 
     for( int i = 0; i < ns; i++ )
     {
-        int q = segs[ i ];            // Current segment
+        int q = segs[i]; // Current segment
         if( q == -1 )
             // Ignore this segment
             continue;
@@ -525,25 +500,25 @@ int Uri::join( std::string & path, std::vector<int>& segs )
         if( p == q )
         {
             // We're already at this segment, so just skip to its end
-            while( ( p <= end ) && ( path[ p ] != '\0' ) )
+            while( ( p <= end ) && ( path[p] != '\0' ) )
                 p++;
 
             if( p <= end )
             {
                 // Preserve trailing slash
-                path[ p++ ] = '/';
+                path[p++] = '/';
             }
         }
         else if( p < q )
         {
             // Copy q down to p
-            while( ( q <= end ) && ( path[ q ] != '\0' ) )
-                path[ p++ ] = path[ q++ ];
+            while( ( q <= end ) && ( path[q] != '\0' ) )
+                path[p++] = path[q++];
 
             if( q <= end )
             {
                 // Preserve trailing slash
-                path[ p++ ] = '/';
+                path[p++] = '/';
             }
         }
         else
@@ -556,8 +531,7 @@ namespace
 {
     bool endWith( const std::string& text, const std::string& token )
     {
-        if( text.size() >= token.size() &&
-            text.compare( text.size() - token.size(), token.size(), token ) == 0 )
+        if( text.size() >= token.size() && text.compare( text.size() - token.size(), token.size(), token ) == 0 )
             return true;
         else
             return false;
@@ -569,14 +543,14 @@ namespace
             return false;
         return ( text.compare( 0, token.length(), token ) == 0 );
     }
-}
+} // namespace
 
 // If both URIs are hierarchical, their scheme and authority components are
 // identical, and the base path is a prefix of the child's path, then
 // return a relative URI that, when resolved against the base, yields the
 // child; otherwise, return the child.
 //
-Uri Uri::relativize( const Uri & base, const Uri & child )
+Uri Uri::relativize( const Uri& base, const Uri& child )
 {
     // check if child if opaque first so that NPE is thrown
 
@@ -587,7 +561,6 @@ Uri Uri::relativize( const Uri & base, const Uri & child )
 
     if( base.scheme_ != child.scheme_ || base.getAuthority() != child.getAuthority() )
         return child;
-
 
     std::string bp = normalize( base.path_ );
     std::string cp = normalize( child.path_ );
@@ -607,17 +580,15 @@ Uri Uri::relativize( const Uri & base, const Uri & child )
     return v;
 }
 
-Uri Uri::resolve( const Uri & base, const Uri & child )
+Uri Uri::resolve( const Uri& base, const Uri& child )
 {
     // check if child if opaque first so that NPE is thrown
     // if child is null.
     if( child.isOpaque() || base.isOpaque() )
         return child;
 
-
     // Reference to current document (lone fragment)
-    if( ( child.scheme_.empty() ) && child.getAuthority().empty()
-        && child.path_.empty() && !child.fragment_.empty()
+    if( ( child.scheme_.empty() ) && child.getAuthority().empty() && child.path_.empty() && !child.fragment_.empty()
         && ( child.query_.empty() ) )
     {
         if( !base.fragment_.empty() && child.fragment_ == base.fragment_ )
@@ -635,17 +606,14 @@ Uri Uri::resolve( const Uri & base, const Uri & child )
         return ru;
     }
 
-
     // Child is absolute
     if( !child.scheme_.empty() )
         return child;
-
 
     Uri ru; // Resolved URI
     ru.scheme_ = base.scheme_;
     ru.query_ = child.query_;
     ru.fragment_ = child.fragment_;
-
 
     // Authority
     if( child.getAuthority().empty() )
@@ -655,11 +623,10 @@ Uri Uri::resolve( const Uri & base, const Uri & child )
         ru.password_ = base.password_;
         ru.port_ = base.port_;
         std::string cp = child.path_.empty() ? "" : child.path_;
-        if( ( cp.length() > 0 ) && ( cp[ 0 ] == '/' ) )
+        if( ( cp.length() > 0 ) && ( cp[0] == '/' ) )
         {
             // Child path is absolute
             ru.path_ = child.path_;
-
         }
         else
         {
@@ -698,5 +665,5 @@ std::string Uri::resolvePath( const std::string& base, const std::string& child,
 
         path.append( child );
     }
-    return  normalize( path );
+    return normalize( path );
 }

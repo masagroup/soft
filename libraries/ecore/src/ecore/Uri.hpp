@@ -35,22 +35,22 @@ namespace ecore
             return password_;
         }
         /**
-        * Get host part of URI. If host is an IPv6 address, square brackets will be
-        * returned, for example: "[::1]".
-        */
+         * Get host part of URI. If host is an IPv6 address, square brackets will be
+         * returned, for example: "[::1]".
+         */
         const std::string& getHost() const
         {
             return host_;
         }
         /**
-        * Get host part of URI. If host is an IPv6 address, square brackets will not
-        * be returned, for exmaple "::1"; otherwise it returns the same thing as
-        * host().
-        *
-        * hostname() is what one needs to call if passing the host to any other tool
-        * or API that connects to that host/port; e.g. getaddrinfo() only understands
-        * IPv6 host without square brackets
-        */
+         * Get host part of URI. If host is an IPv6 address, square brackets will not
+         * be returned, for exmaple "::1"; otherwise it returns the same thing as
+         * host().
+         *
+         * hostname() is what one needs to call if passing the host to any other tool
+         * or API that connects to that host/port; e.g. getaddrinfo() only understands
+         * IPv6 host without square brackets
+         */
         std::string getHostname() const;
 
         uint16_t getPort() const
@@ -78,37 +78,37 @@ namespace ecore
         {
             return toString();
         }
-        
+
         /**
-        * Get query parameters as key-value pairs.
-        * e.g. for URI containing query string:  key1=foo&key2=&key3&=bar&=bar=
-        * In returned list, there are 3 entries:
-        *     "key1" => "foo"
-        *     "key2" => ""
-        *     "key3" => ""
-        * Parts "=bar" and "=bar=" are ignored, as they are not valid query
-        * parameters. "=bar" is missing parameter name, while "=bar=" has more than
-        * one equal signs, we don't know which one is the delimiter for key and
-        * value.
-        *
-        * Note, this method is not thread safe, it might update internal state, but
-        * only the first call to this method update the state. After the first call
-        * is finished, subsequent calls to this method are thread safe.
-        *
-        * @return  query parameter key-value pairs in a vector, each element is a
-        *          pair of which the first element is parameter name and the second
-        *          one is parameter value
-        */
+         * Get query parameters as key-value pairs.
+         * e.g. for URI containing query string:  key1=foo&key2=&key3&=bar&=bar=
+         * In returned list, there are 3 entries:
+         *     "key1" => "foo"
+         *     "key2" => ""
+         *     "key3" => ""
+         * Parts "=bar" and "=bar=" are ignored, as they are not valid query
+         * parameters. "=bar" is missing parameter name, while "=bar=" has more than
+         * one equal signs, we don't know which one is the delimiter for key and
+         * value.
+         *
+         * Note, this method is not thread safe, it might update internal state, but
+         * only the first call to this method update the state. After the first call
+         * is finished, subsequent calls to this method are thread safe.
+         *
+         * @return  query parameter key-value pairs in a vector, each element is a
+         *          pair of which the first element is parameter name and the second
+         *          one is parameter value
+         */
         const std::vector<std::pair<std::string, std::string>>& getQueryParams();
 
-        bool operator ==( const Uri& other ) const;
+        bool operator==( const Uri& other ) const;
 
-        bool operator !=( const Uri& other ) const;
+        bool operator!=( const Uri& other ) const;
 
-        bool isAbsolute()  const;
-        
+        bool isAbsolute() const;
+
         bool isOpaque() const;
-        
+
         Uri normalize() const;
 
         Uri resolve( const Uri& uri ) const;
@@ -118,7 +118,6 @@ namespace ecore
         Uri relativize( const Uri& uri ) const;
 
     private:
-       
         // normalization
         static int needsNormalization( const std::string& path );
         static Uri normalize( const Uri& uri );
@@ -134,14 +133,14 @@ namespace ecore
 
         // resolve
         static Uri resolve( const Uri& base, const Uri& child );
-        static std::string  resolvePath( const std::string& base, const std::string& child, bool isAbsolute );
+        static std::string resolvePath( const std::string& base, const std::string& child, bool isAbsolute );
 
     private:
         std::string scheme_;
         std::string username_;
         std::string password_;
         std::string host_;
-        bool hasAuthority_{ false };
+        bool hasAuthority_{false};
         uint16_t port_{0};
         std::string path_;
         std::string query_;
@@ -149,9 +148,7 @@ namespace ecore
         std::vector<std::pair<std::string, std::string>> queryParams_;
     };
 
-    
-
-}
+} // namespace ecore
 
 #include "ecore/Uri.inl"
 
