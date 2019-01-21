@@ -2,22 +2,79 @@
 #include "ecore/Assert.hpp"
 
 #include <algorithm>
+#include <array>
 #include <cctype>
 #include <regex>
 #include <sstream>
+#include <utility>
 
 using namespace ecore;
+using namespace ecore::detail;
 
 namespace
 {
-
     std::string submatch( const std::smatch& m, int idx )
     {
         const auto& sub = m[idx];
         return std::string( sub.first, sub.second );
     }
 
+    template <typename MakeItem, std::size_t... Index>
+    constexpr auto make_array_with( MakeItem const& make, std::index_sequence<Index...> )
+    {
+        return std::array<decltype( make( 0 ) ), sizeof...( Index )>{{make( Index )...}};
+    }
+
+    template <std::size_t Size, typename MakeItem>
+    constexpr auto make_array_with( MakeItem const& make )
+    {
+        return make_array_with( make, std::make_index_sequence<Size>{} );
+    }
+
+    struct string_table_hex_make_item
+    {
+        constexpr unsigned char operator()( std::size_t index ) const
+        {
+            // clang-format off
+            return static_cast<unsigned char>(
+                index >= '0' && index <= '9' ? index - '0' :
+                index >= 'a' && index <= 'f' ? index - 'a' + 10 :
+                index >= 'A' && index <= 'F' ? index - 'A' + 10 :
+                16);
+            // clang-format on
+        }
+    };
+
+    struct string_table_uri_escape_make_item
+    {
+        //  0 = passthrough
+        //  1 = unused
+        //  2 = safe in path (/)
+        //  3 = space (replace with '+' in query)
+        //  4 = always percent-encode
+        constexpr unsigned char operator()( std::size_t index ) const
+        {
+            // clang-format off
+            return static_cast<unsigned char>(
+                index >= '0' && index <= '9' ? 0 :
+                index >= 'A' && index <= 'Z' ? 0 :
+                index >= 'a' && index <= 'z' ? 0 :
+                index == '-' ? 0 :
+                index == '_' ? 0 :
+                index == '.' ? 0 :
+                index == '~' ? 0 :
+                index == '/' ? 2 :
+                index == ' ' ? 3 :
+                4);
+            // clang-format on
+        }
+    };
+
 } // namespace
+
+decltype( hexTable ) hexTable = make_array_with<256>( string_table_hex_make_item{} );
+
+decltype( uriEscapeTable ) uriEscapeTable = make_array_with<256>( string_table_uri_escape_make_item{} );
 
 Uri::Uri()
 {
