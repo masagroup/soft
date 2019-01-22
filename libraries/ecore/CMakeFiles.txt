@@ -46,6 +46,7 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/Resource.hpp
     src/ecore/impl/ResourceSet.hpp
     src/ecore/impl/TypeTraits.hpp
+    src/ecore/impl/UriConverter.hpp
     src/ecore/impl/WeakPtr.hpp
 )
 
@@ -57,6 +58,7 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/NotificationChain.cpp
     src/ecore/impl/Resource.cpp
     src/ecore/impl/ResourceSet.cpp
+    src/ecore/impl/UriConverter.cpp
 )
 
 set(HEADER_ECORE_EXT_FILES 

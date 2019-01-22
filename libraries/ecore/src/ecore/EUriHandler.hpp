@@ -7,8 +7,8 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EURICONVERTER_HPP_
-#define ECORE_EURICONVERTER_HPP_
+#ifndef ECORE_EURIHANDLER_HPP_
+#define ECORE_EURIHANDLER_HPP_
 
 #include "ecore/EList.hpp"
 
