@@ -91,6 +91,22 @@ BOOST_AUTO_TEST_CASE( Constructor_QueryParameters )
     BOOST_CHECK_EQUAL( uri.getQueryParams(), expected );
 }
 
+BOOST_AUTO_TEST_CASE( Constructor_Fragment )
+{
+    {
+        Uri uri{"http://host:10020/path/path2#fragment"};
+        BOOST_CHECK_EQUAL( uri.getFragment(), "fragment" );
+    }
+    {
+        Uri uri{"//#fragment"};
+        BOOST_CHECK_EQUAL( uri.getScheme(), "" );
+        BOOST_CHECK_EQUAL( uri.getAuthority(), "" );
+        BOOST_CHECK_EQUAL( uri.getPath(), "" );
+        BOOST_CHECK_EQUAL( uri.getFragment(), "fragment" );
+    }
+}
+
+
 BOOST_AUTO_TEST_CASE( Equals_Empty )
 {
     Uri uri1;
