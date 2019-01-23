@@ -1,10 +1,8 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
-#include <boost/timer/timer.hpp>
 #include <memory>
 #include <iostream>
-
-using namespace boost::timer;
+#include <chrono>
 
 const int NB_ITERATIONS = 1000000;
 
@@ -199,82 +197,81 @@ BOOST_AUTO_TEST_SUITE( DiamondVsMixinsTests )
 BOOST_AUTO_TEST_CASE( Performance )
 {
 #ifdef BENCHMARK
-    cpu_timer timer;
-    cpu_times diamondTimes , mixinTimes;
+    long long diamondTimes, mixinTimes;
     {
-        timer.start();
+        auto start = std::chrono::steady_clock::now();
         std::shared_ptr<diamond::IA> a = std::make_shared<diamond::D>();
         for (int i = 0; i < NB_ITERATIONS; ++i)
         {
             auto d = std::dynamic_pointer_cast<diamond::ID>(a);
             BOOST_CHECK( d );
         }
-        diamondTimes = timer.elapsed();
-        timer.stop();
+        auto end = std::chrono::steady_clock::now();
+        diamondTimes = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 #if LOG
-        std::cout << format( diamondTimes );
+        std::cout << "Diamond:" << diamondTimes << " us" << std::endl;
 #endif
     }
     {
-        timer.start();
+        std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
         std::shared_ptr<mixins::IA> a = std::make_shared<mixins::D>();
         for (int i = 0; i < NB_ITERATIONS; ++i)
         {
             auto d = std::static_pointer_cast<mixins::ID>(a);
             BOOST_CHECK( d );
         }
-        mixinTimes = timer.elapsed();
-        timer.stop();
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        mixinTimes = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 #if LOG
-        std::cout << format( mixinTimes );
+        std::cout << "Mixins:" << mixinTimes << " us" << std::endl;
 #endif
     }
-    BOOST_CHECK_GE( diamondTimes.user, mixinTimes.user );
+    BOOST_CHECK_GE( diamondTimes, mixinTimes );
     {
-        timer.start();
+        std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
         std::shared_ptr<diamond::IA> a = std::make_shared<diamond::D>();
         for (int i = 0; i < NB_ITERATIONS; ++i)
         {
             auto d = std::dynamic_pointer_cast<diamond::D>(a);
             BOOST_CHECK( d );
         }
-        diamondTimes = timer.elapsed();
-        timer.stop();
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        diamondTimes = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 #if LOG
-        std::cout << format( diamondTimes );
+        std::cout << "Diamond:" << diamondTimes << " us" << std::endl;
 #endif
     }
     {
-        timer.start();
+        std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
         std::shared_ptr<mixins::IA> a = std::make_shared<mixins::D>();
         for (int i = 0; i < NB_ITERATIONS; ++i)
         {
             auto d = std::static_pointer_cast<mixins::D>(a);
             BOOST_CHECK( d );
         }
-        mixinTimes = timer.elapsed();
-        timer.stop();
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        mixinTimes = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 #if LOG
-        std::cout << format( mixinTimes );
+        std::cout << "Mixins:" << mixinTimes << " us" << std::endl;
 #endif
     }
-    BOOST_CHECK_GE( diamondTimes.user, mixinTimes.user );
+    BOOST_CHECK_GE( diamondTimes, mixinTimes );
     {
-        timer.start();
+        std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
         std::shared_ptr<diamond::IA> a = std::make_shared<diamond::E>();
         for (int i = 0; i < NB_ITERATIONS; ++i)
         {
             auto ie = std::dynamic_pointer_cast<diamond::IE>(a);
             BOOST_CHECK( ie );
         }
-        diamondTimes = timer.elapsed();
-        timer.stop();
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        diamondTimes = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 #if LOG
-        std::cout << format( diamondTimes );
+        std::cout << "Diamond:" << diamondTimes << " us" << std::endl;
 #endif
     }
     {
-        timer.start();
+        std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
         std::shared_ptr<mixins::IA> a = std::make_shared<mixins::E>();
         for (int i = 0; i < NB_ITERATIONS; ++i)
         {
@@ -282,13 +279,13 @@ BOOST_AUTO_TEST_CASE( Performance )
             auto ie = std::static_pointer_cast<mixins::IE>(e);
             BOOST_CHECK( ie );
         }
-        mixinTimes = timer.elapsed();
-        timer.stop();
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        mixinTimes = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 #if LOG
-        std::cout << format( mixinTimes );
+        std::cout << "Mixins:" << mixinTimes << " us" << std::endl;
 #endif
     }
-    BOOST_CHECK_GE( diamondTimes.user, mixinTimes.user );
+    BOOST_CHECK_GE( diamondTimes, mixinTimes );
 
 #endif
 }

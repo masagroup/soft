@@ -29,7 +29,7 @@ set(CMAKE_DEBUG_POSTFIX d)
 set(CMAKE_CXX_STANDARD 17)
 
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.68.0 REQUIRED COMPONENTS unit_test_framework timer)
+find_package(Boost 1.68.0 REQUIRED COMPONENTS unit_test_framework)
 find_package(Turtle 2.3.0)
 
 [let namespaceVar : String = getVarName( aPackage.getTestsNamespaceName() )]

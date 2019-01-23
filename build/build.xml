@@ -231,7 +231,6 @@
             <arg value="${vcpkg.dir}"/>
             <arg value="install"/>
             <arg value="boost-test"/>
-            <arg value="boost-timer"/>
             <arg value="turtle"/>
         </exec>
     </target>
