@@ -112,7 +112,7 @@
     ============================================================================
     -->
     <target name="cmake.install" depends="aria2.install">
-        <install name="cmake" url="https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2-win64-x64.zip"/>
+        <install name="cmake" url="https://github.com/Kitware/CMake/releases/download/v3.13.3/cmake-3.13.3-win64-x64.zip"/>
     </target>
     
     <property name = "cmake.generator.vs2015" value = "Visual Studio 14 2015 Win64"/>
@@ -230,6 +230,8 @@
             <arg value="--vcpkg-root"/>
             <arg value="${vcpkg.dir}"/>
             <arg value="install"/>
+            <arg value="boost-test"/>
+            <arg value="boost-timer"/>
             <arg value="turtle"/>
         </exec>
     </target>
