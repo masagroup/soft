@@ -14,14 +14,14 @@ UriConverter::~UriConverter()
 {
 }
 
-std::istream UriConverter::createInputStream( const Uri& uri ) const
+std::unique_ptr<EUriInputStream> UriConverter::createInputStream( const Uri& uri ) const
 {
-    return getUriHandler( uri )->createInputStream( uri );
+    return std::move( getUriHandler( uri )->createInputStream( uri ) );
 }
 
-std::ostream UriConverter::createOutputStream( const Uri& uri ) const
+std::unique_ptr<EUriOutputStream> UriConverter::createOutputStream( const Uri& uri ) const
 {
-    return getUriHandler( uri )->createOutputStream( uri );
+    return std::move( getUriHandler( uri )->createOutputStream( uri ) );
 }
 
 std::shared_ptr<EUriHandler> UriConverter::getUriHandler( const Uri& uri ) const

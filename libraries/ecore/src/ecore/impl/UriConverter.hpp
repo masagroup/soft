@@ -11,7 +11,6 @@
 #define ECORE_URICONVERTER_HPP_
 
 #include "ecore/EUriConverter.hpp"
-#include "ecore/impl/Lazy.hpp"
 
 namespace ecore::impl
 {
@@ -23,9 +22,9 @@ namespace ecore::impl
 
         virtual ~UriConverter();
 
-        virtual std::istream createInputStream( const Uri& uri ) const;
+        virtual std::unique_ptr<EUriInputStream> createInputStream( const Uri& uri ) const;
 
-        virtual std::ostream createOutputStream( const Uri& uri ) const;
+        virtual std::unique_ptr<EUriOutputStream> createOutputStream( const Uri& uri ) const;
 
         virtual std::shared_ptr<EUriHandler> getUriHandler( const Uri& uri ) const;
 

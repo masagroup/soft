@@ -11,8 +11,9 @@
 #define ECORE_EURIHANDLER_HPP_
 
 #include "ecore/EList.hpp"
+#include "ecore/EUriStream.hpp"
 
-#include <iostream>
+#include <memory>
 
 namespace ecore
 {
@@ -27,11 +28,11 @@ namespace ecore
 
         virtual bool canHandle( const Uri& uri ) const = 0;
 
-        virtual std::istream createInputStream( const Uri& uri ) const = 0;
+        virtual std::unique_ptr<EUriInputStream> createInputStream( const Uri& uri ) const = 0;
 
-        virtual std::ostream createOutputStream( const Uri& uri ) const = 0;
+        virtual std::unique_ptr<EUriOutputStream> createOutputStream( const Uri& uri ) const = 0;
     };
 
-}
+} // namespace ecore
 
 #endif
