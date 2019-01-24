@@ -17,19 +17,16 @@ BOOST_AUTO_TEST_CASE( canHandle )
     BOOST_CHECK( !handler.canHandle( Uri( "http://test.xml" ) ) );
 }
 
-BOOST_AUTO_TEST_CASE( InputStream )
+BOOST_AUTO_TEST_CASE( InputStream_Invalid )
 {
     FileUriHandler handler;
-    std::unique_ptr<EUriInputStream> is = handler.createInputStream( Uri() );
-    BOOST_CHECK( is );
-    BOOST_CHECK_EQUAL( is->getPosition() , 0 );
+    BOOST_CHECK_THROW( handler.createInputStream( Uri() ) , std::exception );
 }
 
-BOOST_AUTO_TEST_CASE( OutputStream )
+BOOST_AUTO_TEST_CASE( OutputStream_Invalid )
 {
     FileUriHandler handler;
-    std::unique_ptr<EUriOutputStream> os = handler.createOutputStream( Uri() );
-    BOOST_CHECK( os );
+    BOOST_CHECK_THROW( handler.createOutputStream( Uri() ), std::exception );
 }
 
 BOOST_AUTO_TEST_SUITE_END()
