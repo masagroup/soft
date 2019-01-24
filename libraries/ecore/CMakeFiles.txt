@@ -39,6 +39,7 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/BasicEObject.hpp
     src/ecore/impl/DynamicEObject.hpp
     src/ecore/impl/EObjectEList.hpp
+    src/ecore/impl/FileUriHandler.hpp
     src/ecore/impl/ImmutableEList.hpp
     src/ecore/impl/Lazy.hpp
     src/ecore/impl/Notification.hpp
@@ -54,7 +55,8 @@ set(HEADER_ECORE_IMPL_FILES
 set(SOURCE_ECORE_IMPL_FILES 
     src/ecore/impl/AbstractNotification.cpp
     src/ecore/impl/BasicEObject.cpp
-    src/ecore/impl/DynamicEObject.cpp    
+    src/ecore/impl/DynamicEObject.cpp
+    src/ecore/impl/FileUriHandler.cpp
     src/ecore/impl/Notification.cpp
     src/ecore/impl/NotificationChain.cpp
     src/ecore/impl/Resource.cpp

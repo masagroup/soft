@@ -13,6 +13,8 @@
 #include "ecore/EList.hpp"
 #include "ecore/EUriStream.hpp"
 
+#include <memory>
+
 namespace ecore
 {
     class Uri;
@@ -33,6 +35,6 @@ namespace ecore
         virtual std::shared_ptr<const EList<std::shared_ptr<EUriHandler>>> getUriHandlers() const = 0;
     };
 
-}
+} // namespace ecore
 
 #endif

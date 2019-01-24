@@ -10,7 +10,6 @@
 #ifndef ECORE_EURIHANDLER_HPP_
 #define ECORE_EURIHANDLER_HPP_
 
-#include "ecore/EList.hpp"
 #include "ecore/EUriStream.hpp"
 
 #include <memory>

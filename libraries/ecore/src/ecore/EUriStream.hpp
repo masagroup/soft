@@ -26,7 +26,7 @@ namespace ecore
         
         virtual std::size_t getPosition() = 0;
 
-        virtual void read( const char* bytes, const std::size_t size ) = 0;
+        virtual std::size_t read( const char* bytes, const std::size_t size ) = 0;
         
     };
 
