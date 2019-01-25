@@ -58,8 +58,8 @@ public class Generate extends AbstractAcceleoGenerator {
      *
      * @generated NOT
      */
-    public static final String[] TEMPLATE_NAMES = { "generateModel", "generateLibraryProject", "generateTests",
-            "generateTestsProject" };
+    public static final String[] TEMPLATE_NAMES = { "generateModel", "generateLibraryCMake", "generateTests",
+            "generateTestsCMake" };
 
     /**
      * The list of properties files from the launch parameters (Launch
