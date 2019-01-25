@@ -1,12 +1,13 @@
 #include "ecore/impl/UriConverter.hpp"
 #include "ecore/EUriHandler.hpp"
-#include "ecore/impl/ArrayEList.hpp"
+#include "ecore/impl/ImmutableEList.hpp"
+#include "ecore/impl/FileUriHandler.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
 
 UriConverter::UriConverter()
-    : uriHandlers_( std::make_shared<ArrayEList<std::shared_ptr<EUriHandler>>>() )
+    : uriHandlers_( new ImmutableEList<std::shared_ptr<EUriHandler>>( { std::make_shared<FileUriHandler>() } ) )
 {
 }
 

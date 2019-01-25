@@ -15,7 +15,7 @@
 namespace ecore::impl
 {
     
-    class FileUriHandler
+    class FileUriHandler : public EUriHandler
     {
     public:
         FileUriHandler();
