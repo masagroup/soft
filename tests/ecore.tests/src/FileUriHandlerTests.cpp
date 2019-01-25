@@ -23,6 +23,17 @@ BOOST_AUTO_TEST_CASE( InputStream_Invalid )
     BOOST_CHECK_THROW( handler.createInputStream( Uri() ) , std::exception );
 }
 
+BOOST_AUTO_TEST_CASE( InputStream_Read )
+{
+    FileUriHandler handler;
+    auto is = handler.createInputStream( Uri("data/stream.read.txt") );
+    char buff[256];
+    auto r = is->read( buff, 256 );
+    BOOST_REQUIRE_EQUAL( r, 6 );
+    buff[r] = 0;
+    BOOST_CHECK_EQUAL( buff, "mytest" );
+}
+
 BOOST_AUTO_TEST_CASE( OutputStream_Invalid )
 {
     FileUriHandler handler;
