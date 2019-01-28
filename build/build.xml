@@ -286,6 +286,7 @@
                   <arg value="generateModel"/>
                   <arg value="generateLibraryCMakeSources"/>
                   <arg value="generateTests"/>
+                  <arg value="generateTestsCMakeProject"/>
                   <arg value="generateTestsCMakeSources"/>
             </java>
         </sequential>
