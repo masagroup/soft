@@ -48,6 +48,11 @@ namespace ecore
          */
         static const int RESOURCE__CONTENTS = 2;
 
+        /**
+         * The {@link #isLoaded} feature {@link ENotification#getFeatureID ID}.
+         */
+        static const int RESOURCE__IS_LOADED = 4;
+
     public:
         virtual ~EResource() = default;
 

@@ -1,4 +1,5 @@
 #include "ecore/impl/Resource.hpp"
+#include "ecore/ENotificationChain.hpp"
 #include "ecore/ENotifyingList.hpp"
 #include "ecore/EObject.hpp"
 #include "ecore/EResourceSet.hpp"
@@ -102,19 +103,44 @@ void Resource::detached( const std::shared_ptr<EObject>& object )
 
 void Resource::load()
 {
+    if( !isLoaded_ )
+    {
+        auto uriConverter = getUriConverter();
+        auto is = uriConverter->createInputStream( uri_ );
+        if( is )
+            load( *is );
+    }
 }
 
 void Resource::load( std::istream& is )
 {
+    if( !isLoaded_ )
+    {
+        auto notifications = basicSetLoaded( true, nullptr );
+
+        doLoad( is );
+
+        if( notifications )
+            notifications->dispatch();
+    }
 }
 
 void Resource::unload()
 {
+    if( isLoaded_ )
+    {
+        auto notifications = basicSetLoaded( false, nullptr );
+
+        doUnload();
+
+        if( notifications )
+            notifications->dispatch();
+    }
 }
 
 bool Resource::isLoaded() const
 {
-    return loaded_;
+    return isLoaded_;
 }
 
 void Resource::save()
@@ -123,6 +149,23 @@ void Resource::save()
 
 void Resource::save( std::ostream& os )
 {
+}
+
+std::shared_ptr<ENotificationChain> Resource::basicSetLoaded( bool isLoaded,
+                                                              const std::shared_ptr<ENotificationChain>& msgs )
+{
+    auto notifications = msgs;
+    bool oldLoaded = isLoaded_;
+    isLoaded_ = isLoaded;
+    if( eNotificationRequired() )
+    {
+        if( !notifications )
+            notifications = std::make_shared<NotificationChain>();
+
+        notifications->add(
+            std::make_shared<Notification>( thisPtr_, Notification::SET, RESOURCE__IS_LOADED, oldLoaded, isLoaded_ ) );
+    }
+    return notifications;
 }
 
 std::shared_ptr<ENotificationChain> Resource::basicSetResourceSet( const std::shared_ptr<EResourceSet> resourceSet,
@@ -147,6 +190,11 @@ std::shared_ptr<ENotificationChain> Resource::basicSetResourceSet( const std::sh
             thisPtr_, Notification::SET, RESOURCE__RESOURCE_SET, oldResourceSet, resourceSet ) );
     }
     return notifications;
+}
+
+void Resource::doUnload()
+{
+    eContents_->clear();
 }
 
 std::shared_ptr<EUriConverter> Resource::getUriConverter() const
