@@ -1,25 +1,24 @@
 #include "ecore/impl/Resource.hpp"
-#include "ecore/impl/AbstractENotifyingList.hpp"
-#include "ecore/impl/AbstractNotification.hpp"
 #include "ecore/ENotifyingList.hpp"
 #include "ecore/EObject.hpp"
 #include "ecore/EResourceSet.hpp"
 #include "ecore/Stream.hpp"
-
+#include "ecore/impl/AbstractENotifyingList.hpp"
+#include "ecore/impl/AbstractNotification.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
 
-
 class Resource::Notification : public AbstractNotification
 {
 public:
-    Notification( const std::weak_ptr<ENotifier>& notifier , EventType type,
+    Notification( const std::weak_ptr<ENotifier>& notifier,
+                  EventType type,
                   int featureID,
                   const Any& oldValue,
                   const Any& newValue,
                   std::size_t position = NO_INDEX )
-        : AbstractNotification( type, oldValue , newValue, position ) 
+        : AbstractNotification( type, oldValue, newValue, position )
         , notifier_( notifier )
         , featureID_( featureID )
     {
@@ -46,10 +45,7 @@ private:
 };
 
 Resource::Resource()
-    : eContents_( [ & ]()
-{
-    return initContents();
-} )
+    : eContents_( [&]() { return initContents(); } )
 {
 }
 
@@ -82,7 +78,7 @@ void Resource::setUri( const Uri& uri )
     Uri oldUri = uri_;
     uri_ = uri;
     if( eNotificationRequired() )
-        eNotify( std::make_shared<Notification>( thisPtr_, Notification::SET, RESOURCE__URI, oldUri , uri_) );
+        eNotify( std::make_shared<Notification>( thisPtr_, Notification::SET, RESOURCE__URI, oldUri, uri_ ) );
 }
 
 std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::getContents() const
@@ -103,41 +99,69 @@ void Resource::detached( const std::shared_ptr<EObject>& object )
 {
 }
 
-std::shared_ptr<ENotificationChain> Resource::basicSetResourceSet( const std::shared_ptr<EResourceSet> resourceSet, const std::shared_ptr<ENotificationChain>& msgs )
+void Resource::load()
+{
+    
+}
+
+void Resource::load( std::istream& is )
+{
+}
+
+void Resource::unload()
+{
+}
+
+bool Resource::isLoaded() const
+{
+    return loaded_;
+}
+
+void Resource::save()
+{
+}
+
+void Resource::save( std::ostream& os )
+{
+}
+
+std::shared_ptr<ENotificationChain> Resource::basicSetResourceSet( const std::shared_ptr<EResourceSet> resourceSet,
+                                                                   const std::shared_ptr<ENotificationChain>& msgs )
 {
     auto notifications = msgs;
     auto oldResourceSet = resourceSet_.lock();
     if( oldResourceSet )
     {
-        auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EResource>>>( oldResourceSet->getResources() );
+        auto list
+            = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EResource>>>( oldResourceSet->getResources() );
         _ASSERTE( list );
         notifications = list->add( thisPtr_.lock(), notifications );
     }
     resourceSet_ = resourceSet;
-    if ( eNotificationRequired() )
+    if( eNotificationRequired() )
     {
         if( !notifications )
             notifications = std::make_shared<NotificationChain>();
-        
-        notifications->add( std::make_shared<Notification>( thisPtr_, Notification::SET, RESOURCE__RESOURCE_SET, oldResourceSet, resourceSet ) );
+
+        notifications->add( std::make_shared<Notification>(
+            thisPtr_, Notification::SET, RESOURCE__RESOURCE_SET, oldResourceSet, resourceSet ) );
     }
     return notifications;
 }
 
 std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::initContents()
 {
-    class ContentsEList : public AbstractENotifyingList< ENotifyingList< std::shared_ptr<EObject> >, std::shared_ptr<EObject> >
+    class ContentsEList
+        : public AbstractENotifyingList<ENotifyingList<std::shared_ptr<EObject>>, std::shared_ptr<EObject>>
     {
     public:
         ContentsEList( Resource& resource )
             : resource_( resource )
         {
-
         }
 
         virtual ~ContentsEList()
         {
-
         }
 
         virtual std::shared_ptr<ENotifier> getNotifier() const
@@ -151,8 +175,8 @@ std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::initContents()
         }
 
     protected:
-
-        virtual std::shared_ptr<ENotificationChain> inverseAdd( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<ENotificationChain>& n ) const
+        virtual std::shared_ptr<ENotificationChain> inverseAdd( const std::shared_ptr<EObject>& eObject,
+                                                                const std::shared_ptr<ENotificationChain>& n ) const
         {
             auto notifications = n;
             notifications = eObject->eSetResource( getThisPtr(), notifications );
@@ -160,7 +184,8 @@ std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::initContents()
             return notifications;
         }
 
-        virtual std::shared_ptr<ENotificationChain> inverseRemove( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<ENotificationChain>& n ) const
+        virtual std::shared_ptr<ENotificationChain> inverseRemove( const std::shared_ptr<EObject>& eObject,
+                                                                   const std::shared_ptr<ENotificationChain>& n ) const
         {
             auto notifications = n;
             resource_.detached( eObject );
@@ -169,7 +194,6 @@ std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::initContents()
         }
 
     private:
-        
         std::shared_ptr<Resource> getThisPtr() const
         {
             return resource_.getThisPtr();
@@ -179,6 +203,5 @@ std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::initContents()
         Resource& resource_;
     };
 
-
-    return std::make_shared<ContentsEList>(*this);
+    return std::make_shared<ContentsEList>( *this );
 }

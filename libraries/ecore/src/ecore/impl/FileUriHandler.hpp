@@ -24,9 +24,9 @@ namespace ecore::impl
 
         virtual bool canHandle( const Uri& uri ) const;
 
-        virtual std::unique_ptr<EUriInputStream> createInputStream( const Uri& uri ) const;
+        virtual std::unique_ptr<std::istream> createInputStream( const Uri& uri ) const;
 
-        virtual std::unique_ptr<EUriOutputStream> createOutputStream( const Uri& uri ) const;
+        virtual std::unique_ptr<std::ostream> createOutputStream( const Uri& uri ) const;
     };
 
 } // namespace ecore

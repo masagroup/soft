@@ -3,6 +3,7 @@
 
 #include "ecore/Uri.hpp"
 #include "ecore/impl/FileUriHandler.hpp"
+#include <iostream>
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -17,27 +18,15 @@ BOOST_AUTO_TEST_CASE( canHandle )
     BOOST_CHECK( !handler.canHandle( Uri( "http://test.xml" ) ) );
 }
 
-BOOST_AUTO_TEST_CASE( InputStream_Invalid )
-{
-    FileUriHandler handler;
-    BOOST_CHECK_THROW( handler.createInputStream( Uri() ) , std::exception );
-}
-
 BOOST_AUTO_TEST_CASE( InputStream_Read )
 {
     FileUriHandler handler;
-    auto is = handler.createInputStream( Uri("data/stream.read.txt") );
+    std::unique_ptr<std::istream> is = handler.createInputStream( Uri("data/stream.read.txt") );
     char buff[256];
-    auto r = is->read( buff, 256 );
-    BOOST_REQUIRE_EQUAL( r, 6 );
-    buff[r] = 0;
+    is->read( buff, 256 );
+    BOOST_REQUIRE_EQUAL( is->gcount(), 6 );
+    buff[6] = 0;
     BOOST_CHECK_EQUAL( buff, "mytest" );
-}
-
-BOOST_AUTO_TEST_CASE( OutputStream_Invalid )
-{
-    FileUriHandler handler;
-    BOOST_CHECK_THROW( handler.createOutputStream( Uri() ), std::exception );
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -17,13 +17,16 @@
 namespace ecore
 {
 
-    template <typename T > class EList;
+    template <typename T>
+    class EList;
 
-    template <typename T > class ECollectionView;
+    template <typename T>
+    class ECollectionView;
 
     class EObject;
-
     class EResourceSet;
+    class EUriInputStream;
+    class EUriOutputStream;
 
     class Uri;
 
@@ -31,20 +34,19 @@ namespace ecore
     {
     public:
         /**
-        * The {@link #getResourceSet} feature {@link ENotification#getFeatureID ID}.
-        */
+         * The {@link #getResourceSet} feature {@link ENotification#getFeatureID ID}.
+         */
         static const int RESOURCE__RESOURCE_SET = 0;
 
         /**
-        * The {@link #getURI} feature {@link ENotification#getFeatureID ID}.
-        */
+         * The {@link #getURI} feature {@link ENotification#getFeatureID ID}.
+         */
         static const int RESOURCE__URI = 1;
 
         /**
-        * The {@link #getContents} feature {@link ENotification#getFeatureID ID}.
-        */
+         * The {@link #getContents} feature {@link ENotification#getFeatureID ID}.
+         */
         static const int RESOURCE__CONTENTS = 2;
-
 
     public:
         virtual ~EResource() = default;
@@ -55,15 +57,28 @@ namespace ecore
 
         virtual void setUri( const Uri& uri ) = 0;
 
-        virtual std::shared_ptr< EList< std::shared_ptr< EObject > > > getContents() const = 0;
+        virtual std::shared_ptr<EList<std::shared_ptr<EObject>>> getContents() const = 0;
 
         virtual std::shared_ptr<const ECollectionView<std::shared_ptr<EObject>>> getAllContents() const = 0;
 
         virtual void attached( const std::shared_ptr<EObject>& object ) = 0;
 
         virtual void detached( const std::shared_ptr<EObject>& object ) = 0;
+
+        virtual void load() = 0;
+
+        virtual void load( std::istream& is ) = 0;
+
+        virtual void unload() = 0;
+
+        virtual bool isLoaded() const = 0;
+
+        virtual void save() = 0;
+
+        virtual void save( std::ostream& os )= 0;
+
     };
 
-}
+} // namespace ecore
 
 #endif /* ECORE_ERESOURCE_HPP_ */

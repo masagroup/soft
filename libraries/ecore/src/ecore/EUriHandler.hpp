@@ -10,15 +10,12 @@
 #ifndef ECORE_EURIHANDLER_HPP_
 #define ECORE_EURIHANDLER_HPP_
 
-#include "ecore/EUriStream.hpp"
-
 #include <memory>
+#include <iostream>
 
 namespace ecore
 {
     class Uri;
-
-    class EUriHandler;
 
     class EUriHandler
     {
@@ -27,9 +24,9 @@ namespace ecore
 
         virtual bool canHandle( const Uri& uri ) const = 0;
 
-        virtual std::unique_ptr<EUriInputStream> createInputStream( const Uri& uri ) const = 0;
+        virtual std::unique_ptr<std::istream> createInputStream( const Uri& uri ) const = 0;
 
-        virtual std::unique_ptr<EUriOutputStream> createOutputStream( const Uri& uri ) const = 0;
+        virtual std::unique_ptr<std::ostream> createOutputStream( const Uri& uri ) const = 0;
     };
 
 } // namespace ecore

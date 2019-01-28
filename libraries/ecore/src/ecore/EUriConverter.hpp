@@ -11,9 +11,9 @@
 #define ECORE_EURICONVERTER_HPP_
 
 #include "ecore/EList.hpp"
-#include "ecore/EUriStream.hpp"
 
 #include <memory>
+#include <iostream>
 
 namespace ecore
 {
@@ -26,9 +26,9 @@ namespace ecore
     public:
         virtual ~EUriConverter() = default;
 
-        virtual std::unique_ptr<EUriInputStream> createInputStream( const Uri& uri ) const = 0;
+        virtual std::unique_ptr<std::istream> createInputStream( const Uri& uri ) const = 0;
 
-        virtual std::unique_ptr<EUriOutputStream> createOutputStream( const Uri& uri ) const = 0;
+        virtual std::unique_ptr<std::ostream> createOutputStream( const Uri& uri ) const = 0;
 
         virtual std::shared_ptr<EUriHandler> getUriHandler( const Uri& uri ) const = 0;
 

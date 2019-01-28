@@ -15,12 +15,12 @@ UriConverter::~UriConverter()
 {
 }
 
-std::unique_ptr<EUriInputStream> UriConverter::createInputStream( const Uri& uri ) const
+std::unique_ptr<std::istream> UriConverter::createInputStream( const Uri& uri ) const
 {
     return std::move( getUriHandler( uri )->createInputStream( uri ) );
 }
 
-std::unique_ptr<EUriOutputStream> UriConverter::createOutputStream( const Uri& uri ) const
+std::unique_ptr<std::ostream> UriConverter::createOutputStream( const Uri& uri ) const
 {
     return std::move( getUriHandler( uri )->createOutputStream( uri ) );
 }

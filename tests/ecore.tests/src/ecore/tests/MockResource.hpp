@@ -21,13 +21,19 @@ namespace ecore::tests
     public:
         typedef EResource base_type;
 
-        MOCK_METHOD( getResourceSet, 0 );
-        MOCK_METHOD( getUri, 0 );
-        MOCK_METHOD( setUri, 1 );
-        MOCK_METHOD( getContents, 0 );
-        MOCK_METHOD( getAllContents, 0 );
-        MOCK_METHOD( attached, 1 );
-        MOCK_METHOD( detached, 1 );
+        MOCK_METHOD( getResourceSet, 0 )
+        MOCK_METHOD( getUri, 0 )
+        MOCK_METHOD( setUri, 1 )
+        MOCK_METHOD( getContents, 0 )
+        MOCK_METHOD( getAllContents, 0 )
+        MOCK_METHOD( attached, 1 )
+        MOCK_METHOD( detached, 1 )
+        MOCK_METHOD_EXT( load, 0 , void(), loadSimple)
+        MOCK_METHOD_EXT( load, 1 , void(std::istream&), loadFromStream )
+        MOCK_METHOD( unload, 0 )
+        MOCK_METHOD( isLoaded, 0 )
+        MOCK_METHOD_EXT( save, 0, void(), saveSimple )
+        MOCK_METHOD_EXT( save, 1, void( std::ostream& ), saveToStream )
     };
 }
 

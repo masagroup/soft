@@ -50,6 +50,18 @@ namespace ecore::impl
 
         virtual void detached( const std::shared_ptr<EObject>& object );
 
+        virtual void load();
+
+        virtual void load( std::istream& is );
+
+        virtual void unload();
+
+        virtual bool isLoaded() const;
+
+        virtual void save();
+
+        virtual void save( std::ostream& os );
+
         std::shared_ptr<ENotificationChain> basicSetResourceSet( const std::shared_ptr<EResourceSet> resourceSet
                                                                , const std::shared_ptr<ENotificationChain>& notifications );
 
@@ -64,6 +76,7 @@ namespace ecore::impl
         std::weak_ptr<EResourceSet> resourceSet_;
         Uri uri_;
         Lazy< std::shared_ptr< EList< std::shared_ptr< EObject > > > > eContents_;
+        bool loaded_{false};
     };
 
 }
