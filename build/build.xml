@@ -282,6 +282,11 @@
                   <arg value="@{input}"/>
                   <arg value="-o"/>
                   <arg value="@{output}"/>
+                  <arg value="-t"/>
+                  <arg value="generateModel"/>
+                  <arg value="generateLibraryCMakeSources"/>
+                  <arg value="generateTests"/>
+                  <arg value="generateTestsCMakeSources"/>
             </java>
         </sequential>
     </macrodef>

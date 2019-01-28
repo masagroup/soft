@@ -5,7 +5,7 @@
 [import soft::generator::cpp::generateCMake/]
 [import soft::generator::cpp::lib::generateCommon/]
 
-[template public generateLibraryCMakeSources(aPackage : EPackage) { packageName : String = aPackage.name;}]
+[template public generateLibraryCMakeFiles(aPackage : EPackage) { packageName : String = aPackage.name;}]
 [file (getOutputDirectory().concat('/CMakeGenerated.txt'), false, 'UTF-8')]
 # Generated sources
 
@@ -46,7 +46,7 @@ set(GENERATED_SOURCE_[namespaceVar/]_FILES
 [/file]
 [/template]
 
-[template public generateLibraryCMakeProject(aPackage : EPackage) { packageName : String = aPackage.name;}]
+[template public generateLibraryCMakeLists(aPackage : EPackage) { packageName : String = aPackage.name;}]
 [file (getOutputDirectory().concat('/CMakeLists.txt'), false, 'UTF-8')]
 #############################################################################
 #                                                                           #

@@ -5,7 +5,7 @@
 [import soft::generator::cpp::generateCMake/]
 [import soft::generator::cpp::tests::generateCommon/]
 
-[template public generateTestsCMakeSources(aPackage : EPackage) { packageName : String = aPackage.name;}]
+[template public generateTestsCMakeFiles(aPackage : EPackage) { packageName : String = aPackage.name;}]
 [file (getOutputDirectory().concat('/CMakeGenerated.txt'), false, 'UTF-8')]
 # Generated sources
 
@@ -20,7 +20,7 @@ set(GENERATED_HEADER_[namespaceVar/]_FILES
 [/file]
 [/template]
 
-[template public generateTestsCMakeProject(aPackage : EPackage) { packageName : String = aPackage.name ; testName : String = packageName.concat('.tests'); }]
+[template public generateTestsCMakeLists(aPackage : EPackage) { packageName : String = aPackage.name ; testName : String = packageName.concat('.tests'); }]
 [file (getOutputDirectory().concat('/CMakeLists.txt'), false, 'UTF-8')]
 #############################################################################
 #                                                                           #
