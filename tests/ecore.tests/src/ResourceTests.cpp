@@ -6,7 +6,7 @@
 #include "ecore/Uri.hpp"
 #include "ecore/ENotification.hpp"
 #include "ecore/ENotificationChain.hpp"
-#include "ecore/impl/Resource.hpp"
+#include "ecore/impl/AbstractResource.hpp"
 #include "ecore/tests/MockAdapter.hpp"
 #include "ecore/tests/MockObject.hpp"
 
@@ -17,6 +17,19 @@ using namespace ecore::tests;
 
 namespace
 {
+    class Resource : public AbstractResource
+    {
+        // Inherited via AbstractResource
+        virtual void doLoad( std::istream& is ) override
+        {
+            throw std::exception( "NotImplementedException " );
+        }
+        virtual void doSave( std::ostream& os ) override
+        {
+            throw std::exception( "NotImplementedException " );
+        }
+    };
+
     class NotificationsFixture
     {
     public:

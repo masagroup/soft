@@ -1,5 +1,5 @@
 #include "ecore/impl/ResourceSet.hpp"
-#include "ecore/impl/Resource.hpp"
+#include "ecore/impl/AbstractResource.hpp"
 #include "ecore/impl/AbstractENotifyingList.hpp"
 #include "ecore/impl/UriConverter.hpp"
 #include "ecore/ENotifyingList.hpp"
@@ -67,14 +67,14 @@ std::shared_ptr<EList<std::shared_ptr<EResource>>> ResourceSet::initResources()
         virtual std::shared_ptr<ENotificationChain> inverseAdd( const std::shared_ptr<EResource>& object
                                                               , const std::shared_ptr<ENotificationChain>& notifications ) const
         {
-            auto resource = std::dynamic_pointer_cast<Resource>( object );
+            auto resource = std::dynamic_pointer_cast<AbstractResource>( object );
             return resource ? resource->basicSetResourceSet( resourceSet_.lock(), notifications ) : notifications;
         }
 
         virtual std::shared_ptr<ENotificationChain> inverseRemove( const std::shared_ptr<EResource>& object
                                                                  , const std::shared_ptr<ENotificationChain>& notifications ) const
         {
-            auto resource = std::dynamic_pointer_cast<Resource>( object );
+            auto resource = std::dynamic_pointer_cast<AbstractResource>( object );
             return resource ? resource->basicSetResourceSet( nullptr, notifications ) : notifications;
         }
 

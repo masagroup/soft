@@ -1,13 +1,29 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
 
-#include "ecore/impl/Resource.hpp"
+#include "ecore/impl/AbstractResource.hpp"
 #include "ecore/impl/ResourceSet.hpp"
 #include "ecore/tests/MockResource.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
 using namespace ecore::tests;
+
+namespace
+{
+    class Resource : public AbstractResource
+    {
+        // Inherited via AbstractResource
+        virtual void doLoad( std::istream& is ) override
+        {
+            throw std::exception( "NotImplementedException " );
+        }
+        virtual void doSave( std::ostream& os ) override
+        {
+            throw std::exception( "NotImplementedException " );
+        }
+    };
+}
 
 BOOST_AUTO_TEST_SUITE( ResourceSetTests )
 

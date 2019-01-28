@@ -1,4 +1,4 @@
-#include "ecore/impl/Resource.hpp"
+#include "ecore/impl/AbstractResource.hpp"
 #include "ecore/ENotificationChain.hpp"
 #include "ecore/ENotifyingList.hpp"
 #include "ecore/EObject.hpp"
@@ -11,7 +11,7 @@
 using namespace ecore;
 using namespace ecore::impl;
 
-class Resource::Notification : public AbstractNotification
+class AbstractResource::Notification : public AbstractNotification
 {
 public:
     Notification( const std::weak_ptr<ENotifier>& notifier,
@@ -46,36 +46,36 @@ private:
     int featureID_;
 };
 
-Resource::Resource()
+AbstractResource::AbstractResource()
     : eContents_( [&]() { return initContents(); } )
 {
 }
 
-Resource::~Resource()
+AbstractResource::~AbstractResource()
 {
 }
 
-void Resource::setThisPtr( const std::shared_ptr<Resource>& resource )
+void AbstractResource::setThisPtr( const std::shared_ptr<AbstractResource>& resource )
 {
     thisPtr_ = resource;
 }
 
-std::shared_ptr<Resource> Resource::getThisPtr() const
+std::shared_ptr<AbstractResource> AbstractResource::getThisPtr() const
 {
     return thisPtr_.lock();
 }
 
-std::shared_ptr<EResourceSet> Resource::getResourceSet() const
+std::shared_ptr<EResourceSet> AbstractResource::getResourceSet() const
 {
     return resourceSet_.lock();
 }
 
-const Uri& Resource::getUri() const
+const Uri& AbstractResource::getUri() const
 {
     return uri_;
 }
 
-void Resource::setUri( const Uri& uri )
+void AbstractResource::setUri( const Uri& uri )
 {
     Uri oldUri = uri_;
     uri_ = uri;
@@ -83,25 +83,25 @@ void Resource::setUri( const Uri& uri )
         eNotify( std::make_shared<Notification>( thisPtr_, Notification::SET, RESOURCE__URI, oldUri, uri_ ) );
 }
 
-std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::getContents() const
+std::shared_ptr<EList<std::shared_ptr<EObject>>> AbstractResource::getContents() const
 {
     return eContents_;
 }
 
-std::shared_ptr<const ECollectionView<std::shared_ptr<EObject>>> Resource::getAllContents() const
+std::shared_ptr<const ECollectionView<std::shared_ptr<EObject>>> AbstractResource::getAllContents() const
 {
     return std::shared_ptr<const ECollectionView<std::shared_ptr<EObject>>>();
 }
 
-void Resource::attached( const std::shared_ptr<EObject>& object )
+void AbstractResource::attached( const std::shared_ptr<EObject>& object )
 {
 }
 
-void Resource::detached( const std::shared_ptr<EObject>& object )
+void AbstractResource::detached( const std::shared_ptr<EObject>& object )
 {
 }
 
-void Resource::load()
+void AbstractResource::load()
 {
     if( !isLoaded_ )
     {
@@ -112,7 +112,7 @@ void Resource::load()
     }
 }
 
-void Resource::load( std::istream& is )
+void AbstractResource::load( std::istream& is )
 {
     if( !isLoaded_ )
     {
@@ -125,7 +125,7 @@ void Resource::load( std::istream& is )
     }
 }
 
-void Resource::unload()
+void AbstractResource::unload()
 {
     if( isLoaded_ )
     {
@@ -138,20 +138,20 @@ void Resource::unload()
     }
 }
 
-bool Resource::isLoaded() const
+bool AbstractResource::isLoaded() const
 {
     return isLoaded_;
 }
 
-void Resource::save()
+void AbstractResource::save()
 {
 }
 
-void Resource::save( std::ostream& os )
+void AbstractResource::save( std::ostream& os )
 {
 }
 
-std::shared_ptr<ENotificationChain> Resource::basicSetLoaded( bool isLoaded,
+std::shared_ptr<ENotificationChain> AbstractResource::basicSetLoaded( bool isLoaded,
                                                               const std::shared_ptr<ENotificationChain>& msgs )
 {
     auto notifications = msgs;
@@ -168,15 +168,15 @@ std::shared_ptr<ENotificationChain> Resource::basicSetLoaded( bool isLoaded,
     return notifications;
 }
 
-std::shared_ptr<ENotificationChain> Resource::basicSetResourceSet( const std::shared_ptr<EResourceSet> resourceSet,
+std::shared_ptr<ENotificationChain> AbstractResource::basicSetResourceSet( const std::shared_ptr<EResourceSet> resourceSet,
                                                                    const std::shared_ptr<ENotificationChain>& msgs )
 {
     auto notifications = msgs;
-    auto oldResourceSet = resourceSet_.lock();
-    if( oldResourceSet )
+    auto oldAbstractResourceSet = resourceSet_.lock();
+    if( oldAbstractResourceSet )
     {
         auto list
-            = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EResource>>>( oldResourceSet->getResources() );
+            = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EResource>>>( oldAbstractResourceSet->getResources() );
         _ASSERTE( list );
         notifications = list->add( thisPtr_.lock(), notifications );
     }
@@ -187,17 +187,17 @@ std::shared_ptr<ENotificationChain> Resource::basicSetResourceSet( const std::sh
             notifications = std::make_shared<NotificationChain>();
 
         notifications->add( std::make_shared<Notification>(
-            thisPtr_, Notification::SET, RESOURCE__RESOURCE_SET, oldResourceSet, resourceSet ) );
+            thisPtr_, Notification::SET, RESOURCE__RESOURCE_SET, oldAbstractResourceSet, resourceSet ) );
     }
     return notifications;
 }
 
-void Resource::doUnload()
+void AbstractResource::doUnload()
 {
     eContents_->clear();
 }
 
-std::shared_ptr<EUriConverter> Resource::getUriConverter() const
+std::shared_ptr<EUriConverter> AbstractResource::getUriConverter() const
 {
     auto resourceSet = resourceSet_.lock();
     if( resourceSet )
@@ -211,13 +211,13 @@ std::shared_ptr<EUriConverter> Resource::getUriConverter() const
     return std::shared_ptr<EUriConverter>();
 }
 
-std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::initContents()
+std::shared_ptr<EList<std::shared_ptr<EObject>>> AbstractResource::initContents()
 {
     class ContentsEList
         : public AbstractENotifyingList<ENotifyingList<std::shared_ptr<EObject>>, std::shared_ptr<EObject>>
     {
     public:
-        ContentsEList( Resource& resource )
+        ContentsEList( AbstractResource& resource )
             : resource_( resource )
         {
         }
@@ -256,13 +256,13 @@ std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::initContents()
         }
 
     private:
-        std::shared_ptr<Resource> getThisPtr() const
+        std::shared_ptr<AbstractResource> getThisPtr() const
         {
             return resource_.getThisPtr();
         }
 
     private:
-        Resource& resource_;
+        AbstractResource& resource_;
     };
 
     return std::make_shared<ContentsEList>( *this );

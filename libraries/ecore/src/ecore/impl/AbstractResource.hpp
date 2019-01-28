@@ -26,15 +26,15 @@ namespace ecore
 
 namespace ecore::impl
 {
-    class Resource : public virtual AbstractNotifier<EResource>
+    class AbstractResource : public virtual AbstractNotifier<EResource>
     {
     public:
-        Resource();
+        AbstractResource();
 
-        virtual ~Resource();
+        virtual ~AbstractResource();
 
-        void setThisPtr( const std::shared_ptr<Resource>& resource );
-        std::shared_ptr<Resource> getThisPtr() const;
+        void setThisPtr( const std::shared_ptr<AbstractResource>& resource );
+        std::shared_ptr<AbstractResource> getThisPtr() const;
 
         virtual std::shared_ptr<EResourceSet> getResourceSet() const;
 
@@ -81,7 +81,7 @@ namespace ecore::impl
         class Notification;
 
     private:
-        std::weak_ptr<Resource> thisPtr_;
+        std::weak_ptr<AbstractResource> thisPtr_;
         std::weak_ptr<EResourceSet> resourceSet_;
         Uri uri_;
         Lazy<std::shared_ptr<EList<std::shared_ptr<EObject>>>> eContents_;
