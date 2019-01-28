@@ -5,6 +5,7 @@
 #include "ecore/Stream.hpp"
 #include "ecore/impl/AbstractENotifyingList.hpp"
 #include "ecore/impl/AbstractNotification.hpp"
+#include "ecore/impl/UriConverter.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -101,7 +102,6 @@ void Resource::detached( const std::shared_ptr<EObject>& object )
 
 void Resource::load()
 {
-    
 }
 
 void Resource::load( std::istream& is )
@@ -147,6 +147,20 @@ std::shared_ptr<ENotificationChain> Resource::basicSetResourceSet( const std::sh
             thisPtr_, Notification::SET, RESOURCE__RESOURCE_SET, oldResourceSet, resourceSet ) );
     }
     return notifications;
+}
+
+std::shared_ptr<EUriConverter> Resource::getUriConverter() const
+{
+    auto resourceSet = resourceSet_.lock();
+    if( resourceSet )
+        resourceSet->getUriConverter();
+    else
+    {
+        static std::shared_ptr<EUriConverter> defaultUriConverter = std::make_shared<UriConverter>();
+        return defaultUriConverter;
+    }
+
+    return std::shared_ptr<EUriConverter>();
 }
 
 std::shared_ptr<EList<std::shared_ptr<EObject>>> Resource::initContents()

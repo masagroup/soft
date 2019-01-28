@@ -20,8 +20,8 @@
 namespace ecore
 {
     class ENotificationChain;
-    
     class EResourceSet;
+    class EUriConverter;
 }
 
 namespace ecore::impl
@@ -66,7 +66,8 @@ namespace ecore::impl
                                                                , const std::shared_ptr<ENotificationChain>& notifications );
 
     private:
-        virtual std::shared_ptr< EList< std::shared_ptr< EObject > > > initContents();
+        std::shared_ptr<EUriConverter> getUriConverter() const;
+        std::shared_ptr< EList< std::shared_ptr< EObject > > > initContents();
 
     private:
         class Notification;

@@ -17,6 +17,7 @@
 namespace ecore
 {
     class EResource;
+    class EUriConverter;
 
     class EResourceSet : public virtual ENotifier
     {
@@ -24,6 +25,9 @@ namespace ecore
         virtual ~EResourceSet() = default;
 
         virtual std::shared_ptr<EList<std::shared_ptr<EResource>>> getResources() const = 0;
+
+        virtual std::shared_ptr<EUriConverter> getUriConverter() const = 0;
+        virtual void setUriConverter( const std::shared_ptr<EUriConverter>& uriConverter ) = 0;
     };
 
 }
