@@ -15,7 +15,9 @@ BOOST_AUTO_TEST_SUITE( ECollectionViewTests )
 
 BOOST_AUTO_TEST_CASE( Constructor )
 {
+    auto emptyList = std::make_shared<ImmutableEList<std::shared_ptr<EObject>>>();
     auto mockObject = std::make_shared<MockObject>();
+    MOCK_EXPECT( mockObject->eContents ).returns( emptyList );
     ECollectionView< std::shared_ptr<EObject> > view( mockObject );
 }
 

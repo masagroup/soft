@@ -28,13 +28,13 @@ namespace ecore
         }
 
 
-        explicit ETreeIterator( const T& obj , std::function< std::shared_ptr<const EList<T>>( const T& )> getChildren )
+        explicit ETreeIterator( const std::shared_ptr<const EList<T>>& elements,
+                                std::function<std::shared_ptr<const EList<T>>( const T& )> getChildren )
             : getChildren_( getChildren )
         {
-            auto l = getChildren_( obj );
-            if( l )
+            if( elements )
             {
-                auto it = l->begin();
+                auto it = elements->begin();
                 stack_.push( it );
                 current_ = *it;
             }

@@ -44,7 +44,7 @@ std::shared_ptr<BasicEObject> BasicEObject::getThisPtr() const
 
 std::shared_ptr<const ECollectionView<std::shared_ptr<ecore::EObject>>> BasicEObject::eAllContents() const
 {
-    return std::make_shared< ECollectionView<std::shared_ptr<ecore::EObject>>>( getThisPtr() );
+    return std::make_shared< ECollectionView<std::shared_ptr<ecore::EObject>>>( eContents() );
 }
 
 std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eContents() const

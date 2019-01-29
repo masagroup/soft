@@ -1,4 +1,5 @@
 #include "ecore/impl/AbstractResource.hpp"
+#include "ecore/ECollectionView.hpp"
 #include "ecore/ENotificationChain.hpp"
 #include "ecore/ENotifyingList.hpp"
 #include "ecore/EObject.hpp"
@@ -90,7 +91,7 @@ std::shared_ptr<EList<std::shared_ptr<EObject>>> AbstractResource::getContents()
 
 std::shared_ptr<const ECollectionView<std::shared_ptr<EObject>>> AbstractResource::getAllContents() const
 {
-    return std::shared_ptr<const ECollectionView<std::shared_ptr<EObject>>>();
+    return std::make_shared<ECollectionView<std::shared_ptr<ecore::EObject>>>( getContents() );
 }
 
 void AbstractResource::attached( const std::shared_ptr<EObject>& object )
