@@ -47,6 +47,7 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/Lazy.hpp
     src/ecore/impl/Notification.hpp
     src/ecore/impl/NotificationChain.hpp
+    src/ecore/impl/ResourceFactoryRegistry.hpp
     src/ecore/impl/Proxy.hpp
     src/ecore/impl/ResourceSet.hpp
     src/ecore/impl/TypeTraits.hpp
@@ -62,6 +63,7 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/FileUriHandler.cpp
     src/ecore/impl/Notification.cpp
     src/ecore/impl/NotificationChain.cpp
+    src/ecore/impl/ResourceFactoryRegistry.cpp
     src/ecore/impl/ResourceSet.cpp
     src/ecore/impl/UriConverter.cpp
 )

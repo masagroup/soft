@@ -15,14 +15,15 @@
 
 namespace ecore
 {
+    class Uri;
 
     class EResourceFactory;
-
-    class Uri;
 
     class EResourceFactoryRegistry
     {
     public:
+        static constexpr const char* DEFAULT_EXTENSION = "*";
+
         static EResourceFactoryRegistry& getInstance();
 
         virtual ~EResourceFactoryRegistry() = default;
