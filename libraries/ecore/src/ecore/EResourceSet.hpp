@@ -17,6 +17,7 @@
 namespace ecore
 {
     class EResource;
+    class EResourceFactoryRegistry;
     class EUriConverter;
 
     class EResourceSet : public virtual ENotifier
@@ -28,8 +29,11 @@ namespace ecore
 
         virtual std::shared_ptr<EUriConverter> getUriConverter() const = 0;
         virtual void setUriConverter( const std::shared_ptr<EUriConverter>& uriConverter ) = 0;
+
+        virtual std::shared_ptr<EResourceFactoryRegistry> gerResourceFactoryRegistry() const = 0;
+        virtual void setResourceFactoryRegistry( const std::shared_ptr<EResourceFactoryRegistry>& resourceFactoryRegistry ) = 0;
     };
 
-}
+} // namespace ecore
 
 #endif

@@ -2,7 +2,6 @@
 # Sources
 set(SOURCE_ECORE_FILES
     src/ecore/EAdapter.cpp
-    src/ecore/EResourceFactoryRegistry.cpp 
     src/ecore/Uri.cpp
 )
 

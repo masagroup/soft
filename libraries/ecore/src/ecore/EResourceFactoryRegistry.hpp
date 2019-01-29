@@ -24,8 +24,6 @@ namespace ecore
     public:
         static constexpr const char* DEFAULT_EXTENSION = "*";
 
-        static EResourceFactoryRegistry& getInstance();
-
         virtual ~EResourceFactoryRegistry() = default;
 
         using FactoryMap = std::unordered_map<std::string, std::unique_ptr<EResourceFactory>>;

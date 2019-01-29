@@ -2,6 +2,7 @@
 #include "ecore/impl/AbstractResource.hpp"
 #include "ecore/impl/AbstractENotifyingList.hpp"
 #include "ecore/impl/UriConverter.hpp"
+#include "ecore/impl/ResourceFactoryRegistry.hpp"
 #include "ecore/ENotifyingList.hpp"
 
 using namespace ecore;
@@ -10,7 +11,8 @@ using namespace ecore::impl;
 
 ResourceSet::ResourceSet()
     : resources_( [&]() { return initResources();  } )
-    , uriConverter_( [&]() { return initUriConverter(); }  )
+    , uriConverter_( [&]() { return std::make_shared<UriConverter>(); } )
+    , resourceFactoryRegistry_( [&]() { return std::make_shared<ResourceFactoryRegistry>(); } )
 {
 }
 
@@ -41,6 +43,16 @@ std::shared_ptr<EUriConverter> ecore::impl::ResourceSet::getUriConverter() const
 void ResourceSet::setUriConverter( const std::shared_ptr<EUriConverter>& uriConverter )
 {
     uriConverter_ = uriConverter;
+}
+
+std::shared_ptr<EResourceFactoryRegistry> ResourceSet::gerResourceFactoryRegistry() const
+{
+    return resourceFactoryRegistry_;
+}
+
+void ResourceSet::setResourceFactoryRegistry( const std::shared_ptr<EResourceFactoryRegistry>& resourceFactoryRegistry )
+{
+    resourceFactoryRegistry_ = resourceFactoryRegistry;
 }
 
 std::shared_ptr<EList<std::shared_ptr<EResource>>> ResourceSet::initResources()
@@ -83,9 +95,4 @@ std::shared_ptr<EList<std::shared_ptr<EResource>>> ResourceSet::initResources()
     };
 
     return std::make_shared<ResourcesEList>( thisPtr_ );
-}
-
-std::shared_ptr<EUriConverter> ecore::impl::ResourceSet::initUriConverter()
-{
-    return std::make_shared<UriConverter>();
 }

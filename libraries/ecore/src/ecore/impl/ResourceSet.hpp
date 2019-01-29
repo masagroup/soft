@@ -32,14 +32,17 @@ namespace ecore::impl
         virtual std::shared_ptr<EUriConverter> getUriConverter() const;
         virtual void setUriConverter( const std::shared_ptr<EUriConverter>& uriConverter );
 
+        virtual std::shared_ptr<EResourceFactoryRegistry> gerResourceFactoryRegistry() const;
+        virtual void setResourceFactoryRegistry( const std::shared_ptr<EResourceFactoryRegistry>& resourceFactoryRegistry );
+
     private:
         std::shared_ptr<EList<std::shared_ptr<EResource>>> initResources();
-        std::shared_ptr<EUriConverter> initUriConverter();
-
+     
     private:
         std::weak_ptr<ResourceSet> thisPtr_;
         Lazy<std::shared_ptr<EList<std::shared_ptr<EResource>>>> resources_;
         Lazy<std::shared_ptr<EUriConverter>> uriConverter_;
+        Lazy<std::shared_ptr<EResourceFactoryRegistry>> resourceFactoryRegistry_;
     };
 
 }
