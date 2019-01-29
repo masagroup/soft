@@ -2,6 +2,7 @@
 # Sources
 set(SOURCE_ECORE_FILES
     src/ecore/EAdapter.cpp
+    src/ecore/EResourceFactoryRegistry.cpp 
     src/ecore/Uri.cpp
 )
 
@@ -17,6 +18,8 @@ set(HEADER_ECORE_FILES
     src/ecore/ENotifier.hpp
     src/ecore/ENotifyingList.hpp
     src/ecore/EResource.hpp
+    src/ecore/EResourceFactory.hpp 
+    src/ecore/EResourceFactoryRegistry.hpp 
     src/ecore/EResourceSet.hpp
     src/ecore/ETreeIterator.hpp
     src/ecore/EUnsettableList.hpp
