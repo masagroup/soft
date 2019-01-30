@@ -52,6 +52,8 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/TypeTraits.hpp
     src/ecore/impl/UriConverter.hpp
     src/ecore/impl/WeakPtr.hpp
+    src/ecore/impl/XmlResource.hpp
+    src/ecore/impl/XmlResourceFactory.hpp
 )
 
 set(SOURCE_ECORE_IMPL_FILES 
@@ -65,6 +67,8 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/ResourceFactoryRegistry.cpp
     src/ecore/impl/ResourceSet.cpp
     src/ecore/impl/UriConverter.cpp
+    src/ecore/impl/XmlResource.cpp
+    src/ecore/impl/XmlResourceFactory.cpp
 )
 
 set(HEADER_ECORE_EXT_FILES 
