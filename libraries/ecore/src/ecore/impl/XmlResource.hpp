@@ -27,6 +27,7 @@ namespace ecore::impl
         virtual void doLoad( std::istream & is ) override;
 
         virtual void doSave( std::ostream & os ) override;
+
     private:
         Uri uri_;
     };
