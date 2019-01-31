@@ -1,5 +1,6 @@
 #include "ecore/impl/XmlResource.hpp"
 #include "ecore/impl/XmlHandler.hpp"
+#include "ecore/impl/XmlInputSource.hpp"
 #include "ecore/impl/SaxParserPool.hpp"
 
 using namespace ecore;
@@ -20,6 +21,8 @@ void XmlResource::doLoad( std::istream& is )
     auto parser = pool.getParser();
     XmlHandler handler;
     parser->setContentHandler(&handler);
+    XmlInputSource source( is );
+    parser->parse( source );
 }
 
 void XmlResource::doSave( std::ostream& os )
