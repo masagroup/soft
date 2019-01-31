@@ -232,6 +232,7 @@
             <arg value="install"/>
             <arg value="boost-test"/>
             <arg value="turtle"/>
+            <arg value="xerces-c"/>
         </exec>
     </target>
     

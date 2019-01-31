@@ -14,16 +14,15 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 set(CMAKE_DEBUG_POSTFIX d)
-
 set(CMAKE_CXX_STANDARD 17)
 
-# Boost
-set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.68.0)
+#dependencies
+find_package(XercesC REQUIRED)
+find_package(Threads REQUIRED)
 
+#cmake files
 include( CMakeFiles.txt OPTIONAL)
 include( CMakeGenerated.txt OPTIONAL)
-
 set(CMAKE_FILES
     CMakeLists.txt
 )
@@ -34,6 +33,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/CMakeGenerated.txt")
    list(APPEND CMAKE_FILES "CMakeGenerated.txt")
 endif()
 
+#library
 add_library(${PROJECT_NAME} STATIC  ${CMAKE_FILES}
                                     ${GENERATED_HEADER_ECORE_EXT_FILES}
                                     ${GENERATED_HEADER_ECORE_FILES}
@@ -54,10 +54,10 @@ add_library(${PROJECT_NAME} STATIC  ${CMAKE_FILES}
 )
 target_include_directories(${PROJECT_NAME} PUBLIC src)
 target_include_directories(${PROJECT_NAME} PUBLIC src-gen)
-target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PRIVATE ${XercesC_INCLUDE_DIRS})
 target_compile_options(${PROJECT_NAME} PRIVATE /wd4250) 
 target_compile_options(${PROJECT_NAME} PRIVATE "/MP")
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${XercesC_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 
 # Visual studio specific project layout
