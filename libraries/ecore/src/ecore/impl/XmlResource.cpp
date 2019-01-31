@@ -1,4 +1,5 @@
 #include "XmlResource.hpp"
+#include <xercesc/sax2/SAX2XMLReader.hpp>
 
 using namespace ecore;
 using namespace ecore::impl;
