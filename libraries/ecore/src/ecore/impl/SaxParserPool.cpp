@@ -20,6 +20,13 @@ std::shared_ptr<SAX2XMLReader> SaxParserPool::getParser( const std::map<std::str
         result = parsers_.front();
         parsers_.pop_front();
     }
+    for (auto feature : features)
+    {
+        XMLCh* featureKey = XMLString::transcode( feature.first.c_str() );
+        bool featureValue = feature.second;
+        result->setFeature( featureKey, featureValue );
+        XMLString::release( &featureKey );
+    }   
     return result;
 }
 

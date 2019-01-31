@@ -22,7 +22,7 @@ namespace ecore::impl
     public:
         static SaxParserPool& getInstance();
 
-        std::shared_ptr<xercesc::SAX2XMLReader> getParser( const std::map<std::string, bool>& features );
+        std::shared_ptr<xercesc::SAX2XMLReader> getParser( const std::map<std::string, bool>& features = std::map<std::string, bool>());
 
         void releaseParser( std::shared_ptr<xercesc::SAX2XMLReader>& parser );
 
