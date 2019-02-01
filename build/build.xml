@@ -5,6 +5,11 @@
 
     <property file="${user.home}/build.properties"/>
     <property file="build.properties"/>
+    <property name="aria2.SHA-512" value="af965693edafe504595d2fd24f9b18ccdbbda53c1a8e9e454b12e01db26644097ee76dc27760c8c5dae100af2240eb37bffedfda0d6d9d3bc1373189cec40899"/>
+    <property name="cmake.SHA-512" value="44ea4ffd21fbdaa7158749a0a86de7ec294dc2569f743ff6a5ef4e650cd16063bad55b54d35a506d7c7985bdf63f9207b918d18d9381801a9e321f71c622aee1"/>
+    <property name="maven.SHA-512" value="0bb466363a7f60a9cd48f680ff14bdab64ded3cf5cffeb280c3c711acdd12cdb5c4891a0f1215bf69a22e6c4736f449f35b1e6a3c43c5ac8d397b24b71c02c1a"/>
+    <property name="ninja.SHA-512" value="56f3b94ed7f9e36446bb6fe2a786156befdde6b279ee6d9d7ebd8b6e5d6664cdfe1d526e158f68bfc5cf947bcf9360df8d1e1a8939b6db1b2f0658256a17d66b"/>
+    
     
     <macrodef name="property-to-location">
         <attribute name="name"/>
@@ -93,12 +98,27 @@
         </sequential>
     </macrodef>
     
+    <target name="checksum">
+        <checksum file="${bin.dir}/aria2/aria2c.exe" algorithm="SHA-512"/>
+        <checksum file="${bin.dir}/cmake/bin/cmake.exe" algorithm="SHA-512"/> 
+        <checksum file="${bin.dir}/maven/bin/mvn.cmd" algorithm="SHA-512"/>
+        <checksum file="${bin.dir}/ninja/ninja.exe" algorithm="SHA-512"/>
+    </target>
+    
     <!--
     ============================================================================
       Aria2
     ============================================================================
     -->
-    <target name="aria2.install">
+    <target name="aria2.available">
+        <available file="${bin.dir}/aria2/aria2c.exe" property="aria2.available"/>
+    </target>
+    
+    <target name="aria2.checksum" depends="aria2.available" if="aria2.available">
+        <checksum file="${bin.dir}/aria2/aria2c.exe" algorithm="SHA-512" property="${aria2.SHA-512}" verifyProperty="aria2.installed"/> 
+    </target>
+    
+    <target name="aria2.install" depends="aria2.checksum" unless="aria2.installed">
         <install name="aria2" url="https://github.com/aria2/aria2/releases/download/release-1.34.0/aria2-1.34.0-win-64bit-build1.zip"/>
     </target>
     
@@ -111,7 +131,15 @@
       Cmake
     ============================================================================
     -->
-    <target name="cmake.install" depends="aria2.install">
+     <target name="cmake.available">
+        <available file="${bin.dir}/cmake/bin/cmake.exe" property="cmake.available"/>
+    </target>
+    
+    <target name="cmake.checksum" depends="cmake.available" if="cmake.available">
+        <checksum file="${bin.dir}/cmake/bin/cmake.exe" algorithm="SHA-512" property="${cmake.SHA-512}" verifyProperty="cmake.installed"/> 
+    </target>
+    
+    <target name="cmake.install" depends="aria2.install,cmake.checksum" unless="cmake.installed">
         <install name="cmake" url="https://github.com/Kitware/CMake/releases/download/v3.13.3/cmake-3.13.3-win64-x64.zip"/>
     </target>
     
@@ -156,7 +184,15 @@
       Maven
     ============================================================================
     -->
-    <target name="maven.install" depends="aria2.install">
+    <target name="maven.available">
+        <available file="${bin.dir}/maven/bin/mvn.cmd" property="maven.available"/>
+    </target>
+    
+    <target name="maven.checksum" depends="maven.available" if="maven.available">
+        <checksum file="${bin.dir}/maven/bin/mvn.cmd" algorithm="SHA-512" property="${maven.SHA-512}" verifyProperty="maven.installed"/> 
+    </target>
+    
+    <target name="maven.install" depends="aria2.install,maven.checksum" unless="maven.installed">
         <install name="maven" url="https://www-us.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.zip">
             <arg value="--checksum=sha-512=7d14ab2b713880538974aa361b987231473fbbed20e83586d542c691ace1139026f232bd46fdcce5e8887f528ab1c3fbfc1b2adec90518b6941235952d3868e9"/>
         </install>
@@ -181,7 +217,15 @@
       Ninja
     ============================================================================
     -->
-    <target name="ninja.install" depends="aria2.install">
+    <target name="ninja.available">
+        <available file="${bin.dir}/ninja/ninja.exe" property="ninja.available"/>
+    </target>
+    
+    <target name="ninja.checksum" depends="ninja.available" if="ninja.available">
+        <checksum file="${bin.dir}/ninja/ninja.exe" algorithm="SHA-512" property="${ninja.SHA-512}" verifyProperty="ninja.installed"/> 
+    </target>
+  
+    <target name="ninja.install" depends="aria2.install,ninja.checksum" unless="ninja.installed">
         <install name="ninja" url="https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-win.zip"/>
     </target>
     
@@ -212,11 +256,11 @@
       VcPkg
     ============================================================================
     -->
-    <target name="test.vcpkg">
-        <available file="${vcpkg.dir}/.vcpkg-root" property="vcpkg.present"/>
+    <target name="vcpkg.available">
+        <available file="${vcpkg.dir}/.vcpkg-root" property="vcpkg.available"/>
     </target>
     
-    <target name="vcpkg.install" depends="test.vcpkg" unless="vcpkg.present">
+    <target name="vcpkg.install" depends="vcpkg.available" unless="vcpkg.available">
         <install name="vcpkg" dir="${vcpkg.dir}" url="https://github.com/SokaDance/vcpkg/archive/turtle.zip" output="vcpkg-turtle.zip"/>
         <!-- build -->
         <exec taskname="vcpkg-build" executable="cmd" dir="${vcpkg.dir}" failonerror="true">
