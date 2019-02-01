@@ -32,12 +32,8 @@ SaxParserPool::~SaxParserPool()
     {
         XMLPlatformUtils::Terminate();
     }
-    catch( const XMLException& toCatch )
+    catch( const XMLException& )
     {
-        char* message = XMLString::transcode( toCatch.getMessage() );
-        std::string msg = message;
-        XMLString::release( &message );
-        throw std::runtime_error( msg );
     }
 }
 

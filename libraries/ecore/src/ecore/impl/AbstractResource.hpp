@@ -31,6 +31,8 @@ namespace ecore::impl
     public:
         AbstractResource();
 
+        AbstractResource( const Uri& uri );
+
         virtual ~AbstractResource();
 
         void setThisPtr( const std::shared_ptr<AbstractResource>& resource );

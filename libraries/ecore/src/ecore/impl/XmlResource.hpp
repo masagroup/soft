@@ -18,6 +18,8 @@ namespace ecore::impl
     class XmlResource : public AbstractResource
     {
     public:
+        XmlResource();
+
         XmlResource(const Uri& uri);
 
         virtual ~XmlResource();
@@ -27,9 +29,6 @@ namespace ecore::impl
         virtual void doLoad( std::istream & is ) override;
 
         virtual void doSave( std::ostream & os ) override;
-
-    private:
-        Uri uri_;
     };
 
 } // namespace ecore::impl

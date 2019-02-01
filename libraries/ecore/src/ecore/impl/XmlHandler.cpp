@@ -26,7 +26,6 @@ void XmlHandler::startElement( const XMLCh* const uri,
                                             const XMLCh* const qname,
                                             const xercesc::Attributes& attrs )
 {
-    std::cout << uri << " " << localname << " " << qname << std::endl;
 }
 
 void XmlHandler::startPrefixMapping( const XMLCh* const prefix, const XMLCh* const uri )

@@ -52,6 +52,12 @@ AbstractResource::AbstractResource()
 {
 }
 
+AbstractResource::AbstractResource( const Uri& uri )
+    : eContents_( [&]() { return initContents(); } )
+    , uri_( uri )
+{
+}
+
 AbstractResource::~AbstractResource()
 {
 }
