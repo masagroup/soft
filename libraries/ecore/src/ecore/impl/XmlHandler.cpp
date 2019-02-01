@@ -3,7 +3,8 @@
 using namespace ecore;
 using namespace ecore::impl;
 
-XmlHandler::XmlHandler()
+XmlHandler::XmlHandler( XmlResource& resource )
+    : resource_( resource )
 {
 }
 

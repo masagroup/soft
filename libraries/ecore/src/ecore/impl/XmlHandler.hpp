@@ -14,12 +14,17 @@
 
 namespace ecore::impl
 {
+    class XmlResource;
+
     class XmlHandler : public xercesc::DefaultHandler
     {
     public:
-        XmlHandler();
+        XmlHandler( XmlResource& resource );
 
         virtual ~XmlHandler();
+
+    private:
+        XmlResource& resource_;
     };
 }
 

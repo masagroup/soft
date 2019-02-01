@@ -19,8 +19,10 @@ void XmlResource::doLoad( std::istream& is )
 {
     auto& pool = SaxParserPool::getInstance();
     auto parser = pool.getParser();
-    XmlHandler handler;
+
+    XmlHandler handler(*this);
     parser->setContentHandler(&handler);
+    
     XmlInputSource source( is );
     parser->parse( source );
 }
