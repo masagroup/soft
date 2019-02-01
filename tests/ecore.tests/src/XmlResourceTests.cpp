@@ -10,7 +10,7 @@ BOOST_AUTO_TEST_SUITE( XmlResourceTests )
 
 BOOST_AUTO_TEST_CASE( Load )
 {
-    XmlResource resource( Uri( "simple.book.ecore" ) );
+    XmlResource resource( Uri( "data/simple.book.ecore" ) );
     resource.load();
 }
 

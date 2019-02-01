@@ -23,8 +23,28 @@ namespace ecore::impl
 
         virtual ~XmlHandler();
 
+        virtual void startDocument();
+
+        virtual void endDocument();
+
+        virtual void startElement( const XMLCh* const uri,
+                                   const XMLCh* const localname,
+                                   const XMLCh* const qname,
+                                   const xercesc::Attributes& attrs );
+
+        virtual void startPrefixMapping( const XMLCh* const prefix, const XMLCh* const uri );
+
+        virtual void characters( const XMLCh* const chars, const XMLSize_t length );
+
+        virtual void error( const xercesc::SAXParseException& exc );
+
+        virtual void fatalError( const xercesc::SAXParseException& exc );
+
+        virtual void warning( const xercesc::SAXParseException& exc );
+
     private:
         XmlResource& resource_;
+        bool isRoot_;
     };
 }
 
