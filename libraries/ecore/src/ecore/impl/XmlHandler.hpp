@@ -10,7 +10,12 @@
 #ifndef ECORE_XMLHANDLER_HPP_
 #define ECORE_XMLHANDLER_HPP_
 
+#include <xercesc/sax2/Attributes.hpp>
 #include <xercesc/sax2/DefaultHandler.hpp>
+
+#include <stack>
+#include <string>
+#include <unordered_map>
 
 namespace ecore::impl
 {
@@ -34,6 +39,8 @@ namespace ecore::impl
 
         virtual void startPrefixMapping( const XMLCh* const prefix, const XMLCh* const uri );
 
+        virtual void endPrefixMapping( const XMLCh* const prefix );
+
         virtual void characters( const XMLCh* const chars, const XMLSize_t length );
 
         virtual void error( const xercesc::SAXParseException& exc );
@@ -45,7 +52,9 @@ namespace ecore::impl
     private:
         XmlResource& resource_;
         bool isRoot_;
+        std::stack<std::u16string> elements_;
+        std::unordered_map<std::u16string, std::u16string> prefixesToNamespaces_;
     };
-}
+} // namespace ecore::impl
 
 #endif
