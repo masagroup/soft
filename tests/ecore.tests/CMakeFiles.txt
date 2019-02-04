@@ -23,6 +23,7 @@ set(SOURCE_FILES
     src/ResourceTests.cpp
     src/ResourceSetTests.cpp
     src/UriTests.cpp
+    src/XmlNamespacesTests.cpp
     src/XmlResourceTests.cpp
 )
 
