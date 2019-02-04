@@ -15,7 +15,7 @@
 
 namespace ecore::impl
 {
-    class NamespaceSupport
+    class XmlNamespaces
     {
     public:
         void pushContext();
@@ -29,8 +29,8 @@ namespace ecore::impl
         std::u16string getUri( const std::u16string& prefix );
 
     private:
-        std::vector<std::pair<std::u16string, std::u16string>> prefixes_{16};
-        int prefixesSize_{0};
+        std::vector<std::pair<std::u16string, std::u16string>> namespaces_{16};
+        int namespacesSize_{0};
         std::vector<int> contexts_{8};
         int currentContext_{-1};
     };

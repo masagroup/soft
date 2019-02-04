@@ -46,7 +46,6 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/FileUriHandler.hpp
     src/ecore/impl/ImmutableEList.hpp
     src/ecore/impl/Lazy.hpp
-    src/ecore/impl/NamespaceSupport.hpp
     src/ecore/impl/Notification.hpp
     src/ecore/impl/NotificationChain.hpp
     src/ecore/impl/PackageRegistry.hpp
@@ -59,6 +58,7 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/WeakPtr.hpp
     src/ecore/impl/XmlInputSource.hpp
     src/ecore/impl/XmlHandler.hpp
+    src/ecore/impl/XmlNamespaces.hpp
     src/ecore/impl/XmlResource.hpp
     src/ecore/impl/XmlResourceFactory.hpp
 )
@@ -69,7 +69,6 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/BasicEObject.cpp
     src/ecore/impl/DynamicEObject.cpp
     src/ecore/impl/FileUriHandler.cpp
-    src/ecore/impl/NamespaceSupport.cpp
     src/ecore/impl/Notification.cpp
     src/ecore/impl/NotificationChain.cpp
     src/ecore/impl/PackageRegistry.cpp
@@ -78,6 +77,7 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/SaxParserPool.cpp
     src/ecore/impl/UriConverter.cpp
     src/ecore/impl/XmlHandler.cpp
+    src/ecore/impl/XmlNamespaces.cpp
     src/ecore/impl/XmlResource.cpp
     src/ecore/impl/XmlResourceFactory.cpp
 )
