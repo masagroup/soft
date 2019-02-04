@@ -10,12 +10,19 @@
 #ifndef ECORE_XMLHANDLER_HPP_
 #define ECORE_XMLHANDLER_HPP_
 
+#include "ecore/impl/XmlNamespaces.hpp"
+
 #include <xercesc/sax2/Attributes.hpp>
 #include <xercesc/sax2/DefaultHandler.hpp>
 
 #include <stack>
-#include <string>
 #include <unordered_map>
+#include <string>
+
+namespace ecore
+{
+    class EFactory;
+}
 
 namespace ecore::impl
 {
@@ -37,6 +44,8 @@ namespace ecore::impl
                                    const XMLCh* const qname,
                                    const xercesc::Attributes& attrs );
 
+        virtual void endElement( const XMLCh* const uri, const XMLCh* const localname, const XMLCh* const qname );
+
         virtual void startPrefixMapping( const XMLCh* const prefix, const XMLCh* const uri );
 
         virtual void endPrefixMapping( const XMLCh* const prefix );
@@ -51,9 +60,11 @@ namespace ecore::impl
 
     private:
         XmlResource& resource_;
-        bool isRoot_;
+        XmlNamespaces namespaces_;
+        bool isPushContext_{false};
+        bool isRoot_{false};
+        std::unordered_map<std::u16string,std::shared_ptr<EFactory>> prefixesToFactories_;
         std::stack<std::u16string> elements_;
-        std::unordered_map<std::u16string, std::u16string> prefixesToNamespaces_;
     };
 } // namespace ecore::impl
 

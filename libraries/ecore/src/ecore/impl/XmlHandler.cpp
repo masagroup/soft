@@ -17,25 +17,46 @@ XmlHandler::~XmlHandler()
 void XmlHandler::startDocument()
 {
     isRoot_ = true;
+    isPushContext_ = true;
+    namespaces_.pushContext();
 }
 
 void XmlHandler::endDocument()
 {
+    namespaces_.popContext();
 }
 
 void XmlHandler::startElement( const XMLCh* const uri,
-                                            const XMLCh* const localname,
-                                            const XMLCh* const qname,
-                                            const xercesc::Attributes& attrs )
+                               const XMLCh* const localname,
+                               const XMLCh* const qname,
+                               const xercesc::Attributes& attrs )
 {
+    if( isPushContext_ )
+        namespaces_.pushContext();
+    isPushContext_ = true;
+
     elements_.push( qname );
-  
+}
+
+void XmlHandler::endElement( const XMLCh* const uri, const XMLCh* const localname, const XMLCh* const qname )
+{
+    // pop namespace context and remove corresponding namespace factories
+    auto prefixes = namespaces_.popContext();
+    for( auto p : prefixes )
+        prefixesToFactories_.extract( p.first );
 
 }
 
+
+
 void XmlHandler::startPrefixMapping( const XMLCh* const prefix, const XMLCh* const uri )
 {
-    prefixesToNamespaces_[prefix] = uri;
+    if( isPushContext_ )
+    {
+        namespaces_.pushContext();
+        isPushContext_ = false;
+    }
+    namespaces_.declarePrefix( prefix, uri );
 }
 
 void XmlHandler::endPrefixMapping( const XMLCh* const prefix )
