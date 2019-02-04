@@ -57,6 +57,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC src-gen)
 target_include_directories(${PROJECT_NAME} PRIVATE ${XercesC_INCLUDE_DIRS})
 target_compile_options(${PROJECT_NAME} PRIVATE /wd4250) 
 target_compile_options(${PROJECT_NAME} PRIVATE "/MP")
+target_compile_definitions( ${PROJECT_NAME} PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${XercesC_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 
