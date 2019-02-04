@@ -24,7 +24,7 @@ namespace ecore
     class EClassifier;
     class EFactory;
     class EObject;
-}
+} // namespace ecore
 
 namespace ecore::impl
 {
@@ -61,18 +61,25 @@ namespace ecore::impl
         virtual void warning( const xercesc::SAXParseException& exc );
 
     protected:
+        virtual void startElement( const std::u16string& uri, const std::u16string& localName, const std::u16string& qname );
         virtual void processElement( const std::u16string& name, const std::u16string& prefix, const std::u16string& localName );
         virtual void createTopObject( const std::u16string& prefix, const std::u16string& localName );
         virtual void handleFeature( const std::u16string& prefix, const std::u16string& localName );
-
+        virtual void handleObjectAttributes( const std::shared_ptr<EObject>& eObject );
 
     private:
-        void handleSchemaLocation( const xercesc::Attributes& attrs );
+        struct Attribute;
+        void setAttributes( const xercesc::Attributes& attrs );
+        Attribute* getAttribute( const std::u16string& uri, const std::u16string& localPart );
+        Attribute* getAttribute( const std::u16string& qname );
+
+        void handleSchemaLocation();
         void handleXSISchemaLocation( const std::u16string& schemaLocation );
         void handleXSINoNamespaceSchemaLocation( const std::u16string& schemaLocation );
-    
+
         std::shared_ptr<EFactory> getFactoryForPrefix( const std::u16string& prefix );
-        std::shared_ptr<EObject> createObject( const std::shared_ptr<EFactory>& eFactory, const std::shared_ptr<EClassifier>& type ) const;
+        std::shared_ptr<EObject> createObject( const std::shared_ptr<EFactory>& eFactory, const std::shared_ptr<EClassifier>& type );
+        
 
     private:
         XmlResource& resource_;
@@ -82,6 +89,7 @@ namespace ecore::impl
         std::unordered_map<std::u16string, std::shared_ptr<EFactory>> prefixesToFactories_;
         std::stack<std::u16string> elements_;
         std::stack<std::shared_ptr<EObject>> objects_;
+        std::vector<Attribute> attributes_;
     };
 } // namespace ecore::impl
 
