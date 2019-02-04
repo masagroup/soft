@@ -57,6 +57,14 @@ namespace ecore
 
         std::string toString() const;
 
+        std::string string() const;
+
+        std::wstring wstring() const;
+
+        std::u16string u16string() const;
+
+        std::u32string u32string() const;
+
         /**
          * Get query parameters as key-value pairs.
          * e.g. for URI containing query string:  key1=foo&key2=&key3&=bar&=bar=

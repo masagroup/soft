@@ -559,6 +559,29 @@ std::string Uri::toString() const
     return s.str();
 }
 
+std::string Uri::string() const
+{
+    return toString();
+}
+
+std::wstring Uri::wstring() const
+{
+    auto s = toString();
+    return std::wstring( std::begin( s ), std::end( s ) );
+}
+
+std::u16string Uri::u16string() const
+{
+    auto s = toString();
+    return std::u16string( std::begin( s ), std::end( s ) );
+}
+
+std::u32string Uri::u32string() const
+{
+    auto s = toString();
+    return std::u32string( std::begin( s ), std::end( s ) );
+}
+
 Uri Uri::normalize() const
 {
     return normalize( *this );
