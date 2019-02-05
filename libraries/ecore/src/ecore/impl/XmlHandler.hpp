@@ -24,6 +24,9 @@ namespace ecore
     class EClassifier;
     class EFactory;
     class EObject;
+    class EReference;
+    class EStructuralFeature;
+
 } // namespace ecore
 
 namespace ecore::impl
@@ -61,35 +64,58 @@ namespace ecore::impl
         virtual void warning( const xercesc::SAXParseException& exc );
 
     protected:
-        virtual void startElement( const std::u16string& uri, const std::u16string& localName, const std::u16string& qname );
-        virtual void processElement( const std::u16string& name, const std::u16string& prefix, const std::u16string& localName );
-        virtual void createTopObject( const std::u16string& prefix, const std::u16string& localName );
+        virtual void processElement( const std::u16string& name,
+                                     const std::u16string& prefix,
+                                     const std::u16string& localName,
+                                     const xercesc::Attributes& attrs );
+        
         virtual void handleFeature( const std::u16string& prefix, const std::u16string& localName );
-        virtual void handleObjectAttributes( const std::shared_ptr<EObject>& eObject );
+        
 
     private:
-        struct Attribute;
-        void setAttributes( const xercesc::Attributes& attrs );
-        Attribute* getAttribute( const std::u16string& uri, const std::u16string& localPart );
-        Attribute* getAttribute( const std::u16string& qname );
-
-        void handleSchemaLocation();
+        void handleSchemaLocation( const xercesc::Attributes& attrs );
         void handleXSISchemaLocation( const std::u16string& schemaLocation );
         void handleXSINoNamespaceSchemaLocation( const std::u16string& schemaLocation );
+        void handleAttributes( const std::shared_ptr<EObject>& eObject, const xercesc::Attributes& attrs );
+        void setAttributeValue( const std::shared_ptr<EObject>& eObject, const std::u16string& name, const std::u16string& value );
 
         std::shared_ptr<EFactory> getFactoryForPrefix( const std::u16string& prefix );
+        std::shared_ptr<EStructuralFeature> getFeature( const std::shared_ptr<EObject>& eObject, const std::u16string& name );
+        std::shared_ptr<EObject> createObject( const std::u16string& prefix, const std::u16string& localName );
         std::shared_ptr<EObject> createObject( const std::shared_ptr<EFactory>& eFactory, const std::shared_ptr<EClassifier>& type );
         
+        enum FeatureKind
+        {
+            Single = 1,
+            Many,
+            ManyAdd,
+            ManyMove,
+            Other
+        };
+
+        FeatureKind getFeatureKind( const std::shared_ptr<EStructuralFeature>& eFeature ) const;
+
+
+        void setFeatureValue( const std::shared_ptr<EObject>& eObject,
+                              const std::shared_ptr<EStructuralFeature>& eFeature,
+                              const std::u16string& value,
+                              int position );
+
+        void setValueFromId( const std::shared_ptr<EObject>& eObject,
+                             const std::shared_ptr<EReference>& eReference,
+                             const std::u16string& ids );
+
+        void handleUnknownFeature();
 
     private:
         XmlResource& resource_;
         XmlNamespaces namespaces_;
         bool isPushContext_{false};
         bool isRoot_{false};
+        bool isNamespaceAware_{false};
         std::unordered_map<std::u16string, std::shared_ptr<EFactory>> prefixesToFactories_;
         std::stack<std::u16string> elements_;
         std::stack<std::shared_ptr<EObject>> objects_;
-        std::vector<Attribute> attributes_;
     };
 } // namespace ecore::impl
 
