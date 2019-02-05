@@ -13,6 +13,7 @@ set(HEADER_ECORE_FILES
     src/ecore/Constants.hpp
     src/ecore/EAdapter.hpp
     src/ecore/ECollectionView.hpp
+    src/ecore/EDiagnostic.hpp
     src/ecore/ENotification.hpp
     src/ecore/ENotificationChain.hpp
     src/ecore/ENotifier.hpp

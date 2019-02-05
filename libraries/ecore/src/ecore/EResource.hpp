@@ -23,6 +23,7 @@ namespace ecore
     template <typename T>
     class ECollectionView;
 
+    class EDiagnostic;
     class EObject;
     class EResourceSet;
     class EUriInputStream;
@@ -81,6 +82,10 @@ namespace ecore
         virtual void save() = 0;
 
         virtual void save( std::ostream& os )= 0;
+
+        virtual std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> getErrors() const = 0;
+
+        virtual std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> getWarnings() const = 0;
 
     };
 

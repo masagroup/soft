@@ -48,13 +48,11 @@ private:
 };
 
 AbstractResource::AbstractResource()
-    : eContents_( [&]() { return initContents(); } )
 {
 }
 
 AbstractResource::AbstractResource( const Uri& uri )
-    : eContents_( [&]() { return initContents(); } )
-    , uri_( uri )
+    : uri_( uri )
 {
 }
 
@@ -156,6 +154,16 @@ void AbstractResource::save()
 
 void AbstractResource::save( std::ostream& os )
 {
+}
+
+std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> AbstractResource::getErrors() const
+{
+    return errors_;
+}
+
+std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> AbstractResource::getWarnings() const
+{
+    return warnings_;
 }
 
 std::shared_ptr<ENotificationChain> AbstractResource::basicSetLoaded( bool isLoaded,
@@ -273,4 +281,9 @@ std::shared_ptr<EList<std::shared_ptr<EObject>>> AbstractResource::initContents(
     };
 
     return std::make_shared<ContentsEList>( *this );
+}
+
+std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> AbstractResource::initDiagnostics()
+{
+    return std::make_shared<ArrayEList<std::shared_ptr<EDiagnostic>>>();
 }

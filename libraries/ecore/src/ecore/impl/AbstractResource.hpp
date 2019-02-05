@@ -64,20 +64,24 @@ namespace ecore::impl
 
         virtual void save( std::ostream& os );
 
-        std::shared_ptr<ENotificationChain> basicSetLoaded( bool isLoaded,
-                                                            const std::shared_ptr<ENotificationChain>& notifications );
+        virtual std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> getErrors() const;
 
-        std::shared_ptr<ENotificationChain> basicSetResourceSet(
-            const std::shared_ptr<EResourceSet> resourceSet, const std::shared_ptr<ENotificationChain>& notifications );
+        virtual std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> getWarnings() const;
+
+        std::shared_ptr<ENotificationChain> basicSetLoaded( bool isLoaded, const std::shared_ptr<ENotificationChain>& notifications );
+
+        std::shared_ptr<ENotificationChain> basicSetResourceSet( const std::shared_ptr<EResourceSet> resourceSet,
+                                                                 const std::shared_ptr<ENotificationChain>& notifications );
 
     protected:
         virtual void doLoad( std::istream& is ) = 0;
         virtual void doSave( std::ostream& os ) = 0;
-        virtual void doUnload(); 
+        virtual void doUnload();
 
     private:
         std::shared_ptr<EUriConverter> getUriConverter() const;
         std::shared_ptr<EList<std::shared_ptr<EObject>>> initContents();
+        std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> initDiagnostics();
 
     private:
         class Notification;
@@ -86,7 +90,9 @@ namespace ecore::impl
         std::weak_ptr<AbstractResource> thisPtr_;
         std::weak_ptr<EResourceSet> resourceSet_;
         Uri uri_;
-        Lazy<std::shared_ptr<EList<std::shared_ptr<EObject>>>> eContents_;
+        Lazy<std::shared_ptr<EList<std::shared_ptr<EObject>>>> eContents_{[&]() { return initContents(); }};
+        Lazy<std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>>> errors_{[&]() { return initDiagnostics(); }};
+        Lazy<std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>>> warnings_{[&]() { return initDiagnostics(); }};
         bool isLoaded_{false};
     };
 
