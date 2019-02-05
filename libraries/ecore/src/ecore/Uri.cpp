@@ -1,5 +1,6 @@
 #include "ecore/Uri.hpp"
 #include "ecore/Assert.hpp"
+#include "ecore/impl/StringUtils.hpp"
 
 #include <algorithm>
 #include <array>
@@ -9,6 +10,7 @@
 #include <utility>
 
 using namespace ecore;
+using namespace ecore::impl;
 using namespace ecore::detail;
 
 namespace
@@ -623,23 +625,6 @@ Uri Uri::normalize( const Uri& u )
     return v;
 }
 
-namespace
-{
-    bool endWith( const std::string& text, const std::string& token )
-    {
-        if( text.size() >= token.size() && text.compare( text.size() - token.size(), token.size(), token ) == 0 )
-            return true;
-        else
-            return false;
-    }
-
-    bool startsWith( const std::string& text, const std::string& token )
-    {
-        if( text.length() < token.length() )
-            return false;
-        return ( text.compare( 0, token.length(), token ) == 0 );
-    }
-} // namespace
 
 // If both URIs are hierarchical, their scheme and authority components are
 // identical, and the base path is a prefix of the child's path, then
