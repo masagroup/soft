@@ -32,15 +32,28 @@ namespace utf8
     static std::string SCHEMA_LOCATION_ATTRIB = XSI_NS + ":" + SCHEMA_LOCATION;
     static std::string NO_NAMESPACE_SCHEMA_LOCATION_ATTRIB = XSI_NS + ":" + NO_NAMESPACE_SCHEMA_LOCATION;
     static std::unordered_set<std::string> NOT_FEATURES = {TYPE_ATTRIB, SCHEMA_LOCATION_ATTRIB, NO_NAMESPACE_SCHEMA_LOCATION_ATTRIB};
-    
-} 
+
+} // namespace utf8
 namespace utf16
 {
     static constexpr char16_t* XSI_URI = u"http : // www.w3.org/2001/XMLSchema-instance";
     static constexpr char16_t* SCHEMA_LOCATION = u"schemaLocation";
     static constexpr char16_t* NO_NAMESPACE_SCHEMA_LOCATION = u"noNamespaceSchemaLocation";
+} // namespace utf16
 
-}
+namespace
+{
+    std::vector<std::string_view> split( const std::string& s, const std::string& token )
+    {
+        std::string_view sv = s;
+        std::vector<std::string_view> result;
+        std::size_t pos = 0;
+        std::size_t start = 0;
+        while( ( pos = sv.find( token, start ) ) != std::string::npos )
+            result.emplace_back( sv.substr( start, pos ) );
+        return result;
+    }
+} // namespace
 
 XmlHandler::XmlHandler( XmlResource& resource )
     : resource_( resource )
@@ -194,7 +207,54 @@ void XmlHandler::setFeatureValue( const std::shared_ptr<EObject>& eObject,
                                   const std::string& value,
                                   int position )
 {
-    
+    int kind = getFeatureKind( eFeature );
+    switch( kind )
+    {
+    case Single:
+    case Many:
+    {
+        std::shared_ptr<EClassifier> eClassifier = eFeature->getEType();
+        std::shared_ptr<EDataType> eDataType = std::dynamic_pointer_cast<EDataType>( eClassifier );
+        std::shared_ptr<EFactory> eFactory = eDataType->getEPackage()->getEFactoryInstance();
+
+        if( kind == Many )
+        {
+            std::shared_ptr<EList<std::shared_ptr<EObject>>> list = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( eObject->eGet( eFeature ) );
+            if( position == -2 )
+            {
+            }
+            else if( value.empty() )
+            {
+                list->add( nullptr );
+            }
+            else
+            {
+            }
+        }
+        else if( value.empty() )
+            eObject->eSet( eFeature, Any() );
+        else
+            eObject->eSet( eFeature, eFactory->createFromString( eDataType, value ) );
+        break;
+    }
+    case ManyAdd:
+    case ManyMove:
+    {
+        std::shared_ptr<EList<std::string>> list = anyCast<std::shared_ptr<EList<std::string>>>( eObject->eGet( eFeature ) );
+        if( position == -1 )
+            list->add( value );
+        else if( position == -2 )
+            list->clear();
+        else
+            list->add( position, value );
+        break;
+    }
+    default:
+    {
+        eObject->eSet( eFeature, value );
+        break;
+    }
+    }
 }
 
 void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
@@ -210,12 +270,12 @@ std::string XmlHandler::getLocation() const
 
 int XmlHandler::getLineNumber() const
 {
-    return locator_ ? static_cast<int>(locator_->getLineNumber()) : -1;
+    return locator_ ? static_cast<int>( locator_->getLineNumber() ) : -1;
 }
 
 int XmlHandler::getColumnNumber() const
 {
-    return locator_ ? static_cast<int> (locator_->getColumnNumber()) : -1;
+    return locator_ ? static_cast<int>( locator_->getColumnNumber() ) : -1;
 }
 
 std::shared_ptr<EObject> XmlHandler::createObject( const std::string& prefix, const std::string& name )
@@ -224,7 +284,7 @@ std::shared_ptr<EObject> XmlHandler::createObject( const std::string& prefix, co
     if( eFactory )
     {
         auto ePackage = eFactory->getEPackage();
-        auto eType = ePackage->getEClassifier(  name );
+        auto eType = ePackage->getEClassifier( name );
         return createObject( eFactory, eType );
     }
     else
@@ -232,7 +292,6 @@ std::shared_ptr<EObject> XmlHandler::createObject( const std::string& prefix, co
         handleUnknownPackage( namespaces_.getUri( prefix ) );
         return nullptr;
     }
-    
 }
 
 void XmlHandler::handleFeature( const std::string& prefix, const std::string& localName )
@@ -241,14 +300,14 @@ void XmlHandler::handleFeature( const std::string& prefix, const std::string& lo
 
 void XmlHandler::handleUnknownFeature( const std::string& name, const std::shared_ptr<EObject>& eObject )
 {
-    resource_.getErrors()->add( std::make_shared<Diagnostic>(
-        "Feature " + name + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
+    resource_.getErrors()->add(
+        std::make_shared<Diagnostic>( "Feature " + name + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
 }
 
 void XmlHandler::handleUnknownPackage( const std::string& name )
 {
-    resource_.getErrors()->add( std::make_shared<Diagnostic>(
-        "Package " +  name  + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
+    resource_.getErrors()->add(
+        std::make_shared<Diagnostic>( "Package " + name + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
 }
 
 void XmlHandler::handleAttributes( const std::shared_ptr<EObject>& eObject, const xercesc::Attributes& attrs )
@@ -300,11 +359,11 @@ void XmlHandler::handleSchemaLocation( const xercesc::Attributes& attrs )
 
     auto xsiSchemaLocation = attrs.getValue( XSI_URI, SCHEMA_LOCATION );
     if( xsiSchemaLocation )
-        handleXSISchemaLocation( utf16_to_utf8(xsiSchemaLocation) );
+        handleXSISchemaLocation( utf16_to_utf8( xsiSchemaLocation ) );
 
     auto xsiNoNamespaceSchemaLocation = attrs.getValue( XSI_URI, NO_NAMESPACE_SCHEMA_LOCATION );
     if( xsiNoNamespaceSchemaLocation )
-        handleXSINoNamespaceSchemaLocation( utf16_to_utf8(xsiNoNamespaceSchemaLocation) );
+        handleXSINoNamespaceSchemaLocation( utf16_to_utf8( xsiNoNamespaceSchemaLocation ) );
 }
 
 void XmlHandler::handleXSISchemaLocation( const std::string& schemaLocation )
