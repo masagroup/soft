@@ -14,6 +14,7 @@
 
 #include <xercesc/sax2/Attributes.hpp>
 #include <xercesc/sax2/DefaultHandler.hpp>
+#include <xercesc/sax/Locator.hpp>
 
 #include <stack>
 #include <string>
@@ -39,6 +40,8 @@ namespace ecore::impl
         XmlHandler( XmlResource& resource );
 
         virtual ~XmlHandler();
+
+        virtual void setDocumentLocator( const xercesc::Locator* const locator );
 
         virtual void startDocument();
 
@@ -69,7 +72,7 @@ namespace ecore::impl
                                      const std::u16string& localName,
                                      const xercesc::Attributes& attrs );
         
-        virtual void handleFeature( const std::u16string& prefix, const std::u16string& localName );
+        
         
 
     private:
@@ -99,17 +102,23 @@ namespace ecore::impl
         void setFeatureValue( const std::shared_ptr<EObject>& eObject,
                               const std::shared_ptr<EStructuralFeature>& eFeature,
                               const std::u16string& value,
-                              int position );
+                              int position = -1);
 
         void setValueFromId( const std::shared_ptr<EObject>& eObject,
                              const std::shared_ptr<EReference>& eReference,
                              const std::u16string& ids );
 
-        void handleUnknownFeature();
+        std::string getLocation() const;
+        int getLineNumber() const;
+        int getColumnNumber() const;
 
+        void handleFeature( const std::u16string& prefix, const std::u16string& localName );
+        void handleUnknownFeature( const std::u16string& name, const std::shared_ptr<EObject>& eObject );
+        void handleUnknownPackage( const std::u16string& name );
     private:
         XmlResource& resource_;
         XmlNamespaces namespaces_;
+        const xercesc::Locator* locator_;
         bool isPushContext_{false};
         bool isRoot_{false};
         bool isNamespaceAware_{false};

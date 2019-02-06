@@ -27,7 +27,7 @@ namespace
     static constexpr char16_t* TYPE = u"type";
     static constexpr char16_t* SCHEMA_LOCATION = u"schemaLocation";
     static constexpr char16_t* NO_NAMESPACE_SCHEMA_LOCATION = u"noNamespaceSchemaLocation";
-    static std::u16string TYPE_ATTRIB = std::u16string( XSI_NS ) + u":" + NIL;
+    static std::u16string TYPE_ATTRIB = std::u16string( XSI_NS ) + u":" + TYPE;
     static std::u16string NIL_ATTRIB = std::u16string( XSI_NS ) + u":" + NIL;
     static std::u16string SCHEMA_LOCATION_ATTRIB = std::u16string( XSI_NS ) + u":" + SCHEMA_LOCATION;
     static std::u16string NO_NAMESPACE_SCHEMA_LOCATION_ATTRIB = std::u16string( XSI_NS ) + u":" + NO_NAMESPACE_SCHEMA_LOCATION;
@@ -42,6 +42,11 @@ XmlHandler::XmlHandler( XmlResource& resource )
 
 XmlHandler::~XmlHandler()
 {
+}
+
+void XmlHandler::setDocumentLocator( const Locator* const locator )
+{
+    locator_ = locator;
 }
 
 void XmlHandler::startDocument()
@@ -185,6 +190,21 @@ void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
 {
 }
 
+std::string XmlHandler::getLocation() const
+{
+    return locator_ && locator_->getSystemId() ? utf16_to_utf8( locator_->getSystemId() ) : resource_.getUri().toString();
+}
+
+int XmlHandler::getLineNumber() const
+{
+    return locator_ ? static_cast<int>(locator_->getLineNumber()) : -1;
+}
+
+int XmlHandler::getColumnNumber() const
+{
+    return locator_ ? static_cast<int> (locator_->getColumnNumber()) : -1;
+}
+
 std::shared_ptr<EObject> XmlHandler::createObject( const std::u16string& prefix, const std::u16string& name )
 {
     std::shared_ptr<EFactory> eFactory = getFactoryForPrefix( prefix );
@@ -194,11 +214,28 @@ std::shared_ptr<EObject> XmlHandler::createObject( const std::u16string& prefix,
         auto eType = ePackage->getEClassifier( utf16_to_utf8( name ) );
         return createObject( eFactory, eType );
     }
-    return nullptr;
+    else
+    {
+        handleUnknownPackage( namespaces_.getUri( prefix ) );
+        return nullptr;
+    }
+    
 }
 
 void XmlHandler::handleFeature( const std::u16string& prefix, const std::u16string& localName )
 {
+}
+
+void XmlHandler::handleUnknownFeature( const std::u16string& name, const std::shared_ptr<EObject>& eObject )
+{
+    resource_.getErrors()->add( std::make_shared<Diagnostic>(
+        "Feature " + utf16_to_utf8( name ) + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
+}
+
+void XmlHandler::handleUnknownPackage( const std::u16string& name )
+{
+    resource_.getErrors()->add( std::make_shared<Diagnostic>(
+        "Package " + utf16_to_utf8( name ) + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
 }
 
 void XmlHandler::handleAttributes( const std::shared_ptr<EObject>& eObject, const xercesc::Attributes& attrs )
@@ -238,8 +275,8 @@ void XmlHandler::setAttributeValue( const std::shared_ptr<EObject>& eObject, con
         else
             setValueFromId( eObject, std::dynamic_pointer_cast<EReference>( eFeature ), value );
     }
-    /*else
-        handleUnknownFeature( prefix, localName, false, eObject, value );*/
+    else
+        handleUnknownFeature( localName, eObject );
 }
 
 void XmlHandler::handleSchemaLocation( const xercesc::Attributes& attrs )
