@@ -20,7 +20,7 @@ namespace ecore::impl
     public:
         void pushContext();
 
-        std::vector<std::pair<std::u16string, std::u16string>> popContext();
+        std::vector<std::pair<std::string, std::string>> popContext();
 
          /**
             @param prefix prefix to declare
@@ -29,14 +29,14 @@ namespace ecore::impl
             its uri has been remapped; false if prefix does not exist in the
             current context
          */
-        bool declarePrefix( const std::u16string& prefix, const std::u16string& uri );
+        bool declarePrefix( const std::string& prefix, const std::string& uri );
 
-        std::u16string getPrefix( const std::u16string& uri );
+        std::string getPrefix( const std::string& uri );
 
-        std::u16string getUri( const std::u16string& prefix );
+        std::string getUri( const std::string& prefix );
 
     private:
-        std::vector<std::pair<std::u16string, std::u16string>> namespaces_{16};
+        std::vector<std::pair<std::string, std::string>> namespaces_{16};
         int namespacesSize_{0};
         std::vector<int> contexts_{8};
         int currentContext_{0};

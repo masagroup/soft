@@ -18,22 +18,29 @@ using namespace ecore;
 using namespace ecore::impl;
 using namespace xercesc;
 
-namespace
+namespace utf8
 {
-    static constexpr char16_t* XSI_URI = u"http://www.w3.org/2001/XMLSchema-instance";
-    static constexpr char16_t* XSI_NS = u"xsi";
-    static constexpr char16_t* XML_NS = u"xmlns";
-    static constexpr char16_t* NIL = u"nil";
-    static constexpr char16_t* TYPE = u"type";
+    static std::string XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
+    static std::string XSI_NS = "xsi";
+    static std::string XML_NS = "xmlns";
+    static std::string NIL = "nil";
+    static std::string TYPE = "type";
+    static std::string SCHEMA_LOCATION = "schemaLocation";
+    static std::string NO_NAMESPACE_SCHEMA_LOCATION = "noNamespaceSchemaLocation";
+    static std::string TYPE_ATTRIB = XSI_NS + ":" + TYPE;
+    static std::string NIL_ATTRIB = XSI_NS + ":" + NIL;
+    static std::string SCHEMA_LOCATION_ATTRIB = XSI_NS + ":" + SCHEMA_LOCATION;
+    static std::string NO_NAMESPACE_SCHEMA_LOCATION_ATTRIB = XSI_NS + ":" + NO_NAMESPACE_SCHEMA_LOCATION;
+    static std::unordered_set<std::string> NOT_FEATURES = {TYPE_ATTRIB, SCHEMA_LOCATION_ATTRIB, NO_NAMESPACE_SCHEMA_LOCATION_ATTRIB};
+    
+} 
+namespace utf16
+{
+    static constexpr char16_t* XSI_URI = u"http : // www.w3.org/2001/XMLSchema-instance";
     static constexpr char16_t* SCHEMA_LOCATION = u"schemaLocation";
     static constexpr char16_t* NO_NAMESPACE_SCHEMA_LOCATION = u"noNamespaceSchemaLocation";
-    static std::u16string TYPE_ATTRIB = std::u16string( XSI_NS ) + u":" + TYPE;
-    static std::u16string NIL_ATTRIB = std::u16string( XSI_NS ) + u":" + NIL;
-    static std::u16string SCHEMA_LOCATION_ATTRIB = std::u16string( XSI_NS ) + u":" + SCHEMA_LOCATION;
-    static std::u16string NO_NAMESPACE_SCHEMA_LOCATION_ATTRIB = std::u16string( XSI_NS ) + u":" + NO_NAMESPACE_SCHEMA_LOCATION;
-    static std::unordered_set<std::u16string> NOT_FEATURES = {TYPE_ATTRIB, SCHEMA_LOCATION_ATTRIB, NO_NAMESPACE_SCHEMA_LOCATION_ATTRIB};
 
-} // namespace
+}
 
 XmlHandler::XmlHandler( XmlResource& resource )
     : resource_( resource )
@@ -70,12 +77,15 @@ void XmlHandler::startElement( const XMLCh* const uri,
         namespaces_.pushContext();
     isPushContext_ = true;
 
-    elements_.push( qname );
+    auto qname_utf8 = utf16_to_utf8( qname );
+    auto localname_utf8 = utf16_to_utf8( localname );
+    auto uri_utf8 = utf16_to_utf8( uri );
+    elements_.push( qname_utf8 );
 
     if( isRoot_ )
         handleSchemaLocation( attrs );
 
-    processElement( qname, namespaces_.getPrefix( uri ), localname, attrs );
+    processElement( qname_utf8, namespaces_.getPrefix( uri_utf8 ), localname_utf8, attrs );
 }
 
 void XmlHandler::endElement( const XMLCh* const uri, const XMLCh* const localname, const XMLCh* const qname )
@@ -94,8 +104,10 @@ void XmlHandler::startPrefixMapping( const XMLCh* const prefix, const XMLCh* con
         namespaces_.pushContext();
         isPushContext_ = false;
     }
-    namespaces_.declarePrefix( prefix, uri );
-    prefixesToFactories_.extract( prefix );
+    auto uri_utf8 = utf16_to_utf8( uri );
+    auto prefix_utf8 = utf16_to_utf8( prefix );
+    namespaces_.declarePrefix( prefix_utf8, uri_utf8 );
+    prefixesToFactories_.extract( prefix_utf8 );
 }
 
 void XmlHandler::endPrefixMapping( const XMLCh* const prefix )
@@ -124,9 +136,9 @@ void XmlHandler::warning( const SAXParseException& exc )
         utf16_to_utf8( exc.getMessage() ), "", static_cast<int>( exc.getLineNumber() ), static_cast<int>( exc.getColumnNumber() ) ) );
 }
 
-void XmlHandler::processElement( const std::u16string& name,
-                                 const std::u16string& prefix,
-                                 const std::u16string& localName,
+void XmlHandler::processElement( const std::string& name,
+                                 const std::string& prefix,
+                                 const std::string& localName,
                                  const xercesc::Attributes& attrs )
 {
     if( objects_.empty() )
@@ -179,14 +191,15 @@ XmlHandler::FeatureKind XmlHandler::getFeatureKind( const std::shared_ptr<EStruc
 
 void XmlHandler::setFeatureValue( const std::shared_ptr<EObject>& eObject,
                                   const std::shared_ptr<EStructuralFeature>& eFeature,
-                                  const std::u16string& value,
+                                  const std::string& value,
                                   int position )
 {
+    
 }
 
 void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
                                  const std::shared_ptr<EReference>& eReference,
-                                 const std::u16string& ids )
+                                 const std::string& ids )
 {
 }
 
@@ -205,13 +218,13 @@ int XmlHandler::getColumnNumber() const
     return locator_ ? static_cast<int> (locator_->getColumnNumber()) : -1;
 }
 
-std::shared_ptr<EObject> XmlHandler::createObject( const std::u16string& prefix, const std::u16string& name )
+std::shared_ptr<EObject> XmlHandler::createObject( const std::string& prefix, const std::string& name )
 {
     std::shared_ptr<EFactory> eFactory = getFactoryForPrefix( prefix );
     if( eFactory )
     {
         auto ePackage = eFactory->getEPackage();
-        auto eType = ePackage->getEClassifier( utf16_to_utf8( name ) );
+        auto eType = ePackage->getEClassifier(  name );
         return createObject( eFactory, eType );
     }
     else
@@ -222,31 +235,33 @@ std::shared_ptr<EObject> XmlHandler::createObject( const std::u16string& prefix,
     
 }
 
-void XmlHandler::handleFeature( const std::u16string& prefix, const std::u16string& localName )
+void XmlHandler::handleFeature( const std::string& prefix, const std::string& localName )
 {
 }
 
-void XmlHandler::handleUnknownFeature( const std::u16string& name, const std::shared_ptr<EObject>& eObject )
+void XmlHandler::handleUnknownFeature( const std::string& name, const std::shared_ptr<EObject>& eObject )
 {
     resource_.getErrors()->add( std::make_shared<Diagnostic>(
-        "Feature " + utf16_to_utf8( name ) + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
+        "Feature " + name + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
 }
 
-void XmlHandler::handleUnknownPackage( const std::u16string& name )
+void XmlHandler::handleUnknownPackage( const std::string& name )
 {
     resource_.getErrors()->add( std::make_shared<Diagnostic>(
-        "Package " + utf16_to_utf8( name ) + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
+        "Package " +  name  + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
 }
 
 void XmlHandler::handleAttributes( const std::shared_ptr<EObject>& eObject, const xercesc::Attributes& attrs )
 {
+    using namespace utf8;
+
     for( int i = 0; i < attrs.getLength(); ++i )
     {
-        std::u16string name = attrs.getQName( i );
-        std::u16string value = attrs.getValue( i );
+        auto name = utf16_to_utf8( attrs.getQName( i ) );
+        auto value = utf16_to_utf8( attrs.getValue( i ) );
         if( isNamespaceAware_ )
         {
-            auto uri = attrs.getURI( i );
+            auto uri = utf16_to_utf8( attrs.getURI( i ) );
             if( uri != XSI_URI )
                 setAttributeValue( eObject, name, value );
         }
@@ -255,12 +270,12 @@ void XmlHandler::handleAttributes( const std::shared_ptr<EObject>& eObject, cons
     }
 }
 
-void XmlHandler::setAttributeValue( const std::shared_ptr<EObject>& eObject, const std::u16string& name, const std::u16string& value )
+void XmlHandler::setAttributeValue( const std::shared_ptr<EObject>& eObject, const std::string& name, const std::string& value )
 {
 
     std::size_t index = name.find( ':' );
-    std::u16string prefix;
-    std::u16string localName = name;
+    std::string prefix;
+    std::string localName = name;
     if( index != -1 )
     {
         prefix = name.substr( 0, index );
@@ -281,24 +296,26 @@ void XmlHandler::setAttributeValue( const std::shared_ptr<EObject>& eObject, con
 
 void XmlHandler::handleSchemaLocation( const xercesc::Attributes& attrs )
 {
+    using namespace utf16;
+
     auto xsiSchemaLocation = attrs.getValue( XSI_URI, SCHEMA_LOCATION );
     if( xsiSchemaLocation )
-        handleXSISchemaLocation( xsiSchemaLocation );
+        handleXSISchemaLocation( utf16_to_utf8(xsiSchemaLocation) );
 
     auto xsiNoNamespaceSchemaLocation = attrs.getValue( XSI_URI, NO_NAMESPACE_SCHEMA_LOCATION );
     if( xsiNoNamespaceSchemaLocation )
-        handleXSINoNamespaceSchemaLocation( xsiNoNamespaceSchemaLocation );
+        handleXSINoNamespaceSchemaLocation( utf16_to_utf8(xsiNoNamespaceSchemaLocation) );
 }
 
-void XmlHandler::handleXSISchemaLocation( const std::u16string& schemaLocation )
+void XmlHandler::handleXSISchemaLocation( const std::string& schemaLocation )
 {
 }
 
-void XmlHandler::handleXSINoNamespaceSchemaLocation( const std::u16string& schemaLocation )
+void XmlHandler::handleXSINoNamespaceSchemaLocation( const std::string& schemaLocation )
 {
 }
 
-std::shared_ptr<EFactory> XmlHandler::getFactoryForPrefix( const std::u16string& prefix )
+std::shared_ptr<EFactory> XmlHandler::getFactoryForPrefix( const std::string& prefix )
 {
     std::shared_ptr<EFactory> factory;
     auto found = prefixesToFactories_.find( prefix );
@@ -306,18 +323,17 @@ std::shared_ptr<EFactory> XmlHandler::getFactoryForPrefix( const std::u16string&
         factory = found->second;
     else
     {
-        auto uri_utf16 = namespaces_.getUri( prefix );
-        auto uri_utf8 = utf16_to_utf8( uri_utf16 );
-        factory = EPackageRegistry::getInstance()->getFactory( uri_utf8 );
+        auto uri = namespaces_.getUri( prefix );
+        factory = EPackageRegistry::getInstance()->getFactory( uri );
         if( factory )
             prefixesToFactories_.emplace( prefix, factory );
     }
     return factory;
 }
 
-std::shared_ptr<EStructuralFeature> XmlHandler::getFeature( const std::shared_ptr<EObject>& eObject, const std::u16string& name )
+std::shared_ptr<EStructuralFeature> XmlHandler::getFeature( const std::shared_ptr<EObject>& eObject, const std::string& name )
 {
     auto eClass = eObject->eClass();
-    auto eFeature = eClass->getEStructuralFeature( utf16_to_utf8( name ) );
+    auto eFeature = eClass->getEStructuralFeature( name );
     return eFeature;
 }

@@ -10,15 +10,15 @@ void XmlNamespaces::pushContext()
     contexts_[++currentContext_] = namespacesSize_;
 }
 
-std::vector<std::pair<std::u16string, std::u16string>> XmlNamespaces::popContext()
+std::vector<std::pair<std::string, std::string>> XmlNamespaces::popContext()
 {
     int oldPrefixSize = namespacesSize_;
     namespacesSize_ = contexts_[currentContext_--];
-    return std::vector<std::pair<std::u16string, std::u16string>>( namespaces_.begin() + namespacesSize_,
+    return std::vector<std::pair<std::string, std::string>>( namespaces_.begin() + namespacesSize_,
                                                                    namespaces_.begin() + oldPrefixSize );
 }
 
-bool XmlNamespaces::declarePrefix( const std::u16string& prefix, const std::u16string& uri )
+bool XmlNamespaces::declarePrefix( const std::string& prefix, const std::string& uri )
 {
     for( int i = namespacesSize_; i > contexts_[currentContext_]; --i )
     {
@@ -35,7 +35,7 @@ bool XmlNamespaces::declarePrefix( const std::u16string& prefix, const std::u16s
     return false;
 }
 
-std::u16string XmlNamespaces::getPrefix( const std::u16string& uri )
+std::string XmlNamespaces::getPrefix( const std::string& uri )
 {
     for( int i = namespacesSize_; i > 0; --i )
     {
@@ -43,10 +43,10 @@ std::u16string XmlNamespaces::getPrefix( const std::u16string& uri )
         if( p.second == uri )
             return p.first;
     }
-    return std::u16string();
+    return std::string();
 }
 
-std::u16string XmlNamespaces::getUri( const std::u16string& prefix )
+std::string XmlNamespaces::getUri( const std::string& prefix )
 {
     for( int i = namespacesSize_; i > 0; --i )
     {
@@ -54,5 +54,5 @@ std::u16string XmlNamespaces::getUri( const std::u16string& prefix )
         if( p.first == prefix )
             return p.second;
     }
-    return std::u16string();
+    return std::string();
 }

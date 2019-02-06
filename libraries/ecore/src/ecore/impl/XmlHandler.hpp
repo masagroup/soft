@@ -67,9 +67,9 @@ namespace ecore::impl
         virtual void warning( const xercesc::SAXParseException& exc );
 
     protected:
-        virtual void processElement( const std::u16string& name,
-                                     const std::u16string& prefix,
-                                     const std::u16string& localName,
+        virtual void processElement( const std::string& name,
+                                     const std::string& prefix,
+                                     const std::string& localName,
                                      const xercesc::Attributes& attrs );
         
         
@@ -77,14 +77,14 @@ namespace ecore::impl
 
     private:
         void handleSchemaLocation( const xercesc::Attributes& attrs );
-        void handleXSISchemaLocation( const std::u16string& schemaLocation );
-        void handleXSINoNamespaceSchemaLocation( const std::u16string& schemaLocation );
+        void handleXSISchemaLocation( const std::string& schemaLocation );
+        void handleXSINoNamespaceSchemaLocation( const std::string& schemaLocation );
         void handleAttributes( const std::shared_ptr<EObject>& eObject, const xercesc::Attributes& attrs );
-        void setAttributeValue( const std::shared_ptr<EObject>& eObject, const std::u16string& name, const std::u16string& value );
+        void setAttributeValue( const std::shared_ptr<EObject>& eObject, const std::string& name, const std::string& value );
 
-        std::shared_ptr<EFactory> getFactoryForPrefix( const std::u16string& prefix );
-        std::shared_ptr<EStructuralFeature> getFeature( const std::shared_ptr<EObject>& eObject, const std::u16string& name );
-        std::shared_ptr<EObject> createObject( const std::u16string& prefix, const std::u16string& localName );
+        std::shared_ptr<EFactory> getFactoryForPrefix( const std::string& prefix );
+        std::shared_ptr<EStructuralFeature> getFeature( const std::shared_ptr<EObject>& eObject, const std::string& name );
+        std::shared_ptr<EObject> createObject( const std::string& prefix, const std::string& localName );
         std::shared_ptr<EObject> createObject( const std::shared_ptr<EFactory>& eFactory, const std::shared_ptr<EClassifier>& type );
         
         enum FeatureKind
@@ -101,20 +101,20 @@ namespace ecore::impl
 
         void setFeatureValue( const std::shared_ptr<EObject>& eObject,
                               const std::shared_ptr<EStructuralFeature>& eFeature,
-                              const std::u16string& value,
+                              const std::string& value,
                               int position = -1);
 
         void setValueFromId( const std::shared_ptr<EObject>& eObject,
                              const std::shared_ptr<EReference>& eReference,
-                             const std::u16string& ids );
+                             const std::string& ids );
 
         std::string getLocation() const;
         int getLineNumber() const;
         int getColumnNumber() const;
 
-        void handleFeature( const std::u16string& prefix, const std::u16string& localName );
-        void handleUnknownFeature( const std::u16string& name, const std::shared_ptr<EObject>& eObject );
-        void handleUnknownPackage( const std::u16string& name );
+        void handleFeature( const std::string& prefix, const std::string& localName );
+        void handleUnknownFeature( const std::string& name, const std::shared_ptr<EObject>& eObject );
+        void handleUnknownPackage( const std::string& name );
     private:
         XmlResource& resource_;
         XmlNamespaces namespaces_;
@@ -122,8 +122,8 @@ namespace ecore::impl
         bool isPushContext_{false};
         bool isRoot_{false};
         bool isNamespaceAware_{false};
-        std::unordered_map<std::u16string, std::shared_ptr<EFactory>> prefixesToFactories_;
-        std::stack<std::u16string> elements_;
+        std::unordered_map<std::string, std::shared_ptr<EFactory>> prefixesToFactories_;
+        std::stack<std::string> elements_;
         std::stack<std::shared_ptr<EObject>> objects_;
     };
 } // namespace ecore::impl
