@@ -426,7 +426,6 @@ Uri::Uri()
 }
 
 Uri::Uri( const std::string& str )
-    : port_( 0 )
 {
     static const std::regex uriRegex( "(([a-zA-Z][a-zA-Z0-9+.-]*):)?" // scheme:
                                       "([^?#]*)"                      // authority and path

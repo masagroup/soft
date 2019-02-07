@@ -95,6 +95,8 @@ namespace ecore
 
         bool isOpaque() const;
 
+        bool isEmpty() const;
+
         Uri normalize() const;
 
         Uri resolve( const Uri& uri ) const;

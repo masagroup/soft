@@ -13,6 +13,8 @@
 #include "ecore/EObject.hpp"
 #include "ecore/impl/AbstractNotifier.hpp"
 
+#include <optional>
+
 namespace ecore
 {
     class ENotificationChain;
@@ -57,6 +59,8 @@ namespace ecore::impl
         std::shared_ptr<ENotificationChain> eInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
 
         // Proxy
+        virtual Uri eProxyUri() const;
+        virtual void eSetProxyURI( const Uri& uri );
         virtual std::shared_ptr<EObject> eResolveProxy( const std::shared_ptr<EObject>& proxy ) const;
 
         int eContainerFeatureID() const;
@@ -83,6 +87,7 @@ namespace ecore::impl
         std::weak_ptr<EResource> eResource_;
         std::weak_ptr<EObject> eContainer_;
         int eContainerFeatureID_;
+        std::optional<Uri> eProxyUri_;
 
     private:
         std::weak_ptr<BasicEObject> thisPtr_;

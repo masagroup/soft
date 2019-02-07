@@ -10,11 +10,12 @@
 #ifndef ECORE_XMLHANDLER_HPP_
 #define ECORE_XMLHANDLER_HPP_
 
+#include "ecore/Any.hpp"
 #include "ecore/impl/XmlNamespaces.hpp"
 
+#include <xercesc/sax/Locator.hpp>
 #include <xercesc/sax2/Attributes.hpp>
 #include <xercesc/sax2/DefaultHandler.hpp>
-#include <xercesc/sax/Locator.hpp>
 
 #include <stack>
 #include <string>
@@ -71,9 +72,6 @@ namespace ecore::impl
                                      const std::string& prefix,
                                      const std::string& localName,
                                      const xercesc::Attributes& attrs );
-        
-        
-        
 
     private:
         void handleSchemaLocation( const xercesc::Attributes& attrs );
@@ -86,7 +84,12 @@ namespace ecore::impl
         std::shared_ptr<EStructuralFeature> getFeature( const std::shared_ptr<EObject>& eObject, const std::string& name );
         std::shared_ptr<EObject> createObject( const std::string& prefix, const std::string& localName );
         std::shared_ptr<EObject> createObject( const std::shared_ptr<EFactory>& eFactory, const std::shared_ptr<EClassifier>& type );
-        
+        std::shared_ptr<EObject> createObjectFromFeatureType( const std::shared_ptr<EObject>& eObject,
+                                                              const std::shared_ptr<EStructuralFeature>& feature );
+        std::shared_ptr<EObject> createObjectFromTypeName( const std::shared_ptr<EObject>& eObject,
+                                                           const std::string& typeQName,
+                                                           const std::shared_ptr<EStructuralFeature>& feature );
+
         enum FeatureKind
         {
             Single = 1,
@@ -98,11 +101,10 @@ namespace ecore::impl
 
         FeatureKind getFeatureKind( const std::shared_ptr<EStructuralFeature>& eFeature ) const;
 
-
         void setFeatureValue( const std::shared_ptr<EObject>& eObject,
                               const std::shared_ptr<EStructuralFeature>& eFeature,
-                              const std::string& value,
-                              int position = -1);
+                              const Any& value,
+                              int position = -1 );
 
         void setValueFromId( const std::shared_ptr<EObject>& eObject,
                              const std::shared_ptr<EReference>& eReference,
@@ -115,6 +117,7 @@ namespace ecore::impl
         void handleFeature( const std::string& prefix, const std::string& localName );
         void handleUnknownFeature( const std::string& name, const std::shared_ptr<EObject>& eObject );
         void handleUnknownPackage( const std::string& name );
+
     private:
         XmlResource& resource_;
         XmlNamespaces namespaces_;

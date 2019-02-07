@@ -116,6 +116,11 @@ namespace ecore
         return path_.empty();
     }
 
+    inline bool Uri::isEmpty() const
+    {
+        return *this == Uri();
+    }
+
     template <typename InputIterator, typename OutputIterator>
     void uriEscape( InputIterator first, InputIterator last, OutputIterator out, UriEscapeMode mode )
     {

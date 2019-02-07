@@ -167,6 +167,22 @@ void XmlHandler::processElement( const std::string& name,
         handleFeature( prefix, localName );
 }
 
+std::shared_ptr<EObject> XmlHandler::createObject( const std::string& prefix, const std::string& name )
+{
+    std::shared_ptr<EFactory> eFactory = getFactoryForPrefix( prefix );
+    if( eFactory )
+    {
+        auto ePackage = eFactory->getEPackage();
+        auto eType = ePackage->getEClassifier( name );
+        return createObject( eFactory, eType );
+    }
+    else
+    {
+        handleUnknownPackage( namespaces_.getUri( prefix ) );
+        return nullptr;
+    }
+}
+
 std::shared_ptr<EObject> XmlHandler::createObject( const std::shared_ptr<EFactory>& eFactory, const std::shared_ptr<EClassifier>& eType )
 {
     if( eFactory )
@@ -176,6 +192,54 @@ std::shared_ptr<EObject> XmlHandler::createObject( const std::shared_ptr<EFactor
             return eFactory->create( eClass );
     }
     return nullptr;
+}
+
+std::shared_ptr<EObject> XmlHandler::createObjectFromFeatureType( const std::shared_ptr<EObject>& eObject,
+                                                                               const std::shared_ptr<EStructuralFeature>& eFeature )
+{
+    std::shared_ptr<EObject> eResult;
+    if( eFeature && eFeature->getEType() )
+    {
+        auto eType = eFeature->getEType();
+        auto eFactory = eType->getEPackage()->getEFactoryInstance();
+        eResult = createObject( eFactory, eType );
+    }
+    if( eResult)
+    {
+        setFeatureValue( eObject, eFeature, eResult );
+        objects_.push( eResult );
+    }
+    return eResult;
+}
+
+std::shared_ptr<EObject> XmlHandler::createObjectFromTypeName( const std::shared_ptr<EObject>& eObject,
+                                                               const std::string& typeQName,
+                                                               const std::shared_ptr<EStructuralFeature>& eFeature )
+{
+    std::string typeName;
+    std::string prefix = "";
+    std::size_t index = typeQName.find( ':' );
+    if( index > 0 )
+    {
+        prefix = typeQName.substr( 0, index );
+        typeName = typeQName.substr( index + 1 );
+    }
+    else
+        typeName = typeQName;
+
+    auto eFactory = getFactoryForPrefix( prefix );
+    if( !eFactory && prefix.empty() && namespaces_.getUri( prefix ).empty() )
+        handleUnknownPackage( "" );
+
+    auto ePackage = eFactory->getEPackage();
+    auto eType = ePackage->getEClassifier( typeName );
+    auto eResult = createObject( eFactory, eType );
+    if( eResult )
+    {
+        setFeatureValue( eObject, eFeature, eResult );
+        objects_.push( eResult );
+    }
+    return eResult;
 }
 
 XmlHandler::FeatureKind XmlHandler::getFeatureKind( const std::shared_ptr<EStructuralFeature>& eFeature ) const
@@ -204,50 +268,28 @@ XmlHandler::FeatureKind XmlHandler::getFeatureKind( const std::shared_ptr<EStruc
 
 void XmlHandler::setFeatureValue( const std::shared_ptr<EObject>& eObject,
                                   const std::shared_ptr<EStructuralFeature>& eFeature,
-                                  const std::string& value,
+                                  const Any& value,
                                   int position )
 {
     int kind = getFeatureKind( eFeature );
     switch( kind )
     {
     case Single:
-    case Many:
     {
         std::shared_ptr<EClassifier> eClassifier = eFeature->getEType();
         std::shared_ptr<EDataType> eDataType = std::dynamic_pointer_cast<EDataType>( eClassifier );
         std::shared_ptr<EFactory> eFactory = eDataType->getEPackage()->getEFactoryInstance();
-
-        if( kind == Many )
-        {
-            std::shared_ptr<EList<std::shared_ptr<EObject>>> list = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( eObject->eGet( eFeature ) );
-            if( position == -2 )
-            {
-            }
-            else if( value.empty() )
-            {
-                list->add( nullptr );
-            }
-            else
-            {
-            }
-        }
-        else if( value.empty() )
+        if( value.empty() )
             eObject->eSet( eFeature, Any() );
         else
-            eObject->eSet( eFeature, eFactory->createFromString( eDataType, value ) );
+            eObject->eSet( eFeature, eFactory->createFromString( eDataType, anyCast<std::string>( value ) ) );
         break;
     }
+    case Many:
     case ManyAdd:
     case ManyMove:
     {
-        std::shared_ptr<EList<std::string>> list = anyCast<std::shared_ptr<EList<std::string>>>( eObject->eGet( eFeature ) );
-        if( position == -1 )
-            list->add( value );
-        else if( position == -2 )
-            list->clear();
-        else
-            list->add( position, value );
-        break;
+        throw std::runtime_error( "NotImplemented" );
     }
     default:
     {
@@ -261,6 +303,35 @@ void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
                                  const std::shared_ptr<EReference>& eReference,
                                  const std::string& ids )
 {
+    std::vector<std::string_view> tokens = split( ids, " " );
+    std::string qName;
+    for( auto token : tokens )
+    {
+        std::string id;
+        std::size_t index = token.find( '#' );
+        if( index != std::string_view::npos )
+        {
+            if( index == 0 )
+                id = token.substr( 1 );
+            else
+            {
+                std::shared_ptr<EObject> eProxy = qName.empty() ? createObjectFromFeatureType( eObject, eReference )
+                                                                : createObjectFromTypeName( eObject, qName, eReference );
+                if( eProxy )
+                    eProxy->eSetProxyURI( Uri( id ) );
+                objects_.pop();
+                qName.clear();
+                continue;
+            }
+        }
+        else if( token.find( ':' ) != std::string_view::npos )
+        {
+            qName = token;
+            continue;
+        }
+
+        qName.clear();
+    }
 }
 
 std::string XmlHandler::getLocation() const
@@ -276,22 +347,6 @@ int XmlHandler::getLineNumber() const
 int XmlHandler::getColumnNumber() const
 {
     return locator_ ? static_cast<int>( locator_->getColumnNumber() ) : -1;
-}
-
-std::shared_ptr<EObject> XmlHandler::createObject( const std::string& prefix, const std::string& name )
-{
-    std::shared_ptr<EFactory> eFactory = getFactoryForPrefix( prefix );
-    if( eFactory )
-    {
-        auto ePackage = eFactory->getEPackage();
-        auto eType = ePackage->getEClassifier( name );
-        return createObject( eFactory, eType );
-    }
-    else
-    {
-        handleUnknownPackage( namespaces_.getUri( prefix ) );
-        return nullptr;
-    }
 }
 
 void XmlHandler::handleFeature( const std::string& prefix, const std::string& localName )
