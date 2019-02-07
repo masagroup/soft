@@ -24,6 +24,7 @@
 namespace ecore
 {
     class EClassifier;
+    class EDiagnostic;
     class EFactory;
     class EObject;
     class EReference;
@@ -114,9 +115,13 @@ namespace ecore::impl
         int getLineNumber() const;
         int getColumnNumber() const;
 
-        void handleFeature( const std::string& prefix, const std::string& localName );
-        void handleUnknownFeature( const std::string& name, const std::shared_ptr<EObject>& eObject );
+        void handleFeature( const std::string& prefix, const std::string& localName, const xercesc::Attributes& attrs );
+        void handleFeature( const std::string& prefix, const std::string& localName , const std::string& type );
+        void handleUnknownFeature( const std::string& name );
         void handleUnknownPackage( const std::string& name );
+
+        void error( const std::shared_ptr<EDiagnostic>& diagnostic );
+        void warning( const std::shared_ptr<EDiagnostic>& diagnostic );
 
     private:
         XmlResource& resource_;
