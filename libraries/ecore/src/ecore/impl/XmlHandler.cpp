@@ -36,7 +36,7 @@ namespace utf8
 } // namespace utf8
 namespace utf16
 {
-    static constexpr char16_t* XSI_URI = u"http : // www.w3.org/2001/XMLSchema-instance";
+    static constexpr char16_t* XSI_URI = u"http://www.w3.org/2001/XMLSchema-instance";
     static constexpr char16_t* SCHEMA_LOCATION = u"schemaLocation";
     static constexpr char16_t* TYPE = u"type";
     static constexpr char16_t* TYPE_ATTRIB = u"xsi:type";
@@ -163,6 +163,7 @@ void XmlHandler::processElement( const std::string& name,
         {
             handleAttributes( eObject, attrs );
             objects_.push( eObject );
+            resource_.getContents()->add( eObject );
         }
     }
     else
@@ -357,7 +358,7 @@ void XmlHandler::handleFeature( const std::string& prefix, const std::string& na
     using namespace utf16;
 
     auto xsiType = isNamespaceAware_ ? attrs.getValue( XSI_URI, TYPE ) : attrs.getValue( TYPE_ATTRIB );
-    handleFeature( prefix, name, utf16_to_utf8( xsiType ) );
+    handleFeature( prefix, name, xsiType ? utf16_to_utf8( xsiType ) : std::string() );
 }
 
 void XmlHandler::handleFeature( const std::string& prefix, const std::string& name, const std::string& type )
