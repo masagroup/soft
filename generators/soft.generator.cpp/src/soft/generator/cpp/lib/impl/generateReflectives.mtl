@@ -168,7 +168,11 @@ void [aClass.getImplementationName()/]::eSet(int featureID, const ecore::Any& ne
         case [anStructFeature.getQualifiedFeatureIDName()/]:
         {
     [let varName : String = anStructFeature.name.first(1)]
+        [if anStructFeature.eGenericType.eClassifier.isAny()]
+            auto [varName/] = newValue;
+        [else]
             [anStructFeature.generateEffectiveType()/] [varName/] = ecore::anyCast<[anStructFeature.generateEffectiveType()/]>(newValue);
+        [/if]
     [if anStructFeature.isListType()]
             [anStructFeature.getGetterName()/]()->clear();
             [anStructFeature.getGetterName()/]()->addAll(*[varName/]);
