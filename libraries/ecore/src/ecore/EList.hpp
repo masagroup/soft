@@ -13,10 +13,11 @@
 #include <memory>
 #include "ecore/Assert.hpp"
 
+
 namespace ecore {
 
     template <typename T>
-    class EList {
+    class EList : public std::enable_shared_from_this< EList<T> >{
     public:
         typedef typename T ValueType;
 
@@ -214,13 +215,13 @@ namespace ecore {
         template< typename Q >
         inline std::shared_ptr<EList< Q >> asEListOf()
         {
-            return std::make_shared<DelegateEList< Q, T >>( *this );
+            return std::make_shared<DelegateEList<Q, T>>( shared_from_this() );
         }
 
         template< typename Q >
         inline std::shared_ptr<const EList< Q >> asEListOf() const
         {
-            return std::make_shared<ConstDelegateEList< Q, T >>( *this );
+            return std::make_shared<ConstDelegateEList<Q, T>>( shared_from_this() );
         }
 
     };
@@ -229,12 +230,13 @@ namespace ecore {
     template< typename T, typename Q >
     class ConstDelegateEList : public EList< T >
     {
+        typedef std::shared_ptr<const EList<Q>> T_ListDelegate;
     public:
-        typedef EList< Q > T_ListDelegate;
-
+        
         ConstDelegateEList( const T_ListDelegate& delegate ):
             delegate_( delegate )
         {
+            _ASSERTE( delegate_ );
         }
 
         virtual ~ConstDelegateEList()
@@ -263,7 +265,7 @@ namespace ecore {
 
         virtual T get( std::size_t pos ) const
         {
-            return cast< Q, T >::do_cast( delegate_.get( pos ) );
+            return cast< Q, T >::do_cast( delegate_->get( pos ) );
         }
 
         virtual void set( std::size_t pos, const T& e )
@@ -283,7 +285,7 @@ namespace ecore {
 
         virtual std::size_t size() const
         {
-            return delegate_.size();
+            return delegate_->size();
         }
 
         virtual void clear()
@@ -293,12 +295,12 @@ namespace ecore {
 
         virtual bool empty() const
         {
-            return delegate_.empty();
+            return delegate_->empty();
         }
 
     protected:
 
-        const T_ListDelegate& delegate_;
+        T_ListDelegate delegate_;
 
         template< typename A, typename B >
         struct cast
@@ -322,12 +324,14 @@ namespace ecore {
     template< typename T, typename Q >
     class DelegateEList : public ConstDelegateEList< T , Q >
     {
+        typedef std::shared_ptr<EList<Q>> T_ListDelegate;
     public:
         
-        DelegateEList( T_ListDelegate& delegate )
+        DelegateEList( const T_ListDelegate& delegate )
             : ConstDelegateEList< T, Q >( delegate )
-            , delegate_( delegate )
+            , delegate_(delegate)
         {
+            _ASSERTE( delegate_ );
         }
 
         virtual ~DelegateEList()
@@ -336,49 +340,48 @@ namespace ecore {
 
         virtual bool add( const T& e )
         {
-            return delegate_.add( cast< T, Q >::do_cast( e ) );
+            return delegate_->add( cast< T, Q >::do_cast( e ) );
         }
 
         virtual void add( std::size_t pos, const T& e )
         {
-            delegate_.add( pos, cast< T, Q >::do_cast( e ) );
+            delegate_->add( pos, cast< T, Q >::do_cast( e ) );
         }
 
         virtual bool addAll( const EList<T>& l )
         {
             auto transformed = const_cast<EList<T>&>( l ).asEListOf<Q>();
-            return delegate_.addAll( *transformed );
+            return delegate_->addAll( *transformed );
         }
 
         virtual bool addAll( std::size_t pos, const EList<T>& l )
         {
             auto transformed = const_cast<EList<T>&>( l ).asEListOf<Q>();
-            return delegate_.addAll( pos, *transformed );
+            return delegate_->addAll( pos, *transformed );
         }
 
         virtual void set( std::size_t pos, const T& e )
         {
-            delegate_.set( pos, cast< T, Q >::do_cast( e ) );
+            delegate_->set( pos, cast< T, Q >::do_cast( e ) );
         }
 
         virtual T remove( std::size_t pos )
         {
-            return cast< Q, T >::do_cast( delegate_.remove( pos ) );
+            return cast< Q, T >::do_cast( delegate_->remove( pos ) );
         }
 
         virtual bool remove( const T& e )
         {
-            return delegate_.remove( cast< T, Q >::do_cast( e ) );
+            return delegate_->remove( cast< T, Q >::do_cast( e ) );
         }
 
         virtual void clear()
         {
-            delegate_.clear();
+            delegate_->clear();
         }
-     
-    protected:
 
-        T_ListDelegate& delegate_;
+    private:
+        T_ListDelegate delegate_;
     };
 
     template <typename T>

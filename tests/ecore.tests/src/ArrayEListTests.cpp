@@ -18,22 +18,22 @@ namespace
             return !IsDebuggerPresent();
         }
     };
-}
+} // namespace
 
 namespace std
 {
     template <typename T>
-    ostream& operator <<( ostream& os, const std::vector<T>& v )
+    ostream& operator<<( ostream& os, const std::vector<T>& v )
     {
         return print_container( os, v );
     }
 
     template <typename T>
-    bool operator ==( const EList<T>& lhs, const std::vector<T>& rhs )
+    bool operator==( const EList<T>& lhs, const std::vector<T>& rhs )
     {
         return lhs.size() == rhs.size() && std::equal( lhs.begin(), lhs.end(), rhs.begin() );
     }
-}
+} // namespace std
 
 BOOST_AUTO_TEST_SUITE( BasicEListTests )
 
@@ -44,8 +44,8 @@ BOOST_AUTO_TEST_CASE( Constructor_Default )
 
 BOOST_AUTO_TEST_CASE( Constructor_Initializer )
 {
-    ArrayEList<int> list = { 1 , 2 };
-    BOOST_CHECK_EQUAL( list, std::vector<int>( { 1 , 2 } ) );
+    ArrayEList<int> list = {1, 2};
+    BOOST_CHECK_EQUAL( list, std::vector<int>( {1, 2} ) );
 }
 
 BOOST_AUTO_TEST_CASE( Empty )
@@ -55,11 +55,10 @@ BOOST_AUTO_TEST_CASE( Empty )
         BOOST_CHECK( list.empty() );
     }
     {
-        ArrayEList<int> list = { 1 };
+        ArrayEList<int> list = {1};
         BOOST_CHECK( !list.empty() );
     }
 }
-
 
 BOOST_AUTO_TEST_CASE( Size )
 {
@@ -68,14 +67,14 @@ BOOST_AUTO_TEST_CASE( Size )
         BOOST_CHECK_EQUAL( list.size(), 0 );
     }
     {
-        ArrayEList<int> list = { 1 , 2 };
+        ArrayEList<int> list = {1, 2};
         BOOST_CHECK_EQUAL( list.size(), 2 );
     }
 }
 
 BOOST_AUTO_TEST_CASE( Get )
 {
-    ArrayEList<int> list = { 1 , 2 };
+    ArrayEList<int> list = {1, 2};
     BOOST_CHECK_EQUAL( list.get( 0 ), 1 );
     BOOST_CHECK_EQUAL( list.get( 1 ), 2 );
 }
@@ -85,28 +84,28 @@ BOOST_AUTO_TEST_CASE( Iterators_Empty )
     ArrayEList<int> list;
     BOOST_CHECK( list.begin() == list.end() );
 
-    for (int i = 0; i < 10; ++i)
+    for( int i = 0; i < 10; ++i )
         list.add( i );
 
     int test = 0;
-    for (int i : list)
+    for( int i : list )
         BOOST_CHECK_EQUAL( i, test++ );
 }
 
 BOOST_AUTO_TEST_CASE( Iterators )
 {
     ArrayEList<int> list;
-    for (int i = 0; i < 10; ++i)
+    for( int i = 0; i < 10; ++i )
         list.add( i );
 
     int test = 0;
-    for (int i : list)
+    for( int i : list )
         BOOST_CHECK_EQUAL( i, test++ );
 }
 
 BOOST_AUTO_TEST_CASE( IndexOf )
 {
-    ArrayEList<int > list;
+    ArrayEList<int> list;
     list.add( 1 );
     list.add( 2 );
     BOOST_CHECK_EQUAL( list.indexOf( 1 ), 0 );
@@ -144,37 +143,37 @@ BOOST_AUTO_TEST_CASE( AddAll )
 {
     {
         ArrayEList<int> list;
-        ImmutableEList<int> other( std::initializer_list<int>{ 1, 2 } );
+        ImmutableEList<int> other( std::initializer_list<int>{1, 2} );
         BOOST_CHECK( list.addAll( other ) );
-        BOOST_CHECK_EQUAL( list, std::vector<int>( { 1, 2 } ) );
+        BOOST_CHECK_EQUAL( list, std::vector<int>( {1, 2} ) );
     }
     {
-        ArrayEList<int> list( std::initializer_list<int>{ 1, 2 } );
-        ImmutableEList<int> other( std::initializer_list<int>{ 3, 4 } );
+        ArrayEList<int> list( std::initializer_list<int>{1, 2} );
+        ImmutableEList<int> other( std::initializer_list<int>{3, 4} );
         BOOST_CHECK( list.addAll( other ) );
-        BOOST_CHECK_EQUAL( list, std::vector<int>( { 1, 2 , 3 ,4 } ) );
+        BOOST_CHECK_EQUAL( list, std::vector<int>( {1, 2, 3, 4} ) );
     }
 }
 
 BOOST_AUTO_TEST_CASE( AddAll_Index )
 {
     {
-        ArrayEList<int> list( std::initializer_list<int>{ 1, 2 } );
-        ImmutableEList<int> other( std::initializer_list<int>{ 3, 4 } );
+        ArrayEList<int> list( std::initializer_list<int>{1, 2} );
+        ImmutableEList<int> other( std::initializer_list<int>{3, 4} );
         BOOST_CHECK( list.addAll( 0, other ) );
-        BOOST_CHECK_EQUAL( list, std::vector<int>( { 3,4,1,2 } ) );
+        BOOST_CHECK_EQUAL( list, std::vector<int>( {3, 4, 1, 2} ) );
     }
     {
-        ArrayEList<int> list( std::initializer_list<int>{ 1, 2 } );
-        ImmutableEList<int> other( std::initializer_list<int>{ 3, 4 } );
+        ArrayEList<int> list( std::initializer_list<int>{1, 2} );
+        ImmutableEList<int> other( std::initializer_list<int>{3, 4} );
         BOOST_CHECK( list.addAll( 1, other ) );
-        BOOST_CHECK_EQUAL( list, std::vector<int>( { 1,3,4,2 } ) );
+        BOOST_CHECK_EQUAL( list, std::vector<int>( {1, 3, 4, 2} ) );
     }
     {
-        ArrayEList<int> list( std::initializer_list<int>{ 1, 2 } );
-        ImmutableEList<int> other( std::initializer_list<int>{ 3, 4 } );
+        ArrayEList<int> list( std::initializer_list<int>{1, 2} );
+        ImmutableEList<int> other( std::initializer_list<int>{3, 4} );
         BOOST_CHECK( list.addAll( 2, other ) );
-        BOOST_CHECK_EQUAL( list, std::vector<int>( { 1,2,3,4 } ) );
+        BOOST_CHECK_EQUAL( list, std::vector<int>( {1, 2, 3, 4} ) );
     }
 }
 
@@ -190,7 +189,7 @@ BOOST_AUTO_TEST_CASE( Unique_Add_Index )
     ArrayEList<int, true> list;
     list.add( 0, 1 );
     list.add( 0, 2 );
-    BOOST_CHECK_EQUAL( list, std::vector<int>( { 2,1 } ) );
+    BOOST_CHECK_EQUAL( list, std::vector<int>( {2, 1} ) );
 }
 
 BOOST_AUTO_TEST_CASE( Unique_Add_Index_InvalidElement, *boost::unit_test::precondition( no_debugger() ) )
@@ -202,31 +201,31 @@ BOOST_AUTO_TEST_CASE( Unique_Add_Index_InvalidElement, *boost::unit_test::precon
 
 BOOST_AUTO_TEST_CASE( Unique_AddAll )
 {
-    ArrayEList<int, true> list( std::initializer_list<int>{ 1, 2 } );
-    ImmutableEList<int> other( std::initializer_list<int>{ 2, 3 } );
+    ArrayEList<int, true> list( std::initializer_list<int>{1, 2} );
+    ImmutableEList<int> other( std::initializer_list<int>{2, 3} );
     BOOST_CHECK( list.addAll( other ) );
-    BOOST_CHECK_EQUAL( list, std::vector<int>( { 1,2,3 } ) );
+    BOOST_CHECK_EQUAL( list, std::vector<int>( {1, 2, 3} ) );
 }
 
 BOOST_AUTO_TEST_CASE( Unique_AddAll_Index )
 {
     {
-        ArrayEList<int, true> list = { 1, 2 };
-        ImmutableEList<int> other = { 2, 3 };
+        ArrayEList<int, true> list = {1, 2};
+        ImmutableEList<int> other = {2, 3};
         BOOST_CHECK( list.addAll( 0, other ) );
-        BOOST_CHECK_EQUAL( list, std::vector<int>( { 3,1,2 } ) );
+        BOOST_CHECK_EQUAL( list, std::vector<int>( {3, 1, 2} ) );
     }
     {
-        ArrayEList<int, true> list( std::initializer_list<int>{ 1, 2 } );
-        ImmutableEList<int> other( std::initializer_list<int>{ 2, 3 } );
+        ArrayEList<int, true> list( std::initializer_list<int>{1, 2} );
+        ImmutableEList<int> other( std::initializer_list<int>{2, 3} );
         BOOST_CHECK( list.addAll( 1, other ) );
-        BOOST_CHECK_EQUAL( list, std::vector<int>( { 1,3,2 } ) );
+        BOOST_CHECK_EQUAL( list, std::vector<int>( {1, 3, 2} ) );
     }
     {
-        ArrayEList<int, true> list( std::initializer_list<int>{ 1, 2 } );
-        ImmutableEList<int> other( std::initializer_list<int>{ 2, 3 } );
+        ArrayEList<int, true> list( std::initializer_list<int>{1, 2} );
+        ImmutableEList<int> other( std::initializer_list<int>{2, 3} );
         BOOST_CHECK( list.addAll( 2, other ) );
-        BOOST_CHECK_EQUAL( list, std::vector<int>( { 1,2,3 } ) );
+        BOOST_CHECK_EQUAL( list, std::vector<int>( {1, 2, 3} ) );
     }
 }
 
@@ -236,10 +235,9 @@ BOOST_AUTO_TEST_CASE( Remove_InvalidIndex, *boost::unit_test::precondition( no_d
     BOOST_REQUIRE_THROW( list.remove( 0 ), boost::execution_exception );
 }
 
-
 BOOST_AUTO_TEST_CASE( Remove_Index )
 {
-    ArrayEList<int> list = { 1 , 2 };
+    ArrayEList<int> list = {1, 2};
     int old = list.remove( 0 );
     BOOST_CHECK_EQUAL( old, 1 );
     BOOST_CHECK_EQUAL( list.size(), 1 );
@@ -247,22 +245,51 @@ BOOST_AUTO_TEST_CASE( Remove_Index )
 
 BOOST_AUTO_TEST_CASE( Set_InvalidIndex, *boost::unit_test::precondition( no_debugger() ) )
 {
-    ArrayEList<int> list = { 1 , 2 };
+    ArrayEList<int> list = {1, 2};
     BOOST_REQUIRE_THROW( list.set( 2, 3 ), boost::execution_exception );
 }
 
 BOOST_AUTO_TEST_CASE( Set )
 {
-    ArrayEList<int> list = { 1 , 2 };
+    ArrayEList<int> list = {1, 2};
     list.set( 0, 3 );
     BOOST_CHECK_EQUAL( list.get( 0 ), 3 );
 }
 
 BOOST_AUTO_TEST_CASE( Clear )
 {
-    ArrayEList<int> list = { 1 , 2 };
+    ArrayEList<int> list = {1, 2};
     list.clear();
     BOOST_CHECK( list.empty() );
+}
+
+BOOST_AUTO_TEST_CASE( Delegate )
+{
+    class A
+    {
+    public:
+        A() = default;
+
+        virtual ~A() = default;
+    };
+
+    class B : public A
+    {
+    public:
+        B() = default;
+
+        virtual ~B() = default;
+    };
+
+    auto init = std::initializer_list<std::shared_ptr<B>>( {std::make_shared<B>(), std::make_shared<B>()} );
+    auto list = std::make_shared<ArrayEList<std::shared_ptr<B>>>( init );
+    auto delegate = list->asEListOf<std::shared_ptr<A>>();
+    BOOST_CHECK_EQUAL( delegate->size(), 2 );
+
+    auto newB = std::make_shared<B>();
+    BOOST_CHECK( delegate->add( newB ) );
+    BOOST_CHECK_EQUAL( list->size(), 3 );
+    BOOST_CHECK_EQUAL( list->get( 2 ), newB );
 }
 
 BOOST_AUTO_TEST_SUITE_END()
