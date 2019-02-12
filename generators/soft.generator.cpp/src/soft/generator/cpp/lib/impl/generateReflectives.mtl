@@ -128,7 +128,15 @@ ecore::Any [className/]::eGet(int featureID, bool resolve, bool coreType) const
     {
     [for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
         case [anStructFeature.getQualifiedFeatureIDName()/]:
+        [if anStructFeature.isListType()]
+        {
+            auto list = [anStructFeature.getGetterName()/]();
+            _ASSERTE( list );
+            return list->asEListOf<std::shared_ptr<EObject>>();
+        }
+        [else]
             return [anStructFeature.getGetterName()/]();
+        [/if]
     [/for]
     }
     return [removeNamespace(aClass.getClassExtends())/]::eGet(featureID, resolve, coreType);
