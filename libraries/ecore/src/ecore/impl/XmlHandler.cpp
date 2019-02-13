@@ -315,7 +315,7 @@ void XmlHandler::setFeatureValue( const std::shared_ptr<EObject>& eObject,
         auto eList = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( eObject->eGet( eFeature ) );
         auto eValue = anyCast<std::shared_ptr<EObject>>( value );
         if( position == -1 )
-            eList->add( eObject );
+            eList->add( eValue );
         else if( position == -2 )
             eList->clear();
         else if( eObject == eValue )
