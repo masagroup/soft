@@ -320,7 +320,7 @@ void XmlHandler::setFeatureValue( const std::shared_ptr<EObject>& eObject,
             eList->clear();
         else if( eObject == eValue )
         {
-            int index = eList->indexOf( eValue );
+            std::size_t index = eList->indexOf( eValue );
             if( index == -1 )
                 eList->add( position, eValue );
             else
