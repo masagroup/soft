@@ -31,6 +31,10 @@ namespace ecore {
 
         virtual bool addAll( std::size_t pos, const EList<T>& l ) = 0;
 
+        virtual void move( std::size_t newPos, const T& e ) = 0;
+
+        virtual T move( std::size_t newPos, std::size_t oldPos ) = 0;
+
         virtual T get( std::size_t pos ) const = 0;
 
         virtual void set( std::size_t pos, const T& e ) = 0;
@@ -263,6 +267,16 @@ namespace ecore {
             throw "UnsupportedOperationException";
         }
 
+        virtual void move( std::size_t newPos, const T& e )
+        {
+            throw "UnsupportedOperationException";
+        }
+
+        virtual T move( std::size_t newPos, std::size_t oldPos )
+        {
+            throw "UnsupportedOperationException";
+        }
+
         virtual T get( std::size_t pos ) const
         {
             return cast< Q, T >::do_cast( delegate_->get( pos ) );
@@ -358,6 +372,16 @@ namespace ecore {
         {
             auto transformed = const_cast<EList<T>&>( l ).asEListOf<Q>();
             return delegate_->addAll( pos, *transformed );
+        }
+
+        virtual void move( std::size_t newPos, const T& e )
+        {
+            delegate_->move( newPos, cast<T, Q>::do_cast( e ) );
+        }
+
+        virtual T move( std::size_t newPos, std::size_t oldPos )
+        {
+            return cast< Q, T >::do_cast( delegate_->move( newPos, oldPos ) );
         }
 
         virtual void set( std::size_t pos, const T& e )

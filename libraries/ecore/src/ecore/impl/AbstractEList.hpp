@@ -64,6 +64,13 @@ namespace ecore::impl
 
         virtual bool addAllUnique( std::size_t pos, const EList<ValueType>& l ) = 0;
 
+        using EList::move;
+
+        virtual void move( std::size_t newPos, const ValueType& e )
+        {
+            move( newPos, indexOf( e ) );
+        }
+
         virtual void set( std::size_t pos, const ValueType& e )
         {
             VERIFY( pos < size(), "out of range" );

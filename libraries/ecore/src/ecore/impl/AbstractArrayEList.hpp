@@ -137,6 +137,21 @@ namespace ecore::impl
             return from_( v_[ pos ] );
         }
 
+
+        virtual ValueType move( std::size_t newPos, std::size_t oldPos )
+        {
+            VERIFY( newPos < size(), "newPos : out of range" );
+            VERIFY( oldPos < size(), "oldPos : out of range" );
+            auto it = v_.begin() + oldPos;
+            auto element = std::move( *it );
+            auto object = from_( element );
+            v_.erase( it );
+            v_.insert( v_.begin() + newPos, element );
+            didMove( newPos, object, oldPos );
+            didChange();
+            return object;
+        }
+
         virtual ValueType remove( std::size_t pos )
         {
             VERIFY( pos < size() , "out of range");
