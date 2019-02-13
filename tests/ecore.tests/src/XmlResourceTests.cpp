@@ -25,7 +25,8 @@ BOOST_AUTO_TEST_CASE( Load )
     BOOST_CHECK_EQUAL( ePackage->getNsURI(), "http:///com.ibm.dynamic.example.bookStore.ecore");
 
     auto eClassifiers = ePackage->getEClassifiers();
-    BOOST_CHECK_EQUAL( eClassifiers->size(), 3 );
+    BOOST_CHECK_EQUAL( eClassifiers->size(), 1 );
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()
