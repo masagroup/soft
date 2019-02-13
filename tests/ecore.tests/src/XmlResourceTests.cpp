@@ -2,6 +2,7 @@
 #include <boost/test/execution_monitor.hpp>
 
 #include "ecore/EPackage.hpp"
+#include "ecore/EClassifier.hpp"
 #include "ecore/Stream.hpp"
 #include "ecore/impl/XmlResource.hpp"
 
@@ -26,6 +27,8 @@ BOOST_AUTO_TEST_CASE( Load )
 
     auto eClassifiers = ePackage->getEClassifiers();
     BOOST_CHECK_EQUAL( eClassifiers->size(), 1 );
+    auto eClassifier = eClassifiers->get( 0 );
+    BOOST_CHECK_EQUAL( eClassifier->getName(), "BookStore" );
 
 }
 
