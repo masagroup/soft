@@ -280,9 +280,9 @@ void XmlHandler::setFeatureValue( const std::shared_ptr<EObject>& eObject,
     {
     case Single:
     {
-        std::shared_ptr<EClassifier> eClassifier = eFeature->getEType();
-        std::shared_ptr<EDataType> eDataType = std::dynamic_pointer_cast<EDataType>( eClassifier );
-        std::shared_ptr<EFactory> eFactory = eDataType->getEPackage()->getEFactoryInstance();
+        auto eClassifier = eFeature->getEType();
+        auto eDataType = std::dynamic_pointer_cast<EDataType>( eClassifier );
+        auto eFactory = eDataType->getEPackage()->getEFactoryInstance();
         if( value.empty() )
             eObject->eSet( eFeature, Any() );
         else
@@ -290,6 +290,25 @@ void XmlHandler::setFeatureValue( const std::shared_ptr<EObject>& eObject,
         break;
     }
     case Many:
+    {
+        auto eClassifier = eFeature->getEType();
+        auto eDataType = std::dynamic_pointer_cast<EDataType>( eClassifier );
+        auto eFactory = eDataType->getEPackage()->getEFactoryInstance();
+        auto eList = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( eObject->eGet(eFeature) );
+        if( position == -2 )
+        {
+
+        }
+        else if( value.empty() )
+            eList->add( std::shared_ptr<EObject>() );
+        else
+        {
+            auto any = eFactory->createFromString( eDataType, anyCast<std::string>( value ) );
+            auto eObject = anyCast<std::shared_ptr<EObject>>( any );
+            eList->add( eObject );
+        }
+        
+    }
     case ManyAdd:
     case ManyMove:
     {
