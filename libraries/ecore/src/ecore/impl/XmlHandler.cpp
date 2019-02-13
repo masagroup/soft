@@ -304,15 +304,33 @@ void XmlHandler::setFeatureValue( const std::shared_ptr<EObject>& eObject,
         else
         {
             auto any = eFactory->createFromString( eDataType, anyCast<std::string>( value ) );
-            auto eObject = anyCast<std::shared_ptr<EObject>>( any );
-            eList->add( eObject );
+            auto eValue = anyCast<std::shared_ptr<EObject>>( any );
+            eList->add( eValue );
         }
         
     }
     case ManyAdd:
     case ManyMove:
     {
-        throw std::runtime_error( "NotImplemented" );
+        auto eList = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( eObject->eGet( eFeature ) );
+        auto eValue = anyCast<std::shared_ptr<EObject>>( value );
+        if( position == -1 )
+            eList->add( eObject );
+        else if( position == -2 )
+            eList->clear();
+        else if( eObject == eValue )
+        {
+            int index = eList->indexOf( eValue );
+            if( index == -1 )
+                eList->add( position, eValue );
+            else
+                eList->move( position, index );
+        }
+        else if( kind == ManyAdd )
+            eList->add( eValue );
+        else
+            eList->move( position, eValue );
+        break;
     }
     default:
     {
