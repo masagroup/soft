@@ -52,11 +52,16 @@ namespace ecore::impl
         virtual std::shared_ptr<EResource> eResource() const;
 
         // Resource
-        virtual std::shared_ptr<ENotificationChain> eSetResource( const std::shared_ptr < EResource>& resource, const std::shared_ptr<ENotificationChain>& notifications );
+        virtual std::shared_ptr<ENotificationChain> eSetResource( const std::shared_ptr<EResource>& resource,
+                                                                  const std::shared_ptr<ENotificationChain>& notifications );
 
         // Container
-        std::shared_ptr<ENotificationChain> eInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID , const std::shared_ptr<ENotificationChain>& notifications  );
-        std::shared_ptr<ENotificationChain> eInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
+        std::shared_ptr<ENotificationChain> eInverseAdd( const std::shared_ptr<EObject>& otherEnd,
+                                                         int featureID,
+                                                         const std::shared_ptr<ENotificationChain>& notifications );
+        std::shared_ptr<ENotificationChain> eInverseRemove( const std::shared_ptr<EObject>& otherEnd,
+                                                            int featureID,
+                                                            const std::shared_ptr<ENotificationChain>& notifications );
 
         // Proxy
         virtual Uri eProxyUri() const;
@@ -76,13 +81,21 @@ namespace ecore::impl
         virtual void eUnset( int featureID );
         virtual Any eInvoke( int operationID, const std::shared_ptr<EList<Any>>& arguments );
 
-        virtual std::shared_ptr<ENotificationChain> eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
-        virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications );
-        std::shared_ptr<ENotificationChain> eBasicSetContainer( const std::shared_ptr<EObject>& newContainer, int newContainerFeatureID, const std::shared_ptr<ENotificationChain>& notifications );
+        virtual std::shared_ptr<ENotificationChain> eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd,
+                                                                      int featureID,
+                                                                      const std::shared_ptr<ENotificationChain>& notifications );
+        virtual std::shared_ptr<ENotificationChain> eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd,
+                                                                         int featureID,
+                                                                         const std::shared_ptr<ENotificationChain>& notifications );
+        std::shared_ptr<ENotificationChain> eBasicSetContainer( const std::shared_ptr<EObject>& newContainer,
+                                                                int newContainerFeatureID,
+                                                                const std::shared_ptr<ENotificationChain>& notifications );
         std::shared_ptr<ENotificationChain> eBasicRemoveFromContainer( const std::shared_ptr<ENotificationChain>& notifications );
         std::shared_ptr<ENotificationChain> eBasicRemoveFromContainerFeature( const std::shared_ptr<ENotificationChain>& notifications );
-        static std::shared_ptr<EReference> eContainmentFeature( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EObject>& eContainer, int eContainerFeatureID );
-    
+        static std::shared_ptr<EReference> eContainmentFeature( const std::shared_ptr<EObject>& eObject,
+                                                                const std::shared_ptr<EObject>& eContainer,
+                                                                int eContainerFeatureID );
+
     protected:
         std::weak_ptr<EResource> eResource_;
         std::weak_ptr<EObject> eContainer_;
@@ -93,6 +106,20 @@ namespace ecore::impl
         std::weak_ptr<BasicEObject> thisPtr_;
     };
 
-}
+    template <typename T>
+    T objectCast( const Any& any )
+    {
+        auto id = &any.type();
+        if( id == &typeid( T ) )
+            return anyCast<T>( any );
+        else if( id == &typeid( std::shared_ptr<EObject> ) )
+        {
+            auto object = anyCast<std::shared_ptr<EObject>>( any );
+            return std::dynamic_pointer_cast<typename T::element_type>( object );
+        }
+        return nullptr;
+    }
+
+} // namespace ecore::impl
 
 #endif /* ECORE_BASICEOBJECT_HPP_ */
