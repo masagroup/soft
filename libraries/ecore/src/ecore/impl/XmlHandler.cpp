@@ -20,11 +20,13 @@ using namespace xercesc;
 
 namespace utf8
 {
+
     static constexpr char* XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
     static constexpr char* XSI_NS = "xsi";
     static constexpr char* XML_NS = "xmlns";
     static constexpr char* NIL = "nil";
     static constexpr char* TYPE = "type";
+    static constexpr char* HREF = "href";
     static constexpr char* SCHEMA_LOCATION = "schemaLocation";
     static constexpr char* NO_NAMESPACE_SCHEMA_LOCATION = "noNamespaceSchemaLocation";
     static constexpr char* TYPE_ATTRIB = "xsi:type";
@@ -345,6 +347,30 @@ void XmlHandler::setFeatureValue( const std::shared_ptr<EObject>& eObject,
     }
 }
 
+void XmlHandler::setAttributeValue( const std::shared_ptr<EObject>& eObject, const std::string& name, const std::string& value )
+{
+
+    std::size_t index = name.find( ':' );
+    std::string prefix;
+    std::string localName = name;
+    if( index != -1 )
+    {
+        prefix = name.substr( 0, index );
+        localName = name.substr( index + 1 );
+    }
+    auto eFeature = getFeature( eObject, localName );
+    if( eFeature )
+    {
+        FeatureKind kind = getFeatureKind( eFeature );
+        if( kind == Single || kind == Many )
+            setFeatureValue( eObject, eFeature, value, -2 );
+        else
+            setValueFromId( eObject, std::dynamic_pointer_cast<EReference>( eFeature ), value );
+    }
+    else
+        handleUnknownFeature( localName );
+}
+
 void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
                                  const std::shared_ptr<EReference>& eReference,
                                  const std::string& ids )
@@ -366,7 +392,7 @@ void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
                                                                 : createObjectFromTypeName( eObject, qName, eReference );
                 setAttributes( oldAttributes );
                 if( eProxy )
-                    eProxy->eSetProxyURI( Uri( id ) );
+                    handleProxy( eProxy, id );
                 objects_.pop();
                 qName.clear();
                 continue;
@@ -402,7 +428,7 @@ void XmlHandler::handleFeature( const std::string& prefix, const std::string& na
     std::shared_ptr<EObject> eObject;
     if( !objects_.empty() )
         eObject = objects_.top();
-    
+
     if( eObject )
     {
         auto eFeature = getFeature( eObject, name );
@@ -413,8 +439,8 @@ void XmlHandler::handleFeature( const std::string& prefix, const std::string& na
                                ? ( attributes_ ? attributes_->getValue( XSI_URI, TYPE ) : attributes_->getValue( TYPE_ATTRIB ) )
                                : nullptr;
             if( xsiType )
-                createObjectFromTypeName( eObject, utf16_to_utf8(xsiType), eFeature );
-                
+                createObjectFromTypeName( eObject, utf16_to_utf8( xsiType ), eFeature );
+
             else
                 createObjectFromFeatureType( eObject, eFeature );
         }
@@ -451,7 +477,12 @@ void XmlHandler::handleAttributes( const std::shared_ptr<EObject>& eObject )
         {
             auto name = utf16_to_utf8( attributes_->getQName( i ) );
             auto value = utf16_to_utf8( attributes_->getValue( i ) );
-            if( isNamespaceAware_ )
+            if( name == HREF )
+            {
+                auto id = utf16_to_utf8( attributes_->getValue( i ) );
+                handleProxy( eObject, id );
+            }
+            else if( isNamespaceAware_ )
             {
                 auto uri = utf16_to_utf8( attributes_->getURI( i ) );
                 if( uri != XSI_URI )
@@ -463,28 +494,9 @@ void XmlHandler::handleAttributes( const std::shared_ptr<EObject>& eObject )
     }
 }
 
-void XmlHandler::setAttributeValue( const std::shared_ptr<EObject>& eObject, const std::string& name, const std::string& value )
+void XmlHandler::handleProxy( const std::shared_ptr<EObject>& eProxy, const std::string& id )
 {
-
-    std::size_t index = name.find( ':' );
-    std::string prefix;
-    std::string localName = name;
-    if( index != -1 )
-    {
-        prefix = name.substr( 0, index );
-        localName = name.substr( index + 1 );
-    }
-    auto eFeature = getFeature( eObject, localName );
-    if( eFeature )
-    {
-        FeatureKind kind = getFeatureKind( eFeature );
-        if( kind == Single || kind == Many )
-            setFeatureValue( eObject, eFeature, value, -2 );
-        else
-            setValueFromId( eObject, std::dynamic_pointer_cast<EReference>( eFeature ), value );
-    }
-    else
-        handleUnknownFeature( localName );
+    eProxy->eSetProxyURI( Uri( id ) );
 }
 
 void XmlHandler::handleSchemaLocation()

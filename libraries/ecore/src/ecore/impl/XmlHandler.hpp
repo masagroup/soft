@@ -80,10 +80,11 @@ namespace ecore::impl
         void handleXSISchemaLocation( const std::string& schemaLocation );
         void handleXSINoNamespaceSchemaLocation( const std::string& schemaLocation );
         void handleAttributes( const std::shared_ptr<EObject>& eObject );
-        void setAttributeValue( const std::shared_ptr<EObject>& eObject, const std::string& name, const std::string& value );
-
+        void handleProxy( const std::shared_ptr<EObject>& eObject , const std::string& id);
+        
         std::shared_ptr<EFactory> getFactoryForPrefix( const std::string& prefix );
         std::shared_ptr<EStructuralFeature> getFeature( const std::shared_ptr<EObject>& eObject, const std::string& name );
+
         std::shared_ptr<EObject> createObject( const std::string& prefix, const std::string& localName );
         std::shared_ptr<EObject> createObject( const std::shared_ptr<EFactory>& eFactory, const std::shared_ptr<EClassifier>& type );
         std::shared_ptr<EObject> createObjectFromFeatureType( const std::shared_ptr<EObject>& eObject,
@@ -107,6 +108,8 @@ namespace ecore::impl
                               const std::shared_ptr<EStructuralFeature>& eFeature,
                               const Any& value,
                               int position = -1 );
+
+        void setAttributeValue( const std::shared_ptr<EObject>& eObject, const std::string& name, const std::string& value );
 
         void setValueFromId( const std::shared_ptr<EObject>& eObject,
                              const std::shared_ptr<EReference>& eReference,
