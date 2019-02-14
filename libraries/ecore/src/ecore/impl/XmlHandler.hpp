@@ -69,16 +69,17 @@ namespace ecore::impl
         virtual void warning( const xercesc::SAXParseException& exc );
 
     protected:
-        virtual void processElement( const std::string& name,
-                                     const std::string& prefix,
-                                     const std::string& localName,
-                                     const xercesc::Attributes& attrs );
+        
 
     private:
-        void handleSchemaLocation( const xercesc::Attributes& attrs );
+        const xercesc::Attributes* setAttributes( const xercesc::Attributes* attrs );
+        void startElement( const std::string uri, const std::string& localName, const std::string& qname );
+        void processElement( const std::string& name, const std::string& prefix, const std::string& localName );
+
+        void handleSchemaLocation();
         void handleXSISchemaLocation( const std::string& schemaLocation );
         void handleXSINoNamespaceSchemaLocation( const std::string& schemaLocation );
-        void handleAttributes( const std::shared_ptr<EObject>& eObject, const xercesc::Attributes& attrs );
+        void handleAttributes( const std::shared_ptr<EObject>& eObject );
         void setAttributeValue( const std::shared_ptr<EObject>& eObject, const std::string& name, const std::string& value );
 
         std::shared_ptr<EFactory> getFactoryForPrefix( const std::string& prefix );
@@ -115,7 +116,7 @@ namespace ecore::impl
         int getLineNumber() const;
         int getColumnNumber() const;
 
-        void handleFeature( const std::string& prefix, const std::string& localName, const xercesc::Attributes& attrs );
+        void handleFeature( const std::string& prefix, const std::string& localName );
         void handleFeature( const std::string& prefix, const std::string& localName , const std::string& type );
         void handleUnknownFeature( const std::string& name );
         void handleUnknownPackage( const std::string& name );
@@ -126,7 +127,8 @@ namespace ecore::impl
     private:
         XmlResource& resource_;
         XmlNamespaces namespaces_;
-        const xercesc::Locator* locator_;
+        const xercesc::Locator* locator_{nullptr};
+        const xercesc::Attributes* attributes_{nullptr};
         bool isPushContext_{false};
         bool isRoot_{false};
         bool isNamespaceAware_{false};
