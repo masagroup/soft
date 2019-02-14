@@ -262,7 +262,7 @@ void [className/]::[methodName/]()
 [template public generateBasicGetDeclaration(aStructuralFeature : EStructuralFeature)]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
 [let methodName : String = aStructuralFeature.getGetterName().toUpperFirst()]
-[aStructuralFeature.generateReturnType()/] [className/]::basic[methodName/]() const; 
+virtual [aStructuralFeature.generateReturnType()/] basic[methodName/]() const; 
 [/let]
 [/let]
 [/template]
