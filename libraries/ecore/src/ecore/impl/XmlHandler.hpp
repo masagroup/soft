@@ -75,7 +75,7 @@ namespace ecore::impl
         const xercesc::Attributes* setAttributes( const xercesc::Attributes* attrs );
         void startElement( const std::string uri, const std::string& localName, const std::string& qname );
         void processElement( const std::string& name, const std::string& prefix, const std::string& localName );
-
+        
         void handleSchemaLocation();
         void handleXSISchemaLocation( const std::string& schemaLocation );
         void handleXSINoNamespaceSchemaLocation( const std::string& schemaLocation );
@@ -91,7 +91,7 @@ namespace ecore::impl
         std::shared_ptr<EObject> createObjectFromTypeName( const std::shared_ptr<EObject>& eObject,
                                                            const std::string& typeQName,
                                                            const std::shared_ptr<EStructuralFeature>& feature );
-
+        
         enum FeatureKind
         {
             Single = 1,
@@ -117,7 +117,6 @@ namespace ecore::impl
         int getColumnNumber() const;
 
         void handleFeature( const std::string& prefix, const std::string& localName );
-        void handleFeature( const std::string& prefix, const std::string& localName , const std::string& type );
         void handleUnknownFeature( const std::string& name );
         void handleUnknownPackage( const std::string& name );
 

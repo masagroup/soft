@@ -108,6 +108,8 @@ void XmlHandler::startElement( const std::string uri, const std::string& localNa
 
 void XmlHandler::endElement( const XMLCh* const uri, const XMLCh* const localname, const XMLCh* const qname )
 {
+    objects_.pop();
+
     // pop namespace context and remove corresponding namespace factories
     auto prefixes = namespaces_.popContext();
     for( auto p : prefixes )
@@ -397,30 +399,24 @@ int XmlHandler::getColumnNumber() const
 
 void XmlHandler::handleFeature( const std::string& prefix, const std::string& name )
 {
-    using namespace utf16;
-    auto xsiType
-        = isNamespaceAware_ ? ( attributes_ ? attributes_->getValue( XSI_URI, TYPE ) : attributes_->getValue( TYPE_ATTRIB ) ) : nullptr;
-    handleFeature( prefix, name, xsiType ? utf16_to_utf8( xsiType ) : std::string() );
-}
-
-void XmlHandler::handleFeature( const std::string& prefix, const std::string& name, const std::string& type )
-{
     std::shared_ptr<EObject> eObject;
     if( !objects_.empty() )
-    {
         eObject = objects_.top();
-        objects_.pop();
-    }
-
+    
     if( eObject )
     {
         auto eFeature = getFeature( eObject, name );
         if( eFeature )
         {
-            if( type.empty() )
-                createObjectFromFeatureType( eObject, eFeature );
+            using namespace utf16;
+            auto xsiType = isNamespaceAware_
+                               ? ( attributes_ ? attributes_->getValue( XSI_URI, TYPE ) : attributes_->getValue( TYPE_ATTRIB ) )
+                               : nullptr;
+            if( xsiType )
+                createObjectFromTypeName( eObject, utf16_to_utf8(xsiType), eFeature );
+                
             else
-                createObjectFromTypeName( eObject, type, eFeature );
+                createObjectFromFeatureType( eObject, eFeature );
         }
         else
             handleUnknownFeature( name );
