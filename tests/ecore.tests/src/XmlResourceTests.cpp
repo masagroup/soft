@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE( Load )
     BOOST_CHECK_EQUAL( eLocationFeature->getName(), "location" );
     auto eLocationAttribute = std::dynamic_pointer_cast<EAttribute>( eLocationFeature );
     BOOST_CHECK( eLocationAttribute );
-    
+    auto eLocationType = eLocationAttribute->getEAttributeType();
 
     auto eBooksFeature = eBookStoreClass->getEStructuralFeature( 2 );
     BOOST_CHECK_EQUAL( eBooksFeature->getName(), "books" );
