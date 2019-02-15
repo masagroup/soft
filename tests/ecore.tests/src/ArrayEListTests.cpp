@@ -263,6 +263,13 @@ BOOST_AUTO_TEST_CASE( Clear )
     BOOST_CHECK( list.empty() );
 }
 
+BOOST_AUTO_TEST_CASE( Move )
+{
+    ArrayEList<int> list = {1, 2, 3, 4, 5};
+    list.move( 3, 2 );
+    BOOST_CHECK_EQUAL( list, std::vector<int>( {1, 2, 4, 3, 5} ) );
+}
+
 BOOST_AUTO_TEST_CASE( Delegate )
 {
     class A
