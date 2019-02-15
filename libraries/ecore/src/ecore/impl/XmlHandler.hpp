@@ -142,6 +142,7 @@ namespace ecore::impl
         std::unordered_map<std::string, std::shared_ptr<EFactory>> prefixesToFactories_;
         std::stack<std::string> elements_;
         std::stack<std::shared_ptr<EObject>> objects_;
+        std::vector<std::shared_ptr<EObject>> sameDocumentProxies_;
         std::vector<Reference> references_;
     };
 } // namespace ecore::impl

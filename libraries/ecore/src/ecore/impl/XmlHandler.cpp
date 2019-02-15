@@ -568,6 +568,10 @@ void XmlHandler::handleAttributes( const std::shared_ptr<EObject>& eObject )
 void XmlHandler::handleProxy( const std::shared_ptr<EObject>& eProxy, const std::string& id )
 {
     eProxy->eSetProxyURI( Uri( id ) );
+
+    auto uri = Uri( id );
+    if( uri.trimFragment() == resource_.getUri() )
+        sameDocumentProxies_.push_back( eProxy );
 }
 
 void XmlHandler::handleSchemaLocation()
