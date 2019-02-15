@@ -560,6 +560,19 @@ std::string Uri::toString() const
     return s.str();
 }
 
+Uri Uri::trimFragment() const
+{
+    Uri uri;
+    uri.scheme_ = scheme_;
+    uri.username_ = username_;
+    uri.password_ = password_;
+    uri.host_ = host_;
+    uri.port_ = port_;
+    uri.path_ = path_;
+    uri.query_ = query_;
+    return uri;
+}
+
 std::string Uri::string() const
 {
     return toString();

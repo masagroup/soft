@@ -57,6 +57,8 @@ namespace ecore
 
         std::string toString() const;
 
+        Uri trimFragment() const; 
+
         std::string string() const;
 
         std::wstring wstring() const;
