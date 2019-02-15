@@ -123,6 +123,8 @@ namespace ecore::impl
         void handleUnknownFeature( const std::string& name );
         void handleUnknownPackage( const std::string& name );
 
+        void handleReferences();
+
         void error( const std::shared_ptr<EDiagnostic>& diagnostic );
         void warning( const std::shared_ptr<EDiagnostic>& diagnostic );
 

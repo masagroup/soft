@@ -83,6 +83,7 @@ void XmlHandler::startDocument()
 void XmlHandler::endDocument()
 {
     namespaces_.popContext();
+    handleReferences();
 }
 
 void XmlHandler::startElement( const XMLCh* const uri,
@@ -517,6 +518,18 @@ void XmlHandler::handleUnknownFeature( const std::string& name )
 void XmlHandler::handleUnknownPackage( const std::string& name )
 {
     error( std::make_shared<Diagnostic>( "Package " + name + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
+}
+
+void XmlHandler::handleReferences()
+{
+    for( auto& reference : references_ )
+    {
+        auto eObject = resource_.getEObject( reference.id_ );
+        if( eObject )
+            setFeatureValue( reference.object_, reference.feature_, eObject, reference.pos_ );
+        else
+            error( std::make_shared<Diagnostic>( "Unresolved reference '" + reference.id_ + "'", getLocation(), reference.line_, reference.column_ ) );
+    }
 }
 
 const Attributes* XmlHandler::setAttributes( const xercesc::Attributes* attrs )

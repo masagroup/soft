@@ -20,6 +20,10 @@ BOOST_AUTO_TEST_CASE( Load )
     XmlResource resource( Uri( "data/simple.book.ecore" ) );
     resource.load();
 
+    BOOST_CHECK( resource.isLoaded() );
+    BOOST_CHECK( resource.getWarnings()->empty() );
+    BOOST_CHECK( resource.getErrors()->empty() );
+
     auto contents = resource.getContents();
     BOOST_CHECK_EQUAL( contents->size(), 1 );
 
