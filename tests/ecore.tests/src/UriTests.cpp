@@ -208,4 +208,14 @@ BOOST_AUTO_TEST_CASE( Relativize )
     }
 }
 
+BOOST_AUTO_TEST_CASE( TrimFragment )
+{
+    {
+        Uri uri{"http://host:10020/path/#fragment"};
+        Uri expected{"http://host:10020/path/"};
+        BOOST_CHECK_EQUAL( uri.trimFragment(), expected );
+    }
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
