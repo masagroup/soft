@@ -127,16 +127,20 @@ namespace ecore::impl
         void warning( const std::shared_ptr<EDiagnostic>& diagnostic );
 
     private:
+        struct Reference;
+
         XmlResource& resource_;
         XmlNamespaces namespaces_;
         const xercesc::Locator* locator_{nullptr};
         const xercesc::Attributes* attributes_{nullptr};
+        bool isResolveDeferred_{false};
         bool isPushContext_{false};
         bool isRoot_{false};
         bool isNamespaceAware_{false};
         std::unordered_map<std::string, std::shared_ptr<EFactory>> prefixesToFactories_;
         std::stack<std::string> elements_;
         std::stack<std::shared_ptr<EObject>> objects_;
+        std::vector<Reference> references_;
     };
 } // namespace ecore::impl
 

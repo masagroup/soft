@@ -371,10 +371,27 @@ void XmlHandler::setAttributeValue( const std::shared_ptr<EObject>& eObject, con
         handleUnknownFeature( localName );
 }
 
+struct XmlHandler::Reference
+{
+    std::shared_ptr<EObject> object_;
+    std::shared_ptr<EStructuralFeature> feature_;
+    std::string id_;
+    int pos_;
+    int line_;
+    int column_;
+};
+
 void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
                                  const std::shared_ptr<EReference>& eReference,
                                  const std::string& ids )
 {
+    bool mustAdd = isResolveDeferred_;
+    bool mustAddOrNotOppositeIsMany = false;
+    bool isFirstID = true;
+    int position = 0;
+    int line = getLineNumber();
+    int column = getColumnNumber();
+    std::vector<Reference> references;
     std::vector<std::string_view> tokens = split( ids, " " );
     std::string qName;
     for( auto token : tokens )
@@ -395,6 +412,7 @@ void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
                     handleProxy( eProxy, id );
                 objects_.pop();
                 qName.clear();
+                ++position;
                 continue;
             }
         }
@@ -404,8 +422,48 @@ void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
             continue;
         }
 
+        if( !isResolveDeferred_ )
+        {
+            if( isFirstID )
+            {
+                auto eOpposite = eReference->getEOpposite();
+                if( eOpposite )
+                {
+                    mustAdd = eOpposite->isTransient() || eReference->isMany();
+                    mustAddOrNotOppositeIsMany = mustAdd || !eOpposite->isMany();
+                }
+                else
+                {
+                    mustAdd = true;
+                    mustAddOrNotOppositeIsMany = true;
+                }
+                isFirstID = false;
+            }
+
+            if( mustAddOrNotOppositeIsMany )
+            {
+                auto resolved = resource_.getEObject( id );
+                if( resolved )
+                {
+                    setFeatureValue( eObject, eReference, resolved );
+                    qName.clear();
+                    ++position;
+                    continue;
+                }
+            }
+        }
+
+        if( mustAdd )
+            references.push_back( {eObject, eReference, id, position, line, column} );
+
         qName.clear();
+        ++position;
     }
+
+    if( position == 0 )
+        setFeatureValue( eObject, eReference, Any(), -2 );
+    else
+        references_ = references;
 }
 
 std::string XmlHandler::getLocation() const
