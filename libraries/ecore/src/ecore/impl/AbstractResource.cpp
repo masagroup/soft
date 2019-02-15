@@ -98,6 +98,11 @@ std::shared_ptr<const ECollectionView<std::shared_ptr<EObject>>> AbstractResourc
     return std::make_shared<ECollectionView<std::shared_ptr<ecore::EObject>>>( getContents() );
 }
 
+std::shared_ptr<EObject> AbstractResource::getEObject( const std::string& uriFragment ) const
+{
+    return std::shared_ptr<EObject>();
+}
+
 void AbstractResource::attached( const std::shared_ptr<EObject>& object )
 {
 }

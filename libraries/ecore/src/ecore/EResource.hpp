@@ -13,6 +13,7 @@
 #include "ecore/ENotifier.hpp"
 
 #include <memory>
+#include <string>
 
 namespace ecore
 {
@@ -66,6 +67,8 @@ namespace ecore
         virtual std::shared_ptr<EList<std::shared_ptr<EObject>>> getContents() const = 0;
 
         virtual std::shared_ptr<const ECollectionView<std::shared_ptr<EObject>>> getAllContents() const = 0;
+
+        virtual std::shared_ptr<EObject> getEObject( const std::string& uriFragment ) const = 0;
 
         virtual void attached( const std::shared_ptr<EObject>& object ) = 0;
 
