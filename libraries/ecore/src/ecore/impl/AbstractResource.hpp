@@ -21,6 +21,7 @@ namespace ecore
 {
     class ENotificationChain;
     class EResourceSet;
+    class EStructuralFeature;
     class EUriConverter;
 } // namespace ecore
 
@@ -84,6 +85,12 @@ namespace ecore::impl
         std::shared_ptr<EUriConverter> getUriConverter() const;
         std::shared_ptr<EList<std::shared_ptr<EObject>>> initContents();
         std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> initDiagnostics();
+
+        std::shared_ptr<EObject> getObjectByPath( const std::vector<std::string_view>& uriFragmentPath ) const;
+        std::shared_ptr<EObject> getObjectByID( const std::string& id ) const;
+        std::shared_ptr<EObject> getObjectForRootSegment( const std::string& rootSegment ) const;
+        std::shared_ptr<EObject> getObjectForFragmentSegment( const std::shared_ptr<EObject>& eObject, const std::string& uriSegment ) const;
+        std::shared_ptr<EStructuralFeature> getStructuralFeature( const std::shared_ptr<EObject>& eObject, const std::string& name ) const;
 
     private:
         class Notification;

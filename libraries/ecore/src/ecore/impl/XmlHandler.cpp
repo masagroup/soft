@@ -45,20 +45,6 @@ namespace utf16
     static constexpr char16_t* NO_NAMESPACE_SCHEMA_LOCATION = u"noNamespaceSchemaLocation";
 } // namespace utf16
 
-namespace
-{
-    std::vector<std::string_view> split( const std::string& s, const std::string& token )
-    {
-        std::string_view sv = s;
-        std::vector<std::string_view> result;
-        std::size_t pos = 0;
-        std::size_t start = 0;
-        while( ( pos = sv.find( token, start ) ) != std::string::npos )
-            result.emplace_back( sv.substr( start, pos ) );
-        return result;
-    }
-} // namespace
-
 XmlHandler::XmlHandler( XmlResource& resource )
     : resource_( resource )
 {
@@ -522,13 +508,84 @@ void XmlHandler::handleUnknownPackage( const std::string& name )
 
 void XmlHandler::handleReferences()
 {
+    for( auto eProxy : sameDocumentProxies_ )
+    {
+        for( auto eReference : *eProxy->eClass()->getEAllReferences() )
+        {
+            auto eOpposite = eReference->getEOpposite();
+            if( eOpposite && eOpposite->isChangeable() && eProxy->eIsSet( eReference ) )
+            {
+                auto resolvedObject = resource_.getEObject( eProxy->eProxyUri().getFragment() );
+                if( resolvedObject )
+                {
+                    std::shared_ptr<EObject> proxyHolder;
+                    if( eReference->isMany() )
+                    {
+                        auto value = eProxy->eGet( eReference );
+                        auto list = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( value );
+                        proxyHolder = list->get( 0 );
+                    }
+                    else
+                    {
+                        auto value = eProxy->eGet( eReference );
+                        proxyHolder = anyCast<std::shared_ptr<EObject>>( value );
+                    }
+
+                    if( eOpposite->isMany() )
+                    {
+                        auto value = proxyHolder->eGet( eOpposite );
+                        auto holderContents = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( value );
+                        auto resolvedIndex = holderContents->indexOf( resolvedObject );
+                        if( resolvedIndex != -1 )
+                        {
+                            auto proxyIndex = holderContents->indexOf( eProxy );
+                            holderContents->move( proxyIndex, resolvedIndex );
+                            holderContents->remove( proxyIndex > resolvedIndex ? proxyIndex - 1 : proxyIndex + 1 );
+                            break;
+                        }
+                    }
+
+                    auto replace = false;
+                    if( eReference->isMany() )
+                    {
+                        auto value = resolvedObject->eGet( eReference );
+                        auto list = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( value );
+                        replace = !list->contains( proxyHolder );
+                    }
+                    else
+                    {
+                        auto value = resolvedObject->eGet( eReference );
+                        auto object = anyCast<std::shared_ptr<EObject>>( value );
+                        replace = object != proxyHolder;
+                    }
+
+                    if( replace )
+                    {
+                        if( eOpposite->isMany() )
+                        {
+                            auto value = proxyHolder->eGet( eOpposite );
+                            auto list = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( value );
+                            auto ndx = list->indexOf( eProxy );
+                            list->set( ndx, resolvedObject );
+                        }
+                        else
+                            proxyHolder->eSet( eOpposite, resolvedObject );
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+
     for( auto& reference : references_ )
     {
         auto eObject = resource_.getEObject( reference.id_ );
         if( eObject )
             setFeatureValue( reference.object_, reference.feature_, eObject, reference.pos_ );
         else
-            error( std::make_shared<Diagnostic>( "Unresolved reference '" + reference.id_ + "'", getLocation(), reference.line_, reference.column_ ) );
+            error( std::make_shared<Diagnostic>(
+                "Unresolved reference '" + reference.id_ + "'", getLocation(), reference.line_, reference.column_ ) );
     }
 }
 

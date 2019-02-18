@@ -1,4 +1,6 @@
 #include "ecore/impl/AbstractResource.hpp"
+#include "ecore/EAttribute.hpp"
+#include "ecore/EClass.hpp"
 #include "ecore/ECollectionView.hpp"
 #include "ecore/ENotificationChain.hpp"
 #include "ecore/ENotifyingList.hpp"
@@ -7,7 +9,11 @@
 #include "ecore/Stream.hpp"
 #include "ecore/impl/AbstractENotifyingList.hpp"
 #include "ecore/impl/AbstractNotification.hpp"
+#include "ecore/impl/EcoreUtils.hpp"
+#include "ecore/impl/StringUtils.hpp"
 #include "ecore/impl/UriConverter.hpp"
+
+#include <cctype>
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -100,7 +106,89 @@ std::shared_ptr<const ECollectionView<std::shared_ptr<EObject>>> AbstractResourc
 
 std::shared_ptr<EObject> AbstractResource::getEObject( const std::string& uriFragment ) const
 {
+    auto id = uriFragment;
+    auto size = uriFragment.size();
+    if( !uriFragment.empty() )
+    {
+        if( uriFragment.at( 0 ) == '/' )
+        {
+            auto path = split( uriFragment, "/" );
+            return getObjectByPath( path );
+        }
+        else if( uriFragment.at( size - 1 ) == '?' )
+        {
+            auto index = uriFragment.find_last_of( '?', size - 2 );
+            if( index != std::string::npos )
+                id = uriFragment.substr( 0, index );
+        }
+    }
+    return getObjectByID( id );
+}
+
+std::shared_ptr<EObject> AbstractResource::getObjectByPath( const std::vector<std::string_view>& uriFragmentPath ) const
+{
+    auto eObject = getObjectForRootSegment( uriFragmentPath.empty() ? "" : std::string( uriFragmentPath.at( 0 ) ) );
     return std::shared_ptr<EObject>();
+}
+
+std::shared_ptr<EObject> AbstractResource::getObjectByID( const std::string& id ) const
+{
+    for( auto eObject : *getAllContents() )
+    {
+        auto objectID = EcoreUtils::getID( eObject );
+        if( id == objectID )
+            return eObject;
+    }
+    return std::shared_ptr<EObject>();
+}
+
+std::shared_ptr<EObject> ecore::impl::AbstractResource::getObjectForRootSegment( const std::string& rootSegment ) const
+{
+    int position = 0;
+    if( !rootSegment.empty() )
+    {
+        if( rootSegment.at( 0 ) == '?' )
+            return getObjectByID( rootSegment.substr( 1 ) );
+        else
+            position = std::stoi( rootSegment );
+    }
+    return position >= 0 && position < getContents()->size() ? getContents()->get( position ) : std::shared_ptr<EObject>();
+}
+
+std::shared_ptr<EObject> ecore::impl::AbstractResource::getObjectForFragmentSegment( const std::shared_ptr<EObject>& eObject,
+                                                                                     const std::string& uriSegment ) const
+{
+    std::size_t index = std::string::npos;
+    if( std::isdigit( uriSegment.back() ) )
+    {
+        index = uriSegment.find_last_of( '.' );
+        if( index != std::string::npos )
+        {
+            auto position = std::stoi( uriSegment.substr( 0, index ) );
+            auto eFeatureName = uriSegment.substr( 0, index );
+            auto eFeature = getStructuralFeature( eObject, eFeatureName );
+            auto value = eObject->eGet( eFeature );
+            auto list = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( value );
+            if( position < list->size() )
+                return list->get( position );
+        }
+    }
+    if( index == std::string::npos )
+    {
+        auto eFeature = getStructuralFeature( eObject, uriSegment );
+        auto value = eObject->eGet( eFeature );
+        return anyCast<std::shared_ptr<EObject>>( value );
+    }
+    return std::shared_ptr<EObject>();
+}
+
+std::shared_ptr<EStructuralFeature> AbstractResource::getStructuralFeature( const std::shared_ptr<EObject>& eObject,
+                                                                            const std::string& name ) const
+{
+    auto eFeature = eObject->eClass()->getEStructuralFeature( name );
+    if( !eFeature )
+        throw std::runtime_error( "The feature " + name + " is not a valid feature" );
+    return eFeature;
 }
 
 void AbstractResource::attached( const std::shared_ptr<EObject>& object )
@@ -171,8 +259,7 @@ std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> AbstractResource::getWarnin
     return warnings_;
 }
 
-std::shared_ptr<ENotificationChain> AbstractResource::basicSetLoaded( bool isLoaded,
-                                                              const std::shared_ptr<ENotificationChain>& msgs )
+std::shared_ptr<ENotificationChain> AbstractResource::basicSetLoaded( bool isLoaded, const std::shared_ptr<ENotificationChain>& msgs )
 {
     auto notifications = msgs;
     bool oldLoaded = isLoaded_;
@@ -182,21 +269,19 @@ std::shared_ptr<ENotificationChain> AbstractResource::basicSetLoaded( bool isLoa
         if( !notifications )
             notifications = std::make_shared<NotificationChain>();
 
-        notifications->add(
-            std::make_shared<Notification>( thisPtr_, Notification::SET, RESOURCE__IS_LOADED, oldLoaded, isLoaded_ ) );
+        notifications->add( std::make_shared<Notification>( thisPtr_, Notification::SET, RESOURCE__IS_LOADED, oldLoaded, isLoaded_ ) );
     }
     return notifications;
 }
 
 std::shared_ptr<ENotificationChain> AbstractResource::basicSetResourceSet( const std::shared_ptr<EResourceSet> resourceSet,
-                                                                   const std::shared_ptr<ENotificationChain>& msgs )
+                                                                           const std::shared_ptr<ENotificationChain>& msgs )
 {
     auto notifications = msgs;
     auto oldAbstractResourceSet = resourceSet_.lock();
     if( oldAbstractResourceSet )
     {
-        auto list
-            = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EResource>>>( oldAbstractResourceSet->getResources() );
+        auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EResource>>>( oldAbstractResourceSet->getResources() );
         _ASSERTE( list );
         notifications = list->add( thisPtr_.lock(), notifications );
     }
@@ -206,8 +291,8 @@ std::shared_ptr<ENotificationChain> AbstractResource::basicSetResourceSet( const
         if( !notifications )
             notifications = std::make_shared<NotificationChain>();
 
-        notifications->add( std::make_shared<Notification>(
-            thisPtr_, Notification::SET, RESOURCE__RESOURCE_SET, oldAbstractResourceSet, resourceSet ) );
+        notifications->add(
+            std::make_shared<Notification>( thisPtr_, Notification::SET, RESOURCE__RESOURCE_SET, oldAbstractResourceSet, resourceSet ) );
     }
     return notifications;
 }
@@ -233,8 +318,7 @@ std::shared_ptr<EUriConverter> AbstractResource::getUriConverter() const
 
 std::shared_ptr<EList<std::shared_ptr<EObject>>> AbstractResource::initContents()
 {
-    class ContentsEList
-        : public AbstractENotifyingList<ENotifyingList<std::shared_ptr<EObject>>, std::shared_ptr<EObject>>
+    class ContentsEList : public AbstractENotifyingList<ENotifyingList<std::shared_ptr<EObject>>, std::shared_ptr<EObject>>
     {
     public:
         ContentsEList( AbstractResource& resource )

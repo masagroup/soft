@@ -10,9 +10,10 @@
 #ifndef ECORE_IMPL_STRING_UTILS_HPP_
 #define ECORE_IMPL_STRING_UTILS_HPP_
 
-#include <string>
 #include <codecvt>
 #include <locale>
+#include <string>
+#include <vector>
 
 namespace ecore::impl
 {
@@ -64,6 +65,17 @@ namespace ecore::impl
     }
 
 #endif
+
+    inline std::vector<std::string_view> split( const std::string& s, const std::string& token )
+    {
+        std::string_view sv = s;
+        std::vector<std::string_view> result;
+        std::size_t pos = 0;
+        std::size_t start = 0;
+        while( ( pos = sv.find( token, start ) ) != std::string::npos )
+            result.emplace_back( sv.substr( start, pos ) );
+        return result;
+    }
 
 } // namespace ecore::impl
 
