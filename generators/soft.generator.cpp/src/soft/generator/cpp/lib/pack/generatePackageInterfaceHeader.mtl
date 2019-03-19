@@ -26,52 +26,51 @@ namespace [namespaceName/]
 namespace [anEPackage.name/] 
 {
     /*!
-    The Metamodel Package for the [anEPackage.name/] metamodel. This package is used to enable the reflection of model elements. It contains all model elements
-    which were described in an ecore file.
+    The Metamodel Package for the [anEPackage.name/] metamodel. This package is used to enable the reflection of model elements. 
+    It contains all model elements which were described in an ecore file.
     */
     class [className/] : public virtual [getShortQualifiedName('ecore::EPackage',namespaceName)/] 
     {
-        private:    
-            [className/]([className/] const&) = delete;
-            [className/]& operator=([className/] const&) = delete;
+    [generateSingletonDeclaration(className)/]
+   
+        /** 
+         * The package name.
+         */
+        static const std::string eNAME;
+        
+        /** 
+         * The package namespace URI.
+         */
+        static const std::string eNS_URI;
 
-        protected:
-            [className/](){}
-
-        public:
-            /** 
-             * The package name.
-             */
-            static const std::string eNAME;
-            
-            /** 
-             * The package namespace URI.
-             */
-            static const std::string eNS_URI;
-
-            /**
-             * The package namespace name.
-             */
-            static const std::string eNS_PREFIX;
+        /**
+         * The package namespace name.
+         */
+        static const std::string eNS_PREFIX;
 
 [for (aClass : EClass | anEPackage.getOrderedClasses())]
-            [aClass.generateStaticClassID()/]
-            [aClass.eAllStructuralFeatures.generateStaticFeatureID(aClass)/]
-            [aClass.generateStaticFeatureCountID()/]
-            [aClass.eAllOperations.generateStaticOperationID(aClass)/]
-            [aClass.generateStaticOperationCountID()/]
+        [aClass.generateStaticClassID()/]
+        [aClass.eAllStructuralFeatures.generateStaticFeatureID(aClass)/]
+        [aClass.generateStaticFeatureCountID()/]
+        [aClass.eAllOperations.generateStaticOperationID(aClass)/]
+        [aClass.generateStaticOperationCountID()/]
 [/for]
-            [anEPackage.eAllContents(EDataType)->sortedBy(name).generateStaticDataTypeID()/]
+        [anEPackage.eAllContents(EDataType)->sortedBy(name).generateStaticDataTypeID()/]
+
+        /**
+         * Destructor
+         */ 
+        virtual ~[className/]() = default;
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-            [aClass.generateGetterDeclaration(anEPackage, false)/]
-            [aClass.eAttributes->sortedBy(name).generateGetterDeclaration(anEPackage, false)/]
-            [aClass.eReferences->sortedBy(name).generateGetterDeclaration(anEPackage, false)/]
-            [aClass.eOperations->sortedBy(name).generateGetterDeclaration(anEPackage, false)/]
+        [aClass.generateGetterDeclaration(anEPackage, false)/]
+        [aClass.eAttributes->sortedBy(name).generateGetterDeclaration(anEPackage, false)/]
+        [aClass.eReferences->sortedBy(name).generateGetterDeclaration(anEPackage, false)/]
+        [aClass.eOperations->sortedBy(name).generateGetterDeclaration(anEPackage, false)/]
 [/for]
-            [anEPackage.eAllContents(EDataType)->sortedBy(name).generateGetterDeclaration(anEPackage, false)/]
+        [anEPackage.eAllContents(EDataType)->sortedBy(name).generateGetterDeclaration(anEPackage, false)/]
 
-    [generateSingletonDeclaration(className)/]
+    
     };
 }
 [endGuard(anEPackage,'Package')/]

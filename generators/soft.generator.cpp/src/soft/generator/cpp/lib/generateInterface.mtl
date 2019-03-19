@@ -68,13 +68,6 @@ namespace [classNamespace/]
     class [className/] [for ( extend : String | aClass.getInterfaceExtends()->collect( s | getShortQualifiedName(s, classNamespace))->sortedBy( s | s )) before (' : ') separator (', ')]virtual public [extend/][/for]
     {
     public:
-        [className/](const [className/] &) = delete;
-        [className/]& operator=([className/] const&) = delete;
-
-    protected:
-        [className/]() = default;
-
-    public:
         virtual ~[className/]() = default;
 
 [let operations : OrderedSet(EOperation) = aClass.eOperations->select( isPublic(false) )]

@@ -76,13 +76,6 @@ namespace ecore
     class EObject  : virtual public ENotifier
     {
     public:
-        EObject(const EObject &) = delete;
-        EObject& operator=(EObject const&) = delete;
-
-    protected:
-        EObject() = default;
-
-    public:
         virtual ~EObject() = default;
 
         //*********************************

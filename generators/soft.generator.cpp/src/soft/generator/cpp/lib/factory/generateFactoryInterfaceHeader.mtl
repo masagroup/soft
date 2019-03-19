@@ -29,19 +29,17 @@ namespace [namespaceName/]
 {
     class [className/] : public virtual [getShortQualifiedName('ecore::EFactory',namespaceName)/] 
     {
-        private:
-            [className/]([className/] const&) = delete;
-            [className/]& operator=([className/] const&) = delete;
-        protected:
-            [className/](){}
+    [generateSingletonDeclaration(className)/]
 
-            //Singleton Instance and Getter
-        [generateSingletonDeclaration(className)/]
+        /**
+         * Destructor
+         */ 
+        virtual ~[className/]() = default;
 
-            [anEPackage.eAllContents(EClass)->sortedBy(name).generateClassCreate(false)/]
+        [anEPackage.eAllContents(EClass)->sortedBy(name).generateClassCreate(false)/]
 
-            //Package
-            virtual std::shared_ptr<[anEPackage.getInterfaceName()/]> get[anEPackage.getInterfaceName()/]() const = 0;
+        //Package
+        virtual std::shared_ptr<[anEPackage.getInterfaceName()/]> get[anEPackage.getInterfaceName()/]() const = 0;
     };
 }
 [endGuard(anEPackage,'Factory')/]
