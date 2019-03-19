@@ -3,6 +3,7 @@
 
 
 [import soft::generator::cpp::lib::generateCMake/]
+[import soft::generator::cpp::lib::generateExports/]
 [import soft::generator::cpp::lib::generateInterface/]
 [import soft::generator::cpp::lib::factory::generateFactory/]
 [import soft::generator::cpp::lib::impl::generateImplementation/]
@@ -13,6 +14,7 @@
 
 [template public generateModel(aPackage : EPackage)]
 [comment @main/]
+[aPackage.generateExports()/]
 [for (aClass : EClass | aPackage.eAllContents(EClass))]
     [aClass.generateInterface()/]
     [aClass.generateImplementation()/]
