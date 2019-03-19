@@ -5,11 +5,13 @@
 #include "ecore/ENotification.hpp"
 #include "ecore/EcorePackage.hpp"
 #include "ecore/EList.hpp"
+#include "ecore/impl/AbstractAdapter.hpp"
 
 using namespace ecore;
 using namespace ecore::ext;
+using namespace ecore::impl;
 
-class EPackageExt::Adapter : public EAdapter
+class EPackageExt::Adapter : public AbstractAdapter
 {
 public:
     Adapter( EPackageExt& ePackage )

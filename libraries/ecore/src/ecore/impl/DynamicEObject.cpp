@@ -8,6 +8,7 @@
 #include "ecore/EAttribute.hpp"
 #include "ecore/EReference.hpp"
 #include "ecore/Stream.hpp"
+#include "ecore/impl/AbstractAdapter.hpp"
 #include "ecore/impl/ArrayEList.hpp"
 #include "ecore/impl/EObjectEList.hpp"
 #include "ecore/impl/Proxy.hpp"
@@ -29,7 +30,7 @@ namespace std
     }
 }
 
-class DynamicEObject::FeaturesAdapter : public EAdapter
+class DynamicEObject::FeaturesAdapter : public AbstractAdapter
 {
 public:
     FeaturesAdapter( DynamicEObject& eObject )

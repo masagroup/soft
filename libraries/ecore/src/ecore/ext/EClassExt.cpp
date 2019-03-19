@@ -4,6 +4,7 @@
 #include "ecore/EcorePackage.hpp"
 #include "ecore/EOperation.hpp"
 #include "ecore/EReference.hpp"
+#include "ecore/impl/AbstractAdapter.hpp"
 #include "ecore/impl/ImmutableEList.hpp"
 #include "ecore/impl/EOperationImpl.hpp"
 #include "ecore/impl/EStructuralFeatureImpl.hpp"
@@ -14,7 +15,7 @@ using namespace ecore;
 using namespace ecore::ext;
 using namespace ecore::impl;
 
-class EClassExt::ESuperAdapter : public EAdapter
+class EClassExt::ESuperAdapter : public AbstractAdapter
 {
 public:
     ESuperAdapter( EClassExt& eClassExt )

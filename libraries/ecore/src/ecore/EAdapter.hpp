@@ -21,22 +21,13 @@ namespace ecore
     class EAdapter
     {
     public:
-        EAdapter( EAdapter const& ) = delete;
-        EAdapter& operator=( EAdapter const& ) = delete;
-
-    public:
-        EAdapter() = default;
-
-        virtual ~EAdapter();
+        virtual ~EAdapter() = default;
 
         virtual void notifyChanged(const std::shared_ptr<ENotification>& notification) = 0;
 
-        std::shared_ptr<ENotifier> getTarget();
+        virtual std::shared_ptr<ENotifier> getTarget() const = 0;
 
-        virtual void setTarget(const std::shared_ptr<ENotifier>& target);
-
-    protected:
-        std::weak_ptr<ENotifier> target_;
+        virtual void setTarget(const std::shared_ptr<ENotifier>& target) = 0;
     };
 
 }
