@@ -1,26 +1,35 @@
 # - Find Turtle
 # Find the Turtle (http://turtle.sourceforge.net/) includes
+#
+# This module defines the following :prop_tgt:`IMPORTED` targets:
+#    Turtle::Turtle
 # This module defines
-#  TURTLE_INCLUDE_DIR, Turtle include directory, where to find turtle/mock.hpp, etc.
-#  TURTLE_FOUND, If false, do not try to use Turtle.
+#  Turtle_INCLUDE_DIR, Turtle include directory, where to find turtle/mock.hpp, etc.
+#  Turtle_FOUND, If false, do not try to use Turtle.
 #
 # This module reads hints about search locations from variables:
-#  TURTLE_DIR           - Preferred installation directory
-#  TURTLE_INCLUDE_DIR   - Preferred include directory
+#  TURTLE_ROOT          - Preferred installation directory
+#  TURTLE_INCLUDEDIR    - Preferred include directory
 
-if(NOT TURTLE_DIR)
-    set(TURTLE_DIR "" CACHE PATH "Installation directory of Turtle")
+if(NOT TURTLE_ROOT)
+    set(TURTLE_ROOT "" CACHE PATH "Installation directory of Turtle")
 endif()
 
-find_path(TURTLE_INCLUDE_DIR
+find_path(Turtle_INCLUDE_DIR
     NAMES turtle/mock.hpp turtle/sequence.hpp
-    PATHS ${TURTLE_DIR} ${TURTLE_INCLUDE_DIR}
+    PATHS ${TURTLE_ROOT} ${TURTLE_INCLUDEDIR}
     PATH_SUFFIXES include
     )
+mark_as_advanced(Turtle_INCLUDE_DIR)
 
-# handle the QUIETLY and REQUIRED arguments and set TURTLE_FOUND to TRUE if
+# handle the QUIETLY and REQUIRED arguments and set Turtle_FOUND to TRUE if
 # all listed variables are TRUE
 include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(TURTLE DEFAULT_MSG TURTLE_INCLUDE_DIR)
+find_package_handle_standard_args(Turtle DEFAULT_MSG Turtle_INCLUDE_DIR)
 
-mark_as_advanced(TURTLE_INCLUDE_DIR)
+if(TURTLE_FOUND AND NOT TARGET Turtle::Turtle)
+    add_library(Turtle::Turtle INTERFACE IMPORTED)
+    if(Turtle_INCLUDE_DIR)
+      set_target_properties(Turtle::Turtle PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${Turtle_INCLUDE_DIR}")
+    endif()
+endif()
