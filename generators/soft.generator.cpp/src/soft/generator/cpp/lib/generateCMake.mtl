@@ -11,6 +11,7 @@
 
 [let namespaceVar : String = getVarName( aPackage.getInterfaceNamespaceName() )] 
 set(GENERATED_HEADER_[namespaceVar/]_FILES
+    src-gen/[packageName/]/Exports.hpp
     src-gen/[namespaceToFolder(aPackage.getFactoryQualifiedInterfaceName())/].hpp
     src-gen/[namespaceToFolder(aPackage.getQualifiedInterfaceName())/].hpp
 [for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
