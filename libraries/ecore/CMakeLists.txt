@@ -52,10 +52,8 @@ add_library(${PROJECT_NAME} STATIC  ${CMAKE_FILES}
                                     ${SOURCE_ECORE_IMPL_FILES}
                                     ${SOURCE_FILES}
 )
-target_include_directories(${PROJECT_NAME} PUBLIC src)
-target_include_directories(${PROJECT_NAME} PUBLIC src-gen)
-target_compile_options(${PROJECT_NAME} PRIVATE /wd4250) 
-target_compile_options(${PROJECT_NAME} PRIVATE "/MP")
+target_include_directories(${PROJECT_NAME} PUBLIC src src-gen)
+target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4250)
 target_compile_definitions( ${PROJECT_NAME} PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 target_link_libraries(${PROJECT_NAME} PRIVATE XercesC::XercesC)
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
