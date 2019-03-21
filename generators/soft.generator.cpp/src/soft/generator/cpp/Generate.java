@@ -28,6 +28,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -132,7 +133,7 @@ public class Generate extends AbstractAcceleoGenerator {
     private void initializeArguments(List<? extends Object> arguments) {
         @SuppressWarnings("unchecked")
         List<String> templates = (List<String>) arguments.get(0);
-        this.templates = templates.isEmpty() ? Arrays.asList(TEMPLATE_NAMES) : templates;
+        this.templates = templates;
         Properties properties = (Properties) arguments.get(1);
         this.properties = properties;
         Boolean silent = (Boolean) arguments.get(2);
@@ -158,6 +159,10 @@ public class Generate extends AbstractAcceleoGenerator {
                 .desc("the templates to be executed : "
                         + Arrays.stream(TEMPLATE_NAMES).collect(Collectors.joining(", ")))
                 .build();
+        Option noTemplateOption = Option.builder("nt").argName("no-templates").longOpt("no-templates").required(false).hasArgs()
+                .desc("the templates to be removed from : "
+                        + Arrays.stream(TEMPLATE_NAMES).collect(Collectors.joining(", ")))
+                .build();
         Option modelOption = Option.builder("m").argName("model").longOpt("model").required().hasArg()
                 .desc("the input model").build();
         Option outputOption = Option.builder("o").argName("folder").longOpt("output").required().hasArg()
@@ -169,6 +174,7 @@ public class Generate extends AbstractAcceleoGenerator {
 
         generateOptions.addOption(helpOption);
         generateOptions.addOption(templateOption);
+        generateOptions.addOption(noTemplateOption);
         generateOptions.addOption(modelOption);
         generateOptions.addOption(outputOption);
         generateOptions.addOption(propertyOption);
@@ -184,12 +190,20 @@ public class Generate extends AbstractAcceleoGenerator {
             }
             URI model = URI.createFileURI(line.getOptionValue("model"));
             File output = new File(line.getOptionValue("output"));
-            List<String> templates = new ArrayList<>();
+            
+            // templates 
+            List<String> templates = Lists.newArrayList(TEMPLATE_NAMES);
             if (line.hasOption("templates"))
-                templates = Arrays.asList(line.getOptionValues("templates"));
+                templates = Lists.newArrayList(line.getOptionValues("templates"));
+            if (line.hasOption("no-templates"))
+                templates.removeAll( Arrays.asList( line.getOptionValues("no-templates")));
+
+            // properties
             Properties properties = new Properties();
             if (line.hasOption("p"))
                 properties = line.getOptionProperties("p");
+            
+            // silent mode
             boolean silentMode = false;
             if (line.hasOption("s"))
                 silentMode = true;
