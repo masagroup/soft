@@ -10,6 +10,7 @@
 #ifndef ECORE_EURIHANDLER_HPP_
 #define ECORE_EURIHANDLER_HPP_
 
+#include "ecore/Exports.hpp"
 #include <memory>
 #include <iostream>
 
@@ -17,7 +18,7 @@ namespace ecore
 {
     class Uri;
 
-    class EUriHandler
+    class ECORE_API EUriHandler
     {
     public:
         virtual ~EUriHandler() = default;

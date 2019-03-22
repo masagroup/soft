@@ -10,6 +10,7 @@
 #ifndef ECORE_EPACKAGEREGISTRY_HPP_
 #define ECORE_EPACKAGEREGISTRY_HPP_
 
+#include "ecore/Exports.hpp"
 #include <memory>
 #include <string>
 
@@ -18,7 +19,7 @@ namespace ecore
     class EPackage;
     class EFactory;
 
-    class EPackageRegistry
+    class ECORE_API EPackageRegistry
     {
     public:
         static std::shared_ptr<EPackageRegistry> getInstance();

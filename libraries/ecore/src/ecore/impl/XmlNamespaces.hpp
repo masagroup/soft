@@ -10,12 +10,13 @@
 #ifndef ECORE_NAMEPSPACESUPPORT_HPP_
 #define ECORE_NAMEPSPACESUPPORT_HPP_
 
+#include "ecore/Exports.hpp"
 #include <string>
 #include <vector>
 
 namespace ecore::impl
 {
-    class XmlNamespaces
+    class ECORE_API XmlNamespaces
     {
     public:
         void pushContext();

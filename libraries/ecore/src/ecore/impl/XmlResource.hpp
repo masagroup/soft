@@ -10,12 +10,13 @@
 #ifndef ECORE_XMLRESOURCE_HPP_
 #define ECORE_XMLRESOURCE_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/impl/AbstractResource.hpp"
 #include "ecore/Uri.hpp"
 
 namespace ecore::impl
 {
-    class XmlResource : public AbstractResource
+    class ECORE_API XmlResource : public AbstractResource
     {
     public:
         XmlResource();

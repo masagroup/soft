@@ -10,6 +10,7 @@
 #ifndef ECORE_NOTIFICATION_HPP_
 #define ECORE_NOTIFICATION_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/impl/AbstractNotification.hpp"
 
 namespace ecore
@@ -20,7 +21,7 @@ namespace ecore
 namespace ecore::impl
 {
 
-    class Notification : public AbstractNotification
+    class ECORE_API Notification : public AbstractNotification
     {
     public:
 

@@ -10,14 +10,14 @@
 #ifndef ECORE_RESOURCE_SET_HPP_
 #define ECORE_RESOURCE_SET_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/EResourceSet.hpp"
 #include "ecore/impl/AbstractNotifier.hpp"
 #include "ecore/impl/Lazy.hpp"
 
 namespace ecore::impl
 {
-    
-    class ResourceSet : public virtual AbstractNotifier< EResourceSet >
+    class ECORE_API ResourceSet : public virtual AbstractNotifier< EResourceSet >
     {
     public:
         ResourceSet();

@@ -10,6 +10,7 @@
 #ifndef ECORE_ERESOURCE_SET_HPP_
 #define ECORE_ERESOURCE_SET_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/ENotifier.hpp"
 
 #include <memory>
@@ -20,7 +21,7 @@ namespace ecore
     class EResourceFactoryRegistry;
     class EUriConverter;
 
-    class EResourceSet : public virtual ENotifier
+    class ECORE_API EResourceSet : public virtual ENotifier
     {
     public:
         virtual ~EResourceSet() = default;

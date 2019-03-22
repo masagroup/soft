@@ -10,12 +10,12 @@
 #ifndef ECORE_XMLRESOURCEFACTORY_HPP_
 #define ECORE_XMLRESOURCEFACTORY_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/EResourceFactory.hpp"
 
 namespace ecore::impl
 {
-
-    class XmlResourceFactory : public EResourceFactory
+    class ECORE_API XmlResourceFactory : public EResourceFactory
     {
     public:
         XmlResourceFactory();

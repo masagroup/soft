@@ -10,6 +10,8 @@
 #ifndef ECORE_ENOTIFICATION_HPP_
 #define ECORE_ENOTIFICATION_HPP_
 
+#include "ecore/Exports.hpp"
+
 #include <memory>
 
 namespace ecore
@@ -18,7 +20,7 @@ namespace ecore
     class ENotifier;
     class EStructuralFeature;
 
-    class ENotification
+    class ECORE_API ENotification
     {
     public:
 

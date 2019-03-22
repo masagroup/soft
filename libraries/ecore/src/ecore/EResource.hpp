@@ -10,6 +10,7 @@
 #ifndef ECORE_ERESOURCE_HPP_
 #define ECORE_ERESOURCE_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/ENotifier.hpp"
 
 #include <memory>
@@ -32,7 +33,7 @@ namespace ecore
 
     class Uri;
 
-    class EResource : public virtual ENotifier
+    class ECORE_API EResource : public virtual ENotifier
     {
     public:
         /**

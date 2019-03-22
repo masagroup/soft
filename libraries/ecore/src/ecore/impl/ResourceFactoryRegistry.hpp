@@ -10,12 +10,12 @@
 #ifndef ECORE_RESOURCEFACTORYREGISTRY_HPP_
 #define ECORE_RESOURCEFACTORYREGISTRY_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/EResourceFactoryRegistry.hpp"
 
 namespace ecore::impl
 {
-
-    class ResourceFactoryRegistry : public EResourceFactoryRegistry
+    class ECORE_API ResourceFactoryRegistry : public EResourceFactoryRegistry
     {
     public:
         ResourceFactoryRegistry();

@@ -10,12 +10,13 @@
 #ifndef ECORE_PACKAGEREGISTRY_HPP_
 #define ECORE_PACKAGEREGISTRY_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/EPackageRegistry.hpp"
 #include <unordered_map>
 
 namespace ecore::impl
 {
-    class PackageRegistry : public EPackageRegistry
+    class ECORE_API PackageRegistry : public EPackageRegistry
     {
     public:
         PackageRegistry();

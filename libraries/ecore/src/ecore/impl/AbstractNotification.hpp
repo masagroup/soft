@@ -10,14 +10,14 @@
 #ifndef ECORE_ABSTRACT_NOTIFICATION_HPP_
 #define ECORE_ABSTRACT_NOTIFICATION_HPP_
 
-
+#include "ecore/Exports.hpp"
 #include "ecore/Any.hpp"
 #include "ecore/ENotification.hpp"
 #include "ecore/ENotificationChain.hpp"
 
 namespace ecore::impl
 {
-    class AbstractNotification : public ENotification, public ENotificationChain, public std::enable_shared_from_this<AbstractNotification>
+    class ECORE_API AbstractNotification : public ENotification, public ENotificationChain, public std::enable_shared_from_this<AbstractNotification>
     {
     public:
 
@@ -71,7 +71,5 @@ namespace ecore::impl
         std::shared_ptr<ENotificationChain> next_;
     };
 }
-
-
 
 #endif /* ECORE_ABSTRACT_NOTIFICATION_HPP_ */

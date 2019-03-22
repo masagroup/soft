@@ -10,12 +10,13 @@
 #ifndef ECORE_ECORE_UTILS_HPP_
 #define ECORE_ECORE_UTILS_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/EDataType.hpp"
 #include "ecore/EObject.hpp"
 
 namespace ecore::impl
 {
-    class EcoreUtils
+    class ECORE_API EcoreUtils
     {
     public:
         static std::string getID( const std::shared_ptr<EObject>& eObject );
