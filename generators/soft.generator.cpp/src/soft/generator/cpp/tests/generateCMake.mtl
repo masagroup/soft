@@ -67,7 +67,7 @@ add_executable(${PROJECT_NAME} ${CMAKE_FILES}
 )
 target_include_directories(${PROJECT_NAME} PUBLIC src src-gen)
 target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4250 /bigobj)
-target_link_libraries(${PROJECT_NAME} [packageName/] Turtle::Turtle Boost::unit_test_framework)
+target_link_libraries(${PROJECT_NAME} [packageName/].static Turtle::Turtle Boost::unit_test_framework)
 
 [generateSourceGroup(namespaces)/]
 [/let]

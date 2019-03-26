@@ -1,0 +1,12 @@
+get_filename_component(Ecore_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
+if(NOT TARGET Ecore::ecore)
+    include("${Ecore_CMAKE_DIR}/EcoreTargets.cmake")
+    if (TARGET Ecore::ecore )
+        set(Ecore_FOUND true)
+        add_library(Ecore::ecore::shared ALIAS Ecore::ecore)
+        add_library(Ecore::ecore::static ALIAS Ecore::ecore.static)
+    else()
+        set(Ecore_FOUND false)
+    endif()
+endif()

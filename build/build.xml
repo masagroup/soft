@@ -280,7 +280,7 @@
         </exec>
     </target>
     
-    <target name="install" depends="tools.install,vcpkg.install"/>
+    <target name="configure" depends="tools.install,vcpkg.install"/>
     
     <!--
     ============================================================================
@@ -433,8 +433,12 @@
     
     <target name="tests" depends="project.tests"/>
     
+    <target name="install" depends="project.install"/>
+    
+    <target name="package" depends="project.package"/>
+    
     <target name="clean" depends="generators.clean,sources.clean,build.clean"/>
     
-    <target name="all" depends="install,generators,generates,build,tests"/>
+    <target name="all" depends="configure,generators,generates,build,tests,install,package"/>
     
 </project>

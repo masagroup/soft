@@ -27,7 +27,7 @@ mark_as_advanced(Turtle_INCLUDE_DIR)
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Turtle DEFAULT_MSG Turtle_INCLUDE_DIR)
 
-if(TURTLE_FOUND AND NOT TARGET Turtle::Turtle)
+if(Turtle_FOUND AND NOT TARGET Turtle::Turtle)
     add_library(Turtle::Turtle INTERFACE IMPORTED)
     if(Turtle_INCLUDE_DIR)
       set_target_properties(Turtle::Turtle PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${Turtle_INCLUDE_DIR}")
