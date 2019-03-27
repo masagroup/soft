@@ -1,0 +1,50 @@
+#include "ecore/impl/ResourceFactoryRegistry.hpp"
+#include "ecore/EResourceFactory.hpp"
+#include "ecore/Uri.hpp"
+
+using namespace ecore;
+using namespace ecore::impl;
+
+ResourceFactoryRegistry::ResourceFactoryRegistry()
+{
+}
+
+ResourceFactoryRegistry::~ResourceFactoryRegistry()
+{
+}
+
+EResourceFactory* ResourceFactoryRegistry::getFactory( const Uri& uri )
+{
+    {
+        auto it = protocolToFactory_.find( uri.getScheme() );
+        if( it != protocolToFactory_.end() )
+            return it->second.get();
+    }
+    {
+        std::size_t ndx = uri.getPath().find_last_of( '.' );
+        if( ndx != -1 )
+        {
+            auto extension = uri.getPath().substr( ndx + 1 );
+            auto it = extensionToFactory_.find( extension );
+            if( it != extensionToFactory_.end() )
+                return it->second.get();
+        }
+    }
+    {
+        auto it = extensionToFactory_.find( DEFAULT_EXTENSION );
+        if( it != extensionToFactory_.end() )
+            return it->second.get();
+    }
+
+    return nullptr;
+}
+
+ResourceFactoryRegistry::FactoryMap& ResourceFactoryRegistry::getProtocolToFactoryMap()
+{
+    return protocolToFactory_;
+}
+
+ResourceFactoryRegistry::FactoryMap& ResourceFactoryRegistry::getExtensionToFactoryMap()
+{
+    return extensionToFactory_;
+}

@@ -1,0 +1,441 @@
+<?xml version="1.0"?>
+<project name="soft" default="all" xmlns:if="ant:if" xmlns:unless="ant:unless">
+
+    <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+
+    <property file="${user.home}/build.properties"/>
+    <property file="build.properties"/>
+    <property name="aria2.SHA-512" value="af965693edafe504595d2fd24f9b18ccdbbda53c1a8e9e454b12e01db26644097ee76dc27760c8c5dae100af2240eb37bffedfda0d6d9d3bc1373189cec40899"/>
+    <property name="cmake.SHA-512" value="44ea4ffd21fbdaa7158749a0a86de7ec294dc2569f743ff6a5ef4e650cd16063bad55b54d35a506d7c7985bdf63f9207b918d18d9381801a9e321f71c622aee1"/>
+    <property name="maven.SHA-512" value="0bb466363a7f60a9cd48f680ff14bdab64ded3cf5cffeb280c3c711acdd12cdb5c4891a0f1215bf69a22e6c4736f449f35b1e6a3c43c5ac8d397b24b71c02c1a"/>
+    <property name="ninja.SHA-512" value="56f3b94ed7f9e36446bb6fe2a786156befdde6b279ee6d9d7ebd8b6e5d6664cdfe1d526e158f68bfc5cf947bcf9360df8d1e1a8939b6db1b2f0658256a17d66b"/>
+    
+    
+    <macrodef name="property-to-location">
+        <attribute name="name"/>
+        <sequential>
+            <echo taskname="property-to-location" level="debug" message="@{name} : ${@{name}}"/>
+            <var name="tmp.dir" value="${@{name}}"/>
+            <var name="@{name}" unset="true"/>
+            <property name="@{name}" location="${tmp.dir}"/>
+            <echo taskname="property-to-location" level="debug" message="    -> ${@{name}}"/>
+        </sequential>
+    </macrodef>
+
+    <propertyselector property="dirs" match="\A.*\.dir\z" distinct="true"/>
+    <for list="${dirs}" param="dir">
+        <sequential>
+            <property-to-location name="@{dir}"/>
+        </sequential>
+    </for>
+    
+    <macrodef name="download">
+        <attribute name="url"/>
+        <attribute name="dir" default="${downloads.dir}"/>
+        <attribute name="output" default=""/>
+        <element name="args" implicit="yes" optional="yes"/>
+        <sequential>
+            <mkdir dir="@{dir}"/>
+            <!-- if output is undefined , output is the basename of the url -->
+            <local name="output"/>
+            <if>
+                <equals arg1="@{output}" arg2=""/>
+                <then>
+                    <basename property="output" file="@{url}"/>
+                </then>
+                <else>
+                    <property name="output" value="@{output}"/>
+                </else>
+            </if>
+            <if>
+                <available file="${bin.dir}/aria2/aria2c.exe"/>
+                <then>
+                    <exec taskname="download" executable="${bin.dir}/aria2/aria2c.exe" dir="${bin.dir}/aria2" failonerror="true">
+                        <arg value="--continue=true"/>
+                        <arg value="--allow-overwrite=true"/>
+                        <arg value="--auto-file-renaming=false"/>
+                        <arg value="--dir"/>
+                        <arg value="@{dir}"/>
+                        <arg value="--out=${output}"/>
+                        <args/>
+                        <arg value="@{url}"/>
+                    </exec>
+                </then>
+                <else>
+                    <get src="@{url}"
+                         dest="@{dir}/${output}"
+                         verbose="true"
+                         usetimestamp="true"/>
+                </else>
+            </if>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="install">
+        <attribute name="name"/>
+        <attribute name="url"/>
+        <attribute name="output" default=""/>
+        <attribute name="dir" default="${bin.dir}/@{name}"/>
+        <element name="args" implicit="yes" optional="yes"/>
+        <sequential>
+            <!-- if output is undefined , output is the basename of the url -->
+            <local name="output"/>
+            <if>
+                <equals arg1="@{output}" arg2=""/>
+                <then>
+                    <basename property="output" file="@{url}"/>
+                </then>
+                <else>
+                    <property name="output" value="@{output}"/>
+                </else>
+            </if>
+            <download url="@{url}" dir="${downloads.dir}" output="${output}">
+                <args/>
+            </download>
+            <unzip src="${downloads.dir}/${output}" dest="@{dir}">
+                <cutdirsmapper dirs="1"/>
+            </unzip>
+        </sequential>
+    </macrodef>
+    
+    <target name="checksum">
+        <checksum file="${bin.dir}/aria2/aria2c.exe" algorithm="SHA-512"/>
+        <checksum file="${bin.dir}/cmake/bin/cmake.exe" algorithm="SHA-512"/> 
+        <checksum file="${bin.dir}/maven/bin/mvn.cmd" algorithm="SHA-512"/>
+        <checksum file="${bin.dir}/ninja/ninja.exe" algorithm="SHA-512"/>
+    </target>
+    
+    <!--
+    ============================================================================
+      Aria2
+    ============================================================================
+    -->
+    <target name="aria2.available">
+        <available file="${bin.dir}/aria2/aria2c.exe" property="aria2.available"/>
+    </target>
+    
+    <target name="aria2.checksum" depends="aria2.available" if="aria2.available">
+        <checksum file="${bin.dir}/aria2/aria2c.exe" algorithm="SHA-512" property="${aria2.SHA-512}" verifyProperty="aria2.installed"/> 
+    </target>
+    
+    <target name="aria2.install" depends="aria2.checksum" unless="aria2.installed">
+        <install name="aria2" url="https://github.com/aria2/aria2/releases/download/release-1.34.0/aria2-1.34.0-win-64bit-build1.zip"/>
+    </target>
+    
+    <target name="ant.install" depends="aria2.install">
+        <install name="ant" url="https://sourceforge.net/projects/ant-contrib/files/ant-contrib/1.0b3/ant-contrib-1.0b3-bin.zip"/>
+    </target>
+    
+    <!--
+    ============================================================================
+      Cmake
+    ============================================================================
+    -->
+     <target name="cmake.available">
+        <available file="${bin.dir}/cmake/bin/cmake.exe" property="cmake.available"/>
+    </target>
+    
+    <target name="cmake.checksum" depends="cmake.available" if="cmake.available">
+        <checksum file="${bin.dir}/cmake/bin/cmake.exe" algorithm="SHA-512" property="${cmake.SHA-512}" verifyProperty="cmake.installed"/> 
+    </target>
+    
+    <target name="cmake.install" depends="aria2.install,cmake.checksum" unless="cmake.installed">
+        <install name="cmake" url="https://github.com/Kitware/CMake/releases/download/v3.13.3/cmake-3.13.3-win64-x64.zip"/>
+    </target>
+    
+    <property name = "cmake.generator.vs2015" value = "Visual Studio 14 2015 Win64"/>
+    <property name = "cmake.generator.vs2017" value = "Visual Studio 15 2017 Win64"/>
+    <property name = "cmake.generator.vs2019" value = "Visual Studio 16 2019 Win64"/>
+    <property name = "cmake.generator.ninja" value = "Ninja"/>
+    
+    <macrodef name="cmake_exec">
+        <attribute name="generator"/>
+        <attribute name="project" default= "${ant.project.name}"/>
+        <attribute name="configuration" default=""/>
+        <attribute name="input" default="${build.dir}/cmake"/>
+        <attribute name="output" default="${out.dir}/@{generator}/@{project}/@{configuration}"/>
+        <element name="elements" implicit="true" optional="true"/>
+        <sequential>
+            <mkdir dir="@{output}"/>
+            <exec taskname="cmake" executable="${bin.dir}/cmake/bin/cmake.exe" dir="@{output}" failonerror="true">
+                <arg value="-G"/>
+                <arg value="${cmake.generator.@{generator}}"/>
+                <arg value="-DCMAKE_INSTALL_PREFIX=${root.dir}/deps"/>
+                <arg value="-DVCPKG_ROOT=${vcpkg.dir}"/>
+                <elements/>
+                <arg value="@{input}"/>
+            </exec>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="ctest_exec">
+        <attribute name="dir"/>
+        <sequential>
+            <exec taskname="tests" executable="${bin.dir}/cmake/bin/ctest.exe" dir="@{dir}" failonerror="true">
+                <arg value="."/>
+                <arg value="--output-on-failure"/>
+                <arg line="--tests-regex .*"/>
+            </exec>
+        </sequential>
+    </macrodef>
+    
+    <!--
+    ============================================================================
+      Maven
+    ============================================================================
+    -->
+    <target name="maven.available">
+        <available file="${bin.dir}/maven/bin/mvn.cmd" property="maven.available"/>
+    </target>
+    
+    <target name="maven.checksum" depends="maven.available" if="maven.available">
+        <checksum file="${bin.dir}/maven/bin/mvn.cmd" algorithm="SHA-512" property="${maven.SHA-512}" verifyProperty="maven.installed"/> 
+    </target>
+    
+    <target name="maven.install" depends="aria2.install,maven.checksum" unless="maven.installed">
+        <install name="maven" url="https://www-us.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.zip">
+            <arg value="--checksum=sha-512=7d14ab2b713880538974aa361b987231473fbbed20e83586d542c691ace1139026f232bd46fdcce5e8887f528ab1c3fbfc1b2adec90518b6941235952d3868e9"/>
+        </install>
+    </target>
+    
+    <macrodef name="maven_exec">
+        <attribute name="dir"/>
+        <element name="args" implicit="yes" optional="yes"/>
+        <sequential>
+            <local name="command"/>
+            <propertyregex property="command" input="${bin.dir}/maven/bin/mvn.cmd" regexp="/" replace="\\\\"/>
+            <exec executable="cmd" dir="@{dir}" failonerror="true">
+                <arg value="/C"/>
+                <arg value="${command}"/>
+                <args/>
+            </exec>
+        </sequential>
+    </macrodef>
+    
+    <!--
+    ============================================================================
+      Ninja
+    ============================================================================
+    -->
+    <target name="ninja.available">
+        <available file="${bin.dir}/ninja/ninja.exe" property="ninja.available"/>
+    </target>
+    
+    <target name="ninja.checksum" depends="ninja.available" if="ninja.available">
+        <checksum file="${bin.dir}/ninja/ninja.exe" algorithm="SHA-512" property="${ninja.SHA-512}" verifyProperty="ninja.installed"/> 
+    </target>
+  
+    <target name="ninja.install" depends="aria2.install,ninja.checksum" unless="ninja.installed">
+        <install name="ninja" url="https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-win.zip"/>
+    </target>
+    
+    <macrodef name="ninja_exec">
+        <attribute name="dir"/>
+        <attribute name="target" default="all"/>
+        <sequential>
+            <property environment="env"/>
+            <condition property="cores.count" value="${env.NUMBER_OF_PROCESSORS}" else="4">
+                <os family="windows" />
+            </condition>
+            <exec taskname="build" executable="${bin.dir}/ninja/ninja.exe" dir="@{dir}" failonerror="true">
+                <arg line="@{target}"/>
+                <arg value="-j"/>
+                <arg value="${cores.count}"/>
+            </exec>
+        </sequential>
+    </macrodef>
+    
+    <target name="tools.install" depends="aria2.install
+                                         ,cmake.install
+                                         ,maven.install
+                                         ,ninja.install"/>
+    
+    
+    <!--
+    ============================================================================
+      VcPkg
+    ============================================================================
+    -->
+    <target name="vcpkg.available">
+        <available file="${vcpkg.dir}/.vcpkg-root" property="vcpkg.available"/>
+    </target>
+    
+    <target name="vcpkg.install" depends="vcpkg.available" unless="vcpkg.available">
+        <install name="vcpkg" dir="${vcpkg.dir}" url="https://github.com/SokaDance/vcpkg/archive/turtle.zip" output="vcpkg-turtle.zip"/>
+        <!-- build -->
+        <exec taskname="vcpkg-build" executable="cmd" dir="${vcpkg.dir}" failonerror="true">
+            <arg value="/C"/>
+            <arg value="bootstrap-vcpkg.bat"/>
+        </exec>
+        <!-- install -->
+        <exec taskname="vcpkg-install" executable="${vcpkg.dir}/vcpkg.exe" dir="${vcpkg.dir}" failonerror="true">
+            <arg value="--triplet"/>
+            <arg value="x64-windows"/>
+            <arg value="--vcpkg-root"/>
+            <arg value="${vcpkg.dir}"/>
+            <arg value="install"/>
+            <arg value="boost-test"/>
+            <arg value="turtle"/>
+            <arg value="xerces-c"/>
+        </exec>
+    </target>
+    
+    <target name="install" depends="tools.install,vcpkg.install"/>
+    
+    <!--
+    ============================================================================
+      Generator
+    ============================================================================
+    -->
+    <target name="generator.cpp.build">
+        <maven_exec dir="${generators.dir}/soft.generator.cpp">
+            <arg value="-Dproject.target=../../out/soft.generator.cpp"/>
+            <arg line="clean verify" />
+        </maven_exec>
+    
+    </target>
+    
+    <target name="generator.cpp.clean">
+        <maven_exec dir="${generators.dir}/soft.generator.cpp">
+            <arg value="-Dproject.target=../../out/soft.generator.cpp"/>
+            <arg line="clean" />
+        </maven_exec>
+    </target>
+    
+    <target name="generator.cpp.install">
+        <unzip src="${out.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" dest="${bin.dir}/soft.generator.cpp"/>
+    </target>
+    
+    <target name="generator.cpp.dist">
+        <copy file="${out.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" todir="${dist.dir}"/>
+    </target>
+    
+    <target name="generators.build" depends="generator.cpp.build"/>
+    <target name="generators.clean" depends="generator.cpp.clean"/>
+    <target name="generators.install" depends="generator.cpp.install"/>
+    <target name="generators.dist" depends="generator.cpp.dist"/>
+    
+    <macrodef name="generator.cpp">
+        <attribute name="input"/>
+        <attribute name="output"/>
+        <sequential>
+            <java jar="${bin.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.jar"
+                  fork="true"
+                  failonerror="true"
+                  maxmemory="128m">
+                  <arg value="-m"/>
+                  <arg value="@{input}"/>
+                  <arg value="-o"/>
+                  <arg value="@{output}"/>
+                  <arg value="-t"/>
+                  <arg value="generateModel"/>
+                  <arg value="generateLibraryCMakeSources"/>
+                  <arg value="generateTests"/>
+                  <arg value="generateTestsCMakeProject"/>
+                  <arg value="generateTestsCMakeSources"/>
+            </java>
+        </sequential>
+    </macrodef>
+    
+    <!--
+    ============================================================================
+      Sources Generation
+    ============================================================================
+    -->
+    <target name="ecore.generate">
+        <generator.cpp input="${models.dir}/ecore.ecore" output="${root.dir}"/>
+    </target>
+    
+    <target name="ecore.clean">
+        <exec executable="git" dir="${libraries.dir}/ecore" failonerror="true">
+            <arg line="clean -xfd" />
+        </exec>
+        <exec executable="git" dir="${tests.dir}/ecore.tests" failonerror="true">
+            <arg line="clean -xfd" />
+        </exec>
+    </target>
+    
+    <target name="sources.generate" depends="ecore.generate"/>
+    
+    <target name="sources.clean" depends="ecore.clean"/> 
+    
+    <!--
+    ============================================================================
+      Project Configure/Build/Tests
+    ============================================================================
+    -->
+    <target name="project.configure.vs2015">
+        <cmake_exec generator="vs2015"/>
+    </target>
+    
+    <target name="project.configure.vs2017">
+        <cmake_exec generator="vs2017"/>
+    </target>
+    
+    <target name="project.configure.ninja.release">
+        <cmake_exec generator="ninja" configuration="release">
+            <arg value="-DCMAKE_MAKE_PROGRAM=${bin.dir}/ninja/ninja.exe"/>
+            <arg value="-DCMAKE_BUILD_TYPE=RelWithDebInfo"/>
+        </cmake_exec>
+    </target>
+    
+    <target name="project.configure.ninja.debug">
+        <cmake_exec generator="ninja" configuration="debug">
+            <arg value="-DCMAKE_MAKE_PROGRAM=${bin.dir}/ninja/ninja.exe"/>
+            <arg value="-DCMAKE_BUILD_TYPE=Debug"/>
+        </cmake_exec>
+    </target>
+    
+    <target name="project.configure.ninja" depends="project.configure.ninja.release,project.configure.ninja.debug"/>
+    
+    <target name="project.configure" depends="project.configure.vs2017,project.configure.ninja"/>
+    
+    <target name="project.build.debug">
+        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/debug"/>
+    </target>
+    
+    <target name="project.build.release">
+        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/release"/>
+    </target>
+    
+    <target name="project.build" depends="project.build.debug,project.build.release"/>
+    
+    <target name="project.tests.debug">
+        <ctest_exec dir="${out.dir}/ninja/${ant.project.name}/debug"/>
+    </target>
+    
+    <target name="project.tests.release">
+        <ctest_exec dir="${out.dir}/ninja/${ant.project.name}/release"/>
+    </target>
+    
+    <target name="project.tests" depends="project.tests.debug,project.tests.release"/>
+    
+    <target name="project.install">
+        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/release" target="install"/>
+        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/debug" target="install"/>
+    </target>
+    
+    <target name="project.package">
+        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/release" target="package"/>
+        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/debug" target="package"/>
+    </target>
+    
+    <target name="generators" depends="generators.build,generators.dist,generators.install"/>
+    
+    <target name="generates" depends="sources.generate,project.configure"/>
+    
+    <target name="build" depends="project.build"/>
+    
+    <target name="build.clean">
+        <exec executable="git" dir="${out.dir}" failonerror="true">
+            <arg line="clean -xfd" />
+        </exec>
+    </target>
+    
+    <target name="tests" depends="project.tests"/>
+    
+    <target name="clean" depends="generators.clean,sources.clean,build.clean"/>
+    
+    <target name="all" depends="install,generators,generates,build,tests"/>
+    
+</project>

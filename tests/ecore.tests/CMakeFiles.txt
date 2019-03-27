@@ -1,0 +1,37 @@
+# Sources
+
+set(SOURCE_FILES
+    src/main.cpp
+    src/AnyTests.cpp
+    src/ArrayEListTests.cpp
+    src/DiamondVsMixinsTests.cpp
+    src/DynamicEObjectTests.cpp
+    src/EcoreFactoryTests.cpp
+    src/EcorePackageTests.cpp
+    src/EAttributeTests.cpp
+    src/EClassTests.cpp
+    src/ECollectionViewTests.cpp
+    src/EDynamicModelTests.cpp
+    src/EFactoryTests.cpp
+    src/EObjectEListTests.cpp
+    src/EPackageTests.cpp
+    src/FileUriHandlerTests.cpp
+    src/LazyTests.cpp
+    src/NotificationTests.cpp
+    src/NotificationChainTests.cpp
+    src/ProxyTests.cpp
+    src/ResourceTests.cpp
+    src/ResourceSetTests.cpp
+    src/UriTests.cpp
+    src/XmlNamespacesTests.cpp
+    src/XmlResourceTests.cpp
+)
+
+set(SOURCE_ECORE_TESTS_FILES
+    src/ecore/tests/MockAdapter.hpp
+    src/ecore/tests/MockList.hpp
+    src/ecore/tests/MockNotifier.hpp
+    src/ecore/tests/MockNotification.hpp
+    src/ecore/tests/MockResource.hpp
+)
+

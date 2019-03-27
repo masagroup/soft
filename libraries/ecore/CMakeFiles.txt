@@ -1,0 +1,120 @@
+
+# Sources
+set(SOURCE_ECORE_FILES
+    src/ecore/EPackageRegistry.cpp
+    src/ecore/Uri.cpp
+)
+
+set(HEADER_ECORE_FILES
+    src/ecore/Any.hpp 
+    src/ecore/Assert.hpp 
+    src/ecore/EList.hpp
+    src/ecore/Constants.hpp
+    src/ecore/EAdapter.hpp
+    src/ecore/ECollectionView.hpp
+    src/ecore/EDiagnostic.hpp
+    src/ecore/ENotification.hpp
+    src/ecore/ENotificationChain.hpp
+    src/ecore/ENotifier.hpp
+    src/ecore/ENotifyingList.hpp
+    src/ecore/EPackageRegistry.hpp
+    src/ecore/EResource.hpp
+    src/ecore/EResourceFactory.hpp 
+    src/ecore/EResourceFactoryRegistry.hpp 
+    src/ecore/EResourceSet.hpp
+    src/ecore/ETreeIterator.hpp
+    src/ecore/EUnsettableList.hpp
+    src/ecore/EUriConverter.hpp
+    src/ecore/EUriHandler.hpp
+    src/ecore/Stream.hpp
+    src/ecore/Uri.hpp
+    src/ecore/Uri.inl
+)
+
+set(HEADER_ECORE_IMPL_FILES 
+    src/ecore/impl/AbstractAdapter.hpp
+    src/ecore/impl/AbstractArrayEList.hpp
+    src/ecore/impl/ArrayEList.hpp
+    src/ecore/impl/AbstractEList.hpp
+    src/ecore/impl/AbstractENotifyingList.hpp
+    src/ecore/impl/AbstractEObjectEList.hpp
+    src/ecore/impl/AbstractNotification.hpp
+    src/ecore/impl/AbstractNotifier.hpp
+    src/ecore/impl/AbstractResource.hpp
+    src/ecore/impl/BasicEObject.hpp
+    src/ecore/impl/Diagnostic.hpp
+    src/ecore/impl/DynamicEObject.hpp
+    src/ecore/impl/EcoreUtils.hpp
+    src/ecore/impl/EObjectEList.hpp
+    src/ecore/impl/FileUriHandler.hpp
+    src/ecore/impl/ImmutableEList.hpp
+    src/ecore/impl/Lazy.hpp
+    src/ecore/impl/Notification.hpp
+    src/ecore/impl/NotificationChain.hpp
+    src/ecore/impl/PackageRegistry.hpp
+    src/ecore/impl/ResourceFactoryRegistry.hpp
+    src/ecore/impl/Proxy.hpp
+    src/ecore/impl/ResourceSet.hpp
+    src/ecore/impl/SaxParserPool.hpp
+    src/ecore/impl/StringUtils.hpp
+    src/ecore/impl/TypeTraits.hpp
+    src/ecore/impl/UriConverter.hpp
+    src/ecore/impl/WeakPtr.hpp
+    src/ecore/impl/XmlInputSource.hpp
+    src/ecore/impl/XmlHandler.hpp
+    src/ecore/impl/XmlNamespaces.hpp
+    src/ecore/impl/XmlResource.hpp
+    src/ecore/impl/XmlResourceFactory.hpp
+)
+
+set(SOURCE_ECORE_IMPL_FILES 
+    src/ecore/impl/AbstractAdapter.cpp
+    src/ecore/impl/AbstractNotification.cpp
+    src/ecore/impl/AbstractResource.cpp
+    src/ecore/impl/BasicEObject.cpp
+    src/ecore/impl/DynamicEObject.cpp
+    src/ecore/impl/EcoreUtils.cpp
+    src/ecore/impl/FileUriHandler.cpp
+    src/ecore/impl/Notification.cpp
+    src/ecore/impl/NotificationChain.cpp
+    src/ecore/impl/PackageRegistry.cpp
+    src/ecore/impl/ResourceFactoryRegistry.cpp
+    src/ecore/impl/ResourceSet.cpp
+    src/ecore/impl/SaxParserPool.cpp
+    src/ecore/impl/UriConverter.cpp
+    src/ecore/impl/XmlHandler.cpp
+    src/ecore/impl/XmlNamespaces.cpp
+    src/ecore/impl/XmlResource.cpp
+    src/ecore/impl/XmlResourceFactory.cpp
+)
+
+set(HEADER_ECORE_EXT_FILES 
+    src/ecore/ext/EAttributeExt.hpp
+    src/ecore/ext/EClassExt.hpp
+    src/ecore/ext/EClassifierExt.hpp
+    src/ecore/ext/EcoreFactoryExt.hpp
+    src/ecore/ext/EFactoryExt.hpp
+    src/ecore/ext/EModelElementExt.hpp
+    src/ecore/ext/EOperationExt.hpp
+    src/ecore/ext/EPackageExt.hpp
+    src/ecore/ext/EReferenceExt.hpp
+    src/ecore/ext/EStructuralFeatureExt.hpp
+    src/ecore/ext/ETypedElementExt.hpp
+)
+
+set(SOURCE_ECORE_EXT_FILES 
+    src/ecore/ext/EAttributeExt.cpp
+    src/ecore/ext/EClassExt.cpp
+    src/ecore/ext/EClassifierExt.cpp
+    src/ecore/ext/EcoreFactoryExt.cpp
+    src/ecore/ext/EFactoryExt.cpp
+    src/ecore/ext/EModelElementExt.cpp
+    src/ecore/ext/EOperationExt.cpp
+    src/ecore/ext/EPackageExt.cpp
+    src/ecore/ext/EReferenceExt.cpp
+    src/ecore/ext/EStructuralFeatureExt.cpp
+    src/ecore/ext/ETypedElementExt.cpp
+)
+
+
+

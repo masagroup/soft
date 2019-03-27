@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="ecore" nsURI="http://www.eclipse.org/emf/2002/Ecore" nsPrefix="ecore">
+  <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+    <details key="factory" value="extension"/>
+    <details key="lazy" value="list:function"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="EAttribute" eSuperTypes="#//EStructuralFeature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ConsistentTransient"/>
+    </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="iD" eType="#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eAttributeType" lowerBound="1"
+        eType="#//EDataType" changeable="false" volatile="true" transient="true" derived="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EAnnotation" eSuperTypes="#//EModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="WellFormed WellFormedSourceURI"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="details" upperBound="-1"
+        eType="#//EStringToStringMapEntry" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eModelElement" eType="#//EModelElement"
+        transient="true" resolveProxies="false" eOpposite="#//EModelElement/eAnnotations"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="contents" upperBound="-1"
+        eType="#//EObject" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="references" upperBound="-1"
+        eType="#//EObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EClass" eSuperTypes="#//EClassifier">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="InterfaceIsAbstract AtMostOneID UniqueFeatureNames UniqueOperationSignatures NoCircularSuperTypes WellFormedMapEntryClass ConsistentSuperTypes DisjointFeatureAndOperationSignatures"/>
+    </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
+    <eOperations name="isSuperTypeOf" eType="#//EBoolean">
+      <eParameters name="someClass" eType="#//EClass"/>
+    </eOperations>
+    <eOperations name="getFeatureCount" eType="#//EInt"/>
+    <eOperations name="getEStructuralFeature" eType="#//EStructuralFeature">
+      <eParameters name="featureID" eType="#//EInt"/>
+    </eOperations>
+    <eOperations name="getEStructuralFeature" eType="#//EStructuralFeature">
+      <eParameters name="featureName" eType="#//EString"/>
+    </eOperations>
+    <eOperations name="getFeatureID" eType="#//EInt">
+      <eParameters name="feature" eType="#//EStructuralFeature"/>
+    </eOperations>
+    <eOperations name="getOperationCount" eType="#//EInt"/>
+    <eOperations name="getEOperation" eType="#//EOperation">
+      <eParameters name="operationID" eType="#//EInt"/>
+    </eOperations>
+    <eOperations name="getOperationID" eType="#//EInt">
+      <eParameters name="operation" eType="#//EOperation"/>
+    </eOperations>
+    <eOperations name="getOverride" eType="#//EOperation">
+      <eParameters name="operation" eType="#//EOperation"/>
+    </eOperations>
+    <eOperations name="getFeatureType" eType="#//EClassifier">
+      <eParameters name="feature" eType="#//EStructuralFeature"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="abstract" eType="#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="interface" eType="#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eStructuralFeatures" upperBound="-1"
+        eType="#//EStructuralFeature" containment="true" resolveProxies="false" eOpposite="#//EStructuralFeature/eContainingClass"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eAttributes" upperBound="-1"
+        eType="#//EAttribute" changeable="false" transient="true" derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="action"/>
+        <details key="const" value="return"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eReferences" upperBound="-1"
+        eType="#//EReference" changeable="false" transient="true" derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="action"/>
+        <details key="const" value="return"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eSuperTypes" upperBound="-1"
+        eType="#//EClass" unsettable="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="issetVisibility" value="no"/>
+        <details key="unsetVisibility" value="no:public"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eOperations" upperBound="-1"
+        eType="#//EOperation" containment="true" resolveProxies="false" eOpposite="#//EOperation/eContainingClass"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eContainments" upperBound="-1"
+        eType="#//EReference" changeable="false" transient="true" derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="action"/>
+        <details key="const" value="return"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eCrossReferences" upperBound="-1"
+        eType="#//EReference" changeable="false" transient="true" derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="action"/>
+        <details key="const" value="return"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eAllAttributes" upperBound="-1"
+        eType="#//EAttribute" changeable="false" transient="true" derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="action"/>
+        <details key="const" value="return"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eAllReferences" upperBound="-1"
+        eType="#//EReference" changeable="false" transient="true" derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="action"/>
+        <details key="const" value="return"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eAllContainments" upperBound="-1"
+        eType="#//EReference" changeable="false" transient="true" derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="action"/>
+        <details key="const" value="return"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eAllOperations" upperBound="-1"
+        eType="#//EOperation" changeable="false" transient="true" derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="action"/>
+        <details key="const" value="return"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eAllStructuralFeatures"
+        upperBound="-1" eType="#//EStructuralFeature" changeable="false" transient="true"
+        derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="action"/>
+        <details key="const" value="return"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eAllSuperTypes" upperBound="-1"
+        eType="#//EClass" changeable="false" transient="true" derived="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="action"/>
+        <details key="const" value="return"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eIDAttribute" eType="#//EAttribute"
+        changeable="false" transient="true" derived="true" resolveProxies="false">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="lazy" value="action"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EClassifier" abstract="true" eSuperTypes="#//ENamedElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="WellFormedInstanceTypeName UniqueTypeParameterNames"/>
+    </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
+    <eOperations name="isInstance" eType="#//EBoolean">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const" value="true"/>
+      </eAnnotations>
+      <eParameters name="object" eType="#//EJavaObject"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="instanceClass">
+      <eGenericType eClassifier="#//EJavaClass">
+        <eTypeArguments/>
+      </eGenericType>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultValue" eType="#//EJavaObject"
+        changeable="false" volatile="true" transient="true" derived="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ePackage" eType="#//EPackage"
+        changeable="false" transient="true" eOpposite="#//EPackage/eClassifiers"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="classifierID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="-1">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="setVisibility" value="no:public"/>
+        <details key="lazy" value="function"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EDataType" eSuperTypes="#//EClassifier">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="serializable" eType="#//EBoolean"
+        defaultValueLiteral="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EEnum" eSuperTypes="#//EDataType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="UniqueEnumeratorNames UniqueEnumeratorLiterals"/>
+    </eAnnotations>
+    <eOperations name="getEEnumLiteral" eType="#//EEnumLiteral">
+      <eParameters name="name" eType="#//EString"/>
+    </eOperations>
+    <eOperations name="getEEnumLiteral" eType="#//EEnumLiteral">
+      <eParameters name="value" eType="#//EInt"/>
+    </eOperations>
+    <eOperations name="getEEnumLiteralByLiteral" eType="#//EEnumLiteral">
+      <eParameters name="literal" eType="#//EString"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eLiterals" upperBound="-1"
+        eType="#//EEnumLiteral" containment="true" resolveProxies="false" eOpposite="#//EEnumLiteral/eEnum"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EEnumLiteral" eSuperTypes="#//ENamedElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="instance" eType="#//EEnumerator"
+        transient="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="literal" eType="#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eEnum" eType="#//EEnum"
+        changeable="false" transient="true" resolveProxies="false" eOpposite="#//EEnum/eLiterals"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EFactory" eSuperTypes="#//EModelElement">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
+    <eOperations name="create" eType="#//EObject">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const"/>
+      </eAnnotations>
+      <eParameters name="eClass" eType="#//EClass"/>
+    </eOperations>
+    <eOperations name="createFromString" eType="#//EJavaObject">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const"/>
+      </eAnnotations>
+      <eParameters name="eDataType" eType="#//EDataType"/>
+      <eParameters name="literalValue" eType="#//EString"/>
+    </eOperations>
+    <eOperations name="convertToString" eType="#//EString">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const"/>
+      </eAnnotations>
+      <eParameters name="eDataType" eType="#//EDataType"/>
+      <eParameters name="instanceValue" eType="#//EJavaObject"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ePackage" lowerBound="1"
+        eType="#//EPackage" transient="true" resolveProxies="false" eOpposite="#//EPackage/eFactoryInstance"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EModelElement" abstract="true">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
+    <eOperations name="getEAnnotation" eType="#//EAnnotation">
+      <eParameters name="source" eType="#//EString"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eAnnotations" upperBound="-1"
+        eType="#//EAnnotation" containment="true" resolveProxies="false" eOpposite="#//EAnnotation/eModelElement"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ENamedElement" abstract="true" eSuperTypes="#//EModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="WellFormedName"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EObject">
+    <eOperations name="eClass" eType="#//EClass">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const"/>
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="eIsProxy" eType="#//EBoolean">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const"/>
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="eResource" eType="#//EResource">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const"/>
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="eContainer" eType="#//EObject">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const"/>
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="eContainingFeature" eType="#//EStructuralFeature">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const"/>
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="eContainmentFeature" eType="#//EReference">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const"/>
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="eContents">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const" value="return"/>
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eGenericType eClassifier="#//EEList">
+        <eTypeArguments eClassifier="#//EObject"/>
+      </eGenericType>
+    </eOperations>
+    <eOperations name="eAllContents">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const" value="return"/>
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eGenericType eClassifier="#//ETreeIterator">
+        <eTypeArguments eClassifier="#//EObject"/>
+      </eGenericType>
+    </eOperations>
+    <eOperations name="eCrossReferences">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const" value="return"/>
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eGenericType eClassifier="#//EEList">
+        <eTypeArguments eClassifier="#//EObject"/>
+      </eGenericType>
+    </eOperations>
+    <eOperations name="eGet" eType="#//EJavaObject">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const"/>
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eParameters name="feature" eType="#//EStructuralFeature"/>
+    </eOperations>
+    <eOperations name="eGet" eType="#//EJavaObject">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const"/>
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eParameters name="feature" eType="#//EStructuralFeature"/>
+      <eParameters name="resolve" eType="#//EBoolean"/>
+    </eOperations>
+    <eOperations name="eSet">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eParameters name="feature" eType="#//EStructuralFeature"/>
+      <eParameters name="newValue" eType="#//EJavaObject"/>
+    </eOperations>
+    <eOperations name="eIsSet" eType="#//EBoolean">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="const"/>
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eParameters name="feature" eType="#//EStructuralFeature"/>
+    </eOperations>
+    <eOperations name="eUnset">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eParameters name="feature" eType="#//EStructuralFeature"/>
+    </eOperations>
+    <eOperations name="eInvoke" eType="#//EJavaObject" eExceptions="#//EInvocationTargetException">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eParameters name="operation" eType="#//EOperation"/>
+      <eParameters name="arguments">
+        <eGenericType eClassifier="#//EEList">
+          <eTypeArguments/>
+        </eGenericType>
+      </eParameters>
+    </eOperations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EOperation" eSuperTypes="#//ETypedElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="UniqueParameterNames UniqueTypeParameterNames NoRepeatingVoid"/>
+    </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
+    <eOperations name="isOverrideOf" eType="#//EBoolean">
+      <eParameters name="someOperation" eType="#//EOperation"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eContainingClass" eType="#//EClass"
+        changeable="false" transient="true" resolveProxies="false" eOpposite="#//EClass/eOperations"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eParameters" upperBound="-1"
+        eType="#//EParameter" containment="true" resolveProxies="false" eOpposite="#//EParameter/eOperation"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eExceptions" upperBound="-1"
+        eType="#//EClassifier" unsettable="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="issetVisibility" value="no"/>
+        <details key="unsetVisibility" value="no:public"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operationID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="-1">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="setVisibility" value="no:public"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EPackage" eSuperTypes="#//ENamedElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="WellFormedNsURI WellFormedNsPrefix UniqueSubpackageNames UniqueClassifierNames UniqueNsURIs"/>
+    </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
+    <eOperations name="getEClassifier" eType="#//EClassifier">
+      <eParameters name="name" eType="#//EString"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nsURI" eType="#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nsPrefix" eType="#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eFactoryInstance" lowerBound="1"
+        eType="#//EFactory" transient="true" containment="true" resolveProxies="false"
+        eOpposite="#//EFactory/ePackage"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eClassifiers" upperBound="-1"
+        eType="#//EClassifier" containment="true" eOpposite="#//EClassifier/ePackage"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eSubPackages" upperBound="-1"
+        eType="#//EPackage" containment="true" eOpposite="#//EPackage/eSuperPackage"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eSuperPackage" eType="#//EPackage"
+        changeable="false" transient="true" eOpposite="#//EPackage/eSubPackages"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EParameter" eSuperTypes="#//ETypedElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eOperation" eType="#//EOperation"
+        changeable="false" transient="true" resolveProxies="false" eOpposite="#//EOperation/eParameters"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EReference" eSuperTypes="#//EStructuralFeature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ConsistentOpposite SingleContainer ConsistentKeys ConsistentUnique ConsistentContainer"/>
+    </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="containment" eType="#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="container" eType="#//EBoolean"
+        changeable="false" volatile="true" transient="true" derived="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="resolveProxies" eType="#//EBoolean"
+        defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eOpposite" eType="#//EReference"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eReferenceType" lowerBound="1"
+        eType="#//EClass" changeable="false" volatile="true" transient="true" derived="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eKeys" upperBound="-1"
+        eType="#//EAttribute"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EStructuralFeature" abstract="true"
+      eSuperTypes="#//ETypedElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ValidDefaultValueLiteral"/>
+    </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
+    <eOperations name="getContainerClass">
+      <eGenericType eClassifier="#//EJavaClass">
+        <eTypeArguments/>
+      </eGenericType>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="changeable" eType="#//EBoolean"
+        defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="volatile" eType="#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="transient" eType="#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultValueLiteral" eType="#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultValue" eType="#//EJavaObject"
+        volatile="true" transient="true" derived="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unsettable" eType="#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="derived" eType="#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eContainingClass" eType="#//EClass"
+        changeable="false" transient="true" resolveProxies="false" eOpposite="#//EClass/eStructuralFeatures"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="featureID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="-1">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="setVisibility" value="no:public"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ETypedElement" abstract="true" eSuperTypes="#//ENamedElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ValidLowerBound ValidUpperBound ConsistentBounds ValidType"/>
+    </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="extension" value="true"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ordered" eType="#//EBoolean"
+        defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unique" eType="#//EBoolean"
+        defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lowerBound" eType="#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="upperBound" eType="#//EInt"
+        defaultValueLiteral="1"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="many" eType="#//EBoolean"
+        changeable="false" volatile="true" transient="true" derived="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="required" eType="#//EBoolean"
+        changeable="false" volatile="true" transient="true" derived="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eType" eType="#//EClassifier"
+        unsettable="true">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+        <details key="issetVisibility" value="no"/>
+        <details key="unsetVisibility" value="no:public"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EBoolean" instanceTypeName="bool">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="baseType" value="http://www.w3.org/2001/XMLSchema#boolean"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EChar" instanceClassName="char"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EDate" instanceTypeName="std::time_t">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <details key="include" value="ctime"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EDiagnosticChain" serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EDouble" instanceClassName="double">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="baseType" value="http://www.w3.org/2001/XMLSchema#double"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EEList" instanceTypeName="std::shared_ptr&lt;ecore::EList&lt;ecore::EObject >>"
+      serializable="false">
+    <eTypeParameters name="E"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EEnumerator" serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EFloat" instanceClassName="float">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="baseType" value="http://www.w3.org/2001/XMLSchema#float"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EInt" instanceClassName="int">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="baseType" value="http://www.w3.org/2001/XMLSchema#int"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EJavaClass" instanceTypeName="const std::type_info*"
+      serializable="false">
+    <eTypeParameters name="T"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EJavaObject" instanceTypeName="ecore::Any"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="ELong" instanceClassName="long">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="baseType" value="http://www.w3.org/2001/XMLSchema#long"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EResource" instanceTypeName="std::shared_ptr&lt;ecore::EResource>"
+      serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EResourceSet" serializable="false"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EShort" instanceClassName="short">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="baseType" value="http://www.w3.org/2001/XMLSchema#short"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EString" instanceTypeName="std::string">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="baseType" value="http://www.w3.org/2001/XMLSchema#string"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EStringToStringMapEntry" instanceClassName="java.util.Map$Entry">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="ETreeIterator" instanceTypeName="std::shared_ptr&lt;ecore::ECollectionView&lt;std::shared_ptr&lt;ecore::EObject>>>"
+      serializable="false">
+    <eTypeParameters name="E"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="EInvocationTargetException" serializable="false"/>
+</ecore:EPackage>
