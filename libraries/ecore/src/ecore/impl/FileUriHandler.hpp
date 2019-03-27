@@ -10,12 +10,13 @@
 #ifndef ECORE_FILEURIHANDLER_HPP_
 #define ECORE_FILEURIHANDLER_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/EUriHandler.hpp"
 
 namespace ecore::impl
 {
     
-    class FileUriHandler : public EUriHandler
+    class ECORE_API FileUriHandler : public EUriHandler
     {
     public:
         FileUriHandler();

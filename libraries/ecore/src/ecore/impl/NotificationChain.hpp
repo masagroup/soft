@@ -10,6 +10,10 @@
 #ifndef ECORE_NOTIFICATIONCHAIN_HPP_
 #define ECORE_NOTIFICATIONCHAIN_HPP_
 
+#pragma warning( push )
+#pragma warning( disable : 4275 )
+
+#include "ecore/Exports.hpp"
 #include "ecore/ENotificationChain.hpp"
 
 #include <memory>
@@ -17,7 +21,7 @@
 
 namespace ecore::impl
 {
-    class NotificationChain : public ENotificationChain , public std::enable_shared_from_this<NotificationChain>
+    class ECORE_API NotificationChain : public ENotificationChain , public std::enable_shared_from_this<NotificationChain>
     {
     public:
         NotificationChain() = default;
@@ -33,6 +37,6 @@ namespace ecore::impl
     };
 }
 
-
+#pragma warning( pop )
 
 #endif /* ECORE_NOTIFICATIONCHAIN_HPP_ */

@@ -17,7 +17,7 @@
 namespace ecore::impl
 {
 
-    class DynamicEObject : public BasicEObject
+    class ECORE_API DynamicEObject : public BasicEObject
     {
     public:
         DynamicEObject();

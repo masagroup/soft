@@ -10,12 +10,13 @@
 #ifndef ECORE_URI_HPP_
 #define ECORE_URI_HPP_
 
+#include "ecore/Exports.hpp"
 #include <string>
 #include <vector>
 
 namespace ecore
 {
-    class Uri
+    class ECORE_API Uri
     {
     public:
         explicit Uri();

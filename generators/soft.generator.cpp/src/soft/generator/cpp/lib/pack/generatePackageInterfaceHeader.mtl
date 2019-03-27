@@ -14,6 +14,7 @@
 [startGuard(anEPackage,'Package')/]
 
 #include "ecore/EPackage.hpp"
+#include "[anEPackage.getInterfaceFolder()/]/Exports.hpp"
 
 namespace [namespaceName/] 
 {
@@ -29,7 +30,7 @@ namespace [anEPackage.name/]
     The Metamodel Package for the [anEPackage.name/] metamodel. This package is used to enable the reflection of model elements. 
     It contains all model elements which were described in an ecore file.
     */
-    class [className/] : public virtual [getShortQualifiedName('ecore::EPackage',namespaceName)/] 
+    class [anEPackage.name.toUpper()/]_API [className/] : public virtual [getShortQualifiedName('ecore::EPackage',namespaceName)/] 
     {
     [generateSingletonDeclaration(className)/]
    

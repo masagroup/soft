@@ -10,6 +10,7 @@
 #ifndef ECORE_ERESOURCEFACTORY_HPP_
 #define ECORE_ERESOURCEFACTORY_HPP_
 
+#include "ecore/Exports.hpp"
 #include <memory>
 
 namespace ecore
@@ -18,7 +19,7 @@ namespace ecore
 
     class Uri;
 
-    class EResourceFactory
+    class ECORE_API EResourceFactory
     {
     public:
         virtual ~EResourceFactory() = default;

@@ -10,6 +10,7 @@
 #ifndef ECORE_NOTIFICATION_CHAIN_HPP_
 #define ECORE_NOTIFICATION_CHAIN_HPP_
 
+#include "ecore/Exports.hpp"
 
 #include <memory>
 
@@ -18,7 +19,7 @@ namespace ecore
 
     class ENotification;
 
-    class ENotificationChain
+    class ECORE_API ENotificationChain
     {
     public:
         virtual ~ENotificationChain() {}

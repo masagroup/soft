@@ -18,7 +18,7 @@ EResourceFactory* ResourceFactoryRegistry::getFactory( const Uri& uri )
     {
         auto it = protocolToFactory_.find( uri.getScheme() );
         if( it != protocolToFactory_.end() )
-            return it->second.get();
+            return it->second;
     }
     {
         std::size_t ndx = uri.getPath().find_last_of( '.' );
@@ -27,13 +27,13 @@ EResourceFactory* ResourceFactoryRegistry::getFactory( const Uri& uri )
             auto extension = uri.getPath().substr( ndx + 1 );
             auto it = extensionToFactory_.find( extension );
             if( it != extensionToFactory_.end() )
-                return it->second.get();
+                return it->second;
         }
     }
     {
         auto it = extensionToFactory_.find( DEFAULT_EXTENSION );
         if( it != extensionToFactory_.end() )
-            return it->second.get();
+            return it->second;
     }
 
     return nullptr;

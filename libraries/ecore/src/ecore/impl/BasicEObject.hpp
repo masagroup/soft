@@ -10,6 +10,7 @@
 #ifndef ECORE_BASICEOBJECT_HPP_
 #define ECORE_BASICEOBJECT_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/EObject.hpp"
 #include "ecore/impl/AbstractNotifier.hpp"
 
@@ -23,7 +24,7 @@ namespace ecore
 namespace ecore::impl
 {
 
-    class BasicEObject : public virtual AbstractNotifier<EObject>
+    class ECORE_API BasicEObject : public virtual AbstractNotifier<EObject>
     {
     public:
         BasicEObject();

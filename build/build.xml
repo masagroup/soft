@@ -280,7 +280,7 @@
         </exec>
     </target>
     
-    <target name="install" depends="tools.install,vcpkg.install"/>
+    <target name="configure" depends="tools.install,vcpkg.install"/>
     
     <!--
     ============================================================================
@@ -318,6 +318,7 @@
     <macrodef name="generator.cpp">
         <attribute name="input"/>
         <attribute name="output"/>
+        <element name="args" implicit="yes" optional="yes"/>
         <sequential>
             <java jar="${bin.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.jar"
                   fork="true"
@@ -327,12 +328,7 @@
                   <arg value="@{input}"/>
                   <arg value="-o"/>
                   <arg value="@{output}"/>
-                  <arg value="-t"/>
-                  <arg value="generateModel"/>
-                  <arg value="generateLibraryCMakeSources"/>
-                  <arg value="generateTests"/>
-                  <arg value="generateTestsCMakeProject"/>
-                  <arg value="generateTestsCMakeSources"/>
+                  <args/>
             </java>
         </sequential>
     </macrodef>
@@ -343,7 +339,10 @@
     ============================================================================
     -->
     <target name="ecore.generate">
-        <generator.cpp input="${models.dir}/ecore.ecore" output="${root.dir}"/>
+        <generator.cpp input="${models.dir}/ecore.ecore" output="${root.dir}">
+            <arg value="-nt"/>
+            <arg value="generateLibraryCMakeProject"/>
+        </generator.cpp>
     </target>
     
     <target name="ecore.clean">
@@ -434,8 +433,12 @@
     
     <target name="tests" depends="project.tests"/>
     
+    <target name="install" depends="project.install"/>
+    
+    <target name="package" depends="project.package"/>
+    
     <target name="clean" depends="generators.clean,sources.clean,build.clean"/>
     
-    <target name="all" depends="install,generators,generates,build,tests"/>
+    <target name="all" depends="configure,generators,generates,build,tests,install,package"/>
     
 </project>

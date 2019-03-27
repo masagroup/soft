@@ -15,6 +15,7 @@
 #ifndef ECORE_EOBJECT_HPP
 #define ECORE_EOBJECT_HPP
 
+#include "ecore/Exports.hpp"
 #include "ecore/ENotifier.hpp"
 
 #include <list>
@@ -73,7 +74,7 @@ namespace ecore
 
 namespace ecore 
 {
-    class EObject  : virtual public ENotifier
+    class ECORE_API EObject  : virtual public ENotifier
     {
     public:
         virtual ~EObject() = default;

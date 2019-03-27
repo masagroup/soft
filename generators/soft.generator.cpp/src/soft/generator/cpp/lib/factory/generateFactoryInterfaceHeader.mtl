@@ -12,6 +12,7 @@
 [startGuard(anEPackage,'Factory')/]
 
 #include "ecore/EFactory.hpp"
+#include "[anEPackage.getInterfaceFolder()/]/Exports.hpp"
 
 #include <memory>
 
@@ -27,7 +28,7 @@ namespace [namespaceName/]
 [comment namespace /]
 namespace [namespaceName/] 
 {
-    class [className/] : public virtual [getShortQualifiedName('ecore::EFactory',namespaceName)/] 
+    class [anEPackage.name.toUpper()/]_API [className/] : public virtual [getShortQualifiedName('ecore::EFactory',namespaceName)/] 
     {
     [generateSingletonDeclaration(className)/]
 
@@ -42,6 +43,7 @@ namespace [namespaceName/]
         virtual std::shared_ptr<[anEPackage.getInterfaceName()/]> get[anEPackage.getInterfaceName()/]() const = 0;
     };
 }
+
 [endGuard(anEPackage,'Factory')/]
 [/file]
 [/template]

@@ -10,6 +10,7 @@
 #ifndef ECORE_EURICONVERTER_HPP_
 #define ECORE_EURICONVERTER_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/EList.hpp"
 
 #include <memory>
@@ -21,7 +22,7 @@ namespace ecore
 
     class EUriHandler;
 
-    class EUriConverter
+    class ECORE_API EUriConverter
     {
     public:
         virtual ~EUriConverter() = default;

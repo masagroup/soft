@@ -10,6 +10,7 @@
 #ifndef ECORE_RESOURCE_HPP_
 #define ECORE_RESOURCE_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/EResource.hpp"
 #include "ecore/Uri.hpp"
 #include "ecore/impl/AbstractNotifier.hpp"
@@ -27,7 +28,7 @@ namespace ecore
 
 namespace ecore::impl
 {
-    class AbstractResource : public virtual AbstractNotifier<EResource>
+    class ECORE_API AbstractResource : public virtual AbstractNotifier<EResource>
     {
     public:
         AbstractResource();

@@ -10,6 +10,8 @@
 #ifndef ECORE_EADAPTER_HPP_
 #define ECORE_EADAPTER_HPP_
 
+#include "ecore/Exports.hpp"
+
 #include <memory>
 
 namespace ecore
@@ -18,7 +20,7 @@ namespace ecore
     class ENotification;
     class ENotifier;
     
-    class EAdapter
+    class ECORE_API EAdapter
     {
     public:
         virtual ~EAdapter() = default;

@@ -13,7 +13,6 @@ project(ecore CXX)
 if(NOT CMAKE_BUILD_TYPE) 
     set(CMAKE_BUILD_TYPE Debug)
 endif()
-set(CMAKE_DEBUG_POSTFIX d)
 set(CMAKE_CXX_STANDARD 17)
 
 #dependencies
@@ -33,33 +32,55 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/CMakeGenerated.txt")
    list(APPEND CMAKE_FILES "CMakeGenerated.txt")
 endif()
 
-#library
-add_library(${PROJECT_NAME} STATIC  ${CMAKE_FILES}
-                                    ${GENERATED_HEADER_ECORE_EXT_FILES}
-                                    ${GENERATED_HEADER_ECORE_FILES}
-                                    ${GENERATED_HEADER_ECORE_IMPL_FILES}
-                                    ${GENERATED_HEADER_FILES}
-                                    ${GENERATED_SOURCE_ECORE_EXT_FILES}
-                                    ${GENERATED_SOURCE_ECORE_FILES}
-                                    ${GENERATED_SOURCE_ECORE_IMPL_FILES}
-                                    ${GENERATED_SOURCE_FILES}
-                                    ${HEADER_ECORE_EXT_FILES}
-                                    ${HEADER_ECORE_FILES}
-                                    ${HEADER_ECORE_IMPL_FILES}
-                                    ${HEADER_FILES}
-                                    ${SOURCE_ECORE_EXT_FILES}
-                                    ${SOURCE_ECORE_FILES}
-                                    ${SOURCE_ECORE_IMPL_FILES}
-                                    ${SOURCE_FILES}
+set(PROJECT_SOURCES ${CMAKE_FILES}
+                    ${GENERATED_HEADER_ECORE_EXT_FILES}
+                    ${GENERATED_HEADER_ECORE_FILES}
+                    ${GENERATED_HEADER_ECORE_IMPL_FILES}
+                    ${GENERATED_HEADER_FILES}
+                    ${GENERATED_SOURCE_ECORE_EXT_FILES}
+                    ${GENERATED_SOURCE_ECORE_FILES}
+                    ${GENERATED_SOURCE_ECORE_IMPL_FILES}
+                    ${GENERATED_SOURCE_FILES}
+                    ${HEADER_ECORE_EXT_FILES}
+                    ${HEADER_ECORE_FILES}
+                    ${HEADER_ECORE_IMPL_FILES}
+                    ${HEADER_FILES}
+                    ${SOURCE_ECORE_EXT_FILES}
+                    ${SOURCE_ECORE_FILES}
+                    ${SOURCE_ECORE_IMPL_FILES}
+                    ${SOURCE_FILES} )
+
+# shared library
+add_library(${PROJECT_NAME} SHARED ${PROJECT_SOURCES})
+add_library(${PROJECT_NAME}::shared ALIAS ${PROJECT_NAME})
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src-gen>
 )
-target_include_directories(${PROJECT_NAME} PUBLIC src)
-target_include_directories(${PROJECT_NAME} PUBLIC src-gen)
-target_include_directories(${PROJECT_NAME} PRIVATE ${XercesC_INCLUDE_DIRS})
-target_compile_options(${PROJECT_NAME} PRIVATE /wd4250) 
-target_compile_options(${PROJECT_NAME} PRIVATE "/MP")
+target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4250 /wd4251 )
+target_compile_definitions( ${PROJECT_NAME} PRIVATE ECORE_EXPORTS)
 target_compile_definitions( ${PROJECT_NAME} PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${XercesC_LIBRARIES})
-set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
+target_link_libraries(${PROJECT_NAME} PUBLIC XercesC::XercesC)
+
+# static library
+add_library(${PROJECT_NAME}.static STATIC ${PROJECT_SOURCES})
+add_library(${PROJECT_NAME}::static ALIAS ${PROJECT_NAME}.static)
+target_include_directories(${PROJECT_NAME}.static
+    PUBLIC
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src-gen>
+)
+target_compile_options(${PROJECT_NAME}.static PRIVATE /MP /wd4250)
+target_compile_definitions(${PROJECT_NAME}.static PUBLIC ECORE_STATIC_LIB)
+target_compile_definitions(${PROJECT_NAME}.static PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
+target_link_libraries(${PROJECT_NAME}.static PRIVATE XercesC::XercesC)
+
+# libraries names
+set_target_properties(${PROJECT_NAME}.static PROPERTIES PREFIX lib)
+set_target_properties(${PROJECT_NAME} ${PROJECT_NAME}.static PROPERTIES OUTPUT_NAME ${PROJECT_NAME}-vc${MSVC_TOOLSET_VERSION}-mt$<$<CONFIG:Debug>:-gd>)
 
 # Visual studio specific project layout
 source_group(cmake FILES ${CMAKE_FILES})
@@ -76,12 +97,26 @@ source_group(src-gen\\ecore\\impl FILES ${GENERATED_HEADER_ECORE_IMPL_FILES} ${G
 #-----------------------------------------------------
 # Install binaries and header
 #-----------------------------------------------------
-install(TARGETS ${PROJECT_NAME} DESTINATION lib )
-install(FILES ${HEADER_FILES} ${GENERATED_HEADER_FILES} DESTINATION include)
-install(FILES ${HEADER_ECORE_FILES} ${GENERATED_HEADER_ECORE_FILES} DESTINATION include/ecore)
-install(FILES ${HEADER_ECORE_EXT_FILES} ${GENERATED_HEADER_ECORE_EXT_FILES} DESTINATION include/ecore/ext)
-install(FILES ${HEADER_ECORE_IMPL_FILES} ${GENERATED_HEADER_ECORE_IMPL_FILES} DESTINATION include/ecore/impl)
+include(GNUInstallDirs)
+install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}.static
+        EXPORT  ${PROJECT_NAME}.targets
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
+install(FILES ${HEADER_FILES} ${GENERATED_HEADER_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${HEADER_ECORE_FILES} ${GENERATED_HEADER_ECORE_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ecore)
+install(FILES ${HEADER_ECORE_EXT_FILES} ${GENERATED_HEADER_ECORE_EXT_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ecore/ext)
+install(FILES ${HEADER_ECORE_IMPL_FILES} ${GENERATED_HEADER_ECORE_IMPL_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ecore/impl)
+
+install(EXPORT ${PROJECT_NAME}.targets 
+        FILE EcoreTargets.cmake 
+        NAMESPACE Ecore:: 
+        DESTINATION cmake)
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file( EcoreConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/EcoreConfig.cmake INSTALL_DESTINATION cmake )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/EcoreConfig.cmake DESTINATION cmake)
 
 #-----------------------------------------------------
 # Package binaries and header

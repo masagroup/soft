@@ -10,12 +10,13 @@
 #ifndef ECORE_IMPL_ABSTRACT_ADAPTER_HPP_
 #define ECORE_IMPL_ABSTRACT_ADAPTER_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/EAdapter.hpp"
 
 namespace ecore::impl
 {
 
-    class AbstractAdapter : public EAdapter
+    class ECORE_API AbstractAdapter : public EAdapter
     {
     public:
         AbstractAdapter() = default;

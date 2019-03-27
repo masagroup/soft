@@ -10,12 +10,12 @@
 #ifndef ECORE_URICONVERTER_HPP_
 #define ECORE_URICONVERTER_HPP_
 
+#include "ecore/Exports.hpp"
 #include "ecore/EUriConverter.hpp"
 
 namespace ecore::impl
 {
-
-    class UriConverter : public EUriConverter
+    class ECORE_API UriConverter : public EUriConverter
     {
     public:
         UriConverter();
