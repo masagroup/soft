@@ -196,6 +196,13 @@
 [query public getFactoryQualifiedImplementationName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getImplementationNamespaceName() , aPackage.getFactoryImplementationName() )/]
 [query public getFactoryQualifiedExtensionName( aPackage : EPackage ) : String = addNamespacePrefix( aPackage.getExtensionNamespaceName() , aPackage.getFactoryExtensionName() )/]
 
+[query public getMockLibrary( aPackage : EPackage ) : String = if hasKey('mockLibrary') then valueKey('mockLibrary') else 'GMock' endif/] 
+
+[query public isGoogleMock( aPackage : EPackage ) : Boolean = getMockLibrary() = 'GMock'/]
+[query public isTurtleMock( aPackage : EPackage ) : Boolean = getMockLibrary() = 'Turtle'/]
+
+
+
 [**
  * Properties on Class/Features
 */]

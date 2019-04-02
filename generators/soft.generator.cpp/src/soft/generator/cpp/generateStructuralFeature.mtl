@@ -56,6 +56,10 @@ else
 endif
 /]
 
+[query private isGoogleMock( aFeature : EStructuralFeature ) : Boolean = aFeature.eContainingClass.ePackage.isGoogleMock()/]
+[query private isTurtleMock( aFeature : EStructuralFeature ) : Boolean = aFeature.eContainingClass.ePackage.isTurtleMock()/]
+
+
 [query public isLazy( aStructuralFeature : EStructuralFeature ) : Boolean = aStructuralFeature.getLazy() <> 'no'/] 
 
 [query public isDataInitializationDefered( aStructuralFeature : EStructuralFeature ) : Boolean = isListType() or isProxy()/]
@@ -323,9 +327,15 @@ virtual [aStructuralFeature.generateReturnType()/] [aStructuralFeature.getGetter
 [/let]
 [/template]
 
-[template public generateGetMock(aStructuralFeature : EStructuralFeature)]
+[template public generateGetMock(aStructuralFeature : EStructuralFeature) ? (isTurtleMock())]
 MOCK_METHOD([aStructuralFeature.getGetterName()/],0);
 [/template]
+
+[template public generateGetMock(aStructuralFeature : EStructuralFeature) ? (isGoogleMock())]
+MOCK_CONST_METHOD0([aStructuralFeature.getGetterName()/], [aStructuralFeature.generateReturnType()/]());
+[/template]
+
+
 
 [template public generateBasicSetDeclaration(aStructuralFeature : EStructuralFeature)]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
@@ -489,9 +499,14 @@ ArrayEList<[anEAttribute.eGenericType.generateCppType()/],[anEAttribute.unique/]
 [/let]
 [/template]
 
-[template public generateSetMock(aStructuralFeature : EStructuralFeature)]
+[template public generateSetMock(aStructuralFeature : EStructuralFeature) ? (isTurtleMock()) ]
 MOCK_METHOD([aStructuralFeature.getSetterName()/],1);
 [/template]
+
+[template public generateSetMock(aStructuralFeature : EStructuralFeature) ? (isGoogleMock()) ]
+MOCK_METHOD1([aStructuralFeature.getSetterName()/], void( [aStructuralFeature.generateParameterType()/] ) );
+[/template]
+
 
 [template public generateBasicUnSetDeclaration(aStructuralFeature : EStructuralFeature)]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
@@ -535,7 +550,7 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( const st
 [/let]
 [/template]
 
-[template public generateUnSetDeclaration(aStructuralFeature : EStructuralFeature, impl : EBoolean)]
+[template public generateUnSetDeclaration(aStructuralFeature : EStructuralFeature, impl : EBoolean) ]
 virtual void [aStructuralFeature.getUnSetterName()/]() [abstractSufix(impl)/];
 [/template]
 
@@ -587,8 +602,12 @@ void [className/]::[methodName/]()
 [/let]
 [/template]
 
-[template public generateUnSetMock(aStructuralFeature : EStructuralFeature)]
+[template public generateUnSetMock(aStructuralFeature : EStructuralFeature) ? (isTurtleMock())]
 MOCK_METHOD([aStructuralFeature.getUnSetterName()/],0);
+[/template]
+
+[template public generateUnSetMock(aStructuralFeature : EStructuralFeature) ? (isGoogleMock())]
+MOCK_METHOD0([aStructuralFeature.getUnSetterName()/], void() );
 [/template]
 
 

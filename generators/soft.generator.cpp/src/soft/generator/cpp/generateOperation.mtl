@@ -4,6 +4,10 @@
 [import soft::generator::cpp::generateType/]
 [import soft::generator::cpp::generateCommon/]
 
+
+[query private isGoogleMock( anEOperation : EOperation ) : Boolean = anEOperation.eContainingClass.ePackage.isGoogleMock()/]
+[query private isTurtleMock( anEOperation : EOperation ) : Boolean = anEOperation.eContainingClass.ePackage.isTurtleMock()/]
+
 [template public generateDeclaration(anEOperation : EOperation, impl: Boolean)]
 virtual [anEOperation.generateReturnType()/] [anEOperation.name/]([anEOperation.generateParameterList()/])[if (hasKey('const'))] const[/if] [abstractSufix(impl)/];
 
@@ -11,7 +15,7 @@ virtual [anEOperation.generateReturnType()/] [anEOperation.name/]([anEOperation.
 [/template]
 
 
-[template public generateDefinition(anEOperation : EOperation) ? ( anEOperation.isPublic(true))]
+[template public generateDefinition(anEOperation : EOperation) ? ( isPublic(true))]
 [let className : String = anEOperation.eContainingClass.getImplementationName()]
 [let methodID : String = if anEOperation.eContainingClass.eOperations->select( eC | eC.name = anEOperation.name )->size() > 1 then anEOperation.getElementIdentifier() else anEOperation.name endif]
 [anEOperation.generateReturnType()/] [className/]::[anEOperation.name/]([anEOperation.generateParameterList()/])[if (hasKey('const'))] const[/if]
@@ -31,9 +35,18 @@ virtual [anEOperation.generateReturnType()/] [anEOperation.name/]([anEOperation.
 [/let]
 [/template]
 
-[template public generateMock(anEOperation : EOperation )  ? ( anEOperation.isPublic(false) ) ]
+[template public generateMock(anEOperation : EOperation )  ? ( isPublic(false) and isTurtleMock() ) ]
 [let needExt : Boolean = anEOperation.eContainingClass.eOperations->select( eC | eC.name = anEOperation.name )->size() > 1]
-MOCK_METHOD[if needExt]_EXT[/if]([anEOperation.name/] ,[anEOperation.eParameters->size()/][if needExt], [anEOperation.generateReturnType()/]([anEOperation.generateParameterList(false)/]), [anEOperation.getElementIdentifier()/][/if]) 
+MOCK_METHOD[if needExt]_EXT[/if]([anEOperation.name/] ,[anEOperation.eParameters->size()/][if needExt], [anEOperation.generateReturnType()/]([anEOperation.generateParameterList(false)/]), [anEOperation.getElementIdentifier()/][/if]); 
 [/let]
 [/template]
+
+[template public generateMock(anEOperation : EOperation )  ? ( isPublic(false) and isGoogleMock() ) ]
+[let isConst : Boolean = hasKey('const')]
+MOCK_[if isConst]CONST_[/if]METHOD[anEOperation.eParameters->size()/]([anEOperation.name/], [anEOperation.generateReturnType()/]([anEOperation.generateParameterList(false)/]) );
+[/let]
+[/template]
+
+
+
 
