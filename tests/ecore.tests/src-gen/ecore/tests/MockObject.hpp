@@ -25,21 +25,21 @@ namespace ecore::tests
     {
     public:
         typedef EObject base_type;
-        MOCK_METHOD(eClass ,0) 
-        MOCK_METHOD(eIsProxy ,0) 
-        MOCK_METHOD(eResource ,0) 
-        MOCK_METHOD(eContainer ,0) 
-        MOCK_METHOD(eContainingFeature ,0) 
-        MOCK_METHOD(eContainmentFeature ,0) 
-        MOCK_METHOD(eContents ,0) 
-        MOCK_METHOD(eAllContents ,0) 
-        MOCK_METHOD(eCrossReferences ,0) 
-        MOCK_METHOD_EXT(eGet ,1, ecore::Any(const std::shared_ptr<ecore::EStructuralFeature>&), eGet_EStructuralFeature) 
-        MOCK_METHOD_EXT(eGet ,2, ecore::Any(const std::shared_ptr<ecore::EStructuralFeature>&,bool), eGet_EStructuralFeature_EBoolean) 
-        MOCK_METHOD(eSet ,2) 
-        MOCK_METHOD(eIsSet ,1) 
-        MOCK_METHOD(eUnset ,1) 
-        MOCK_METHOD(eInvoke ,2) 
+        MOCK_METHOD(eClass ,0); 
+        MOCK_METHOD(eIsProxy ,0); 
+        MOCK_METHOD(eResource ,0); 
+        MOCK_METHOD(eContainer ,0); 
+        MOCK_METHOD(eContainingFeature ,0); 
+        MOCK_METHOD(eContainmentFeature ,0); 
+        MOCK_METHOD(eContents ,0); 
+        MOCK_METHOD(eAllContents ,0); 
+        MOCK_METHOD(eCrossReferences ,0); 
+        MOCK_METHOD_EXT(eGet ,1, ecore::Any(const std::shared_ptr<ecore::EStructuralFeature>&), eGet_EStructuralFeature); 
+        MOCK_METHOD_EXT(eGet ,2, ecore::Any(const std::shared_ptr<ecore::EStructuralFeature>&,bool), eGet_EStructuralFeature_EBoolean); 
+        MOCK_METHOD(eSet ,2); 
+        MOCK_METHOD(eIsSet ,1); 
+        MOCK_METHOD(eUnset ,1); 
+        MOCK_METHOD(eInvoke ,2); 
         
         
         // Start of user code MockObject
