@@ -192,11 +192,10 @@ namespace mixins
 
 }
 
-BOOST_AUTO_TEST_SUITE( DiamondVsMixinsTests )
+BOOST_AUTO_TEST_SUITE( DiamondVsMixinsTests, *boost::unit_test::disabled() )
 
 BOOST_AUTO_TEST_CASE( Performance )
 {
-#ifdef BENCHMARK
     long long diamondTimes, mixinTimes;
     {
         auto start = std::chrono::steady_clock::now();
@@ -286,8 +285,6 @@ BOOST_AUTO_TEST_CASE( Performance )
 #endif
     }
     BOOST_CHECK_GE( diamondTimes, mixinTimes );
-
-#endif
 }
 
 BOOST_AUTO_TEST_SUITE_END()
