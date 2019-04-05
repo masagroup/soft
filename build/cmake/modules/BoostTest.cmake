@@ -9,7 +9,7 @@ cmake_policy(SET CMP0057 NEW) # if IN_LIST
 function(boost_test_discover_tests TARGET)
   cmake_parse_arguments(
     ""
-    "NO_PRETTY_TYPES;NO_PRETTY_VALUES"
+    ""
     "TEST_PREFIX;TEST_SUFFIX;WORKING_DIRECTORY;TEST_LIST;DISCOVERY_TIMEOUT"
     "EXTRA_ARGS;PROPERTIES"
     ${ARGN}
@@ -67,8 +67,6 @@ function(boost_test_discover_tests TARGET)
             -D "TEST_PROPERTIES=${_PROPERTIES}"
             -D "TEST_PREFIX=${_TEST_PREFIX}"
             -D "TEST_SUFFIX=${_TEST_SUFFIX}"
-            -D "NO_PRETTY_TYPES=${_NO_PRETTY_TYPES}"
-            -D "NO_PRETTY_VALUES=${_NO_PRETTY_VALUES}"
             -D "TEST_LIST=${_TEST_LIST}"
             -D "CTEST_FILE=${ctest_tests_file}"
             -D "TEST_DISCOVERY_TIMEOUT=${_DISCOVERY_TIMEOUT}"

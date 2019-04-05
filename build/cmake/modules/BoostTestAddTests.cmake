@@ -26,9 +26,10 @@ if(NOT EXISTS "${TEST_EXECUTABLE}")
   )
 endif()
 execute_process(
-  COMMAND ${TEST_EXECUTOR} "${TEST_EXECUTABLE}" --list-content
+  COMMAND ${TEST_EXECUTOR} "${TEST_EXECUTABLE}" --list_content
   TIMEOUT ${TEST_DISCOVERY_TIMEOUT}
-  OUTPUT_VARIABLE output
+  OUTPUT_VARIABLE stdout
+  ERROR_VARIABLE stderr
   RESULT_VARIABLE result
 )
 if(NOT ${result} EQUAL 0)
@@ -42,56 +43,50 @@ if(NOT ${result} EQUAL 0)
   )
 endif()
 
+if ( NOT "d${stdout}" STREQUAL "d" )
+    set( output ${stdout} )
+elseif ( NOT "d${stderr}" STREQUAL "d" )
+    set( output ${stderr} )
+endif()
+
 string(REPLACE "\n" ";" output "${output}")
 
 # Parse output
+set( test_set )
+set( test_regexp "^( *)([^*]*)([*]+)" )
 foreach(line ${output})
-  # Skip header
-  if(NOT line MATCHES "gtest_main\\.cc")
-    # Do we have a module name or a test name?
-    if(NOT line MATCHES "^  ")
-      # Module; remove trailing '.' to get just the name...
-      string(REGEX REPLACE "\\.( *#.*)?" "" suite "${line}")
-      if(line MATCHES "#" AND NOT NO_PRETTY_TYPES)
-        string(REGEX REPLACE "/[0-9]\\.+ +#.*= +" "/" pretty_suite "${line}")
-      else()
-        set(pretty_suite "${suite}")
-      endif()
-      string(REGEX REPLACE "^DISABLED_" "" pretty_suite "${pretty_suite}")
-    else()
-      # Test name; strip spaces and comments to get just the name...
-      string(REGEX REPLACE " +" "" test "${line}")
-      if(test MATCHES "#" AND NOT NO_PRETTY_VALUES)
-        string(REGEX REPLACE "/[0-9]+#GetParam..=" "/" pretty_test "${test}")
-      else()
-        string(REGEX REPLACE "#.*" "" pretty_test "${test}")
-      endif()
-      string(REGEX REPLACE "^DISABLED_" "" pretty_test "${pretty_test}")
-      string(REGEX REPLACE "#.*" "" test "${test}")
-      # ...and add to script
-      add_command(add_test
-        "${prefix}${pretty_suite}.${pretty_test}${suffix}"
-        ${TEST_EXECUTOR}
-        "${TEST_EXECUTABLE}"
-        "--gtest_filter=${suite}.${test}"
-        "--gtest_also_run_disabled_tests"
-        ${extra_args}
-      )
-      if(suite MATCHES "^DISABLED" OR test MATCHES "^DISABLED")
-        add_command(set_tests_properties
-          "${prefix}${pretty_suite}.${pretty_test}${suffix}"
-          PROPERTIES DISABLED TRUE
-        )
-      endif()
-      add_command(set_tests_properties
-        "${prefix}${pretty_suite}.${pretty_test}${suffix}"
-        PROPERTIES
-        WORKING_DIRECTORY "${TEST_WORKING_DIR}"
-        ${properties}
-      )
-     list(APPEND tests "${prefix}${pretty_suite}.${pretty_test}${suffix}")
+    if ( line MATCHES ${test_regexp} )
+        
+        # Test name
+        string(REGEX REPLACE ${test_regexp} "\\1" test_level ${line})
+        string(REGEX REPLACE ${test_regexp} "\\2" test_name ${line})
+        string(REGEX REPLACE ${test_regexp} "\\3" test_enabled ${line})
+        string(LENGTH "${test_level}" test_set_size)
+        math(EXPR test_set_size "${test_set_size}/4")
+        list(SUBLIST test_set 0 ${test_set_size} test_set)
+        list(APPEND  test_set ${test_name})
+        list(JOIN test_set "." test_id)
+        list(JOIN test_set "/" test_path)
+        
+        # Add to script
+        add_command(add_test "${prefix}${test_id}${suffix}" 
+                             ${TEST_EXECUTOR} 
+                             "${TEST_EXECUTABLE}" 
+                             "--run_test=${test_path}" 
+                             "--catch_system_error=yes" ${extra_args} 
+                    )
+                    
+        if(NOT test_enabled MATCHES "^\\*")
+            add_command(set_tests_properties "${prefix}${test_id}${suffix}" 
+                                              PROPERTIES DISABLED TRUE)
+        endif()
+
+        add_command(set_tests_properties "${prefix}${test_id}${suffix}" 
+                                          PROPERTIES WORKING_DIRECTORY "${TEST_WORKING_DIR}" 
+                                          ${properties} )
+        
+        list(APPEND tests "${prefix}${test_id}${suffix}")
     endif()
-  endif()
 endforeach()
 
 # Create a list of all discovered tests, which users may use to e.g. set
