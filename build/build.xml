@@ -171,8 +171,14 @@
     <macrodef name="ctest_exec">
         <attribute name="dir"/>
         <sequential>
+            <property environment="env"/>
+            <condition property="cores.count" value="${env.NUMBER_OF_PROCESSORS}" else="4">
+                <os family="windows" />
+            </condition>
             <exec taskname="tests" executable="${bin.dir}/cmake/bin/ctest.exe" dir="@{dir}" failonerror="true">
                 <arg value="."/>
+                <arg value="--parallel"/>
+                <arg value="${cores.count}"/>
                 <arg value="--output-on-failure"/>
                 <arg line="--tests-regex .*"/>
             </exec>
