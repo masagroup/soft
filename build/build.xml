@@ -346,8 +346,8 @@
     -->
     <target name="ecore.generate">
         <generator.cpp input="${models.dir}/ecore.ecore" output="${root.dir}">
-            <arg value="-nt"/>
-            <arg value="generateLibraryCMakeProject"/>
+            <arg value="-t"/>
+            <arg value="!generateLibraryCMakeProject"/>
         </generator.cpp>
     </target>
     
