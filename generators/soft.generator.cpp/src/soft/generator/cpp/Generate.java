@@ -7,8 +7,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
@@ -159,10 +161,6 @@ public class Generate extends AbstractAcceleoGenerator {
                 .desc("the templates to be executed : "
                         + Arrays.stream(TEMPLATE_NAMES).collect(Collectors.joining(", ")))
                 .build();
-        Option noTemplateOption = Option.builder("nt").argName("no-templates").longOpt("no-templates").required(false).hasArgs()
-                .desc("the templates to be removed from : "
-                        + Arrays.stream(TEMPLATE_NAMES).collect(Collectors.joining(", ")))
-                .build();
         Option modelOption = Option.builder("m").argName("model").longOpt("model").required().hasArg()
                 .desc("the input model").build();
         Option outputOption = Option.builder("o").argName("folder").longOpt("output").required().hasArg()
@@ -174,7 +172,6 @@ public class Generate extends AbstractAcceleoGenerator {
 
         generateOptions.addOption(helpOption);
         generateOptions.addOption(templateOption);
-        generateOptions.addOption(noTemplateOption);
         generateOptions.addOption(modelOption);
         generateOptions.addOption(outputOption);
         generateOptions.addOption(propertyOption);
@@ -188,16 +185,37 @@ public class Generate extends AbstractAcceleoGenerator {
                 help.printHelp("Generate", generateOptions);
                 return;
             }
-            URI model = URI.createFileURI(line.getOptionValue("model"));
-            File output = new File(line.getOptionValue("output"));
+            URI model = URI.createFileURI(line.getOptionValue("m"));
+            File output = new File(line.getOptionValue("o"));
             
             // templates 
             List<String> templates = Lists.newArrayList(TEMPLATE_NAMES);
-            if (line.hasOption("templates"))
-                templates = Lists.newArrayList(line.getOptionValues("templates"));
-            if (line.hasOption("no-templates"))
-                templates.removeAll( Arrays.asList( line.getOptionValues("no-templates")));
-
+            if (line.hasOption("t"))
+            {
+                String[] regexs = line.getOptionValues("t");
+                for ( String regex : regexs )
+                {
+                    // check if pattern is excluded
+                    boolean exclude = false;
+                    if ( regex.charAt(0) == '!' )
+                    {
+                        exclude = true;
+                        regex = regex.substring(1);
+                    }
+                    
+                    // check for all defined templates if they got
+                    // to be excluded or not
+                    Iterator<String> it = templates.iterator();
+                    while( it.hasNext() )
+                    {
+                        boolean match = Pattern.matches(regex, it.next() );
+                        if ( (match && exclude) || (!match && !exclude))
+                            it.remove();
+                    }
+                }
+            }
+                
+            
             // properties
             Properties properties = new Properties();
             if (line.hasOption("p"))
