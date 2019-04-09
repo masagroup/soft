@@ -309,11 +309,15 @@
     </target>
     
     <target name="generators.install">
-        <unzip src="${out.dir}/maven/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" dest="${bin.dir}/soft.generators"/>
+        <unzip dest="${bin.dir}/soft.generators">
+            <fileset dir="${out.dir}/maven" includes="**/*.zip"/>
+        </unzip>
     </target>
     
     <target name="generators.dist">
-        <copy file="${out.dir}/maven//soft.generator.cpp/soft.generator.cpp-1.0.0.zip" todir="${dist.dir}"/>
+        <copy todir="${dist.dir}" flatten="true" >
+            <fileset dir="${out.dir}/maven" includes="**/*.zip"/>
+        </copy>
     </target>
     
     <macrodef name="generator">
