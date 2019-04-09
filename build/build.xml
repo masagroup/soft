@@ -293,40 +293,36 @@
       Generator
     ============================================================================
     -->
-    <target name="generator.cpp.build">
-        <maven_exec dir="${generators.dir}/soft.generator.cpp">
-            <arg value="-Dproject.target=../../out/soft.generator.cpp"/>
+    <target name="generators.build">
+        <maven_exec dir="${generators.dir}">
+            <arg value="-Pant"/>
             <arg line="clean verify" />
         </maven_exec>
     
     </target>
     
-    <target name="generator.cpp.clean">
-        <maven_exec dir="${generators.dir}/soft.generator.cpp">
-            <arg value="-Dproject.target=../../out/soft.generator.cpp"/>
+    <target name="generators.clean">
+        <maven_exec dir="${generators.dir}">
+            <arg value="-Pant"/>
             <arg line="clean" />
         </maven_exec>
     </target>
     
-    <target name="generator.cpp.install">
-        <unzip src="${out.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" dest="${bin.dir}/soft.generator.cpp"/>
+    <target name="generators.install">
+        <unzip src="${out.dir}/maven/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" dest="${bin.dir}/soft.generators"/>
     </target>
     
-    <target name="generator.cpp.dist">
-        <copy file="${out.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" todir="${dist.dir}"/>
+    <target name="generators.dist">
+        <copy file="${out.dir}/maven//soft.generator.cpp/soft.generator.cpp-1.0.0.zip" todir="${dist.dir}"/>
     </target>
     
-    <target name="generators.build" depends="generator.cpp.build"/>
-    <target name="generators.clean" depends="generator.cpp.clean"/>
-    <target name="generators.install" depends="generator.cpp.install"/>
-    <target name="generators.dist" depends="generator.cpp.dist"/>
-    
-    <macrodef name="generator.cpp">
+    <macrodef name="generator">
+        <attribute name="langage"/>
         <attribute name="input"/>
         <attribute name="output"/>
         <element name="args" implicit="yes" optional="yes"/>
         <sequential>
-            <java jar="${bin.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.jar"
+            <java jar="${bin.dir}/soft.generators/soft.generator.@{langage}-1.0.0.jar"
                   fork="true"
                   failonerror="true"
                   maxmemory="128m">
@@ -345,10 +341,10 @@
     ============================================================================
     -->
     <target name="ecore.generate">
-        <generator.cpp input="${models.dir}/ecore.ecore" output="${root.dir}">
+        <generator langage="cpp" input="${models.dir}/ecore.ecore" output="${root.dir}">
             <arg value="-t"/>
             <arg value="!generateLibraryCMakeProject"/>
-        </generator.cpp>
+        </generator>
     </target>
     
     <target name="ecore.clean">
