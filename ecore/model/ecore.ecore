@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="ecore" nsURI="http://www.eclipse.org/emf/2002/Ecore" nsPrefix="ecore">
-  <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+  <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
     <details key="factory" value="extension"/>
     <details key="lazy" value="list:function"/>
   </eAnnotations>
@@ -9,7 +9,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="ConsistentTransient"/>
     </eAnnotations>
-    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="extension" value="true"/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="iD" eType="#//EBoolean"/>
@@ -34,7 +34,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="InterfaceIsAbstract AtMostOneID UniqueFeatureNames UniqueOperationSignatures NoCircularSuperTypes WellFormedMapEntryClass ConsistentSuperTypes DisjointFeatureAndOperationSignatures"/>
     </eAnnotations>
-    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="extension" value="true"/>
     </eAnnotations>
     <eOperations name="isSuperTypeOf" eType="#//EBoolean">
@@ -69,21 +69,21 @@
         eType="#//EStructuralFeature" containment="true" resolveProxies="false" eOpposite="#//EStructuralFeature/eContainingClass"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAttributes" upperBound="-1"
         eType="#//EAttribute" changeable="false" transient="true" derived="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eReferences" upperBound="-1"
         eType="#//EReference" changeable="false" transient="true" derived="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eSuperTypes" upperBound="-1"
         eType="#//EClass" unsettable="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="issetVisibility" value="no"/>
         <details key="unsetVisibility" value="no:public"/>
       </eAnnotations>
@@ -92,42 +92,42 @@
         eType="#//EOperation" containment="true" resolveProxies="false" eOpposite="#//EOperation/eContainingClass"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eContainments" upperBound="-1"
         eType="#//EReference" changeable="false" transient="true" derived="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eCrossReferences" upperBound="-1"
         eType="#//EReference" changeable="false" transient="true" derived="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllAttributes" upperBound="-1"
         eType="#//EAttribute" changeable="false" transient="true" derived="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllReferences" upperBound="-1"
         eType="#//EReference" changeable="false" transient="true" derived="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllContainments" upperBound="-1"
         eType="#//EReference" changeable="false" transient="true" derived="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllOperations" upperBound="-1"
         eType="#//EOperation" changeable="false" transient="true" derived="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
@@ -135,21 +135,21 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllStructuralFeatures"
         upperBound="-1" eType="#//EStructuralFeature" changeable="false" transient="true"
         derived="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllSuperTypes" upperBound="-1"
         eType="#//EClass" changeable="false" transient="true" derived="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eIDAttribute" eType="#//EAttribute"
         changeable="false" transient="true" derived="true" resolveProxies="false">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
       </eAnnotations>
     </eStructuralFeatures>
@@ -158,11 +158,11 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="WellFormedInstanceTypeName UniqueTypeParameterNames"/>
     </eAnnotations>
-    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="extension" value="true"/>
     </eAnnotations>
     <eOperations name="isInstance" eType="#//EBoolean">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const" value="true"/>
       </eAnnotations>
       <eParameters name="object" eType="#//EJavaObject"/>
@@ -178,7 +178,7 @@
         changeable="false" transient="true" eOpposite="#//EPackage/eClassifiers"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="classifierID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
         defaultValueLiteral="-1">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="setVisibility" value="no:public"/>
         <details key="lazy" value="function"/>
       </eAnnotations>
@@ -213,24 +213,24 @@
         changeable="false" transient="true" resolveProxies="false" eOpposite="#//EEnum/eLiterals"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EFactory" eSuperTypes="#//EModelElement">
-    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="extension" value="true"/>
     </eAnnotations>
     <eOperations name="create" eType="#//EObject">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
       </eAnnotations>
       <eParameters name="eClass" eType="#//EClass"/>
     </eOperations>
     <eOperations name="createFromString" eType="#//EJavaObject">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
       </eAnnotations>
       <eParameters name="eDataType" eType="#//EDataType"/>
       <eParameters name="literalValue" eType="#//EString"/>
     </eOperations>
     <eOperations name="convertToString" eType="#//EString">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
       </eAnnotations>
       <eParameters name="eDataType" eType="#//EDataType"/>
@@ -240,7 +240,7 @@
         eType="#//EPackage" transient="true" resolveProxies="false" eOpposite="#//EPackage/eFactoryInstance"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EModelElement" abstract="true">
-    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="extension" value="true"/>
     </eAnnotations>
     <eOperations name="getEAnnotation" eType="#//EAnnotation">
@@ -257,43 +257,43 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EObject">
     <eOperations name="eClass" eType="#//EClass">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eIsProxy" eType="#//EBoolean">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eResource" eType="#//EResource">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eContainer" eType="#//EObject">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eContainingFeature" eType="#//EStructuralFeature">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eContainmentFeature" eType="#//EReference">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eContents">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const" value="return"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
@@ -302,7 +302,7 @@
       </eGenericType>
     </eOperations>
     <eOperations name="eAllContents">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const" value="return"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
@@ -311,7 +311,7 @@
       </eGenericType>
     </eOperations>
     <eOperations name="eCrossReferences">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const" value="return"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
@@ -320,14 +320,14 @@
       </eGenericType>
     </eOperations>
     <eOperations name="eGet" eType="#//EJavaObject">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="eGet" eType="#//EJavaObject">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
@@ -335,27 +335,27 @@
       <eParameters name="resolve" eType="#//EBoolean"/>
     </eOperations>
     <eOperations name="eSet">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="visibility" value="public:no"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
       <eParameters name="newValue" eType="#//EJavaObject"/>
     </eOperations>
     <eOperations name="eIsSet" eType="#//EBoolean">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="eUnset">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="visibility" value="public:no"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="eInvoke" eType="#//EJavaObject" eExceptions="#//EInvocationTargetException">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="visibility" value="public:no"/>
       </eAnnotations>
       <eParameters name="operation" eType="#//EOperation"/>
@@ -370,7 +370,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="UniqueParameterNames UniqueTypeParameterNames NoRepeatingVoid"/>
     </eAnnotations>
-    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="extension" value="true"/>
     </eAnnotations>
     <eOperations name="isOverrideOf" eType="#//EBoolean">
@@ -382,14 +382,14 @@
         eType="#//EParameter" containment="true" resolveProxies="false" eOpposite="#//EParameter/eOperation"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eExceptions" upperBound="-1"
         eType="#//EClassifier" unsettable="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="issetVisibility" value="no"/>
         <details key="unsetVisibility" value="no:public"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="operationID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
         defaultValueLiteral="-1">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="setVisibility" value="no:public"/>
       </eAnnotations>
     </eStructuralFeatures>
@@ -398,7 +398,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="WellFormedNsURI WellFormedNsPrefix UniqueSubpackageNames UniqueClassifierNames UniqueNsURIs"/>
     </eAnnotations>
-    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="extension" value="true"/>
     </eAnnotations>
     <eOperations name="getEClassifier" eType="#//EClassifier">
@@ -424,7 +424,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="ConsistentOpposite SingleContainer ConsistentKeys ConsistentUnique ConsistentContainer"/>
     </eAnnotations>
-    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="extension" value="true"/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="containment" eType="#//EBoolean"/>
@@ -443,7 +443,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="ValidDefaultValueLiteral"/>
     </eAnnotations>
-    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="extension" value="true"/>
     </eAnnotations>
     <eOperations name="getContainerClass">
@@ -464,7 +464,7 @@
         changeable="false" transient="true" resolveProxies="false" eOpposite="#//EClass/eStructuralFeatures"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="featureID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
         defaultValueLiteral="-1">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="setVisibility" value="no:public"/>
       </eAnnotations>
     </eStructuralFeatures>
@@ -473,7 +473,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="ValidLowerBound ValidUpperBound ConsistentBounds ValidType"/>
     </eAnnotations>
-    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="extension" value="true"/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="ordered" eType="#//EBoolean"
@@ -489,7 +489,7 @@
         changeable="false" volatile="true" transient="true" derived="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eType" eType="#//EClassifier"
         unsettable="true">
-      <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+      <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="issetVisibility" value="no"/>
         <details key="unsetVisibility" value="no:public"/>
       </eAnnotations>
@@ -502,7 +502,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="EChar" instanceClassName="char"/>
   <eClassifiers xsi:type="ecore:EDataType" name="EDate" instanceTypeName="std::time_t">
-    <eAnnotations source="http://net.masagroup/soft/2018/GenModel">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="include" value="ctime"/>
     </eAnnotations>
   </eClassifiers>
