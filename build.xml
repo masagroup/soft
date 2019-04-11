@@ -281,7 +281,7 @@
 
     <macrodef name="go_exec_tests">
         <sequential>
-            <exec executable="${bin.dir}/go/bin/go.exe" dir="${root.dir}/ecore/go/src/pkg/ecore/tests/" failonerror="true">
+            <exec executable="${bin.dir}/go/bin/go.exe" dir="${root.dir}/ecore/go/src/pkg/ecore/" failonerror="true">
                 <arg value="test"/>
                 <env key="GOROOT" value="${bin.dir}/go/"/>
                 <env key="GOPATH" value="${root.dir}/ecore/go/"/>
