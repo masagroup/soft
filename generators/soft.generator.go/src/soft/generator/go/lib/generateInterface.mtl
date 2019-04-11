@@ -5,11 +5,11 @@
 [import soft::generator::go::generateCommon/]
 [import soft::generator::go::lib::generateCommon/]
 
-[template public generateInterface(aClass : EClass) { className : String = aClass.getInterfaceName(); } ]
-[file (aClass.ePackage.getOutputDirectory() + '/' + className +'.go', false, 'UTF-8')]
+[template public generateInterface(aClass : EClass) { interfaceName : String = aClass.getInterfaceName(); } ]
+[file (aClass.ePackage.getOutputDirectory() + '/' + aClass.getInterfaceFileName() , false, 'UTF-8')]
 package [aClass.ePackage.name/]
 
-type [className/] interface {
+type [interfaceName/] interface {
 
 }
 
