@@ -269,6 +269,16 @@
         <install name="go" url="https://dl.google.com/go/go1.12.3.windows-amd64.zip"/>
     </target>
 
+    <macrodef name="go_exec">
+        <sequential>
+            <exec taskname="build" executable="${bin.dir}/go/bin/go.exe" dir="${root.dir}/ecore/go/src/pkg/ecore/" failonerror="true">
+                <arg value="build"/>
+                <env key="GOROOT" value="${bin.dir}/go/"/>
+                <env key="GOTOOLDIR" value="${bin.dir}/go/pkg/tool/windows_amd64/"/>
+            </exec>
+        </sequential>
+    </macrodef>
+
     <target name="tools.install" depends="aria2.install
                                          ,cmake.install
                                          ,maven.install
@@ -369,8 +379,12 @@
         <generator langage="go" input="ecore/model/ecore.ecore" output="ecore/go">
         </generator>
     </target>
-    
-    <target name="ecore.go" depends="ecore.go.generate"/>
+
+    <target name="ecore.go.build">
+        <go_exec/>
+    </target>
+
+    <target name="ecore.go" depends="ecore.go.generate,ecore.go.build"/>
     
     <!--
     ============================================================================
