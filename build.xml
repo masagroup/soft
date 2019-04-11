@@ -269,20 +269,11 @@
         <install name="go" url="https://dl.google.com/go/go1.12.3.windows-amd64.zip"/>
     </target>
 
-    <macrodef name="go_exec_build">
+    <macrodef name="go_exec">
+        <attribute name="command"/>
         <sequential>
             <exec executable="${bin.dir}/go/bin/go.exe" dir="${root.dir}/ecore/go/src/pkg/ecore/" failonerror="true">
-                <arg value="build"/>
-                <env key="GOROOT" value="${bin.dir}/go/"/>
-                <env key="GOTOOLDIR" value="${bin.dir}/go/pkg/tool/windows_amd64/"/>
-            </exec>
-        </sequential>
-    </macrodef>
-
-    <macrodef name="go_exec_tests">
-        <sequential>
-            <exec executable="${bin.dir}/go/bin/go.exe" dir="${root.dir}/ecore/go/src/pkg/ecore/" failonerror="true">
-                <arg value="test"/>
+                <arg value="@{command}"/>
                 <env key="GOROOT" value="${bin.dir}/go/"/>
                 <env key="GOPATH" value="${root.dir}/ecore/go/"/>
                 <env key="GOTOOLDIR" value="${bin.dir}/go/pkg/tool/windows_amd64/"/>
@@ -392,11 +383,11 @@
     </target>
 
     <target name="ecore.go.build">
-        <go_exec_build/>
+        <go_exec command="build"/>
     </target>
 
     <target name="ecore.go.tests">
-        <go_exec_tests/>
+        <go_exec command="test"/>
     </target>
 
     <target name="ecore.go" depends="ecore.go.generate,ecore.go.build,ecore.go.tests"/>
