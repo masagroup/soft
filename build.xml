@@ -9,7 +9,7 @@
     <property name="cmake.SHA-512" value="44ea4ffd21fbdaa7158749a0a86de7ec294dc2569f743ff6a5ef4e650cd16063bad55b54d35a506d7c7985bdf63f9207b918d18d9381801a9e321f71c622aee1"/>
     <property name="maven.SHA-512" value="0bb466363a7f60a9cd48f680ff14bdab64ded3cf5cffeb280c3c711acdd12cdb5c4891a0f1215bf69a22e6c4736f449f35b1e6a3c43c5ac8d397b24b71c02c1a"/>
     <property name="ninja.SHA-512" value="56f3b94ed7f9e36446bb6fe2a786156befdde6b279ee6d9d7ebd8b6e5d6664cdfe1d526e158f68bfc5cf947bcf9360df8d1e1a8939b6db1b2f0658256a17d66b"/>
-    <property name="go.SHA-512" value="4d79d46cf5c287d9536112153491b6de503e16346f9543f91bf349a2f47d3b866904d660f4ef0086d182e96ef71db6264c4e9622223525b7143e76da64139be4"/>
+    <property name="go.SHA-512" value="55db934ec31718ca2745f2de93b52929e110ee9b52b88a327c7c29bee2b4651efecbd2d98c6a37e15ae92bf7a1ad2cfb08aa99e2b8f487634287c944e427d745"/>
     
     
     <macrodef name="property-to-location">
