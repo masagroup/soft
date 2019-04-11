@@ -1,0 +1,24 @@
+[comment encoding = UTF-8 /]
+[module generateCommon('http://www.eclipse.org/emf/2002/Ecore')/]
+
+[query public join( aSequence : Sequence(String) , aDelimiter : String ) : String = 
+    aSequence->iterate(s ; res: String ='' | ( res.concat( if ( aSequence->first() = s ) then '' else aDelimiter endif ).concat(s)))
+/]
+
+[query public format( aString : String , aArguments : Sequence(String) ) : String =
+    Sequence{1..aArguments->size()}->iterate(index ; res: String =aString | res.replace('\\{'+ (index - 1) + '\\}', aArguments->at(index)))
+/]
+
+[query public matches( aString : String , aRegExp : String ) : Boolean =
+    aString.replaceAll(aRegExp, '') <> aString
+/]
+
+[query public hasGenModel(aModelElement : EModelElement) : Boolean = eAnnotations->select( source = 'http://net.masagroup/soft/2018/GenGo' )->notEmpty() /]
+[query public getGenModelAnnotation(aModelElement : EModelElement) : EAnnotation = eAnnotations->select( source = 'http://net.masagroup/soft/2018/GenGo' )->first() /]
+
+[query public hasKey(aModelElement : EModelElement, aKey:String) : Boolean = if aModelElement.hasGenModel() then aModelElement.getGenModelAnnotation().details->select(key = aKey)->notEmpty() else false endif /]
+[query public valueKey(aModelElement : EModelElement, aKey:String) : String = aModelElement.getGenModelAnnotation().details->select(key = aKey)->first().value /]
+
+[query public getInterfaceName( aClass : EClass ) : String = getInterfaceName(aClass.name,aClass.ePackage) /]
+[query private getInterfaceName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getInterfaceNamePattern() in if pattern ='' then aElementName else pattern.format(Sequence{aElementName}) endif /]
+[query private getInterfaceNamePattern( aPackage : EPackage ) : String = if hasKey('interfaceNamePattern') then valueKey('interfaceNamePattern') else '' endif/]

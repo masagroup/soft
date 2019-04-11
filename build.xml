@@ -152,7 +152,7 @@
         <attribute name="generator"/>
         <attribute name="project" default= "${ant.project.name}"/>
         <attribute name="configuration" default=""/>
-        <attribute name="input" default="${build.dir}/cmake"/>
+        <attribute name="input"/>
         <attribute name="output" default="${out.dir}/@{generator}/@{project}/@{configuration}"/>
         <element name="elements" implicit="true" optional="true"/>
         <sequential>
@@ -293,40 +293,42 @@
       Generator
     ============================================================================
     -->
-    <target name="generator.cpp.build">
-        <maven_exec dir="${generators.dir}/soft.generator.cpp">
-            <arg value="-Dproject.target=../../out/soft.generator.cpp"/>
+    <target name="generators.build">
+        <maven_exec dir="${generators.dir}">
+            <arg value="-Pant"/>
             <arg line="clean verify" />
         </maven_exec>
     
     </target>
     
-    <target name="generator.cpp.clean">
-        <maven_exec dir="${generators.dir}/soft.generator.cpp">
-            <arg value="-Dproject.target=../../out/soft.generator.cpp"/>
+    <target name="generators.clean">
+        <maven_exec dir="${generators.dir}">
+            <arg value="-Pant"/>
             <arg line="clean" />
         </maven_exec>
     </target>
     
-    <target name="generator.cpp.install">
-        <unzip src="${out.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" dest="${bin.dir}/soft.generator.cpp"/>
+    <target name="generators.install">
+        <unzip dest="${bin.dir}/soft.generators">
+            <fileset dir="${out.dir}/maven" includes="**/*.zip"/>
+        </unzip>
     </target>
     
-    <target name="generator.cpp.dist">
-        <copy file="${out.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.zip" todir="${dist.dir}"/>
+    <target name="generators.dist">
+        <copy todir="${dist.dir}" flatten="true" >
+            <fileset dir="${out.dir}/maven" includes="**/*.zip"/>
+        </copy>
     </target>
     
-    <target name="generators.build" depends="generator.cpp.build"/>
-    <target name="generators.clean" depends="generator.cpp.clean"/>
-    <target name="generators.install" depends="generator.cpp.install"/>
-    <target name="generators.dist" depends="generator.cpp.dist"/>
+    <target name="generators" depends="generators.build,generators.dist,generators.install"/>
     
-    <macrodef name="generator.cpp">
+    <macrodef name="generator">
+        <attribute name="langage"/>
         <attribute name="input"/>
         <attribute name="output"/>
         <element name="args" implicit="yes" optional="yes"/>
         <sequential>
-            <java jar="${bin.dir}/soft.generator.cpp/soft.generator.cpp-1.0.0.jar"
+            <java jar="${bin.dir}/soft.generators/soft.generator.@{langage}-1.0.0.jar"
                   fork="true"
                   failonerror="true"
                   maxmemory="128m">
@@ -341,110 +343,98 @@
     
     <!--
     ============================================================================
-      Sources Generation
+      Ecore GO
     ============================================================================
     -->
-    <target name="ecore.generate">
-        <generator.cpp input="${models.dir}/ecore.ecore" output="${root.dir}">
-            <arg value="-t"/>
-            <arg value="!generateLibraryCMakeProject"/>
-        </generator.cpp>
+    <target name="ecore.go.generate">
+        <generator langage="go" input="ecore/model/ecore.ecore" output="ecore/go">
+        </generator>
     </target>
     
-    <target name="ecore.clean">
-        <exec executable="git" dir="${libraries.dir}/ecore" failonerror="true">
-            <arg line="clean -xfd" />
-        </exec>
-        <exec executable="git" dir="${tests.dir}/ecore.tests" failonerror="true">
-            <arg line="clean -xfd" />
-        </exec>
-    </target>
-    
-    <target name="sources.generate" depends="ecore.generate"/>
-    
-    <target name="sources.clean" depends="ecore.clean"/> 
+    <target name="ecore.go" depends="ecore.go.generate"/>
     
     <!--
     ============================================================================
-      Project Configure/Build/Tests
+      Ecore CPP
     ============================================================================
     -->
-    <target name="project.configure.vs2015">
-        <cmake_exec generator="vs2015"/>
+    <target name="ecore.cpp.generate">
+        <generator langage="cpp" input="ecore/model/ecore.ecore" output="${root.dir}/ecore/cpp">
+            <arg line="-t !generateLibraryCMakeProject"/>
+        </generator>
     </target>
     
-    <target name="project.configure.vs2017">
-        <cmake_exec generator="vs2017"/>
+    <target name="ecore.cpp.configure.vs2015">
+        <cmake_exec generator="vs2015" input="${root.dir}/ecore/cpp"/>
     </target>
     
-    <target name="project.configure.ninja.release">
-        <cmake_exec generator="ninja" configuration="release">
+    <target name="ecore.cpp.configure.vs2017">
+        <cmake_exec generator="vs2017" input="${root.dir}/ecore/cpp"/>
+    </target>
+    
+    <target name="ecore.cpp.configure.ninja.release">
+        <cmake_exec generator="ninja" configuration="release" input="${root.dir}/ecore/cpp">
             <arg value="-DCMAKE_MAKE_PROGRAM=${bin.dir}/ninja/ninja.exe"/>
             <arg value="-DCMAKE_BUILD_TYPE=RelWithDebInfo"/>
         </cmake_exec>
     </target>
     
-    <target name="project.configure.ninja.debug">
-        <cmake_exec generator="ninja" configuration="debug">
+    <target name="ecore.cpp.configure.ninja.debug">
+        <cmake_exec generator="ninja" configuration="debug" input="${root.dir}/ecore/cpp">
             <arg value="-DCMAKE_MAKE_PROGRAM=${bin.dir}/ninja/ninja.exe"/>
             <arg value="-DCMAKE_BUILD_TYPE=Debug"/>
         </cmake_exec>
     </target>
     
-    <target name="project.configure.ninja" depends="project.configure.ninja.release,project.configure.ninja.debug"/>
+    <target name="ecore.cpp.configure.ninja" depends="ecore.cpp.configure.ninja.release,ecore.cpp.configure.ninja.debug"/>
     
-    <target name="project.configure" depends="project.configure.vs2017,project.configure.ninja"/>
+    <target name="ecore.cpp.configure" depends="ecore.cpp.configure.vs2017,ecore.cpp.configure.vs2015,ecore.cpp.configure.ninja"/>
     
-    <target name="project.build.debug">
+    <target name="ecore.cpp.build.debug">
         <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/debug"/>
     </target>
     
-    <target name="project.build.release">
+    <target name="ecore.cpp.build.release">
         <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/release"/>
     </target>
     
-    <target name="project.build" depends="project.build.debug,project.build.release"/>
+    <target name="ecore.cpp.build" depends="ecore.cpp.build.debug,ecore.cpp.build.release"/>
     
-    <target name="project.tests.debug">
+    <target name="ecore.cpp.tests.debug">
         <ctest_exec dir="${out.dir}/ninja/${ant.project.name}/debug"/>
     </target>
     
-    <target name="project.tests.release">
+    <target name="ecore.cpp.tests.release">
         <ctest_exec dir="${out.dir}/ninja/${ant.project.name}/release"/>
     </target>
     
-    <target name="project.tests" depends="project.tests.debug,project.tests.release"/>
+    <target name="ecore.cpp.tests" depends="ecore.cpp.tests.debug,ecore.cpp.tests.release"/>
     
-    <target name="project.install">
+    <target name="ecore.cpp.install">
         <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/release" target="install"/>
         <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/debug" target="install"/>
     </target>
     
-    <target name="project.package">
+    <target name="ecore.cpp.package">
         <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/release" target="package"/>
         <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/debug" target="package"/>
     </target>
     
-    <target name="generators" depends="generators.build,generators.dist,generators.install"/>
+    <target name="ecore.cpp" depends="ecore.cpp.generate,ecore.cpp.configure,ecore.cpp.build,ecore.cpp.tests,ecore.cpp.install,ecore.cpp.package"/>
     
-    <target name="generates" depends="sources.generate,project.configure"/>
+    <!--
+    ============================================================================
+      Ecore
+    ============================================================================
+    -->
+    <target name="ecore" depends="ecore.cpp,ecore.go"/>
     
-    <target name="build" depends="project.build"/>
-    
-    <target name="build.clean">
-        <exec executable="git" dir="${out.dir}" failonerror="true">
+    <target name="ecore.clean">
+        <exec executable="git" dir="ecore" failonerror="true">
             <arg line="clean -xfd" />
         </exec>
     </target>
     
-    <target name="tests" depends="project.tests"/>
-    
-    <target name="install" depends="project.install"/>
-    
-    <target name="package" depends="project.package"/>
-    
-    <target name="clean" depends="generators.clean,sources.clean,build.clean"/>
-    
-    <target name="all" depends="configure,generators,generates,build,tests,install,package"/>
+    <target name="all" depends="configure,generators,ecore"/>
     
 </project>
