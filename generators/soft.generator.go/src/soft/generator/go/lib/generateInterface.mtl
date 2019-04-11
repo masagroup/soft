@@ -4,14 +4,33 @@
 
 [import soft::generator::go::generateCommon/]
 [import soft::generator::go::lib::generateCommon/]
+[import soft::generator::go::lib::generateOperation/]
+[import soft::generator::go::lib::generateStructuralFeature/]
 
 [template public generateInterface(aClass : EClass) { interfaceName : String = aClass.getInterfaceName(); } ]
 [file (aClass.ePackage.getOutputDirectory() + '/' + aClass.getInterfaceFileName() , false, 'UTF-8')]
 package [aClass.ePackage.name/]
 
 type [interfaceName/] interface {
-
+[let operations : OrderedSet(EOperation) = aClass.eOperations]
+[if operations->notEmpty()]
+    [operations.generateDeclaration()/]
+[/if]
+[/let]
+[let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( isGet() or isSet() )]
+[if attributes->notEmpty()]
+    [attributes.generateDeclaration()/]
+[/if]
+[/let]
+[let references : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EReference)->select( isGet() or isSet() )]
+[if references->notEmpty()]
+    [references.generateDeclaration()/]
+[/if]
+[/let]
+    // [protected (interfaceName)]
+    // [/protected]
 }
 
 [/file]
 [/template]
+
