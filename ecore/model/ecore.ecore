@@ -45,6 +45,9 @@
       <eParameters name="featureID" eType="#//EInt"/>
     </eOperations>
     <eOperations name="getEStructuralFeature" eType="#//EStructuralFeature">
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="name" value="GetEStructuralFeatureFromString"/>
+      </eAnnotations>
       <eParameters name="featureName" eType="#//EString"/>
     </eOperations>
     <eOperations name="getFeatureID" eType="#//EInt">
@@ -193,9 +196,15 @@
       <details key="constraints" value="UniqueEnumeratorNames UniqueEnumeratorLiterals"/>
     </eAnnotations>
     <eOperations name="getEEnumLiteral" eType="#//EEnumLiteral">
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="name" value="GetEEnumLiteralByName"/>
+      </eAnnotations>
       <eParameters name="name" eType="#//EString"/>
     </eOperations>
     <eOperations name="getEEnumLiteral" eType="#//EEnumLiteral">
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="name" value="GetEEnumLiteralByValue"/>
+      </eAnnotations>
       <eParameters name="value" eType="#//EInt"/>
     </eOperations>
     <eOperations name="getEEnumLiteralByLiteral" eType="#//EEnumLiteral">
@@ -256,6 +265,10 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EObject">
+    <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+      <details key="nameRegex" value="e(.*)"/>
+      <details key="nameReplacement" value="$1"/>
+    </eAnnotations>
     <eOperations name="eClass" eType="#//EClass">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
@@ -330,6 +343,9 @@
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
         <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="name" value="GetResolve"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
       <eParameters name="resolve" eType="#//EBoolean"/>
