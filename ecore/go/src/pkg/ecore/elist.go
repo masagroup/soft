@@ -2,9 +2,9 @@ package ecore
 
 // EList is the interface for dynamic containers
 type EList interface {
-	Add(interface{})
+	Add(interface{}) bool
 
-	AddAll(EList)
+	AddAll(EList) bool
 
 	Insert(int, interface{}) bool
 
@@ -12,7 +12,7 @@ type EList interface {
 
 	Move(int, interface{})
 
-	Order(int, int) interface{}
+	Swap(int, int) interface{}
 
 	Get(int) interface{}
 

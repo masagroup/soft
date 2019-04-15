@@ -6,15 +6,17 @@ type EArrayList struct {
 }
 
 // Add a new elemement to the array
-func (arr *EArrayList) Add(elem interface{}) {
+func (arr *EArrayList) Add(elem interface{}) bool {
 	arr.data = append(arr.data, elem)
+	return true
 }
 
 // AddAll elements of an array in the current one
-func (arr *EArrayList) AddAll(list EList) {
+func (arr *EArrayList) AddAll(list EList) bool {
 	for val := range list.Iterate() {
 		arr.Add(val)
 	}
+	return true
 }
 
 // Insert an element in the array
@@ -51,7 +53,7 @@ func (arr *EArrayList) InsertAll(index int, list EList) bool {
 func (arr *EArrayList) Move(int, interface{}) {
 }
 
-func (arr *EArrayList) Order(int, int) interface{} {
+func (arr *EArrayList) Swap(int, int) interface{} {
 	return nil
 }
 
