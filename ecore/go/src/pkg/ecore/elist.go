@@ -4,9 +4,9 @@ package ecore
 type EList interface {
 	Add(interface{})
 
-	AddAll(EList) bool
+	AddAll(EList)
 
-	Insert(int, interface{}) bool
+	Insert(int, interface{})
 
 	InsertAll(int, EList) bool
 
