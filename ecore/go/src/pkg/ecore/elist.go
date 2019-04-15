@@ -6,7 +6,7 @@ type EList interface {
 
 	AddAll(EList)
 
-	Insert(int, interface{})
+	Insert(int, interface{}) bool
 
 	InsertAll(int, EList) bool
 

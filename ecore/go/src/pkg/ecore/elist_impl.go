@@ -37,8 +37,15 @@ func (arr *EArrayList) Insert(index int, elem interface{}) bool {
 }
 
 // InsertAll element of an array at a given position
-func (arr *EArrayList) InsertAll(int, EList) bool {
-	return false
+func (arr *EArrayList) InsertAll(index int, list EList) bool {
+	if index < 0 || index > arr.Size() {
+		return false
+	}
+	for val := range list.Iterate() {
+		arr.Insert(index, val)
+		index++
+	}
+	return true
 }
 
 func (arr *EArrayList) Move(int, interface{}) {
