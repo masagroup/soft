@@ -103,12 +103,83 @@ func TestInsertAll(t *testing.T) {
 	arr2.Add(-7)
 	arr2.InsertAll(1, arr)
 	check(t, arr2.Size(), 6, "Insert all (size check)")
-	check(t, arr2.Get(0), -3, "Insert all (get [0])")
-	check(t, arr2.Get(1), 3, "Insert all (get [1])")
-	check(t, arr2.Get(2), 5, "Insert all (get [2])")
-	check(t, arr2.Get(3), 7, "Insert all (get [3])")
-	check(t, arr2.Get(4), -5, "Insert all (get [4])")
-	check(t, arr2.Get(5), -7, "Insert all (get [5])")
+	check(t, arr2.Get(0), -3, "Insert all (get [0] check)")
+	check(t, arr2.Get(1), 3, "Insert all (get [1] check)")
+	check(t, arr2.Get(2), 5, "Insert all (get [2] check)")
+	check(t, arr2.Get(3), 7, "Insert all (get [3] check)")
+	check(t, arr2.Get(4), -5, "Insert all (get [4] check)")
+	check(t, arr2.Get(5), -7, "Insert all (get [5] check)")
+}
+
+func TestRemoveBegin(t *testing.T) {
+	arr := EArrayList{}
+	arr.Add(2)
+	arr.Add(4)
+	arr.Add(6)
+	check(t, arr.Size(), 3, "Remove begin (size check)")
+	arr.Remove(2)
+	check(t, arr.Size(), 2, "Remove begin (size check)")
+	check(t, arr.Get(0), 4, "Remove begin (get[0] check)")
+	check(t, arr.Get(1), 6, "Remove begin (get[1] check)")
+}
+
+func TestRemoveEnd(t *testing.T) {
+	arr := EArrayList{}
+	arr.Add(2)
+	arr.Add(4)
+	arr.Add(6)
+	check(t, arr.Size(), 3, "Remove end (size check)")
+	arr.Remove(6)
+	check(t, arr.Size(), 2, "Remove end (size check)")
+	check(t, arr.Get(0), 2, "Remove end (get[0] check)")
+	check(t, arr.Get(1), 4, "Remove end (get[1] check)")
+}
+
+func TestRemoveMiddle(t *testing.T) {
+	arr := EArrayList{}
+	arr.Add(2)
+	arr.Add(4)
+	arr.Add(6)
+	arr.Add(6)
+	check(t, arr.Size(), 4, "Remove middle (size check)")
+	arr.Remove(4)
+	arr.Remove(6)
+	check(t, arr.Size(), 2, "Remove middle (size check)")
+	check(t, arr.Get(0), 2, "Remove middle (get[0] check)")
+	check(t, arr.Get(1), 6, "Remove middle (get[1] check)")
+}
+
+func TestClear(t *testing.T) {
+	arr := EArrayList{}
+	arr.Add(3)
+	arr.Add(5)
+	check(t, arr.Size(), 2, "Clear")
+	arr.Clear()
+	check(t, arr.Size(), 0, "Clear")
+}
+
+func TestEmptyTrue(t *testing.T) {
+	arr := EArrayList{}
+	arr.Add(3)
+	arr.Add(5)
+	check(t, arr.Empty(), false, "Empty")
+}
+
+func TestEmptyFalse(t *testing.T) {
+	arr := EArrayList{}
+	check(t, arr.Empty(), true, "Empty")
+}
+
+func TestContainsFalse(t *testing.T) {
+	arr := EArrayList{}
+	arr.Add(2)
+	check(t, arr.Contains(4), false, "Contains")
+}
+
+func TestContainsTrue(t *testing.T) {
+	arr := EArrayList{}
+	arr.Add(2)
+	check(t, arr.Contains(2), true, "Contains")
 }
 
 func TestIterate(t *testing.T) {

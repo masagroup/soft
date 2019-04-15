@@ -18,7 +18,7 @@ type EList interface {
 
 	Set(int, interface{})
 
-	RemoveAt(int) interface{}
+	RemoveAt(int) bool
 
 	Remove(interface{}) bool
 
@@ -26,7 +26,7 @@ type EList interface {
 
 	Clear()
 
-	Empty()
+	Empty() bool
 
 	Contains(interface{}) bool
 

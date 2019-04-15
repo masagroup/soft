@@ -66,13 +66,21 @@ func (arr *EArrayList) Set(index int, elem interface{}) {
 }
 
 // RemoveAt remove an element at a given position
-func (arr *EArrayList) RemoveAt(int) interface{} {
-	return nil
+func (arr *EArrayList) RemoveAt(index int) bool {
+	if index < 0 || index > arr.Size() {
+		return false
+	}
+	arr.data = append(arr.data[:index], arr.data[index+1:]...)
+	return true
 }
 
 // Remove an element in an array
-func (arr *EArrayList) Remove(interface{}) bool {
-	return false
+func (arr *EArrayList) Remove(elem interface{}) bool {
+	index := arr.IndexOf(elem)
+	if index == -1 {
+		return false
+	}
+	return arr.RemoveAt(index)
 }
 
 // Size count the number of element in the array
@@ -80,19 +88,30 @@ func (arr *EArrayList) Size() int {
 	return len(arr.data)
 }
 
+// Clear remove all elements of the array
 func (arr *EArrayList) Clear() {
+	arr.data = make([]interface{}, 0)
 }
 
-func (arr *EArrayList) Empty() {
+// Empty return true if the array contains 0 element
+func (arr *EArrayList) Empty() bool {
+	return arr.Size() == 0
 }
 
 // Contains return if an array contains or not an element
-func (arr *EArrayList) Contains(interface{}) bool {
-	return false
+func (arr *EArrayList) Contains(elem interface{}) bool {
+	return arr.IndexOf(elem) != -1
 }
 
 // IndexOf return the index on an element in an array, else return -1
-func (arr *EArrayList) IndexOf(interface{}) int {
+func (arr *EArrayList) IndexOf(elem interface{}) int {
+	index := 0
+	for val := range arr.Iterate() {
+		if val == elem {
+			return index
+		}
+		index++
+	}
 	return -1
 }
 
