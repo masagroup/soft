@@ -30,7 +30,7 @@ func (arr *EArrayList) Insert(index int, elem interface{}) bool {
 		return true
 	}
 	if index < 0 || index > arr.Size() {
-		return false
+		panic("Index out of bounds")
 	}
 	arr.Add(arr.data[arr.Size()-1])
 	copy(arr.data[index:], arr.data[index-1:])
@@ -41,7 +41,7 @@ func (arr *EArrayList) Insert(index int, elem interface{}) bool {
 // InsertAll element of an array at a given position
 func (arr *EArrayList) InsertAll(index int, list EList) bool {
 	if index < 0 || index > arr.Size() {
-		return false
+		panic("Index out of bounds")
 	}
 	for val := range list.Iterate() {
 		arr.Insert(index, val)
@@ -70,7 +70,7 @@ func (arr *EArrayList) Set(index int, elem interface{}) {
 // RemoveAt remove an element at a given position
 func (arr *EArrayList) RemoveAt(index int) bool {
 	if index < 0 || index > arr.Size() {
-		return false
+		panic("Index out of bounds")
 	}
 	arr.data = append(arr.data[:index], arr.data[index+1:]...)
 	return true
@@ -80,7 +80,7 @@ func (arr *EArrayList) RemoveAt(index int) bool {
 func (arr *EArrayList) Remove(elem interface{}) bool {
 	index := arr.IndexOf(elem)
 	if index == -1 {
-		return false
+		panic("Index out of bounds")
 	}
 	return arr.RemoveAt(index)
 }
