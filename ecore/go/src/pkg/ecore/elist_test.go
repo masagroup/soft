@@ -27,6 +27,7 @@ func TestSize(t *testing.T) {
 	arr.Add(7)
 	check(t, arr.Size(), 3, "Size")
 }
+
 func TestAddAll(t *testing.T) {
 	tmp := EArrayList{}
 	var arr EList

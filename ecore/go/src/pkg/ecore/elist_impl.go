@@ -7,7 +7,7 @@ type EArrayList struct {
 
 type eArrayListIterator struct {
 	curr int
-	data *EArrayList
+	data EArrayList
 }
 
 // Add a new elemement to the array
@@ -48,7 +48,7 @@ func (arr *EArrayList) InsertAll(index int, list EList) bool {
 	if index < 0 || index > arr.Size() {
 		panic("Index out of bounds")
 	}
-	for it := arr.Iterate(); (*it).Next(); {
+	for it := list.Iterate(); (*it).Next(); {
 		arr.Insert(index, (*it).Value())
 		index++
 	}
@@ -148,7 +148,7 @@ func (arr *EArrayList) IndexOf(elem interface{}) int {
 // Iterate through the array
 func (arr *EArrayList) Iterate() *EIterator {
 	var it EIterator
-	myIt := eArrayListIterator{data: arr, curr: -1}
+	myIt := eArrayListIterator{data: *arr, curr: -1}
 	it = &myIt
 	return &it
 }
