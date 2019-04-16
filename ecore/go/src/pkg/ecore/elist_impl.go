@@ -50,26 +50,49 @@ func (arr *EArrayList) InsertAll(index int, list EList) bool {
 	return true
 }
 
-func (arr *EArrayList) Move(int, interface{}) {
+// Move an element to the given index
+func (arr *EArrayList) Move(index int, elem interface{}) {
+	me := arr.IndexOf(elem)
+	if me == -1 {
+		panic("Index out of bounds")
+	}
+	arr.Swap(me, index)
 }
 
-func (arr *EArrayList) Swap(int, int) interface{} {
-	return nil
+// Swap move an element from oldIndex to newIndex
+func (arr *EArrayList) Swap(oldIndex, newIndex int) interface{} {
+	if oldIndex < 0 || oldIndex >= arr.Size() ||
+		newIndex < 0 || newIndex > arr.Size() {
+		panic("Index out of bounds")
+	}
+	val := arr.Get(oldIndex)
+	arr.RemoveAt(oldIndex)
+	if newIndex > oldIndex {
+		newIndex--
+	}
+	arr.Insert(newIndex, val)
+	return val
 }
 
 // Get an element of the array
 func (arr *EArrayList) Get(index int) interface{} {
+	if index < 0 || index >= arr.Size() {
+		panic("Index out of bounds")
+	}
 	return arr.data[index]
 }
 
 // Set an element of the array
 func (arr *EArrayList) Set(index int, elem interface{}) {
+	if index < 0 || index >= arr.Size() {
+		panic("Index out of bounds")
+	}
 	arr.data[index] = elem
 }
 
 // RemoveAt remove an element at a given position
 func (arr *EArrayList) RemoveAt(index int) bool {
-	if index < 0 || index > arr.Size() {
+	if index < 0 || index >= arr.Size() {
 		panic("Index out of bounds")
 	}
 	arr.data = append(arr.data[:index], arr.data[index+1:]...)

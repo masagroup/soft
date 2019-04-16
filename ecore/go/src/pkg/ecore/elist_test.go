@@ -111,6 +111,70 @@ func TestInsertAll(t *testing.T) {
 	check(t, arr2.Get(5), -7, "Insert all (get [5] check)")
 }
 
+func TestMoveAfter(t *testing.T) {
+	arr := EArrayList{}
+	arr.Add(2)
+	arr.Add(4)
+	arr.Add(6)
+	arr.Add(8)
+	arr.Add(10)
+	arr.Move(3, 4)
+	check(t, arr.Size(), 5, "Move after (size check)")
+	check(t, arr.Get(0), 2, "Move after (get[0] check)")
+	check(t, arr.Get(1), 6, "Move after (get[1] check)")
+	check(t, arr.Get(2), 4, "Move after (get[2] check)")
+	check(t, arr.Get(3), 8, "Move after (get[3] check)")
+	check(t, arr.Get(4), 10, "Move after (get[4] check)")
+}
+
+func TestMoveBegin(t *testing.T) {
+	arr := EArrayList{}
+	arr.Add(2)
+	arr.Add(4)
+	arr.Add(6)
+	arr.Add(8)
+	arr.Add(10)
+	arr.Move(5, 4)
+	check(t, arr.Size(), 5, "Move begin (size check)")
+	check(t, arr.Get(0), 2, "Move begin (get[0] check)")
+	check(t, arr.Get(1), 6, "Move begin (get[1] check)")
+	check(t, arr.Get(2), 8, "Move begin  (get[2] check)")
+	check(t, arr.Get(3), 10, "Move begin (get[3] check)")
+	check(t, arr.Get(4), 4, "Move begin (get[4] check)")
+}
+
+func TestMoveEnd(t *testing.T) {
+	arr := EArrayList{}
+	arr.Add(2)
+	arr.Add(4)
+	arr.Add(6)
+	arr.Add(8)
+	arr.Add(10)
+	arr.Move(0, 4)
+	check(t, arr.Size(), 5, "Move end (size check)")
+	check(t, arr.Get(0), 4, "Move end (get[0] check)")
+	check(t, arr.Get(1), 2, "Move end (get[1] check)")
+	check(t, arr.Get(2), 6, "Move end (get[2] check)")
+	check(t, arr.Get(3), 8, "Move end (get[3] check)")
+	check(t, arr.Get(4), 10, "Move end (get[4] check)")
+}
+
+func TestMoveSame(t *testing.T) {
+	arr := EArrayList{}
+	arr.Add(2)
+	arr.Add(4)
+	arr.Add(6)
+	arr.Add(8)
+	arr.Add(10)
+	arr.Move(1, 4)
+	check(t, arr.Size(), 5, "Move same (size check)")
+	check(t, arr.Get(0), 2, "Move same (get[0] check)")
+	check(t, arr.Get(1), 4, "Move same (get[1] check)")
+	check(t, arr.Get(2), 6, "Move same (get[2] check)")
+	check(t, arr.Get(3), 8, "Move same (get[3] check)")
+	check(t, arr.Get(4), 10, "Move same (get[4] check)")
+}
+
 func TestRemoveBegin(t *testing.T) {
 	arr := EArrayList{}
 	arr.Add(2)
