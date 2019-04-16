@@ -32,5 +32,11 @@ type EList interface {
 
 	IndexOf(interface{}) int
 
-	Iterate() chan interface{}
+	Iterate() *EIterator
+}
+
+// EIterator is an interator used by EList::Iterate()
+type EIterator interface {
+	Value() interface{}
+	Next() bool
 }

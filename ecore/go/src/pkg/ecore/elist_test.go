@@ -27,7 +27,6 @@ func TestSize(t *testing.T) {
 	arr.Add(7)
 	check(t, arr.Size(), 3, "Size")
 }
-
 func TestAddAll(t *testing.T) {
 	tmp := EArrayList{}
 	var arr EList
@@ -42,20 +41,6 @@ func TestAddAll(t *testing.T) {
 	check(t, arr2.Get(1), 5, "Add all (get [1] check)")
 	check(t, arr2.Get(2), 7, "Add all (get [2] check)")
 }
-
-/*func TestInsertBad(t *testing.T) {
-	arr := EArrayList{}
-	arr.Add(3)
-	check(t, arr.Insert(-1, 2), false, "Insert error (insert check)")
-	check(t, arr.Size(), 1, "Insert error (size check)")
-}
-
-func TestInsertBad2(t *testing.T) {
-	arr := EArrayList{}
-	arr.Add(3)
-	check(t, arr.Insert(2, 2), false, "Insert error (insert check)")
-	check(t, arr.Size(), 1, "Insert error (size check)")
-}*/
 
 func TestInsertPrepend(t *testing.T) {
 	arr := EArrayList{}
@@ -252,8 +237,8 @@ func TestIterate(t *testing.T) {
 	arr.Add(2)
 	arr.Add(4)
 	i := 0
-	for val := range arr.Iterate() {
-		check(t, val, i, "Iterate")
+	for it := arr.Iterate(); (*it).Next(); {
+		check(t, (*it).Value(), i, "Iterate")
 		i += 2
 	}
 }

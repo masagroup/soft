@@ -5,6 +5,11 @@ type EArrayList struct {
 	data []interface{}
 }
 
+type eArrayListIterator struct {
+	curr int
+	data *EArrayList
+}
+
 // Add a new elemement to the array
 func (arr *EArrayList) Add(elem interface{}) bool {
 	arr.data = append(arr.data, elem)
@@ -13,8 +18,8 @@ func (arr *EArrayList) Add(elem interface{}) bool {
 
 // AddAll elements of an array in the current one
 func (arr *EArrayList) AddAll(list EList) bool {
-	for val := range list.Iterate() {
-		arr.Add(val)
+	for it := list.Iterate(); (*it).Next(); {
+		arr.Add((*it).Value())
 	}
 	return true
 }
@@ -43,8 +48,8 @@ func (arr *EArrayList) InsertAll(index int, list EList) bool {
 	if index < 0 || index > arr.Size() {
 		panic("Index out of bounds")
 	}
-	for val := range list.Iterate() {
-		arr.Insert(index, val)
+	for it := arr.Iterate(); (*it).Next(); {
+		arr.Insert(index, (*it).Value())
 		index++
 	}
 	return true
@@ -131,8 +136,8 @@ func (arr *EArrayList) Contains(elem interface{}) bool {
 // IndexOf return the index on an element in an array, else return -1
 func (arr *EArrayList) IndexOf(elem interface{}) int {
 	index := 0
-	for val := range arr.Iterate() {
-		if val == elem {
+	for it := arr.Iterate(); (*it).Next(); {
+		if (*it).Value() == elem {
 			return index
 		}
 		index++
@@ -141,13 +146,23 @@ func (arr *EArrayList) IndexOf(elem interface{}) int {
 }
 
 // Iterate through the array
-func (arr *EArrayList) Iterate() chan interface{} {
-	ch := make(chan interface{})
-	go func() {
-		defer close(ch)
-		for i := 0; i < arr.Size(); i++ {
-			ch <- arr.Get(i)
-		}
-	}()
-	return ch
+func (arr *EArrayList) Iterate() *EIterator {
+	var it EIterator
+	myIt := eArrayListIterator{data: arr, curr: -1}
+	it = &myIt
+	return &it
+}
+
+// Value return the current value of the iterator
+func (it *eArrayListIterator) Value() interface{} {
+	return it.data.Get(it.curr)
+}
+
+// Next make the iterator go further in the array
+func (it *eArrayListIterator) Next() bool {
+	it.curr++
+	if it.curr == it.data.Size() {
+		return false
+	}
+	return true
 }
