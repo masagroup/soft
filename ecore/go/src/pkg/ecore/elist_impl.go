@@ -1,23 +1,23 @@
 package ecore
 
-// EArrayList is an array of a dynamic size
-type EArrayList struct {
+// ArrayEList is an array of a dynamic size
+type ArrayEList struct {
 	data []interface{}
 }
 
-type eArrayListIterator struct {
+type arrayEListIterator struct {
 	curr int
-	data EArrayList
+	data ArrayEList
 }
 
 // Add a new elemement to the array
-func (arr *EArrayList) Add(elem interface{}) bool {
+func (arr *ArrayEList) Add(elem interface{}) bool {
 	arr.data = append(arr.data, elem)
 	return true
 }
 
 // AddAll elements of an array in the current one
-func (arr *EArrayList) AddAll(list EList) bool {
+func (arr *ArrayEList) AddAll(list EList) bool {
 	for it := list.Iterate(); (*it).Next(); {
 		arr.Add((*it).Value())
 	}
@@ -25,7 +25,7 @@ func (arr *EArrayList) AddAll(list EList) bool {
 }
 
 // Insert an element in the array
-func (arr *EArrayList) Insert(index int, elem interface{}) bool {
+func (arr *ArrayEList) Insert(index int, elem interface{}) bool {
 	if index == 0 {
 		arr.data = append([]interface{}{elem}, arr.data...)
 		return true
@@ -44,7 +44,7 @@ func (arr *EArrayList) Insert(index int, elem interface{}) bool {
 }
 
 // InsertAll element of an array at a given position
-func (arr *EArrayList) InsertAll(index int, list EList) bool {
+func (arr *ArrayEList) InsertAll(index int, list EList) bool {
 	if index < 0 || index > arr.Size() {
 		panic("Index out of bounds")
 	}
@@ -56,7 +56,7 @@ func (arr *EArrayList) InsertAll(index int, list EList) bool {
 }
 
 // Move an element to the given index
-func (arr *EArrayList) Move(index int, elem interface{}) {
+func (arr *ArrayEList) Move(index int, elem interface{}) {
 	me := arr.IndexOf(elem)
 	if me == -1 {
 		panic("Index out of bounds")
@@ -65,7 +65,7 @@ func (arr *EArrayList) Move(index int, elem interface{}) {
 }
 
 // Swap move an element from oldIndex to newIndex
-func (arr *EArrayList) Swap(oldIndex, newIndex int) interface{} {
+func (arr *ArrayEList) Swap(oldIndex, newIndex int) interface{} {
 	if oldIndex < 0 || oldIndex >= arr.Size() ||
 		newIndex < 0 || newIndex > arr.Size() {
 		panic("Index out of bounds")
@@ -80,7 +80,7 @@ func (arr *EArrayList) Swap(oldIndex, newIndex int) interface{} {
 }
 
 // Get an element of the array
-func (arr *EArrayList) Get(index int) interface{} {
+func (arr *ArrayEList) Get(index int) interface{} {
 	if index < 0 || index >= arr.Size() {
 		panic("Index out of bounds")
 	}
@@ -88,7 +88,7 @@ func (arr *EArrayList) Get(index int) interface{} {
 }
 
 // Set an element of the array
-func (arr *EArrayList) Set(index int, elem interface{}) {
+func (arr *ArrayEList) Set(index int, elem interface{}) {
 	if index < 0 || index >= arr.Size() {
 		panic("Index out of bounds")
 	}
@@ -96,7 +96,7 @@ func (arr *EArrayList) Set(index int, elem interface{}) {
 }
 
 // RemoveAt remove an element at a given position
-func (arr *EArrayList) RemoveAt(index int) bool {
+func (arr *ArrayEList) RemoveAt(index int) bool {
 	if index < 0 || index >= arr.Size() {
 		panic("Index out of bounds")
 	}
@@ -105,7 +105,7 @@ func (arr *EArrayList) RemoveAt(index int) bool {
 }
 
 // Remove an element in an array
-func (arr *EArrayList) Remove(elem interface{}) bool {
+func (arr *ArrayEList) Remove(elem interface{}) bool {
 	index := arr.IndexOf(elem)
 	if index == -1 {
 		panic("Index out of bounds")
@@ -114,27 +114,27 @@ func (arr *EArrayList) Remove(elem interface{}) bool {
 }
 
 // Size count the number of element in the array
-func (arr *EArrayList) Size() int {
+func (arr *ArrayEList) Size() int {
 	return len(arr.data)
 }
 
 // Clear remove all elements of the array
-func (arr *EArrayList) Clear() {
+func (arr *ArrayEList) Clear() {
 	arr.data = make([]interface{}, 0)
 }
 
 // Empty return true if the array contains 0 element
-func (arr *EArrayList) Empty() bool {
+func (arr *ArrayEList) Empty() bool {
 	return arr.Size() == 0
 }
 
 // Contains return if an array contains or not an element
-func (arr *EArrayList) Contains(elem interface{}) bool {
+func (arr *ArrayEList) Contains(elem interface{}) bool {
 	return arr.IndexOf(elem) != -1
 }
 
 // IndexOf return the index on an element in an array, else return -1
-func (arr *EArrayList) IndexOf(elem interface{}) int {
+func (arr *ArrayEList) IndexOf(elem interface{}) int {
 	index := 0
 	for it := arr.Iterate(); (*it).Next(); {
 		if (*it).Value() == elem {
@@ -146,20 +146,20 @@ func (arr *EArrayList) IndexOf(elem interface{}) int {
 }
 
 // Iterate through the array
-func (arr *EArrayList) Iterate() *EIterator {
+func (arr *ArrayEList) Iterate() *EIterator {
 	var it EIterator
-	myIt := eArrayListIterator{data: *arr, curr: -1}
+	myIt := arrayEListIterator{data: *arr, curr: -1}
 	it = &myIt
 	return &it
 }
 
 // Value return the current value of the iterator
-func (it *eArrayListIterator) Value() interface{} {
+func (it *arrayEListIterator) Value() interface{} {
 	return it.data.Get(it.curr)
 }
 
 // Next make the iterator go further in the array
-func (it *eArrayListIterator) Next() bool {
+func (it *arrayEListIterator) Next() bool {
 	it.curr++
 	if it.curr == it.data.Size() {
 		return false

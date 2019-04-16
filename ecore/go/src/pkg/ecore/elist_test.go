@@ -11,7 +11,7 @@ func check(t *testing.T, result, expectation interface{}, currentTest string) {
 }
 
 func TestGet(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(3)
 	arr.Add(5)
 	arr.Add(7)
@@ -21,7 +21,7 @@ func TestGet(t *testing.T) {
 }
 
 func TestSize(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(3)
 	arr.Add(5)
 	arr.Add(7)
@@ -29,13 +29,13 @@ func TestSize(t *testing.T) {
 }
 
 func TestAddAll(t *testing.T) {
-	tmp := EArrayList{}
+	tmp := ArrayEList{}
 	var arr EList
 	arr = &tmp
 	arr.Add(3)
 	arr.Add(5)
 	arr.Add(7)
-	arr2 := EArrayList{}
+	arr2 := ArrayEList{}
 	arr2.AddAll(arr)
 	check(t, arr2.Size(), 3, "Add all (size check)")
 	check(t, arr2.Get(0), 3, "Add all (get [0] check)")
@@ -44,7 +44,7 @@ func TestAddAll(t *testing.T) {
 }
 
 func TestInsertPrepend(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(3)
 	check(t, arr.Insert(0, 2), true, "Insert begin (insert check)")
 	check(t, arr.Size(), 2, "Insert begin (size check)")
@@ -53,7 +53,7 @@ func TestInsertPrepend(t *testing.T) {
 }
 
 func TestInsertAppend(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(3)
 	check(t, arr.Insert(1, 2), true, "Insert end (insert check)")
 	check(t, arr.Size(), 2, "Insert end (size check)")
@@ -62,7 +62,7 @@ func TestInsertAppend(t *testing.T) {
 }
 
 func TestInsertMiddle(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(3)
 	arr.Add(5)
 	arr.Add(7)
@@ -77,13 +77,13 @@ func TestInsertMiddle(t *testing.T) {
 }
 
 func TestInsertAll(t *testing.T) {
-	tmp := EArrayList{}
+	tmp := ArrayEList{}
 	var arr EList
 	arr = &tmp
 	arr.Add(3)
 	arr.Add(5)
 	arr.Add(7)
-	arr2 := EArrayList{}
+	arr2 := ArrayEList{}
 	arr2.Add(-3)
 	arr2.Add(-5)
 	arr2.Add(-7)
@@ -98,7 +98,7 @@ func TestInsertAll(t *testing.T) {
 }
 
 func TestMoveAfter(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(2)
 	arr.Add(4)
 	arr.Add(6)
@@ -114,7 +114,7 @@ func TestMoveAfter(t *testing.T) {
 }
 
 func TestMoveBegin(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(2)
 	arr.Add(4)
 	arr.Add(6)
@@ -130,7 +130,7 @@ func TestMoveBegin(t *testing.T) {
 }
 
 func TestMoveEnd(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(2)
 	arr.Add(4)
 	arr.Add(6)
@@ -146,7 +146,7 @@ func TestMoveEnd(t *testing.T) {
 }
 
 func TestMoveSame(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(2)
 	arr.Add(4)
 	arr.Add(6)
@@ -162,7 +162,7 @@ func TestMoveSame(t *testing.T) {
 }
 
 func TestRemoveBegin(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(2)
 	arr.Add(4)
 	arr.Add(6)
@@ -174,7 +174,7 @@ func TestRemoveBegin(t *testing.T) {
 }
 
 func TestRemoveEnd(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(2)
 	arr.Add(4)
 	arr.Add(6)
@@ -186,7 +186,7 @@ func TestRemoveEnd(t *testing.T) {
 }
 
 func TestRemoveMiddle(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(2)
 	arr.Add(4)
 	arr.Add(6)
@@ -200,7 +200,7 @@ func TestRemoveMiddle(t *testing.T) {
 }
 
 func TestClear(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(3)
 	arr.Add(5)
 	check(t, arr.Size(), 2, "Clear")
@@ -209,31 +209,31 @@ func TestClear(t *testing.T) {
 }
 
 func TestEmptyTrue(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(3)
 	arr.Add(5)
 	check(t, arr.Empty(), false, "Empty")
 }
 
 func TestEmptyFalse(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	check(t, arr.Empty(), true, "Empty")
 }
 
 func TestContainsFalse(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(2)
 	check(t, arr.Contains(4), false, "Contains")
 }
 
 func TestContainsTrue(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(2)
 	check(t, arr.Contains(2), true, "Contains")
 }
 
 func TestIterate(t *testing.T) {
-	arr := EArrayList{}
+	arr := ArrayEList{}
 	arr.Add(0)
 	arr.Add(2)
 	arr.Add(4)
