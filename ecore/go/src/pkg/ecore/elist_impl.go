@@ -5,9 +5,18 @@ type ArrayEList struct {
 	data []interface{}
 }
 
+type ImmutableEList struct {
+	data []interface{}
+}
+
 type arrayEListIterator struct {
 	curr int
 	data ArrayEList
+}
+
+type immutableEListIterator struct {
+	curr int
+	data ImmutableEList
 }
 
 // Add a new elemement to the array
@@ -160,6 +169,96 @@ func (it *arrayEListIterator) Value() interface{} {
 
 // Next make the iterator go further in the array
 func (it *arrayEListIterator) Next() bool {
+	it.curr++
+	if it.curr == it.data.Size() {
+		return false
+	}
+	return true
+}
+
+func (arr *ImmutableEList) Add(elem interface{}) bool {
+	panic("Immutable list can't be modified")
+}
+
+func (arr *ImmutableEList) AddAll(list EList) bool {
+	panic("Immutable list can't be modified")
+}
+
+func (arr *ImmutableEList) Insert(index int, elem interface{}) bool {
+	panic("Immutable list can't be modified")
+}
+
+func (arr *ImmutableEList) InsertAll(index int, list EList) bool {
+	panic("Immutable list can't be modified")
+}
+
+func (arr *ImmutableEList) Move(index int, elem interface{}) {
+	panic("Immutable list can't be modified")
+}
+
+func (arr *ImmutableEList) Swap(oldIndex, newIndex int) interface{} {
+	panic("Immutable list can't be modified")
+}
+
+// Get an element of the array
+func (arr *ImmutableEList) Get(index int) interface{} {
+	if index < 0 || index >= arr.Size() {
+		panic("Index out of bounds")
+	}
+	return arr.data[index]
+}
+
+func (arr *ImmutableEList) Set(index int, elem interface{}) {
+	panic("Immutable list can't be modified")
+}
+
+func (arr *ImmutableEList) RemoveAt(index int) bool {
+	panic("Immutable list can't be modified")
+}
+
+func (arr *ImmutableEList) Remove(elem interface{}) bool {
+	panic("Immutable list can't be modified")
+}
+
+func (arr *ImmutableEList) Size() int {
+	return len(arr.data)
+}
+
+func (arr *ImmutableEList) Clear() {
+	panic("Immutable list can't be modified")
+}
+
+func (arr *ImmutableEList) Empty() bool {
+	return arr.Size() == 0
+}
+
+func (arr *ImmutableEList) Contains(elem interface{}) bool {
+	return arr.IndexOf(elem) != -1
+}
+
+func (arr *ImmutableEList) IndexOf(elem interface{}) int {
+	index := 0
+	for it := arr.Iterate(); (*it).Next(); {
+		if (*it).Value() == elem {
+			return index
+		}
+		index++
+	}
+	return -1
+}
+
+func (arr *ImmutableEList) Iterate() *EIterator {
+	var it EIterator
+	myIt := immutableEListIterator{data: *arr, curr: -1}
+	it = &myIt
+	return &it
+}
+
+func (it *immutableEListIterator) Value() interface{} {
+	return it.data.Get(it.curr)
+}
+
+func (it *immutableEListIterator) Next() bool {
 	it.curr++
 	if it.curr == it.data.Size() {
 		return false

@@ -243,3 +243,14 @@ func TestIterate(t *testing.T) {
 		i += 2
 	}
 }
+
+func TestIterateImmutable(t *testing.T) {
+	var iDatas []interface{}
+	iDatas = append(iDatas, 0, 2, 4, 6)
+	arr := ImmutableEList{data: iDatas}
+	i := 0
+	for it := arr.Iterate(); (*it).Next(); {
+		check(t, (*it).Value(), i, "Iterate immutable")
+		i += 2
+	}
+}
