@@ -1,0 +1,8 @@
+[comment encoding = UTF-8 /]
+[module generateCommon('http://www.eclipse.org/emf/2002/Ecore')/]
+
+[import soft::generator::go::generateCommon/]
+
+[query public getInterfaceImplementationFileName( aClass : EClass ) : String = getInterfaceImplementationFileName(aClass.name.toLowerCase(),aClass.ePackage) /]
+[query private getInterfaceImplementationFileName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getInterfaceImplementationFileNamePattern() in if pattern ='' then aElementName else pattern.format(Sequence{aElementName}) endif /]
+[query private getInterfaceImplementationFileNamePattern( aPackage : EPackage ) : String = if hasKey('interfaceFileNamePattern') then valueKey('interfaceFileNamePattern') else '{0}_impl_gen.go' endif/]

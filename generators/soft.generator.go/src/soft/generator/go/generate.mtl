@@ -2,11 +2,13 @@
 [module generate('http://www.eclipse.org/emf/2002/Ecore')/]
 
 [import soft::generator::go::lib::generateInterface/]
+[import soft::generator::go::lib::impl::generateImplementation/]
 
 [template public generateModel(aPackage : EPackage)]
 [comment @main/]
 [for (aClass : EClass | aPackage.eAllContents(EClass))]
     [aClass.generateInterface()/]
+    [aClass.generateImplementation()/]
 [/for]
 [/template]
 
