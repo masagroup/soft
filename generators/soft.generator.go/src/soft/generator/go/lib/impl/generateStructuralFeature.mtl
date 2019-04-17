@@ -5,7 +5,7 @@
 [import soft::generator::go::generateCommon/]
 
 [template public generateVariable(aStructuralFeature : EStructuralFeature)]
-[aStructuralFeature.name/] [generateType(aStructuralFeature)/]
+m_[aStructuralFeature.name/] [generateType(aStructuralFeature)/]
 
 [/template]
 
@@ -26,26 +26,26 @@
 [/template]
 
 [template public generateImplementationMember(aStructuralFeature : EStructuralFeature)]
-func ([generateImplementationClassVariable(aStructuralFeature)/] *[aStructuralFeature.eContainingClass.name.substring(2)/])
+func (m_[generateImplementationClassVariable(aStructuralFeature)/] *[aStructuralFeature.eContainingClass.name.substring(2)/])
 [/template]
 
 [template public generateGetImplementation(aStructuralFeature : EStructuralFeature)]
 [generateImplementationMember(aStructuralFeature)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
-	return [generateImplementationClassVariable(aStructuralFeature)/].[aStructuralFeature.name/]
+	return m_[generateImplementationClassVariable(aStructuralFeature)/].m_[aStructuralFeature.name/]
 }
 
 [/template]
 
 [template public generateSetImplementation(aStructuralFeature : EStructuralFeature)]
 [generateImplementationMember(aStructuralFeature)/] [aStructuralFeature.getSetterName()/]( new_[aStructuralFeature.name/] [aStructuralFeature.generateType()/] ) {
-	[generateImplementationClassVariable(aStructuralFeature)/].[aStructuralFeature.name/] = new_[aStructuralFeature.name/]
+	m_[generateImplementationClassVariable(aStructuralFeature)/].m_[aStructuralFeature.name/] = new_[aStructuralFeature.name/]
 }
 
 [/template]
 
 [template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature)]
 [generateImplementationMember(aStructuralFeature)/] [aStructuralFeature.getUnSetterName()/]() {
-    [generateImplementationClassVariable(aStructuralFeature)/].[aStructuralFeature.name/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
+    m_[generateImplementationClassVariable(aStructuralFeature)/].m_[aStructuralFeature.name/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
 }
 
 [/template]

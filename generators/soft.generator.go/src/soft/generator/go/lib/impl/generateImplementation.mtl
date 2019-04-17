@@ -11,7 +11,7 @@
 package [aClass.ePackage.name/]
 
 type [implementationName.substring(2)/] struct {
-[for (extend: EClass | aClass.eSuperTypes)]    [extend.name.substring(2).toLowerFirst()/] [extend.name/][/for]
+[for (extend: EClass | aClass.eSuperTypes)]    m_[extend.name.substring(2).toLowerFirst()/] [extend.name/][/for]
 [let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( isGet() or isSet() )]
 [if attributes->notEmpty()]
     [attributes.generateVariable()/]
