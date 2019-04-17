@@ -27,7 +27,7 @@ type immutableEListIterator struct {
 	data ImmutableEList
 }
 
-// Add a new elemement to the array
+// Add a new element to the array
 func (arr *ArrayEList) Add(elem interface{}) bool {
 	arr.data = append(arr.data, elem)
 	return true
