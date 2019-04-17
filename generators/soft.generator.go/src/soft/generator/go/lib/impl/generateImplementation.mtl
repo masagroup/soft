@@ -6,15 +6,27 @@
 [import soft::generator::go::lib::impl::generateCommon/]
 [import soft::generator::go::lib::impl::generateStructuralFeature/]
 
-[template public generateImplementation(aClass : EClass) { implementationName : String = aClass.getInterfaceName(); } ]
+[template public generateImplementation(aClass : EClass) { implementationName : String = aClass.name; } ]
 [file (aClass.ePackage.getOutputDirectory() + '/' + aClass.getInterfaceImplementationFileName() , false, 'UTF-8')]
 type [implementationName.substring(2)/] struct {
+[for (extend: EClass | aClass.eSuperTypes)]    [extend.name.substring(2).toLowerFirst()/] : [extend.name/][/for]
 [let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( isGet() or isSet() )]
 [if attributes->notEmpty()]
     [attributes.generateVariable()/]
 [/if]
 [/let]
 }
+
+[let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( isGet() or isSet() )]
+[if attributes->notEmpty()]
+[attributes.generateImplementation()/]
+[/if]
+[/let]
+[let references : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EReference)->select( isGet() or isSet() )]
+[if references->notEmpty()]
+[references.generateImplementation()/]
+[/if]
+[/let]
 
 [/file]
 [/template]
