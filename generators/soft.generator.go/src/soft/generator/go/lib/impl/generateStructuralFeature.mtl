@@ -42,5 +42,6 @@
 
 [template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature)]
 [generateImplementationMember(aStructuralFeature)/] [aStructuralFeature.getUnSetterName()/]() {
+    [generateImplementationClassVariable(aStructuralFeature)/].[aStructuralFeature.name/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
 }
 [/template]
