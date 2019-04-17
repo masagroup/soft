@@ -15,6 +15,11 @@ type [implementationName.substring(2)/] struct {
     [attributes.generateVariable()/]
 [/if]
 [/let]
+[let references : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EReference)->select( isGet() or isSet() )]
+[if references->notEmpty()]
+    [references.generateVariable()/]
+[/if]
+[/let]
 }
 
 [let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( isGet() or isSet() )]

@@ -6,6 +6,7 @@
 
 [template public generateVariable(aStructuralFeature : EStructuralFeature)]
 [aStructuralFeature.name/] : [generateType(aStructuralFeature)/]
+
 [/template]
 
 [template public generateImplementation(aStructuralFeature : EStructuralFeature)]
@@ -32,16 +33,19 @@
 [generateImplementationMember(aStructuralFeature)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
 	return [generateImplementationClassVariable(aStructuralFeature)/].[aStructuralFeature.name/]
 }
+
 [/template]
 
 [template public generateSetImplementation(aStructuralFeature : EStructuralFeature)]
 [generateImplementationMember(aStructuralFeature)/] [aStructuralFeature.getSetterName()/]( new_[aStructuralFeature.name/] [aStructuralFeature.generateType()/] ) {
 	[generateImplementationClassVariable(aStructuralFeature)/].[aStructuralFeature.name/] = new_[aStructuralFeature.name/]
 }
+
 [/template]
 
 [template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature)]
 [generateImplementationMember(aStructuralFeature)/] [aStructuralFeature.getUnSetterName()/]() {
     [generateImplementationClassVariable(aStructuralFeature)/].[aStructuralFeature.name/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
 }
+
 [/template]
