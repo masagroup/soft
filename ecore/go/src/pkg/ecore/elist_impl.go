@@ -9,6 +9,14 @@ type ImmutableEList struct {
 	data []interface{}
 }
 
+func NewArrayEList(data []interface{}) *ArrayEList {
+	return &ArrayEList{data: data}
+}
+
+func NewImmutableEList(data []interface{}) *ImmutableEList {
+	return &ImmutableEList{data: data}
+}
+
 type arrayEListIterator struct {
 	curr int
 	data ArrayEList
