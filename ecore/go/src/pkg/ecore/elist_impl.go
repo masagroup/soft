@@ -149,8 +149,8 @@ func (arr *arrayEList) Contains(elem interface{}) bool {
 
 // IndexOf return the index on an element in an array, else return -1
 func (arr *arrayEList) IndexOf(elem interface{}) int {
-	for i := 0; i < arr.Size(); i++ {
-		if arr.data[i] == elem {
+	for i, value := range arr.data {
+		if value == elem {
 			return i
 		}
 	}
@@ -231,8 +231,8 @@ func (arr *immutableEList) Contains(elem interface{}) bool {
 
 // IndexOf return the index on an element in an array, else return -1
 func (arr *immutableEList) IndexOf(elem interface{}) int {
-	for i := 0; i < arr.Size(); i++ {
-		if arr.data[i] == elem {
+	for i, value := range arr.data {
+		if value == elem {
 			return i
 		}
 	}
