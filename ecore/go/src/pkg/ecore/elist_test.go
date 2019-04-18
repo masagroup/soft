@@ -79,7 +79,7 @@ func TestInsertAll(t *testing.T) {
 
 func TestMoveAfter(t *testing.T) {
 	arr := NewArrayEList([]interface{}{2, 4, 6, 8, 10})
-	arr.Move(3, 4)
+	arr.MoveObject(3, 4)
 	check(t, arr.Size(), 5, "Move after (size check)")
 	check(t, arr.Get(0), 2, "Move after (get[0] check)")
 	check(t, arr.Get(1), 6, "Move after (get[1] check)")
@@ -90,7 +90,7 @@ func TestMoveAfter(t *testing.T) {
 
 func TestMoveBegin(t *testing.T) {
 	arr := NewArrayEList([]interface{}{2, 4, 6, 8, 10})
-	arr.Move(5, 4)
+	arr.MoveObject(5, 4)
 	check(t, arr.Size(), 5, "Move begin (size check)")
 	check(t, arr.Get(0), 2, "Move begin (get[0] check)")
 	check(t, arr.Get(1), 6, "Move begin (get[1] check)")
@@ -101,7 +101,7 @@ func TestMoveBegin(t *testing.T) {
 
 func TestMoveEnd(t *testing.T) {
 	arr := NewArrayEList([]interface{}{2, 4, 6, 8, 10})
-	arr.Move(0, 4)
+	arr.MoveObject(0, 4)
 	check(t, arr.Size(), 5, "Move end (size check)")
 	check(t, arr.Get(0), 4, "Move end (get[0] check)")
 	check(t, arr.Get(1), 2, "Move end (get[1] check)")
@@ -112,7 +112,7 @@ func TestMoveEnd(t *testing.T) {
 
 func TestMoveSame(t *testing.T) {
 	arr := NewArrayEList([]interface{}{2, 4, 6, 8, 10})
-	arr.Move(1, 4)
+	arr.MoveObject(1, 4)
 	check(t, arr.Size(), 5, "Move same (size check)")
 	check(t, arr.Get(0), 2, "Move same (get[0] check)")
 	check(t, arr.Get(1), 4, "Move same (get[1] check)")
