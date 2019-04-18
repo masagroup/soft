@@ -9,10 +9,12 @@ type immutableEList struct {
 	data []interface{}
 }
 
+// NewArrayEList return a new ArrayEList
 func NewArrayEList(data []interface{}) *arrayEList {
 	return &arrayEList{data: data}
 }
 
+// NewImmutableEList return a new ImmutableEList
 func NewImmutableEList(data []interface{}) *immutableEList {
 	return &immutableEList{data: data}
 }
@@ -223,6 +225,7 @@ func (arr *immutableEList) Remove(elem interface{}) bool {
 	panic("Immutable list can't be modified")
 }
 
+// Size count the number of element in the array
 func (arr *immutableEList) Size() int {
 	return len(arr.data)
 }
@@ -231,14 +234,17 @@ func (arr *immutableEList) Clear() {
 	panic("Immutable list can't be modified")
 }
 
+// Empty return true if the array contains 0 element
 func (arr *immutableEList) Empty() bool {
 	return arr.Size() == 0
 }
 
+// Contains return if an array contains or not an element
 func (arr *immutableEList) Contains(elem interface{}) bool {
 	return arr.IndexOf(elem) != -1
 }
 
+// IndexOf return the index on an element in an array, else return -1
 func (arr *immutableEList) IndexOf(elem interface{}) int {
 	index := 0
 	for it := arr.Iterate(); (*it).Next(); {
@@ -250,6 +256,7 @@ func (arr *immutableEList) IndexOf(elem interface{}) int {
 	return -1
 }
 
+// Iterate through the array
 func (arr *immutableEList) Iterate() *EIterator {
 	var it EIterator
 	myIt := iterator{data: arr, curr: -1}
