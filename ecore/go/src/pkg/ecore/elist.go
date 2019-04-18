@@ -33,6 +33,8 @@ type EList interface {
 	IndexOf(interface{}) int
 
 	Iterate() *EIterator
+
+	ToArray() []interface{}
 }
 
 // EIterator is an interator used by EList::Iterate()

@@ -43,28 +43,19 @@ func (arr *arrayEList) Add(elem interface{}) bool {
 
 // AddAll elements of an array in the current one
 func (arr *arrayEList) AddAll(list EList) bool {
-	for i := 0; i < list.Size(); i++ {
-		arr.Add(list.Get(i))
-	}
+	arr.data = append(arr.data, list.ToArray()...)
 	return true
 }
 
 // Insert an element in the array
 func (arr *arrayEList) Insert(index int, elem interface{}) bool {
-	if index == 0 {
-		arr.data = append([]interface{}{elem}, arr.data...)
-		return true
-	}
-	if index == arr.Size() {
-		arr.Add(elem)
-		return true
-	}
+
 	if index < 0 || index > arr.Size() {
 		panic("Index out of bounds")
 	}
-	arr.Add(arr.data[arr.Size()-1])
-	copy(arr.data[index:], arr.data[index-1:])
-	arr.Set(index, elem)
+	arr.data = append(arr.data, nil)
+	copy(arr.data[index+1:], arr.data[index:])
+	arr.data[index] = elem
 	return true
 }
 
@@ -73,10 +64,7 @@ func (arr *arrayEList) InsertAll(index int, list EList) bool {
 	if index < 0 || index > arr.Size() {
 		panic("Index out of bounds")
 	}
-	for i := 0; i < list.Size(); i++ {
-		arr.Insert(index, list.Get(i))
-		index++
-	}
+	arr.data = append(arr.data[:index], append(list.ToArray(), arr.data[index:]...)...)
 	return true
 }
 
@@ -176,6 +164,10 @@ func (arr *arrayEList) Iterate() *EIterator {
 	return &it
 }
 
+func (arr *arrayEList) ToArray() []interface{} {
+	return arr.data
+}
+
 func (arr *immutableEList) Add(elem interface{}) bool {
 	panic("Immutable list can't be modified")
 }
@@ -255,4 +247,8 @@ func (arr *immutableEList) Iterate() *EIterator {
 	myIt := iterator{data: arr, curr: -1}
 	it = &myIt
 	return &it
+}
+
+func (arr *immutableEList) ToArray() []interface{} {
+	return arr.data
 }
