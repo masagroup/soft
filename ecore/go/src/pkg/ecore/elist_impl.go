@@ -32,10 +32,7 @@ func (it *iterator) Value() interface{} {
 // Next make the iterator go further in the array
 func (it *iterator) Next() bool {
 	it.curr++
-	if it.curr == it.data.Size() {
-		return false
-	}
-	return true
+	return it.curr == it.data.Size()
 }
 
 // Add a new element to the array
@@ -46,8 +43,8 @@ func (arr *arrayEList) Add(elem interface{}) bool {
 
 // AddAll elements of an array in the current one
 func (arr *arrayEList) AddAll(list EList) bool {
-	for it := list.Iterate(); (*it).Next(); {
-		arr.Add((*it).Value())
+	for i := 0; i < list.Size(); i++ {
+		arr.Add(list.Get(i))
 	}
 	return true
 }
@@ -76,20 +73,20 @@ func (arr *arrayEList) InsertAll(index int, list EList) bool {
 	if index < 0 || index > arr.Size() {
 		panic("Index out of bounds")
 	}
-	for it := list.Iterate(); (*it).Next(); {
-		arr.Insert(index, (*it).Value())
+	for i := 0; i < list.Size(); i++ {
+		arr.Insert(index, list.Get(i))
 		index++
 	}
 	return true
 }
 
 // Move an element to the given index
-func (arr *arrayEList) MoveObject(index int, elem interface{}) {
-	me := arr.IndexOf(elem)
-	if me == -1 {
+func (arr *arrayEList) MoveObject(newIndex int, elem interface{}) {
+	oldIndex := arr.IndexOf(elem)
+	if oldIndex == -1 {
 		panic("Index out of bounds")
 	}
-	arr.Move(me, index)
+	arr.Move(oldIndex, newIndex)
 }
 
 // Swap move an element from oldIndex to newIndex
@@ -98,7 +95,7 @@ func (arr *arrayEList) Move(oldIndex, newIndex int) interface{} {
 		newIndex < 0 || newIndex > arr.Size() {
 		panic("Index out of bounds")
 	}
-	val := arr.Get(oldIndex)
+	val := arr.data[oldIndex]
 	arr.RemoveAt(oldIndex)
 	if newIndex > oldIndex {
 		newIndex--
@@ -136,7 +133,7 @@ func (arr *arrayEList) RemoveAt(index int) bool {
 func (arr *arrayEList) Remove(elem interface{}) bool {
 	index := arr.IndexOf(elem)
 	if index == -1 {
-		panic("Index out of bounds")
+		return false
 	}
 	return arr.RemoveAt(index)
 }
@@ -163,12 +160,10 @@ func (arr *arrayEList) Contains(elem interface{}) bool {
 
 // IndexOf return the index on an element in an array, else return -1
 func (arr *arrayEList) IndexOf(elem interface{}) int {
-	index := 0
-	for it := arr.Iterate(); (*it).Next(); {
-		if (*it).Value() == elem {
-			return index
+	for i := 0; i < arr.Size(); i++ {
+		if arr.data[i] == elem {
+			return i
 		}
-		index++
 	}
 	return -1
 }
@@ -197,7 +192,7 @@ func (arr *immutableEList) InsertAll(index int, list EList) bool {
 	panic("Immutable list can't be modified")
 }
 
-func (arr *immutableEList) MoveObject(index int, elem interface{}) {
+func (arr *immutableEList) MoveObject(newIndex int, elem interface{}) {
 	panic("Immutable list can't be modified")
 }
 
@@ -246,12 +241,10 @@ func (arr *immutableEList) Contains(elem interface{}) bool {
 
 // IndexOf return the index on an element in an array, else return -1
 func (arr *immutableEList) IndexOf(elem interface{}) int {
-	index := 0
-	for it := arr.Iterate(); (*it).Next(); {
-		if (*it).Value() == elem {
-			return index
+	for i := 0; i < arr.Size(); i++ {
+		if i == elem {
+			return i
 		}
-		index++
 	}
 	return -1
 }
