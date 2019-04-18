@@ -10,8 +10,12 @@
 [getImplementationName(cl)/]
 [/template]
 
+[template public generateClassAttributeFormat(name : String)]
+[name/]_
+[/template]
+
 [template public generateVariable(aStructuralFeature : EStructuralFeature)]
-[generateVariableFormat(aStructuralFeature.eContainingClass)/] [generateType(aStructuralFeature)/]
+[generateClassAttributeFormat(aStructuralFeature.name)/] [generateType(aStructuralFeature)/]
 
 [/template]
 
@@ -40,21 +44,21 @@ func ([generateVariableFormat(cl)/] *[getStructName(cl)/])
 
 [template public generateGetImplementation(aStructuralFeature : EStructuralFeature)]
 [generateImplementationMember(aStructuralFeature.eContainingClass)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
-	return [generateVariableFormat(aStructuralFeature.eContainingClass)/].a
+	return [generateVariableFormat(aStructuralFeature.eContainingClass)/].[generateClassAttributeFormat(aStructuralFeature.name)/]
 }
 
 [/template]
 
 [template public generateSetImplementation(aStructuralFeature : EStructuralFeature)]
 [generateImplementationMember(aStructuralFeature.eContainingClass)/] [aStructuralFeature.getSetterName()/]( new_[aStructuralFeature.name/] [aStructuralFeature.generateType()/] ) {
-	[generateVariableFormat(aStructuralFeature.eContainingClass)/].a = new_[aStructuralFeature.name/]
+	[generateVariableFormat(aStructuralFeature.eContainingClass)/].[generateClassAttributeFormat(aStructuralFeature.name)/] = new_[aStructuralFeature.name/]
 }
 
 [/template]
 
 [template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature)]
 [generateImplementationMember(aStructuralFeature.eContainingClass)/] [aStructuralFeature.getUnSetterName()/]() {
-    [generateVariableFormat(aStructuralFeature.eContainingClass)/].a = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
+    [generateVariableFormat(aStructuralFeature.eContainingClass)/].[generateClassAttributeFormat(aStructuralFeature.name)/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
 }
 
 [/template]
