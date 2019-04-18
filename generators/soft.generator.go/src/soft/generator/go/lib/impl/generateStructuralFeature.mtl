@@ -7,11 +7,11 @@
 [import soft::generator::go::lib::impl::generateCommon/]
 
 [template public generateVariableFormat(cl : EClass)]
-[getImplementationName(cl)/]
+[cl.name.toLowerFirst()/]Impl
 [/template]
 
 [template public generateClassAttributeFormat(name : String)]
-[name/]_
+[name.toLowerFirst()/]_
 [/template]
 
 [template public generateVariable(aStructuralFeature : EStructuralFeature)]
@@ -39,7 +39,7 @@
 [/template]
 
 [template public generateImplementationMember(cl : EClass)]
-func ([generateVariableFormat(cl)/] *[getStructName(cl)/])
+func ([generateVariableFormat(cl)/] *[getImplementationName(cl)/])
 [/template]
 
 [template public generateGetImplementation(aStructuralFeature : EStructuralFeature)]

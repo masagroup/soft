@@ -7,10 +7,6 @@
 [query private getInterfaceImplementationFileName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getInterfaceImplementationFileNamePattern() in if pattern ='' then aElementName else pattern.format(Sequence{aElementName}) endif /]
 [query private getInterfaceImplementationFileNamePattern( aPackage : EPackage ) : String = if hasKey('interfaceFileNamePattern') then valueKey('interfaceFileNamePattern') else '{0}_impl_gen.go' endif/]
 
-[query public getStructName( aClass : EClass ) : String = getStructName(aClass.name,aClass.ePackage) /]
-[query private getStructName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getStructNamePattern() in if pattern ='' then aElementName + 'Impl' else pattern.format(Sequence{aElementName}) endif /]
-[query private getStructNamePattern( aPackage : EPackage ) : String = if hasKey('structNamePattern') then valueKey('structNamePattern') else '' endif/]
-
 [query public getImplementationName( aClass : EClass ) : String = getImplementationName(aClass.name,aClass.ePackage) /]
-[query private getImplementationName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getImplementationNamePattern() in if pattern ='' then aElementName.toLowerFirst() + 'Impl' else pattern.format(Sequence{aElementName}) endif /]
-[query private getImplementationNamePattern( aPackage : EPackage ) : String = if hasKey('implementationNamePattern') then valueKey('implementatioNamePattern') else '' endif/]
+[query private getImplementationName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getImplementationNamePattern() in if pattern ='' then aElementName + 'Impl' else pattern.format(Sequence{aElementName}) endif /]
+[query private getImplementationNamePattern( aPackage : EPackage ) : String = if hasKey('structNamePattern') then valueKey('structNamePattern') else '' endif/]

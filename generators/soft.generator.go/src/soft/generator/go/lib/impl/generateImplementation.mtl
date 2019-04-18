@@ -10,8 +10,8 @@
 [file (aClass.ePackage.getOutputDirectory() + '/' + aClass.getInterfaceImplementationFileName() , false, 'UTF-8')]
 package [aClass.ePackage.name/]
 
-type [getStructName(aClass)/] struct {
-[for (extend: EClass | aClass.eSuperTypes)]    [generateVariableFormat(extend)/] [extend.name/][/for]
+type [getImplementationName(aClass)/] struct {
+[for (extend: EClass | aClass.eSuperTypes)]    [generateClassAttributeFormat(extend.name)/] [extend.name/][/for]
 [let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( isGet() or isSet() )]
 [if attributes->notEmpty()]
     [attributes.generateVariable()/]
