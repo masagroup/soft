@@ -85,7 +85,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eSuperTypes" upperBound="-1"
-        eType="#//EClass" unsettable="true">
+        eType="#//EClass">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="issetVisibility" value="no"/>
         <details key="unsetVisibility" value="no:public"/>

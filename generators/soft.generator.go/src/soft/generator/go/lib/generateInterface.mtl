@@ -12,6 +12,7 @@
 package [aClass.ePackage.name/]
 
 type [interfaceName/] interface {
+[for (extend: EClass | aClass.eSuperTypes)]    [extend.name/][/for]
 [let operations : OrderedSet(EOperation) = aClass.eOperations]
 [if operations->notEmpty()]
     [operations.generateDeclaration()/]
