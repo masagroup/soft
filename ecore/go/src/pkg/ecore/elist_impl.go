@@ -84,16 +84,16 @@ func (arr *arrayEList) InsertAll(index int, list EList) bool {
 }
 
 // Move an element to the given index
-func (arr *arrayEList) Move(index int, elem interface{}) {
+func (arr *arrayEList) MoveObject(index int, elem interface{}) {
 	me := arr.IndexOf(elem)
 	if me == -1 {
 		panic("Index out of bounds")
 	}
-	arr.Swap(me, index)
+	arr.Move(me, index)
 }
 
 // Swap move an element from oldIndex to newIndex
-func (arr *arrayEList) Swap(oldIndex, newIndex int) interface{} {
+func (arr *arrayEList) Move(oldIndex, newIndex int) interface{} {
 	if oldIndex < 0 || oldIndex >= arr.Size() ||
 		newIndex < 0 || newIndex > arr.Size() {
 		panic("Index out of bounds")
@@ -197,11 +197,11 @@ func (arr *immutableEList) InsertAll(index int, list EList) bool {
 	panic("Immutable list can't be modified")
 }
 
-func (arr *immutableEList) Move(index int, elem interface{}) {
+func (arr *immutableEList) MoveObject(index int, elem interface{}) {
 	panic("Immutable list can't be modified")
 }
 
-func (arr *immutableEList) Swap(oldIndex, newIndex int) interface{} {
+func (arr *immutableEList) Move(oldIndex, newIndex int) interface{} {
 	panic("Immutable list can't be modified")
 }
 

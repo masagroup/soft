@@ -10,9 +10,9 @@ type EList interface {
 
 	InsertAll(int, EList) bool
 
-	Move(int, interface{})
+	MoveObject(int, interface{})
 
-	Swap(int, int) interface{}
+	Move(int, int) interface{}
 
 	Get(int) interface{}
 
