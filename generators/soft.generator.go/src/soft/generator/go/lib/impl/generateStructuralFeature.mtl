@@ -4,8 +4,12 @@
 [import soft::generator::go::generateType/]
 [import soft::generator::go::generateCommon/]
 
+[template public generateVariableFormat(name : String)]
+[name/]_
+[/template]
+
 [template public generateVariable(aStructuralFeature : EStructuralFeature)]
-m_[aStructuralFeature.name/] [generateType(aStructuralFeature)/]
+[generateVariableFormat(aStructuralFeature.name)/] [generateType(aStructuralFeature)/]
 
 [/template]
 
@@ -26,26 +30,26 @@ m_[aStructuralFeature.name/] [generateType(aStructuralFeature)/]
 [/template]
 
 [template public generateImplementationMember(aStructuralFeature : EStructuralFeature)]
-func (m_[generateImplementationClassVariable(aStructuralFeature)/] *[aStructuralFeature.eContainingClass.name.substring(2)/])
+func ([generateVariableFormat(generateImplementationClassVariable(aStructuralFeature))/] *[aStructuralFeature.eContainingClass.name.substring(2)/])
 [/template]
 
 [template public generateGetImplementation(aStructuralFeature : EStructuralFeature)]
 [generateImplementationMember(aStructuralFeature)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
-	return m_[generateImplementationClassVariable(aStructuralFeature)/].m_[aStructuralFeature.name/]
+	return [generateVariableFormat(generateImplementationClassVariable(aStructuralFeature))/].[generateVariableFormat(aStructuralFeature.name)/]
 }
 
 [/template]
 
 [template public generateSetImplementation(aStructuralFeature : EStructuralFeature)]
 [generateImplementationMember(aStructuralFeature)/] [aStructuralFeature.getSetterName()/]( new_[aStructuralFeature.name/] [aStructuralFeature.generateType()/] ) {
-	m_[generateImplementationClassVariable(aStructuralFeature)/].m_[aStructuralFeature.name/] = new_[aStructuralFeature.name/]
+	[generateVariableFormat(generateImplementationClassVariable(aStructuralFeature))/].[generateVariableFormat(aStructuralFeature.name)/] = new_[aStructuralFeature.name/]
 }
 
 [/template]
 
 [template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature)]
 [generateImplementationMember(aStructuralFeature)/] [aStructuralFeature.getUnSetterName()/]() {
-    m_[generateImplementationClassVariable(aStructuralFeature)/].m_[aStructuralFeature.name/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
+    [generateVariableFormat(generateImplementationClassVariable(aStructuralFeature))/].[generateVariableFormat(aStructuralFeature.name)/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
 }
 
 [/template]
