@@ -24,6 +24,11 @@ type [implementationName.substring(2)/] struct {
 [/let]
 }
 
+[let operations : OrderedSet(EOperation) = aClass.eOperations]
+[if operations->notEmpty()]
+[operations.generateOperationPanic()/]
+[/if]
+[/let]
 [let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( isGet() or isSet() )]
 [if attributes->notEmpty()]
 [attributes.generateImplementation()/]
