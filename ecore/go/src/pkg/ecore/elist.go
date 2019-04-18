@@ -32,7 +32,7 @@ type EList interface {
 
 	IndexOf(interface{}) int
 
-	Iterate() *EIterator
+	Iterate() EIterator
 
 	ToArray() []interface{}
 }
