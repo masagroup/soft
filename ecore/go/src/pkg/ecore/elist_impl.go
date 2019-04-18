@@ -84,11 +84,12 @@ func (arr *arrayEList) Move(oldIndex, newIndex int) interface{} {
 		panic("Index out of bounds")
 	}
 	val := arr.data[oldIndex]
-	arr.RemoveAt(oldIndex)
+	copy(arr.data[oldIndex:], arr.data[oldIndex+1:])
 	if newIndex > oldIndex {
 		newIndex--
 	}
-	arr.Insert(newIndex, val)
+	copy(arr.data[newIndex+1:], arr.data[newIndex:])
+	arr.data[newIndex] = val
 	return val
 }
 

@@ -179,8 +179,8 @@ func TestContainsTrue(t *testing.T) {
 func TestIterate(t *testing.T) {
 	arr := NewArrayEList([]interface{}{0, 2, 4})
 	i := 0
-	for it := arr.Iterate(); (*it).Next(); {
-		check(t, (*it).Value(), i, "Iterate")
+	for it := arr.Iterate(); it.Next(); {
+		check(t, it.Value(), i, "Iterate")
 		i += 2
 	}
 }
@@ -190,8 +190,8 @@ func TestIterateImmutable(t *testing.T) {
 	iDatas = append(iDatas, 0, 2, 4, 6)
 	arr := NewImmutableEList(iDatas)
 	i := 0
-	for it := arr.Iterate(); (*it).Next(); {
-		check(t, (*it).Value(), i, "Iterate immutable")
+	for it := arr.Iterate(); it.Next(); {
+		check(t, it.Value(), i, "Iterate immutable")
 		i += 2
 	}
 }
