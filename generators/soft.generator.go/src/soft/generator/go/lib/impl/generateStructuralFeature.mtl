@@ -11,22 +11,22 @@
 
 [/template]
 
-[template public generateOperationPanic(anEOperation : EOperation)]
-[generateImplementationMember(anEOperation.eContainingClass)/] [generateDeclaration(anEOperation).toString().trim()/] {
+[template public generateOperationPanic(anEOperation : EOperation, baseClass : EClass)]
+[generateImplementationMember(baseClass)/] [generateDeclaration(anEOperation).toString().trim()/] {
 	panic("Operation not implemented")
 }
 
 [/template]
 
-[template public generateImplementation(aStructuralFeature : EStructuralFeature)]
+[template public generateImplementation(aStructuralFeature : EStructuralFeature, middleName : String, baseClass : EClass)]
 [if isGet()]
-[aStructuralFeature.generateGetImplementation()/]
+[aStructuralFeature.generateGetImplementation(middleName, baseClass)/]
 [/if]
 [if isSet()]
-[aStructuralFeature.generateSetImplementation()/]
+[aStructuralFeature.generateSetImplementation(middleName, baseClass)/]
 [/if]
 [if isUnSet()]
-[aStructuralFeature.generateUnSetImplementation()/]
+[aStructuralFeature.generateUnSetImplementation(middleName, baseClass)/]
 [/if]
 [/template]
 
@@ -34,26 +34,26 @@
 func ([getImplementationFormat(cl)/] *[getImplementationName(cl)/])
 [/template]
 
-[template public generateGetImplementation(aStructuralFeature : EStructuralFeature)]
+[template public generateGetImplementation(aStructuralFeature : EStructuralFeature, middleName : String, baseClass : EClass)]
 // [aStructuralFeature.getGetterName()/] get the value of [getClassAttributeFormat(aStructuralFeature.name)/]
-[generateImplementationMember(aStructuralFeature.eContainingClass)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
-	return [getImplementationFormat(aStructuralFeature.eContainingClass)/].[getClassAttributeFormat(aStructuralFeature.name)/]
+[generateImplementationMember(baseClass)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
+	return [getImplementationFormat(baseClass)/][middleName/].[getClassAttributeFormat(aStructuralFeature.name)/]
 }
 
 [/template]
 
-[template public generateSetImplementation(aStructuralFeature : EStructuralFeature)]
+[template public generateSetImplementation(aStructuralFeature : EStructuralFeature, middleName : String, baseClass : EClass)]
 // [aStructuralFeature.getSetterName()/] set the value of [getClassAttributeFormat(aStructuralFeature.name)/]
-[generateImplementationMember(aStructuralFeature.eContainingClass)/] [aStructuralFeature.getSetterName()/]( new_[aStructuralFeature.name/] [aStructuralFeature.generateType()/] ) {
-	[getImplementationFormat(aStructuralFeature.eContainingClass)/].[getClassAttributeFormat(aStructuralFeature.name)/] = new_[aStructuralFeature.name/]
+[generateImplementationMember(baseClass)/] [aStructuralFeature.getSetterName()/]( new_[aStructuralFeature.name/] [aStructuralFeature.generateType()/] ) {
+	[getImplementationFormat(baseClass)/][middleName/].[getClassAttributeFormat(aStructuralFeature.name)/] = new_[aStructuralFeature.name/]
 }
 
 [/template]
 
-[template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature)]
+[template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature, middleName : String, baseClass : EClass)]
 // [aStructuralFeature.getUnSetterName()/] unset the value of [getClassAttributeFormat(aStructuralFeature.name)/]
-[generateImplementationMember(aStructuralFeature.eContainingClass)/] [aStructuralFeature.getUnSetterName()/]() {
-    [getImplementationFormat(aStructuralFeature.eContainingClass)/].[getClassAttributeFormat(aStructuralFeature.name)/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
+[generateImplementationMember(baseClass)/] [aStructuralFeature.getUnSetterName()/]() {
+    [getImplementationFormat(baseClass)/][middleName/].[getClassAttributeFormat(aStructuralFeature.name)/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
 }
 
 [/template]
