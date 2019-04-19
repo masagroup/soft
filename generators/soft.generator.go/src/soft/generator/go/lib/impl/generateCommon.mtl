@@ -3,9 +3,9 @@
 
 [import soft::generator::go::generateCommon/]
 
-[query public getImplementationFormat(cl : EClass) = cl.name.toLowerFirst() + 'Impl' /]
+[query public getImplementationFormat(cl : EClass) : String = cl.name.toLowerFirst() + 'Impl' /]
 
-[query public getClassAttributeFormat(name : String) = name.toLowerFirst() + '_' /]
+[query public getClassAttributeFormat(name : String) : String  = name.toLowerFirst() + '_' /]
 
 [query public getInterfaceImplementationFileName( aClass : EClass ) : String = getInterfaceImplementationFileName(aClass.name.toLowerCase(),aClass.ePackage) /]
 [query private getInterfaceImplementationFileName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getInterfaceImplementationFileNamePattern() in if pattern ='' then aElementName else pattern.format(Sequence{aElementName}) endif /]
