@@ -28,7 +28,7 @@
 [/template]
 
 [template public generateImplementation(aClass : EClass) { implementationName : String = aClass.name; } ]
-[file (aClass.ePackage.getOutputDirectory() + '/' + aClass.getInterfaceImplementationFileName() , false, 'UTF-8')]
+[file (aClass.ePackage.getOutputDirectory() + '/' + aClass.getInterfaceImplementationFileName(), false, 'UTF-8')]
 package [aClass.ePackage.name/]
 
 type [getImplementationName(aClass)/] struct {
