@@ -18,15 +18,15 @@
 
 [/template]
 
-[template public generateImplementation(aStructuralFeature : EStructuralFeature, middleName : String, baseClass : EClass)]
+[template public generateImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, baseClass : EClass)]
 [if isGet()]
-[aStructuralFeature.generateGetImplementation(middleName, baseClass)/]
+[aStructuralFeature.generateGetImplementation(useSub, baseClass)/]
 [/if]
 [if isSet()]
-[aStructuralFeature.generateSetImplementation(middleName, baseClass)/]
+[aStructuralFeature.generateSetImplementation(useSub, baseClass)/]
 [/if]
 [if isUnSet()]
-[aStructuralFeature.generateUnSetImplementation(middleName, baseClass)/]
+[aStructuralFeature.generateUnSetImplementation(useSub, baseClass)/]
 [/if]
 [/template]
 
@@ -34,26 +34,38 @@
 func ([getImplementationFormat(cl)/] *[getImplementationName(cl)/])
 [/template]
 
-[template public generateGetImplementation(aStructuralFeature : EStructuralFeature, middleName : String, baseClass : EClass)]
+[template public generateGetImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, baseClass : EClass)]
 // [aStructuralFeature.getGetterName()/] get the value of [getClassAttributeFormat(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
-	return [getImplementationFormat(baseClass)/][middleName/].[getClassAttributeFormat(aStructuralFeature.name)/]
+[if useSub]
+	return [getImplementationFormat(baseClass)/].[aStructuralFeature.getGetterName()/]()
+[else]
+	return [getImplementationFormat(baseClass)/].[getClassAttributeFormat(aStructuralFeature.name)/]
+[/if]
 }
 
 [/template]
 
-[template public generateSetImplementation(aStructuralFeature : EStructuralFeature, middleName : String, baseClass : EClass)]
+[template public generateSetImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, baseClass : EClass)]
 // [aStructuralFeature.getSetterName()/] set the value of [getClassAttributeFormat(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getSetterName()/]( new_[aStructuralFeature.name/] [aStructuralFeature.generateType()/] ) {
-	[getImplementationFormat(baseClass)/][middleName/].[getClassAttributeFormat(aStructuralFeature.name)/] = new_[aStructuralFeature.name/]
+[if useSub]
+	[getImplementationFormat(baseClass)/].[aStructuralFeature.getSetterName()/](new_[aStructuralFeature.name/])
+[else]
+	[getImplementationFormat(baseClass)/].[getClassAttributeFormat(aStructuralFeature.name)/] = new_[aStructuralFeature.name/]
+[/if]
 }
 
 [/template]
 
-[template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature, middleName : String, baseClass : EClass)]
+[template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, baseClass : EClass)]
 // [aStructuralFeature.getUnSetterName()/] unset the value of [getClassAttributeFormat(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getUnSetterName()/]() {
-    [getImplementationFormat(baseClass)/][middleName/].[getClassAttributeFormat(aStructuralFeature.name)/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
+[if useSub]
+	[getImplementationFormat(baseClass)/].[aStructuralFeature.getUnSetterName()/]()
+[else]
+	[getImplementationFormat(baseClass)/].[getClassAttributeFormat(aStructuralFeature.name)/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
+[/if]
 }
 
 [/template]

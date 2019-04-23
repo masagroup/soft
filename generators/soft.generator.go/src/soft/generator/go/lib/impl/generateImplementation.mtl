@@ -6,7 +6,7 @@
 [import soft::generator::go::lib::impl::generateCommon/]
 [import soft::generator::go::lib::impl::generateStructuralFeature/]
 
-[template public generateMethods(aClass : EClass, middleName : String, baseClass : EClass)]
+[template public generateMethods(aClass : EClass, useSub : EBoolean, baseClass : EClass)]
 [let operations : OrderedSet(EOperation) = aClass.eOperations]
 [if operations->notEmpty()]
 [operations.generateOperationPanic(baseClass)/]
@@ -14,15 +14,15 @@
 [/let]
 [let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( isGet() or isSet() )]
 [if attributes->notEmpty()]
-[attributes.generateImplementation(middleName, baseClass)/]
+[attributes.generateImplementation(useSub, baseClass)/]
 [/if]
 [/let]
 [let references : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EReference)->select( isGet() or isSet() )]
 [if references->notEmpty()]
-[references.generateImplementation(middleName, baseClass)/]
+[references.generateImplementation(useSub, baseClass)/]
 [/if]
 [/let]
-[for (extend: EClass | aClass.eSuperTypes)][generateMethods(extend, middleName + '.' + getImplementationName(extend), baseClass)/][/for]
+[for (extend: EClass | aClass.eSuperTypes)][generateMethods(extend, true, baseClass)/][/for]
 [/template]
 
 [template public generateImplementation(aClass : EClass) { implementationName : String = aClass.name; } ]
@@ -42,7 +42,7 @@ type [getImplementationName(aClass)/] struct {
 [/if]
 [/let]
 }
-[generateMethods(aClass, '', aClass)/]
+[generateMethods(aClass, false, aClass)/]
 
 [/file]
 [/template]
