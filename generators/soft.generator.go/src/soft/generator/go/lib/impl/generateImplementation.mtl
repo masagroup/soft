@@ -6,7 +6,7 @@
 [import soft::generator::go::lib::impl::generateCommon/]
 [import soft::generator::go::lib::impl::generateStructuralFeature/]
 
-[template public generateMethods(aClass : EClass, useSub : EBoolean, baseClass : EClass)]
+[template private generateMethods(aClass : EClass, useSub : EBoolean, baseClass : EClass)]
 [let operations : OrderedSet(EOperation) = aClass.eOperations]
 [if operations->notEmpty()]
 [operations.generateOperationPanic(baseClass)/]
