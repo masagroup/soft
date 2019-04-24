@@ -8,7 +8,7 @@
 [file (anEPackage.getOutputDirectory() + '/'+ getPackageImplementation(anEPackage) + '_gen.go', false, 'UTF-8')]
 package [anEPackage.name/]
 
-interface [getPackageImplementation(anEPackage)/] type {
+type [getPackageImplementation(anEPackage)/] interface {
 
 }
 

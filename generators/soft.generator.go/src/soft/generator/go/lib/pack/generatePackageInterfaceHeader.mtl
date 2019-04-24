@@ -14,6 +14,10 @@ const (
 	[upperPackageName(anEPackage)/]_eNS_URI = "[anEPackage.nsURI/]";
 
 	[upperPackageName(anEPackage)/]_eNS_PREFIX = "[anEPackage.nsPrefix/]";
+
+[for (aClass : EClass | anEPackage.getOrderedClasses())]
+    [aClass.generateStaticClassID()/]
+[/for]
 )
 
 [/file]
