@@ -13,7 +13,7 @@
 
 [template public generateOperationPanic(anEOperation : EOperation, baseClass : EClass)]
 [generateImplementationMember(baseClass)/] [generateDeclaration(anEOperation).toString().trim()/] {
-    panic("Operation not implemented")
+    panic("[generateDeclaration(anEOperation).toString().trim()/] not implemented")
 }
 
 [/template]
