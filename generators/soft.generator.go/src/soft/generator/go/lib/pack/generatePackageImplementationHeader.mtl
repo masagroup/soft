@@ -2,9 +2,15 @@
 [module generatePackageImplementationHeader('http://www.eclipse.org/emf/2002/Ecore')]
 
 [import soft::generator::go::lib::generateCommon/]
+[import soft::generator::go::lib::pack::generateCommon/]
+
 [template public generatePackageImplementationHeader(anEPackage : EPackage)]
-[file (anEPackage.getOutputDirectory() + '/package.go', false, 'UTF-8')]
+[file (anEPackage.getOutputDirectory() + '/'+ getPackageImplementation(anEPackage) + '_gen.go', false, 'UTF-8')]
 package [anEPackage.name/]
+
+interface [getPackageImplementation(anEPackage)/] type {
+
+}
 
 [/file]
 [/template]

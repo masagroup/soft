@@ -1,0 +1,6 @@
+[comment encoding = UTF-8 /]
+[module generateCommon('http://www.eclipse.org/emf/2002/Ecore')/]
+
+[query public upperPackageName(anEPackage : EPackage) : String = anEPackage.name.toUpperFirst() /]
+[query public getPackageImplementation(anEPackage : EPackage) : String = anEPackage.name + '_package_impl' /]
+[query public getPackageInterface(anEPackage : EPackage) : String = anEPackage.name + '_package_interface' /]
