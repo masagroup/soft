@@ -13,7 +13,7 @@
 
 [template public generateOperationPanic(anEOperation : EOperation, baseClass : EClass)]
 [generateImplementationMember(baseClass)/] [generateDeclaration(anEOperation).toString().trim()/] {
-	panic("Operation not implemented")
+    panic("Operation not implemented")
 }
 
 [/template]
@@ -38,9 +38,9 @@ func ([getImplementationFormat(cl)/] *[getImplementationName(cl)/])
 // [aStructuralFeature.getGetterName()/] get the value of [getClassAttributeFormat(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
 [if useSub]
-	return [getImplementationFormat(baseClass)/].[aStructuralFeature.getGetterName()/]()
+    return [getImplementationFormat(baseClass)/].[aStructuralFeature.getGetterName()/]()
 [else]
-	return [getImplementationFormat(baseClass)/].[getClassAttributeFormat(aStructuralFeature.name)/]
+    return [getImplementationFormat(baseClass)/].[getClassAttributeFormat(aStructuralFeature.name)/]
 [/if]
 }
 
@@ -50,9 +50,9 @@ func ([getImplementationFormat(cl)/] *[getImplementationName(cl)/])
 // [aStructuralFeature.getSetterName()/] set the value of [getClassAttributeFormat(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getSetterName()/]( new_[aStructuralFeature.name/] [aStructuralFeature.generateType()/] ) {
 [if useSub]
-	[getImplementationFormat(baseClass)/].[aStructuralFeature.getSetterName()/](new_[aStructuralFeature.name/])
+    [getImplementationFormat(baseClass)/].[aStructuralFeature.getSetterName()/](new_[aStructuralFeature.name/])
 [else]
-	[getImplementationFormat(baseClass)/].[getClassAttributeFormat(aStructuralFeature.name)/] = new_[aStructuralFeature.name/]
+    [getImplementationFormat(baseClass)/].[getClassAttributeFormat(aStructuralFeature.name)/] = new_[aStructuralFeature.name/]
 [/if]
 }
 
@@ -62,9 +62,9 @@ func ([getImplementationFormat(cl)/] *[getImplementationName(cl)/])
 // [aStructuralFeature.getUnSetterName()/] unset the value of [getClassAttributeFormat(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getUnSetterName()/]() {
 [if useSub]
-	[getImplementationFormat(baseClass)/].[aStructuralFeature.getUnSetterName()/]()
+    [getImplementationFormat(baseClass)/].[aStructuralFeature.getUnSetterName()/]()
 [else]
-	[getImplementationFormat(baseClass)/].[getClassAttributeFormat(aStructuralFeature.name)/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
+    [getImplementationFormat(baseClass)/].[getClassAttributeFormat(aStructuralFeature.name)/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
 [/if]
 }
 
