@@ -27,7 +27,7 @@
     endif
 /]    
 
-[query private getName(anEOperation : EOperation) : String =
+[query public getName(anEOperation : EOperation) : String =
     let name : String =
         if anEOperation.hasKey('name') then
             anEOperation.valueKey('name')
@@ -47,4 +47,3 @@
 [anEOperation.getName()/]([anEOperation.generateParameterList()/]) [anEOperation.generateType()/]
 
 [/template]
-

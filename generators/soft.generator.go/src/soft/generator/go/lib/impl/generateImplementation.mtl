@@ -9,7 +9,7 @@
 [template private generateParentMethods(aClass : EClass, firstClass : EClass, baseClass : EClass)]
 [let operations : OrderedSet(EOperation) = aClass.eOperations]
 [if operations->notEmpty()]
-[operations.generateOperationPanic(baseClass)/]
+[operations.generateOperationParent(firstClass, baseClass)/]
 [/if]
 [/let]
 [let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( isGet() or isSet() )]

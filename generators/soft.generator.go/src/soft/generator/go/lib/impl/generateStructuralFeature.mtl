@@ -18,6 +18,13 @@
 
 [/template]
 
+[template public generateOperationParent(anEOperation : EOperation, firstClass : EClass, baseClass : EClass)]
+[generateImplementationMember(baseClass)/] [generateDeclaration(anEOperation).toString().trim()/] {
+	return [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[getName(anEOperation)/]()
+}
+
+[/template]
+
 [template public generateImplementation(aStructuralFeature : EStructuralFeature, baseClass : EClass)]
 [if isGet()]
 [aStructuralFeature.generateGetImplementation(baseClass)/]
