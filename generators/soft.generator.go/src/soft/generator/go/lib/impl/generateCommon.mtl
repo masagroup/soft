@@ -3,9 +3,9 @@
 
 [import soft::generator::go::generateCommon/]
 
-[query public getImplementationFormat(cl : EClass) : String = cl.name.toLowerFirst() + 'Impl' /]
+[query public getReceiverTypeName(cl : EClass) : String = cl.name.toLowerFirst() + 'Impl' /]
 
-[query public getClassAttributeFormat(name : String) : String  = name.toLowerFirst() + '_' /]
+[query public getReceiverName(name : String) : String  = name.toLowerFirst() + '_' /]
 [query public getPascalCaseName(name : String) : String  = name.toUpperFirst() /]
 
 [query public getInterfaceImplementationFileName( aClass : EClass ) : String = getInterfaceImplementationFileName(aClass.name.toLowerCase(),aClass.ePackage) /]

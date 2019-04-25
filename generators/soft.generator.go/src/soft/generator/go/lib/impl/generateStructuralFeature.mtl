@@ -7,7 +7,7 @@
 [import soft::generator::go::lib::impl::generateCommon/]
 
 [template public generateVariable(aStructuralFeature : EStructuralFeature)]
-[getClassAttributeFormat(aStructuralFeature.name)/] [generateType(aStructuralFeature)/]
+[getReceiverName(aStructuralFeature.name)/] [generateType(aStructuralFeature)/]
 
 [/template]
 
@@ -31,40 +31,40 @@
 [/template]
 
 [template public generateImplementationMember(cl : EClass)]
-func ([getImplementationFormat(cl)/] *[getImplementationName(cl)/])
+func ([getReceiverTypeName(cl)/] *[getImplementationName(cl)/])
 [/template]
 
 [template public generateGetImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, baseClass : EClass)]
-// [aStructuralFeature.getGetterName()/] get the value of [getClassAttributeFormat(aStructuralFeature.name)/]
+// [aStructuralFeature.getGetterName()/] get the value of [getReceiverName(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
 [if useSub]
-    return [getImplementationFormat(baseClass)/].[aStructuralFeature.getGetterName()/]()
+    return [getReceiverTypeName(baseClass)/].[aStructuralFeature.getGetterName()/]()
 [else]
-    return [getImplementationFormat(baseClass)/].[getClassAttributeFormat(aStructuralFeature.name)/]
+    return [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/]
 [/if]
 }
 
 [/template]
 
 [template public generateSetImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, baseClass : EClass)]
-// [aStructuralFeature.getSetterName()/] set the value of [getClassAttributeFormat(aStructuralFeature.name)/]
+// [aStructuralFeature.getSetterName()/] set the value of [getReceiverName(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getSetterName()/]( new[getPascalCaseName(aStructuralFeature.name)/] [aStructuralFeature.generateType()/] ) {
 [if useSub]
-    [getImplementationFormat(baseClass)/].[aStructuralFeature.getSetterName()/](new[getPascalCaseName(aStructuralFeature.name)/])
+    [getReceiverTypeName(baseClass)/].[aStructuralFeature.getSetterName()/](new[getPascalCaseName(aStructuralFeature.name)/])
 [else]
-    [getImplementationFormat(baseClass)/].[getClassAttributeFormat(aStructuralFeature.name)/] = new[getPascalCaseName(aStructuralFeature.name)/]
+    [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/] = new[getPascalCaseName(aStructuralFeature.name)/]
 [/if]
 }
 
 [/template]
 
 [template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, baseClass : EClass)]
-// [aStructuralFeature.getUnSetterName()/] unset the value of [getClassAttributeFormat(aStructuralFeature.name)/]
+// [aStructuralFeature.getUnSetterName()/] unset the value of [getReceiverName(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getUnSetterName()/]() {
 [if useSub]
-    [getImplementationFormat(baseClass)/].[aStructuralFeature.getUnSetterName()/]()
+    [getReceiverTypeName(baseClass)/].[aStructuralFeature.getUnSetterName()/]()
 [else]
-    [getImplementationFormat(baseClass)/].[getClassAttributeFormat(aStructuralFeature.name)/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
+    [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
 [/if]
 }
 
