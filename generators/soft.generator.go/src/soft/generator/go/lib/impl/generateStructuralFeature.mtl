@@ -48,11 +48,11 @@ func ([getImplementationFormat(cl)/] *[getImplementationName(cl)/])
 
 [template public generateSetImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, baseClass : EClass)]
 // [aStructuralFeature.getSetterName()/] set the value of [getClassAttributeFormat(aStructuralFeature.name)/]
-[generateImplementationMember(baseClass)/] [aStructuralFeature.getSetterName()/]( new_[aStructuralFeature.name/] [aStructuralFeature.generateType()/] ) {
+[generateImplementationMember(baseClass)/] [aStructuralFeature.getSetterName()/]( new[getPascalCaseName(aStructuralFeature.name)/] [aStructuralFeature.generateType()/] ) {
 [if useSub]
-    [getImplementationFormat(baseClass)/].[aStructuralFeature.getSetterName()/](new_[aStructuralFeature.name/])
+    [getImplementationFormat(baseClass)/].[aStructuralFeature.getSetterName()/](new[getPascalCaseName(aStructuralFeature.name)/])
 [else]
-    [getImplementationFormat(baseClass)/].[getClassAttributeFormat(aStructuralFeature.name)/] = new_[aStructuralFeature.name/]
+    [getImplementationFormat(baseClass)/].[getClassAttributeFormat(aStructuralFeature.name)/] = new[getPascalCaseName(aStructuralFeature.name)/]
 [/if]
 }
 
