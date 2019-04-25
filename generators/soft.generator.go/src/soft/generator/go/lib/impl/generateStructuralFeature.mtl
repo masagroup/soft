@@ -18,15 +18,15 @@
 
 [/template]
 
-[template public generateImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, baseClass : EClass)]
+[template public generateImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, firstClass : EClass, baseClass : EClass)]
 [if isGet()]
-[aStructuralFeature.generateGetImplementation(useSub, baseClass)/]
+[aStructuralFeature.generateGetImplementation(useSub, firstClass, baseClass)/]
 [/if]
 [if isSet()]
-[aStructuralFeature.generateSetImplementation(useSub, baseClass)/]
+[aStructuralFeature.generateSetImplementation(useSub, firstClass, baseClass)/]
 [/if]
 [if isUnSet()]
-[aStructuralFeature.generateUnSetImplementation(useSub, baseClass)/]
+[aStructuralFeature.generateUnSetImplementation(useSub, firstClass, baseClass)/]
 [/if]
 [/template]
 
@@ -34,11 +34,11 @@
 func ([getReceiverTypeName(cl)/] *[getImplementationName(cl)/])
 [/template]
 
-[template public generateGetImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, baseClass : EClass)]
+[template public generateGetImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, firstClass : EClass, baseClass : EClass)]
 // [aStructuralFeature.getGetterName()/] get the value of [getReceiverName(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
 [if useSub]
-    return [getReceiverTypeName(baseClass)/].[aStructuralFeature.getGetterName()/]()
+    return [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[aStructuralFeature.getGetterName()/]()
 [else]
     return [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/]
 [/if]
@@ -46,11 +46,11 @@ func ([getReceiverTypeName(cl)/] *[getImplementationName(cl)/])
 
 [/template]
 
-[template public generateSetImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, baseClass : EClass)]
+[template public generateSetImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, firstClass : EClass, baseClass : EClass)]
 // [aStructuralFeature.getSetterName()/] set the value of [getReceiverName(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getSetterName()/]( new[getPascalCaseName(aStructuralFeature.name)/] [aStructuralFeature.generateType()/] ) {
 [if useSub]
-    [getReceiverTypeName(baseClass)/].[aStructuralFeature.getSetterName()/](new[getPascalCaseName(aStructuralFeature.name)/])
+    [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[aStructuralFeature.getSetterName()/](new[getPascalCaseName(aStructuralFeature.name)/])
 [else]
     [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/] = new[getPascalCaseName(aStructuralFeature.name)/]
 [/if]
@@ -58,11 +58,11 @@ func ([getReceiverTypeName(cl)/] *[getImplementationName(cl)/])
 
 [/template]
 
-[template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, baseClass : EClass)]
+[template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature, useSub : EBoolean, firstClass : EClass, baseClass : EClass)]
 // [aStructuralFeature.getUnSetterName()/] unset the value of [getReceiverName(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getUnSetterName()/]() {
 [if useSub]
-    [getReceiverTypeName(baseClass)/].[aStructuralFeature.getUnSetterName()/]()
+    [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[aStructuralFeature.getUnSetterName()/]()
 [else]
     [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
 [/if]
