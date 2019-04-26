@@ -19,8 +19,12 @@
 [/template]
 
 [template public generateOperationParent(anEOperation : EOperation, firstClass : EClass, baseClass : EClass)]
-[generateImplementationMember(baseClass)/] [generateDeclaration(anEOperation).toString().trim()/] {
-	return [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[getName(anEOperation)/]()
+[generateImplementationMember(baseClass)/] [anEOperation.getName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/] [sParameter.generateType()/][/for]) [anEOperation.generateType()/] {
+[if anEOperation.generateType() = '']
+    [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[getName(anEOperation)/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
+[else]
+    return [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[getName(anEOperation)/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
+[/if]
 }
 
 [/template]
@@ -88,7 +92,7 @@ func ([getReceiverTypeName(cl)/] *[getImplementationName(cl)/])
 [template public generateSetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
 // [aStructuralFeature.getSetterName()/] set the value of [getReceiverName(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getSetterName()/]( new[getPascalCaseName(aStructuralFeature.name)/] [aStructuralFeature.generateType()/] ) {
-	[getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[aStructuralFeature.getSetterName()/](new[getPascalCaseName(aStructuralFeature.name)/])
+    [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[aStructuralFeature.getSetterName()/](new[getPascalCaseName(aStructuralFeature.name)/])
 }
 
 [/template]

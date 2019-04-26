@@ -6,7 +6,7 @@
 [import soft::generator::go::lib::generateCommon/]
 
 
-[query private getNameRegex(anEOperation : EOperation) : String =
+[query public getNameRegex(anEOperation : EOperation) : String =
     if anEOperation.hasKey('nameRegex') then
         anEOperation.valueKey('nameRegex')
     else if anEOperation.eContainingClass.hasKey('nameRegex') then
@@ -16,7 +16,7 @@
     endif
     endif
 /]
-[query private getNameReplacement(anEOperation : EOperation) : String =
+[query public getNameReplacement(anEOperation : EOperation) : String =
     if anEOperation.hasKey('nameReplacement') then
         anEOperation.valueKey('nameReplacement')
     else if anEOperation.eContainingClass.hasKey('nameReplacement') then
