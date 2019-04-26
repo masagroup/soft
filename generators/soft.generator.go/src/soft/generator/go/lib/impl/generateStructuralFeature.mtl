@@ -3,29 +3,10 @@
 
 [import soft::generator::go::generateType/]
 [import soft::generator::go::generateCommon/]
-[import soft::generator::go::lib::generateOperation/]
 [import soft::generator::go::lib::impl::generateCommon/]
 
 [template public generateVariable(aStructuralFeature : EStructuralFeature)]
 [getReceiverName(aStructuralFeature.name)/] [generateType(aStructuralFeature)/]
-
-[/template]
-
-[template public generateOperationPanic(anEOperation : EOperation, baseClass : EClass)]
-[generateImplementationMember(baseClass)/] [generateDeclaration(anEOperation).toString().trim()/] {
-    panic("[generateDeclaration(anEOperation).toString().trim()/] not implemented")
-}
-
-[/template]
-
-[template public generateOperationParent(anEOperation : EOperation, firstClass : EClass, baseClass : EClass)]
-[generateImplementationMember(baseClass)/] [anEOperation.getName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/] [sParameter.generateType()/][/for]) [anEOperation.generateType()/] {
-[if anEOperation.generateType() = '']
-    [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[getName(anEOperation)/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
-[else]
-    return [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[getName(anEOperation)/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
-[/if]
-}
 
 [/template]
 
