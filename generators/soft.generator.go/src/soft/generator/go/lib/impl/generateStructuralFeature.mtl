@@ -1,0 +1,106 @@
+[comment encoding = UTF-8 /]
+[module generateStructuralFeature('http://www.eclipse.org/emf/2002/Ecore')/]
+
+[import soft::generator::go::generateType/]
+[import soft::generator::go::generateCommon/]
+[import soft::generator::go::lib::generateOperation/]
+[import soft::generator::go::lib::impl::generateCommon/]
+
+[template public generateVariable(aStructuralFeature : EStructuralFeature)]
+[getReceiverName(aStructuralFeature.name)/] [generateType(aStructuralFeature)/]
+
+[/template]
+
+[template public generateOperationPanic(anEOperation : EOperation, baseClass : EClass)]
+[generateImplementationMember(baseClass)/] [generateDeclaration(anEOperation).toString().trim()/] {
+    panic("[generateDeclaration(anEOperation).toString().trim()/] not implemented")
+}
+
+[/template]
+
+[template public generateOperationParent(anEOperation : EOperation, firstClass : EClass, baseClass : EClass)]
+[generateImplementationMember(baseClass)/] [anEOperation.getName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/] [sParameter.generateType()/][/for]) [anEOperation.generateType()/] {
+[if anEOperation.generateType() = '']
+    [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[getName(anEOperation)/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
+[else]
+    return [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[getName(anEOperation)/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
+[/if]
+}
+
+[/template]
+
+[template public generateImplementation(aStructuralFeature : EStructuralFeature, baseClass : EClass)]
+[if isGet()]
+[aStructuralFeature.generateGetImplementation(baseClass)/]
+[/if]
+[if isSet()]
+[aStructuralFeature.generateSetImplementation(baseClass)/]
+[/if]
+[if isUnSet()]
+[aStructuralFeature.generateUnSetImplementation(baseClass)/]
+[/if]
+[/template]
+
+[template public generateInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
+[if isGet()]
+[aStructuralFeature.generateGetInheritedImplementation(firstClass, baseClass)/]
+[/if]
+[if isSet()]
+[aStructuralFeature.generateSetInheritedImplementation(firstClass, baseClass)/]
+[/if]
+[if isUnSet()]
+[aStructuralFeature.generateUnSetInheritedImplementation(firstClass, baseClass)/]
+[/if]
+[/template]
+
+[template public generateImplementationMember(cl : EClass)]
+func ([getReceiverTypeName(cl)/] *[getImplementationName(cl)/])
+[/template]
+
+[template public generateGetImplementation(aStructuralFeature : EStructuralFeature, baseClass : EClass)]
+// [aStructuralFeature.getGetterName()/] get the value of [getReceiverName(aStructuralFeature.name)/]
+[generateImplementationMember(baseClass)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
+    return [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/]
+}
+
+[/template]
+
+[template public generateSetImplementation(aStructuralFeature : EStructuralFeature, baseClass : EClass)]
+// [aStructuralFeature.getSetterName()/] set the value of [getReceiverName(aStructuralFeature.name)/]
+[generateImplementationMember(baseClass)/] [aStructuralFeature.getSetterName()/]( new[getPascalCaseName(aStructuralFeature.name)/] [aStructuralFeature.generateType()/] ) {
+    [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/] = new[getPascalCaseName(aStructuralFeature.name)/]
+}
+
+[/template]
+
+[template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature, baseClass : EClass)]
+// [aStructuralFeature.getUnSetterName()/] unset the value of [getReceiverName(aStructuralFeature.name)/]
+[generateImplementationMember(baseClass)/] [aStructuralFeature.getUnSetterName()/]() {
+    [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
+}
+
+[/template]
+
+[template public generateGetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
+// [aStructuralFeature.getGetterName()/] get the value of [getReceiverName(aStructuralFeature.name)/]
+[generateImplementationMember(baseClass)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
+    return [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[aStructuralFeature.getGetterName()/]()
+}
+
+[/template]
+
+[template public generateSetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
+// [aStructuralFeature.getSetterName()/] set the value of [getReceiverName(aStructuralFeature.name)/]
+[generateImplementationMember(baseClass)/] [aStructuralFeature.getSetterName()/]( new[getPascalCaseName(aStructuralFeature.name)/] [aStructuralFeature.generateType()/] ) {
+    [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[aStructuralFeature.getSetterName()/](new[getPascalCaseName(aStructuralFeature.name)/])
+}
+
+[/template]
+
+[template public generateUnSetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
+// [aStructuralFeature.getUnSetterName()/] unset the value of [getReceiverName(aStructuralFeature.name)/]
+[generateImplementationMember(baseClass)/] [aStructuralFeature.getUnSetterName()/]() {
+    [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[aStructuralFeature.getUnSetterName()/]()
+}
+
+[/template]

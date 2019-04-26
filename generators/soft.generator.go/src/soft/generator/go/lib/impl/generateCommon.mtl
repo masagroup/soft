@@ -1,0 +1,17 @@
+[comment encoding = UTF-8 /]
+[module generateCommon('http://www.eclipse.org/emf/2002/Ecore')/]
+
+[import soft::generator::go::generateCommon/]
+
+[query public getReceiverTypeName(cl : EClass) : String = cl.name.toLowerFirst() + 'Impl' /]
+
+[query public getReceiverName(name : String) : String  = name.toLowerFirst() + '_' /]
+[query public getPascalCaseName(name : String) : String  = name.toUpperFirst() /]
+
+[query public getInterfaceImplementationFileName( aClass : EClass ) : String = getInterfaceImplementationFileName(aClass.name.toLowerCase(),aClass.ePackage) /]
+[query private getInterfaceImplementationFileName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getInterfaceImplementationFileNamePattern() in if pattern ='' then aElementName else pattern.format(Sequence{aElementName}) endif /]
+[query private getInterfaceImplementationFileNamePattern( aPackage : EPackage ) : String = if hasKey('interfaceFileNamePattern') then valueKey('interfaceFileNamePattern') else '{0}impl_gen.go' endif/]
+
+[query public getImplementationName( aClass : EClass ) : String = getImplementationName(aClass.name,aClass.ePackage) /]
+[query private getImplementationName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getImplementationNamePattern() in if pattern ='' then aElementName + 'Impl' else pattern.format(Sequence{aElementName}) endif /]
+[query private getImplementationNamePattern( aPackage : EPackage ) : String = if hasKey('structNamePattern') then valueKey('structNamePattern') else '' endif/]
