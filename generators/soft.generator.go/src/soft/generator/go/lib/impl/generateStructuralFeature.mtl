@@ -37,15 +37,15 @@
 [/if]
 [/template]
 
-[template public generateParentImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
+[template public generateInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
 [if isGet()]
-[aStructuralFeature.generateGetParentImplementation(firstClass, baseClass)/]
+[aStructuralFeature.generateGetInheritedImplementation(firstClass, baseClass)/]
 [/if]
 [if isSet()]
-[aStructuralFeature.generateSetParentImplementation(firstClass, baseClass)/]
+[aStructuralFeature.generateSetInheritedImplementation(firstClass, baseClass)/]
 [/if]
 [if isUnSet()]
-[aStructuralFeature.generateUnSetParentImplementation(firstClass, baseClass)/]
+[aStructuralFeature.generateUnSetInheritedImplementation(firstClass, baseClass)/]
 [/if]
 [/template]
 
@@ -77,7 +77,7 @@ func ([getReceiverTypeName(cl)/] *[getImplementationName(cl)/])
 
 [/template]
 
-[template public generateGetParentImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
+[template public generateGetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
 // [aStructuralFeature.getGetterName()/] get the value of [getReceiverName(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
     return [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[aStructuralFeature.getGetterName()/]()
@@ -85,7 +85,7 @@ func ([getReceiverTypeName(cl)/] *[getImplementationName(cl)/])
 
 [/template]
 
-[template public generateSetParentImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
+[template public generateSetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
 // [aStructuralFeature.getSetterName()/] set the value of [getReceiverName(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getSetterName()/]( new[getPascalCaseName(aStructuralFeature.name)/] [aStructuralFeature.generateType()/] ) {
 	[getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[aStructuralFeature.getSetterName()/](new[getPascalCaseName(aStructuralFeature.name)/])
@@ -93,7 +93,7 @@ func ([getReceiverTypeName(cl)/] *[getImplementationName(cl)/])
 
 [/template]
 
-[template public generateUnSetParentImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
+[template public generateUnSetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
 // [aStructuralFeature.getUnSetterName()/] unset the value of [getReceiverName(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getUnSetterName()/]() {
     [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[aStructuralFeature.getUnSetterName()/]()
