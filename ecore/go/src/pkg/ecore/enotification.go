@@ -5,6 +5,8 @@ const (
 	NO_FEATURE_ID = -1
 )
 
+type EventType int
+
 const (
 	CREATE EventType = iota
 	SET
