@@ -2,6 +2,7 @@
 [module generateCommon('http://www.eclipse.org/emf/2002/Ecore')/]
 
 [import soft::generator::common::generateCommon/]
+[import soft::generator::common::generateUtils/]
 
 [**
  * Helper for c++ abstract function sufix
@@ -241,12 +242,6 @@
 [query public packageGetter(aEClassifier1 : EClassifier, aEClassifier2 : EClassifier) : String = needMetaModelPackageGetter(aEClassifier1, aEClassifier2).concat('get').concat(aEClassifier1.getElementAccessorName()).concat('()') /]
 [query public needMetaModelPackageGetter(aClassifier1 : EClassifier ,aClassifier2 : EClassifier ) : String = if(aClassifier1.ePackage.name = aClassifier2.ePackage.name )then '' else  aClassifier1.ePackage.nsPrefix.concat('::').concat(aClassifier1.ePackage.name.toUpperFirst()).concat('Package').concat('::eInstance()->')  endif /]
 
-[**
- * GenerateUtils java class methods 
-*/]
-[query public lowerCamelToUpperUnderscore( eEObject : EObject , s : String ) : String = invoke('soft.generator.cpp.utils.GenerateUtils','lowerCamelToUpperUnderscore(java.lang.String)',Sequence{s}) /]
-[query public upperCamelToUpperUnderscore( eEObject : EObject , s : String ) : String = invoke('soft.generator.cpp.utils.GenerateUtils','upperCamelToUpperUnderscore(java.lang.String)',Sequence{s}) /]
-[query public splitAndCombineWords( eEObject : EObject , s : String, sep: String) : String = invoke('soft.generator.cpp.utils.GenerateUtils','splitAndCombineWords(java.lang.String,java.lang.String)',Sequence{s,sep}) /]
 
 [**
  * Feature / Operation IDs and Count IDs 
@@ -376,8 +371,6 @@
  * Classes Onthology
 */]
 [query public hasExtension( aEClass : EClass ) : Boolean = hasKey('extension') and valueKey('extension' )='true'/]
-
-[query public getOrderedClasses( anEPackage : EPackage ) : Sequence(EClass) = invoke('soft.generator.cpp.utils.GenerateUtils','getOrderedClasses(org.eclipse.emf.ecore.EPackage)',Sequence{anEPackage}) /]
 
 [query public getBaseClass( aEClass : EClass ) : EClass = if (aEClass.eSuperTypes->isEmpty() ) then null else aEClass.eSuperTypes->first() endif/]
 
