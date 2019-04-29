@@ -1,0 +1,15 @@
+[comment encoding = UTF-8 /]
+[module generateCommon('http://www.eclipse.org/emf/2002/Ecore')]
+
+[query public join( aSequence : Sequence(String) , aDelimiter : String ) : String = 
+    aSequence->iterate(s ; res: String ='' | ( res.concat( if ( aSequence->first() = s ) then '' else aDelimiter endif ).concat(s)))
+/]
+
+[query public format( aString : String , aArguments : Sequence(String) ) : String =
+    Sequence{1..aArguments->size()}->iterate(index ; res: String =aString | res.replace('\\{'+ (index - 1) + '\\}', aArguments->at(index)))
+/]
+
+[query public matches( aString : String , aRegExp : String ) : Boolean =
+    aString.replaceAll(aRegExp, '') <> aString
+/]
+
