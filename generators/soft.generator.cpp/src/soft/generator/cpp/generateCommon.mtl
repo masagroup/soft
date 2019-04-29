@@ -189,57 +189,6 @@
 [query public isGoogleMock( aPackage : EPackage ) : Boolean = getMockLibrary() = 'GMock'/]
 [query public isTurtleMock( aPackage : EPackage ) : Boolean = getMockLibrary() = 'Turtle'/]
 
-
-
-[**
- * Properties on Class/Features
-*/]
-[query private hasContainerAttribute(aClass : EClass) : Boolean =  getContainerAttribute()->notEmpty() /]
-[query private getContainerAttribute(aClass : EClass) : OrderedSet(EReference) =  aClass.eReferences->select(isContainerAttribute())->sortedBy(name) /]
-[query private isContainerAttribute(aRef : EReference) : Boolean =  aRef.container/]
-[query public isContainer(aStructuralFeature : EStructuralFeature) : Boolean =  
-    if aStructuralFeature.oclIsKindOf(EReference) then
-        let eReference : EReference = aStructuralFeature.oclAsType(EReference) in
-        if eReference.eOpposite.oclIsUndefined() then
-            false
-        else
-            eReference.eOpposite.containment
-        endif
-    else 
-        false 
-    endif
-/]
-[query public isBidirectional(aStructuralFeature : EStructuralFeature) : Boolean = if aStructuralFeature.oclIsKindOf(EReference) then not aStructuralFeature.oclAsType(EReference).eOpposite.oclIsUndefined() else false endif/]
-[query public isContains(aStructuralFeature : EStructuralFeature) : Boolean = aStructuralFeature.oclIsKindOf(EReference) and aStructuralFeature.oclAsType(EReference).containment/]
-[query public isChangeable(aStructuralFeature : EStructuralFeature) : Boolean = aStructuralFeature.changeable/]
-[query public isUnSettable(aStructuralFeature : EStructuralFeature) : Boolean = aStructuralFeature.unsettable and not aStructuralFeature.isContainer() /]
-[query public isVolatile(aStructuralFeature : EStructuralFeature) : Boolean = 
-    let eReverseFeature : EReference = if aStructuralFeature.oclIsKindOf(EReference) then aStructuralFeature.oclAsType(EReference).eOpposite else null endif in
-    aStructuralFeature.volatile or ( not eReverseFeature.oclIsUndefined() and eReverseFeature.volatile )
-/]
-[query public isListType(aTypedElement : ETypedElement ) : Boolean = (not aTypedElement.oclIsUndefined() ) and ( aTypedElement.many or aTypedElement.upperBound <> 1 )/]  
-[query public isProxy(aStructuralFeature : EStructuralFeature) : Boolean = (not isContainer() and not isContains()) and aStructuralFeature.oclIsKindOf(EReference) and aStructuralFeature.oclAsType(EReference).resolveProxies/]  
-[query public isField(aStructuralFeature : EStructuralFeature) : Boolean = not isContainer() and not isVolatile()/]
-[query private isMap(  aEFeature : EStructuralFeature , n : String  ) : Boolean = let entries : Sequence(String) = Sequence{'java.util.Map.Entry','java.util.Map$Entry'} in entries->includes(n)/]
-[query public requiresList(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else name = 'EEList' endif/]
-[query public requiresCollectionView(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else name = 'ETreeIterator' endif/]
-[query public requiresCollectionView(anGenericType : EGenericType) : Boolean = if (oclIsUndefined()) then false else anGenericType.eClassifier.requiresCollectionView() endif/]
-[query public requiresResource(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else name = 'EResource' endif/]
-[query public requiresResource(anGenericType : EGenericType) : Boolean = if (oclIsUndefined()) then false else anGenericType.eClassifier.requiresResource() endif/]
-
-
-[query public isGet(aStructuralFeature : EStructuralFeature) : Boolean = true/]
-[query public isSet(aStructuralFeature : EStructuralFeature) : Boolean = isChangeable() and aStructuralFeature.upperBound = 1/]
-[query public isUnSet(aStructuralFeature : EStructuralFeature) : Boolean = isChangeable() and isUnSettable()/]
-[query public isIsSet(aStructuralFeature : EStructuralFeature) : Boolean = isUnSettable()/]
-
-[query public isBasicSet(aStructuralFeature : EStructuralFeature) : Boolean = not isListType() and ( isChangeable() or not isContainer() ) and ( isBidirectional() and not isVolatile() or isContains() ) /]
-[query public isBasicGet(aStructuralFeature : EStructuralFeature) : Boolean = isProxy() and not isListType()/]
-[query public isBasicUnSet(aStructuralFeature : EStructuralFeature) : Boolean = isUnSettable() and isChangeable() and not isListType() and aStructuralFeature.oclIsKindOf(EReference) and ( isBidirectional() or isContains() )/]
-
-[query private getSuperTypeContainers(aClass:EClass) : OrderedSet(EReference) = if not(aClass.eSuperTypes->isEmpty()) then aClass.eSuperTypes.getAllContainers()->flatten()->asOrderedSet() else OrderedSet{} endif /]
-[query public getAllContainers(aClass : EClass) : OrderedSet(EReference) =  if getContainerAttribute()->notEmpty() then if getSuperTypeContainers()->isEmpty() then getContainerAttribute() else OrderedSet{getContainerAttribute()}->append(getSuperTypeContainers()->flatten()->reject(oclIsUndefined())->asOrderedSet())->flatten()->asOrderedSet() endif else getSuperTypeContainers()->asOrderedSet() endif /]
-
 [query public hasGenModel(aModelElement : EModelElement) : Boolean = eAnnotations->select( source = 'http://net.masagroup/soft/2018/GenCpp' )->notEmpty() /]
 [query public getGenModelAnnotation(aModelElement : EModelElement) : EAnnotation = eAnnotations->select( source = 'http://net.masagroup/soft/2018/GenCpp' )->first() /]
 
