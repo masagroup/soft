@@ -6,7 +6,7 @@
 
 const int NB_ITERATIONS = 1000000;
 
-#define LOG 0
+#define LOG 1
 
 namespace diamond
 {
@@ -208,7 +208,7 @@ BOOST_AUTO_TEST_CASE( Performance )
         auto end = std::chrono::steady_clock::now();
         diamondTimes = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 #if LOG
-        std::cout << "Diamond:" << diamondTimes << " us" << std::endl;
+        std::cout << "Diamond:" << (double)diamondTimes / NB_ITERATIONS << " us" << std::endl;
 #endif
     }
     {
@@ -222,7 +222,7 @@ BOOST_AUTO_TEST_CASE( Performance )
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
         mixinTimes = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 #if LOG
-        std::cout << "Mixins:" << mixinTimes << " us" << std::endl;
+        std::cout << "Mixins:" << (double)mixinTimes / NB_ITERATIONS << " us" << std::endl;
 #endif
     }
     BOOST_CHECK_GE( diamondTimes, mixinTimes );
@@ -237,7 +237,7 @@ BOOST_AUTO_TEST_CASE( Performance )
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
         diamondTimes = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 #if LOG
-        std::cout << "Diamond:" << diamondTimes << " us" << std::endl;
+        std::cout << "Diamond:" << (double)diamondTimes / NB_ITERATIONS << " us" << std::endl;
 #endif
     }
     {
@@ -251,7 +251,7 @@ BOOST_AUTO_TEST_CASE( Performance )
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
         mixinTimes = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 #if LOG
-        std::cout << "Mixins:" << mixinTimes << " us" << std::endl;
+        std::cout << "Mixins:" << (double)mixinTimes / NB_ITERATIONS << " us" << std::endl;
 #endif
     }
     BOOST_CHECK_GE( diamondTimes, mixinTimes );
@@ -266,7 +266,7 @@ BOOST_AUTO_TEST_CASE( Performance )
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
         diamondTimes = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 #if LOG
-        std::cout << "Diamond:" << diamondTimes << " us" << std::endl;
+        std::cout << "Diamond:" << (double)diamondTimes / NB_ITERATIONS << " us" << std::endl;
 #endif
     }
     {
@@ -281,7 +281,7 @@ BOOST_AUTO_TEST_CASE( Performance )
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
         mixinTimes = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 #if LOG
-        std::cout << "Mixins:" << mixinTimes << " us" << std::endl;
+        std::cout << "Mixins:" << (double)mixinTimes / NB_ITERATIONS << " us" << std::endl;
 #endif
     }
     BOOST_CHECK_GE( diamondTimes, mixinTimes );
