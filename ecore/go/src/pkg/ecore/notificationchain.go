@@ -9,8 +9,7 @@ func (notif *NotificationChain) Add(newNotif ENotification) bool {
 		return false
 	}
 	for it := notif.notifications_.Iterate(); it.Next(); {
-		value := it.Value().(ENotification)
-		if value != nil && value.Merge(newNotif) {
+		if it.Value().(ENotification).Merge(newNotif) {
 			return false
 		}
 	}
