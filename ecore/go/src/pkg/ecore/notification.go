@@ -1,39 +1,62 @@
 package ecore
 
-type AbstractNotification struct {
-	ENotification
+type Notification struct {
 	eventType_ EventType
 	oldValue_  interface{}
 	newValue_  interface{}
 	position_  int
 	next_      ENotificationChain
+	notifier_  EObject
+	feature_   EStructuralFeature
+	featureId_ int
 }
 
-func (notif *AbstractNotification) GetEventType() EventType {
+func (notif *Notification) GetEventType() EventType {
 	return notif.eventType_
 }
 
-func (notif *AbstractNotification) GetOldValue() interface{} {
+func (notif *Notification) GetOldValue() interface{} {
 	return notif.oldValue_
 }
 
-func (notif *AbstractNotification) GetNewValue() interface{} {
+func (notif *Notification) GetNewValue() interface{} {
 	return notif.newValue_
 }
 
-func (notif *AbstractNotification) GetPosition() int {
+func (notif *Notification) GetPosition() int {
 	return notif.position_
 }
 
-func (notif *AbstractNotification) Merge(eNotif ENotification) bool {
+func (notif *Notification) GetNotifier() ENotifier {
+	return notif.notifier_.(ENotifier)
+}
+
+func (notif *Notification) GetFeature() EStructuralFeature {
+	if notif.feature_ != nil {
+		return notif.feature_
+	}
+	return notif.notifier_.Class().GetEStructuralFeature(notif.featureId_)
+}
+
+func (notif *Notification) GetFeatureId() int {
+	if notif.featureId_ != -1 {
+		return notif.featureId_
+	}
+	if notif.feature_ != nil {
+		return notif.feature_.GetFeatureID()
+	}
+	return -1
+}
+
+func (notif *Notification) Merge(eNotif ENotification) bool {
 	switch ev := notif.eventType_; ev {
 	case SET:
 	case UNSET:
 		switch notifEv := eNotif.GetEventType(); notifEv {
 		case SET:
 		case UNSET:
-			if notif.ENotification.GetNotifier() == eNotif.GetNotifier() &&
-				notif.ENotification.GetFeatureId() == eNotif.GetFeatureId() {
+			if notif.GetNotifier() == eNotif.GetNotifier() &&
+				notif.GetFeatureId() == eNotif.GetFeatureId() {
 				notif.newValue_ = eNotif.GetNewValue()
 				if notif.GetEventType() == SET {
 					notif.eventType_ = SET
@@ -44,9 +67,9 @@ func (notif *AbstractNotification) Merge(eNotif ENotification) bool {
 	case REMOVE:
 		switch notifEv := eNotif.GetEventType(); notifEv {
 		case REMOVE:
-			if notif.ENotification.GetNotifier() == eNotif.GetNotifier() &&
-				notif.ENotification.GetFeatureId() == eNotif.GetFeatureId() {
-				originalPosition := notif.ENotification.GetPosition()
+			if notif.GetNotifier() == eNotif.GetNotifier() &&
+				notif.GetFeatureId() == eNotif.GetFeatureId() {
+				originalPosition := notif.GetPosition()
 				notificationPosition := eNotif.GetPosition()
 				notif.eventType_ = REMOVE_MANY
 				removedValues := NewArrayEList([]interface{}{})
@@ -68,8 +91,8 @@ func (notif *AbstractNotification) Merge(eNotif ENotification) bool {
 	case REMOVE_MANY:
 		switch notifEv := eNotif.GetEventType(); notifEv {
 		case REMOVE:
-			if notif.ENotification.GetNotifier() == eNotif.GetNotifier() &&
-				notif.ENotification.GetFeatureId() == eNotif.GetFeatureId() {
+			if notif.GetNotifier() == eNotif.GetNotifier() &&
+				notif.GetFeatureId() == eNotif.GetFeatureId() {
 				notificationPosition := eNotif.GetPosition()
 				positions := notif.newValue_.(EList)
 				newPositions := NewArrayEList([]interface{}{})
@@ -100,7 +123,7 @@ func (notif *AbstractNotification) Merge(eNotif ENotification) bool {
 	return false
 }
 
-func (notif *AbstractNotification) Add(eNotif ENotification) bool {
+func (notif *Notification) Add(eNotif ENotification) bool {
 	if eNotif == nil {
 		return false
 	}
@@ -121,8 +144,8 @@ func (notif *AbstractNotification) Add(eNotif ENotification) bool {
 	}
 }
 
-func (notif *AbstractNotification) Dispatch() {
-	notifier := notif.ENotification.GetNotifier()
+func (notif *Notification) Dispatch() {
+	notifier := notif.GetNotifier()
 	if notifier != nil && notif.eventType_ != -1 {
 		notifier.ENotify(notif)
 	}
