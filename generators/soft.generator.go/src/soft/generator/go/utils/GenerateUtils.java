@@ -1,7 +1,6 @@
 package soft.generator.go.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -37,10 +36,14 @@ public class GenerateUtils {
         return eClass.getESuperTypes().stream().findFirst().orElse(null);
     }
 
+    /**
+     * Formats a string by splitting it into words separated by underscores and/or
+     * mixed-casing and then recombining them using the specified separator.
+     */
     public String splitAndCombineWords(String s, String separator) {
         List<String> parsedName = new ArrayList<String>();
         if (s.length() != 0)
-            parsedName.addAll(Arrays.asList(s.split("_")));
+            parsedName.addAll(splitWords(s, '_'));
 
         StringBuilder result = new StringBuilder();
         for (Iterator<String> nameIter = parsedName.iterator(); nameIter.hasNext();) {
@@ -51,5 +54,47 @@ public class GenerateUtils {
                 result.append(separator);
         }
         return result.toString();
+    }
+
+    /**
+     * This method breaks s into words delimited by separator and/or mixed-case
+     * naming.
+     */
+    private List<String> splitWords(String s, char separator) {
+        List<String> result = new ArrayList<String>();
+        if (s != null) {
+            StringBuilder currentWord = new StringBuilder();
+            boolean lastIsLower = false;
+            for (int index = 0, length = s.length(); index < length; ++index) {
+                char curChar = s.charAt(index);
+                if (Character.isUpperCase(curChar) || (!lastIsLower && Character.isDigit(curChar))
+                        || curChar == separator) {
+                    if (lastIsLower && currentWord.length() > 1 || curChar == separator && currentWord.length() > 0) {
+                        result.add(currentWord.toString());
+                        currentWord = new StringBuilder();
+                    }
+                    lastIsLower = false;
+                } else {
+                    if (!lastIsLower) {
+                        int currentWordLength = currentWord.length();
+                        if (currentWordLength > 1) {
+                            char lastChar = currentWord.charAt(--currentWordLength);
+                            currentWord.setLength(currentWordLength);
+                            result.add(currentWord.toString());
+                            currentWord = new StringBuilder();
+                            currentWord.append(lastChar);
+                        }
+                    }
+                    lastIsLower = true;
+                }
+
+                if (curChar != separator) {
+                    currentWord.append(curChar);
+                }
+            }
+
+            result.add(currentWord.toString());
+        }
+        return result;
     }
 }
