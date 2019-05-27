@@ -1,6 +1,6 @@
 package ecore
 
-type Notification struct {
+type notification struct {
 	eventType_ EventType
 	oldValue_  interface{}
 	newValue_  interface{}
@@ -11,34 +11,57 @@ type Notification struct {
 	featureId_ int
 }
 
-func (notif *Notification) GetEventType() EventType {
+func NewnotificationByFeature(notifier EObject, eType EventType, feature EStructuralFeature, oldValue interface{}, newValue interface{}, position int) notification {
+	return notification{
+		eventType_: eType,
+		oldValue_:  oldValue,
+		newValue_:  newValue,
+		position_:  position,
+		notifier_:  notifier,
+		feature_:   feature,
+		featureId_: -1,
+	}
+}
+
+func NewnotificationByFeatureId(notifier EObject, eType EventType, featureId int, oldValue interface{}, newValue interface{}, position int) notification {
+	return notification{
+		eventType_: eType,
+		oldValue_:  oldValue,
+		newValue_:  newValue,
+		position_:  position,
+		notifier_:  notifier,
+		featureId_: featureId,
+	}
+}
+
+func (notif *notification) GetEventType() EventType {
 	return notif.eventType_
 }
 
-func (notif *Notification) GetOldValue() interface{} {
+func (notif *notification) GetOldValue() interface{} {
 	return notif.oldValue_
 }
 
-func (notif *Notification) GetNewValue() interface{} {
+func (notif *notification) GetNewValue() interface{} {
 	return notif.newValue_
 }
 
-func (notif *Notification) GetPosition() int {
+func (notif *notification) GetPosition() int {
 	return notif.position_
 }
 
-func (notif *Notification) GetNotifier() ENotifier {
+func (notif *notification) GetNotifier() ENotifier {
 	return notif.notifier_.(ENotifier)
 }
 
-func (notif *Notification) GetFeature() EStructuralFeature {
+func (notif *notification) GetFeature() EStructuralFeature {
 	if notif.feature_ != nil {
 		return notif.feature_
 	}
 	return notif.notifier_.Class().GetEStructuralFeature(notif.featureId_)
 }
 
-func (notif *Notification) GetFeatureId() int {
+func (notif *notification) GetFeatureId() int {
 	if notif.featureId_ != -1 {
 		return notif.featureId_
 	}
@@ -48,7 +71,7 @@ func (notif *Notification) GetFeatureId() int {
 	return -1
 }
 
-func (notif *Notification) Merge(eNotif ENotification) bool {
+func (notif *notification) Merge(eNotif ENotification) bool {
 	switch ev := notif.eventType_; ev {
 	case SET:
 	case UNSET:
@@ -123,7 +146,7 @@ func (notif *Notification) Merge(eNotif ENotification) bool {
 	return false
 }
 
-func (notif *Notification) Add(eNotif ENotification) bool {
+func (notif *notification) Add(eNotif ENotification) bool {
 	if eNotif == nil {
 		return false
 	}
@@ -144,7 +167,7 @@ func (notif *Notification) Add(eNotif ENotification) bool {
 	}
 }
 
-func (notif *Notification) Dispatch() {
+func (notif *notification) Dispatch() {
 	notifier := notif.GetNotifier()
 	if notifier != nil && notif.eventType_ != -1 {
 		notifier.ENotify(notif)
