@@ -1,12 +1,12 @@
 package ecore
 
 type AbstractNotification struct {
-	ENotification // TODO
-	eventType_    EventType
-	oldValue_     interface{}
-	newValue_     interface{}
-	position_     int
-	next_         ENotificationChain
+	ENotification
+	eventType_ EventType
+	oldValue_  interface{}
+	newValue_  interface{}
+	position_  int
+	next_      ENotificationChain
 }
 
 func (notif *AbstractNotification) GetEventType() EventType {
@@ -108,8 +108,14 @@ func (notif *AbstractNotification) Add(eNotif ENotification) bool {
 		return false
 	}
 	if notif.next_ == nil {
-		// TODO
-		return false
+		value, ok := eNotif.(ENotificationChain)
+		if ok {
+			notif.next_ = value
+			return true
+		} else {
+			notif.next_ = &NotificationChain{}
+			return notif.next_.Add(eNotif)
+		}
 	} else {
 		return notif.next_.Add(eNotif)
 	}
