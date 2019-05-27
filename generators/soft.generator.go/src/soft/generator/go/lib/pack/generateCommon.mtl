@@ -1,6 +1,8 @@
 [comment encoding = UTF-8 /]
 [module generateCommon('http://www.eclipse.org/emf/2002/Ecore')/]
 
+[import soft::generator::go::generateCommon /]
+
 [query public upperPackageName(anEPackage : EPackage) : String = anEPackage.name.toUpperFirst() /]
 [query public getPackageImplementation(anEPackage : EPackage) : String = anEPackage.name + '_package_impl' /]
 [query public getPackageInterface(anEPackage : EPackage) : String = anEPackage.name + '_package_interface' /]
@@ -10,6 +12,14 @@
  * The meta object id for the class [aEClass.name/].
  */
 [aEClass.getClassifierIDName()/] = [aEClass.getClassifierIDValue()/]
+
+[/template]
+
+[template public generateStaticFeatureID(anStructFeature : EStructuralFeature,anEClass : EClass )]
+/**
+ * The feature id for the [anEClass.name/] '[anStructFeature.name.toUpperFirst()/]' [anStructFeature.getFeatureKind()/].
+ */
+[anEClass.getFeatureIDName(anStructFeature)/] = [anEClass.getFeatureValue(anStructFeature)/]
 
 [/template]
 
