@@ -1,6 +1,8 @@
 [comment encoding = UTF-8 /]
 [module generatePackageInterfaceHeader('http://www.eclipse.org/emf/2002/Ecore')]
  
+[import soft::generator::common::generateUtils /]
+
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::generateSingleton /]
 [import soft::generator::cpp::lib::generateClass/]

@@ -1,4 +1,4 @@
-package soft.generator.cpp.utils;
+package soft.generator.common;
 
 import java.util.ArrayList;
 import java.util.HashSet;

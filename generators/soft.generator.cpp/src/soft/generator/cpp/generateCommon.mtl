@@ -1,19 +1,8 @@
 [comment encoding = UTF-8 /]
 [module generateCommon('http://www.eclipse.org/emf/2002/Ecore')/]
 
-
-[query public join( aSequence : Sequence(String) , aDelimiter : String ) : String = 
-    aSequence->iterate(s ; res: String ='' | ( res.concat( if ( aSequence->first() = s ) then '' else aDelimiter endif ).concat(s)))
-/]
-
-[query public format( aString : String , aArguments : Sequence(String) ) : String =
-    Sequence{1..aArguments->size()}->iterate(index ; res: String =aString | res.replace('\\{'+ (index - 1) + '\\}', aArguments->at(index)))
-/]
-
-[query public matches( aString : String , aRegExp : String ) : Boolean =
-    aString.replaceAll(aRegExp, '') <> aString
-/]
-
+[import soft::generator::common::generateCommon/]
+[import soft::generator::common::generateUtils/]
 
 [**
  * Helper for c++ abstract function sufix
@@ -201,57 +190,6 @@
 [query public isGoogleMock( aPackage : EPackage ) : Boolean = getMockLibrary() = 'GMock'/]
 [query public isTurtleMock( aPackage : EPackage ) : Boolean = getMockLibrary() = 'Turtle'/]
 
-
-
-[**
- * Properties on Class/Features
-*/]
-[query private hasContainerAttribute(aClass : EClass) : Boolean =  getContainerAttribute()->notEmpty() /]
-[query private getContainerAttribute(aClass : EClass) : OrderedSet(EReference) =  aClass.eReferences->select(isContainerAttribute())->sortedBy(name) /]
-[query private isContainerAttribute(aRef : EReference) : Boolean =  aRef.container/]
-[query public isContainer(aStructuralFeature : EStructuralFeature) : Boolean =  
-    if aStructuralFeature.oclIsKindOf(EReference) then
-        let eReference : EReference = aStructuralFeature.oclAsType(EReference) in
-        if eReference.eOpposite.oclIsUndefined() then
-            false
-        else
-            eReference.eOpposite.containment
-        endif
-    else 
-        false 
-    endif
-/]
-[query public isBidirectional(aStructuralFeature : EStructuralFeature) : Boolean = if aStructuralFeature.oclIsKindOf(EReference) then not aStructuralFeature.oclAsType(EReference).eOpposite.oclIsUndefined() else false endif/]
-[query public isContains(aStructuralFeature : EStructuralFeature) : Boolean = aStructuralFeature.oclIsKindOf(EReference) and aStructuralFeature.oclAsType(EReference).containment/]
-[query public isChangeable(aStructuralFeature : EStructuralFeature) : Boolean = aStructuralFeature.changeable/]
-[query public isUnSettable(aStructuralFeature : EStructuralFeature) : Boolean = aStructuralFeature.unsettable and not aStructuralFeature.isContainer() /]
-[query public isVolatile(aStructuralFeature : EStructuralFeature) : Boolean = 
-    let eReverseFeature : EReference = if aStructuralFeature.oclIsKindOf(EReference) then aStructuralFeature.oclAsType(EReference).eOpposite else null endif in
-    aStructuralFeature.volatile or ( not eReverseFeature.oclIsUndefined() and eReverseFeature.volatile )
-/]
-[query public isListType(aTypedElement : ETypedElement ) : Boolean = (not aTypedElement.oclIsUndefined() ) and ( aTypedElement.many or aTypedElement.upperBound <> 1 )/]  
-[query public isProxy(aStructuralFeature : EStructuralFeature) : Boolean = (not isContainer() and not isContains()) and aStructuralFeature.oclIsKindOf(EReference) and aStructuralFeature.oclAsType(EReference).resolveProxies/]  
-[query public isField(aStructuralFeature : EStructuralFeature) : Boolean = not isContainer() and not isVolatile()/]
-[query private isMap(  aEFeature : EStructuralFeature , n : String  ) : Boolean = let entries : Sequence(String) = Sequence{'java.util.Map.Entry','java.util.Map$Entry'} in entries->includes(n)/]
-[query public requiresList(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else name = 'EEList' endif/]
-[query public requiresCollectionView(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else name = 'ETreeIterator' endif/]
-[query public requiresCollectionView(anGenericType : EGenericType) : Boolean = if (oclIsUndefined()) then false else anGenericType.eClassifier.requiresCollectionView() endif/]
-[query public requiresResource(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else name = 'EResource' endif/]
-[query public requiresResource(anGenericType : EGenericType) : Boolean = if (oclIsUndefined()) then false else anGenericType.eClassifier.requiresResource() endif/]
-
-
-[query public isGet(aStructuralFeature : EStructuralFeature) : Boolean = true/]
-[query public isSet(aStructuralFeature : EStructuralFeature) : Boolean = isChangeable() and aStructuralFeature.upperBound = 1/]
-[query public isUnSet(aStructuralFeature : EStructuralFeature) : Boolean = isChangeable() and isUnSettable()/]
-[query public isIsSet(aStructuralFeature : EStructuralFeature) : Boolean = isUnSettable()/]
-
-[query public isBasicSet(aStructuralFeature : EStructuralFeature) : Boolean = not isListType() and ( isChangeable() or not isContainer() ) and ( isBidirectional() and not isVolatile() or isContains() ) /]
-[query public isBasicGet(aStructuralFeature : EStructuralFeature) : Boolean = isProxy() and not isListType()/]
-[query public isBasicUnSet(aStructuralFeature : EStructuralFeature) : Boolean = isUnSettable() and isChangeable() and not isListType() and aStructuralFeature.oclIsKindOf(EReference) and ( isBidirectional() or isContains() )/]
-
-[query private getSuperTypeContainers(aClass:EClass) : OrderedSet(EReference) = if not(aClass.eSuperTypes->isEmpty()) then aClass.eSuperTypes.getAllContainers()->flatten()->asOrderedSet() else OrderedSet{} endif /]
-[query public getAllContainers(aClass : EClass) : OrderedSet(EReference) =  if getContainerAttribute()->notEmpty() then if getSuperTypeContainers()->isEmpty() then getContainerAttribute() else OrderedSet{getContainerAttribute()}->append(getSuperTypeContainers()->flatten()->reject(oclIsUndefined())->asOrderedSet())->flatten()->asOrderedSet() endif else getSuperTypeContainers()->asOrderedSet() endif /]
-
 [query public hasGenModel(aModelElement : EModelElement) : Boolean = eAnnotations->select( source = 'http://net.masagroup/soft/2018/GenCpp' )->notEmpty() /]
 [query public getGenModelAnnotation(aModelElement : EModelElement) : EAnnotation = eAnnotations->select( source = 'http://net.masagroup/soft/2018/GenCpp' )->first() /]
 
@@ -304,12 +242,6 @@
 [query public packageGetter(aEClassifier1 : EClassifier, aEClassifier2 : EClassifier) : String = needMetaModelPackageGetter(aEClassifier1, aEClassifier2).concat('get').concat(aEClassifier1.getElementAccessorName()).concat('()') /]
 [query public needMetaModelPackageGetter(aClassifier1 : EClassifier ,aClassifier2 : EClassifier ) : String = if(aClassifier1.ePackage.name = aClassifier2.ePackage.name )then '' else  aClassifier1.ePackage.nsPrefix.concat('::').concat(aClassifier1.ePackage.name.toUpperFirst()).concat('Package').concat('::eInstance()->')  endif /]
 
-[**
- * GenerateUtils java class methods 
-*/]
-[query public lowerCamelToUpperUnderscore( eEObject : EObject , s : String ) : String = invoke('soft.generator.cpp.utils.GenerateUtils','lowerCamelToUpperUnderscore(java.lang.String)',Sequence{s}) /]
-[query public upperCamelToUpperUnderscore( eEObject : EObject , s : String ) : String = invoke('soft.generator.cpp.utils.GenerateUtils','upperCamelToUpperUnderscore(java.lang.String)',Sequence{s}) /]
-[query public splitAndCombineWords( eEObject : EObject , s : String, sep: String) : String = invoke('soft.generator.cpp.utils.GenerateUtils','splitAndCombineWords(java.lang.String,java.lang.String)',Sequence{s,sep}) /]
 
 [**
  * Feature / Operation IDs and Count IDs 
@@ -439,8 +371,6 @@
  * Classes Onthology
 */]
 [query public hasExtension( aEClass : EClass ) : Boolean = hasKey('extension') and valueKey('extension' )='true'/]
-
-[query public getOrderedClasses( anEPackage : EPackage ) : Sequence(EClass) = invoke('soft.generator.cpp.utils.GenerateUtils','getOrderedClasses(org.eclipse.emf.ecore.EPackage)',Sequence{anEPackage}) /]
 
 [query public getBaseClass( aEClass : EClass ) : EClass = if (aEClass.eSuperTypes->isEmpty() ) then null else aEClass.eSuperTypes->first() endif/]
 
