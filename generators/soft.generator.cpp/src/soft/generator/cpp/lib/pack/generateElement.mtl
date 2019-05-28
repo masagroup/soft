@@ -2,6 +2,7 @@
 [module generateElement('http://www.eclipse.org/emf/2002/Ecore')]
 
 [import soft::generator::cpp::generateCommon /]
+[import soft::generator::common::generateCommon /]
 
 [query public getMetaMetaModelClasses(anEPackage : EPackage) : Set(EClassifier) = OrderedSet{
                                 anEPackage.eClassifiers.eClass(), 

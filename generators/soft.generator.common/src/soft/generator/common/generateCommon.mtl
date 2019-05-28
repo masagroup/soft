@@ -63,3 +63,59 @@
 [query private getSuperTypeContainers(aClass:EClass) : OrderedSet(EReference) = if not(aClass.eSuperTypes->isEmpty()) then aClass.eSuperTypes.getAllContainers()->flatten()->asOrderedSet() else OrderedSet{} endif /]
 [query public getAllContainers(aClass : EClass) : OrderedSet(EReference) =  if getContainerAttribute()->notEmpty() then if getSuperTypeContainers()->isEmpty() then getContainerAttribute() else OrderedSet{getContainerAttribute()}->append(getSuperTypeContainers()->flatten()->reject(oclIsUndefined())->asOrderedSet())->flatten()->asOrderedSet() endif else getSuperTypeContainers()->asOrderedSet() endif /]
 
+[query public getFeatureKind( aEFeature : EStructuralFeature ) : String = 
+    let kind : String =
+    if aEFeature.oclIsKindOf(EReference) then 
+        let eRef : EReference = aEFeature.oclAsType(EReference) in
+        if ( eRef.containment ) then
+            if ( isMap( aEFeature.eType.instanceClassName )) then 
+                'map'
+            else 
+                'containment reference' 
+            endif
+        else if ( eRef.container ) then
+            'container reference'
+        else
+            'reference'
+        endif endif
+    else
+        'attribute'
+    endif in
+    if ( not(kind = 'map') ) and aEFeature.many then
+        kind.concat(' list')
+    else
+        kind
+    endif
+/]
+[query public getClassifierIDName( anEClass : EClassifier ) : String = splitAndCombineWords(anEClass.name,'_').toUpperCase()/]
+[query public getFeatureIDName(anEClass : EClass ,aStructural : EStructuralFeature) : String = anEClass.getClassifierIDName().concat('__').concat( splitAndCombineWords(aStructural.name,'_')).toUpperCase() /]
+[query public splitAndCombineWords( eEObject : EObject , s : String, sep: String) : String = invoke('soft.generator.common.utils.GenerateUtils','splitAndCombineWords(java.lang.String,java.lang.String)',Sequence{s,sep}) /]
+
+[query public getFeatureValue( aEClass : EClass , aEFeature : EStructuralFeature ) : String =
+    let index : Integer = aEClass.eAllStructuralFeatures->indexOf(aEFeature) - 1 in
+    let baseClass : EClass = aEClass.getBaseClass() in
+    if baseClass.oclIsUndefined() then
+        index.toString()
+    else
+        let baseCount : Integer = baseClass.getFeatureCount() in
+        if ( index < baseCount ) then
+            if baseClass.ePackage = aEClass.ePackage then baseClass.getFeatureIDName( aEFeature ) else baseClass.getFeatureIDName( aEFeature ) endif
+        else
+            let baseCountID : String = if aEClass.ePackage = baseClass.ePackage then baseClass.getFeatureCountID() else baseClass.getFeatureCountID() endif in
+            baseCountID.concat(' + ').concat( (index-baseCount).toString())
+        endif 
+    endif 
+/]
+
+[query public getBaseClass( aEClass : EClass ) : EClass = if (aEClass.eSuperTypes->isEmpty() ) then null else aEClass.eSuperTypes->first() endif/]
+[query public getFeatureCountID( aEClass : EClass ) : String = aEClass.getClassifierIDName().concat('_FEATURE_COUNT')/]
+
+[query public getFeatureCountValue( aEClass : EClass ) : String = 
+    let baseClass : EClass = aEClass.getBaseClass() in
+    if baseClass.oclIsUndefined() then
+        aEClass.getFeatureCount()
+    else
+        let baseCount : String = if baseClass.ePackage = aEClass.ePackage then baseClass.getFeatureCountID() else baseClass.getFeatureCountID() endif in
+        baseCount.concat(' + ').concat( (aEClass.getFeatureCount() - baseClass.getFeatureCount()).toString() )
+    endif
+/]
