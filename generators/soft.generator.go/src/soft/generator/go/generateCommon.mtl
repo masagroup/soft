@@ -118,3 +118,12 @@
 /]
 [query public getBaseClass( aEClass : EClass ) : EClass = if (aEClass.eSuperTypes->isEmpty() ) then null else aEClass.eSuperTypes->first() endif/]
 [query public getFeatureCountID( aEClass : EClass ) : String = aEClass.getClassifierIDName().concat('_FEATURE_COUNT')/]
+[query public getFeatureCountValue( aEClass : EClass ) : String = 
+    let baseClass : EClass = aEClass.getBaseClass() in
+    if baseClass.oclIsUndefined() then
+        aEClass.getFeatureCount()
+    else
+        let baseCount : String = if baseClass.ePackage = aEClass.ePackage then baseClass.getFeatureCountID() else baseClass.getFeatureCountID() endif in
+        baseCount.concat(' + ').concat( (aEClass.getFeatureCount() - baseClass.getFeatureCount()).toString() )
+    endif
+/]
