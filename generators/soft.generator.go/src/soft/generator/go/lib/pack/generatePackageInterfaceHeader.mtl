@@ -18,6 +18,7 @@ const (
 [for (aClass : EClass | anEPackage.getOrderedClasses())]
     [aClass.generateStaticClassID()/]
     [aClass.eAllStructuralFeatures.generateStaticFeatureID(aClass)/]
+    [aClass.generateStaticFeatureCountID()/]
 [/for]
 )
 

@@ -23,6 +23,14 @@
 
 [/template]
 
+[template public generateStaticFeatureCountID(anEClass : EClass )]
+/**
+ * The number of structural features of the class [anEClass.name/].
+ */
+[anEClass.getFeatureCountID()/] = [anEClass.getFeatureCountValue()/]
+
+[/template]
+
 [query public getClassifierIDValue(anEClassifier : EClassifier) : EInt = if (anEClassifier.getClassifierID() = 0) then anEClassifier.ePackage.eClassifiers->selectByKind(EClassifier)->size() else anEClassifier.getClassifierID() endif/]
 [query public getClassifierIDName( anEClass : EClassifier ) : String = splitAndCombineWords(anEClass.name,'_').toUpperCase()/]
 
