@@ -20,17 +20,18 @@ virtual [anEOperation.generateReturnType()/] [anEOperation.name/]([anEOperation.
 [let methodID : String = if anEOperation.eContainingClass.eOperations->select( eC | eC.name = anEOperation.name )->size() > 1 then anEOperation.getElementIdentifier() else anEOperation.name endif]
 [anEOperation.generateReturnType()/] [className/]::[anEOperation.name/]([anEOperation.generateParameterList()/])[if (hasKey('const'))] const[/if]
 {
-    // [protected ( className+ '::' + methodID)]
 [if (hasKey('body'))]
     [valueKey('body')/]
 [else]
+    // [protected ( className+ '::' + methodID)]
 #if defined(__FUNCSIG__)
     std::cout << __FUNCSIG__  << std::endl;
 #endif
     throw "NotImplementedException";
-[/if]
     // [/protected]
+[/if]
 }
+
 [/let]
 [/let]
 [/template]
