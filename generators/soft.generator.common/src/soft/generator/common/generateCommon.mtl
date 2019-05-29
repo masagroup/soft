@@ -89,7 +89,7 @@
 /]
 [query public getClassifierIDName( anEClass : EClassifier ) : String = splitAndCombineWords(anEClass.name,'_').toUpperCase()/]
 [query public getFeatureIDName(anEClass : EClass ,aStructural : EStructuralFeature) : String = anEClass.getClassifierIDName().concat('__').concat( splitAndCombineWords(aStructural.name,'_')).toUpperCase() /]
-[query public splitAndCombineWords( eEObject : EObject , s : String, sep: String) : String = invoke('soft.generator.common.utils.GenerateUtils','splitAndCombineWords(java.lang.String,java.lang.String)',Sequence{s,sep}) /]
+[query public splitAndCombineWords( eEObject : EObject , s : String, sep: String) : String = invoke('soft.generator.common.GenerateUtils','splitAndCombineWords(java.lang.String,java.lang.String)',Sequence{s,sep}) /]
 
 [query public getFeatureValue( aEClass : EClass , aEFeature : EStructuralFeature ) : String =
     let index : Integer = aEClass.eAllStructuralFeatures->indexOf(aEFeature) - 1 in
