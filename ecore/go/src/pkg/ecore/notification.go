@@ -11,8 +11,8 @@ type notification struct {
 	featureId_ int
 }
 
-func NewNotificationByFeature(notifier EObject, eType EventType, feature EStructuralFeature, oldValue interface{}, newValue interface{}, position int) notification {
-	return notification{
+func NewNotificationByFeature(notifier EObject, eType EventType, feature EStructuralFeature, oldValue interface{}, newValue interface{}, position int) *notification {
+	return &notification{
 		eventType_: eType,
 		oldValue_:  oldValue,
 		newValue_:  newValue,
@@ -23,8 +23,8 @@ func NewNotificationByFeature(notifier EObject, eType EventType, feature EStruct
 	}
 }
 
-func NewNotificationByFeatureId(notifier EObject, eType EventType, featureId int, oldValue interface{}, newValue interface{}, position int) notification {
-	return notification{
+func NewNotificationByFeatureId(notifier EObject, eType EventType, featureId int, oldValue interface{}, newValue interface{}, position int) *notification {
+	return &notification{
 		eventType_: eType,
 		oldValue_:  oldValue,
 		newValue_:  newValue,
