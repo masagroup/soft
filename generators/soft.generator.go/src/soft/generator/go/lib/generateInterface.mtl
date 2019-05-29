@@ -14,6 +14,10 @@ package [aClass.ePackage.name/]
 
 type [interfaceName/] interface {
 [for (extend: EClass | aClass.eSuperTypes)]    [extend.name/][/for]
+[if aClass.name <> 'EObject' and aClass.eSuperTypes->size() = 0]
+	ENotifier
+	EObject
+[/if]
 [let operations : OrderedSet(EOperation) = aClass.eOperations]
 [if operations->notEmpty()]
     [operations.generateDeclaration()/]

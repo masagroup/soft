@@ -34,7 +34,7 @@ package [aClass.ePackage.name/]
 
 type [getImplementationName(aClass)/] struct {
 [for (extend: EClass | aClass.eSuperTypes)]    [getImplementationName(extend)/][/for]
-[if aClass.name <> 'EObject']
+[if aClass.name <> 'EObject' and aClass.eSuperTypes->size() = 0]
 	ENotifier
 	EObject
 [/if]
