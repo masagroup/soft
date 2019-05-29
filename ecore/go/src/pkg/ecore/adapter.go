@@ -15,7 +15,9 @@ func (adapter *Adapter) SetTarget(notifier ENotifier) {
 	adapters := adapter.target_.EAdapters()
 	adapters.Remove(adapter)
 	if adapters.Size() == 0 {
-
+		adapter.target_.ESetDeliver(false)
 	}
-	//
+	adapter.target_ = notifier
+	adapter.target_.EAdapters().Add(adapter)
+	adapter.target_.ESetDeliver(true)
 }
