@@ -31,5 +31,5 @@ func (notif *notifier) ENotify(notification ENotification) {
 }
 
 func (notif *notifier) ENotificationRequired() bool {
-	return notif.eDeliver_ != nil && notif.eAdapters_.Size() > 0
+	return notif.eAdapters_ != nil && notif.eAdapters_.Size() > 0
 }
