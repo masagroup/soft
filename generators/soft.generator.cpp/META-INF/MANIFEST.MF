@@ -10,3 +10,4 @@ Export-Package: soft.generator.cpp,
  soft.generator.cpp.lib.pack,
  soft.generator.cpp.tests 
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: soft.generator.cpp
