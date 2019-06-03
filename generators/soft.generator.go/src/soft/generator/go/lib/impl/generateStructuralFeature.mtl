@@ -41,7 +41,11 @@ func ([getReceiverTypeName(cl)/] *[getImplementationName(cl)/])
 
 [template public generateConstructor(baseClass : EClass)]
 func New[getImplementationName(baseClass)/]() *[getImplementationName(baseClass)/] {
-	return &[getImplementationName(baseClass)/]{}
+	new[getImplementationName(baseClass)/] := &[getImplementationName(baseClass)/]{}
+	[if baseClass.name <> 'EObject']
+	new[getImplementationName(baseClass)/].Notifier = *NewNotifier()
+	[/if]
+	return new[getImplementationName(baseClass)/]
 }
 
 [/template]
