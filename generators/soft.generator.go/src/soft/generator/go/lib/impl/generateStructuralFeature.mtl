@@ -59,8 +59,8 @@ func New[getImplementationName(baseClass)/]() *[getImplementationName(baseClass)
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getSetterName()/]( new[getPascalCaseName(aStructuralFeature.name)/] [aStructuralFeature.generateType()/] ) {
     old[getPascalCaseName(aStructuralFeature.name)/] := [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/]
     [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/] = new[getPascalCaseName(aStructuralFeature.name)/]
-    if [getReceiverTypeName(baseClass)/].ENotifier.ENotificationRequired() {
-        [getReceiverTypeName(baseClass)/].ENotifier.ENotify(NewNotificationByFeatureId([getReceiverTypeName(baseClass)/], SET, ECLASSIFIER__INSTANCE_CLASS, old[getPascalCaseName(aStructuralFeature.name)/], new[getPascalCaseName(aStructuralFeature.name)/], NO_INDEX))
+    if [getReceiverTypeName(baseClass)/].Notifier.ENotificationRequired() {
+        [getReceiverTypeName(baseClass)/].Notifier.ENotify(NewNotificationByFeatureId([getReceiverTypeName(baseClass)/], SET, ECLASSIFIER__INSTANCE_CLASS, old[getPascalCaseName(aStructuralFeature.name)/], new[getPascalCaseName(aStructuralFeature.name)/], NO_INDEX))
     }
 }
 
