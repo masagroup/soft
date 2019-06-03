@@ -9,15 +9,15 @@ type customTestAdapter struct {
 	Adapter
 }
 
-func (adapter *customTestAdapter) SetTarget(notifier ENotifier) {
+func (adapter customTestAdapter) SetTarget(notifier ENotifier) {
 	adapter.Adapter.SetTarget(notifier)
 }
 
-func (adapter *customTestAdapter) GetTarget() ENotifier {
+func (adapter customTestAdapter) GetTarget() ENotifier {
 	return adapter.Adapter.GetTarget()
 }
 
-func (adapter *customTestAdapter) NotifyChanged(notification ENotification) {
+func (adapter customTestAdapter) NotifyChanged(notification ENotification) {
 	fmt.Println("Notification received!")
 }
 
