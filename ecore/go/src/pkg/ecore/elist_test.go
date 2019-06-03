@@ -183,6 +183,7 @@ func TestIterate(t *testing.T) {
 		check(t, it.Value(), i, "Iterate")
 		i += 2
 	}
+	check(t, 6, i, "Iterate")
 }
 
 func TestIterateImmutable(t *testing.T) {
@@ -194,4 +195,5 @@ func TestIterateImmutable(t *testing.T) {
 		check(t, it.Value(), i, "Iterate immutable")
 		i += 2
 	}
+	check(t, 8, i, "Iterate immutable")
 }

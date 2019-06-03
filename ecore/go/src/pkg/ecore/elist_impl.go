@@ -32,7 +32,7 @@ func (it *iterator) Value() interface{} {
 // Next make the iterator go further in the array
 func (it *iterator) Next() bool {
 	it.curr++
-	return it.curr == it.data.Size()
+	return it.curr != it.data.Size()
 }
 
 // Add a new element to the array
