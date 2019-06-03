@@ -4,20 +4,14 @@ type Adapter struct {
 	target_ ENotifier
 }
 
+func NewAdapter() *Adapter {
+	return &Adapter{target_: nil}
+}
+
 func (adapter *Adapter) GetTarget() ENotifier {
 	return adapter.target_
 }
 
 func (adapter *Adapter) SetTarget(notifier ENotifier) {
-	if adapter.target_ == notifier {
-		return
-	}
-	adapters := adapter.target_.EAdapters()
-	adapters.Remove(adapter)
-	if adapters.Size() == 0 {
-		adapter.target_.ESetDeliver(false)
-	}
 	adapter.target_ = notifier
-	adapter.target_.EAdapters().Add(adapter)
-	adapter.target_.ESetDeliver(true)
 }
