@@ -16,7 +16,7 @@ func (adapter *customTestAdapter) NotifyChanged(notification ENotification) {
 func TestNotification(t *testing.T) {
 	testClassifier := EClassifierImpl{}
 	notifier := NewNotifier()
-	adapter := Adapter{}
-	adapter.SetTarget(notifier)
+	adapter := Adapter{target_: notifier}
 	testClassifier.SetClassifierID(0)
+	_ = adapter
 }

@@ -39,6 +39,13 @@
 func ([getReceiverTypeName(cl)/] *[getImplementationName(cl)/])
 [/template]
 
+[template public generateConstructor(baseClass : EClass)]
+func New[getImplementationName(baseClass)/]() *[getImplementationName(baseClass)/] {
+	return &[getImplementationName(baseClass)/]{}
+}
+
+[/template]
+
 [template public generateGetImplementation(aStructuralFeature : EStructuralFeature, baseClass : EClass)]
 // [aStructuralFeature.getGetterName()/] get the value of [getReceiverName(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
