@@ -26,7 +26,7 @@ func (notif *notifier) ESetDeliver(value bool) {
 
 func (notif *notifier) ENotify(notification ENotification) {
 	for it := notif.eAdapters_.Iterate(); it.Next(); {
-		//it.Value().(EAdapter).NotifyChanged(notification)
+		it.Value().(EAdapter).NotifyChanged(notification)
 	}
 }
 
