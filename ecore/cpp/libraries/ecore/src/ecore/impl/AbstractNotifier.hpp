@@ -18,7 +18,7 @@ namespace ecore::impl
 {
 
     template <typename I>
-    class AbstractNotifier : public virtual I
+    class AbstractNotifier : public virtual I, private std::enable_shared_from_this<AbstractNotifier<I>>
     {
     public:
         virtual ~AbstractNotifier() = default;
@@ -49,9 +49,37 @@ namespace ecore::impl
             return eDeliver_ && eAdapters_->size() > 0;
         }
 
+    private:
+
+        class AdapterList : public ArrayEList<EAdapter*>
+        {
+        public:
+            AdapterList( AbstractNotifier& notifier )
+                : notifier_( notifier )
+            {
+
+            }
+
+        protected:
+            
+            virtual void didAdd( std::size_t pos, const ValueType& adapter ) override
+            {
+                std::shared_ptr<ENotifier> notifier = notifier_.shared_from_this();
+                const_cast<EAdapter*>( adapter )->setTarget( notifier );
+            }
+
+            virtual void didRemove( std::size_t pos, const ValueType& adapter ) override
+            {
+                std::shared_ptr<ENotifier> notifier;
+                const_cast<EAdapter*>( adapter )->setTarget( notifier );
+            }
+
+        private:
+            AbstractNotifier& notifier_;
+        };
 
     protected:
-        std::unique_ptr< EList<EAdapter*> > eAdapters_{ new ArrayEList<EAdapter*>() };
+        std::unique_ptr<EList<EAdapter*>> eAdapters_{new AdapterList(*this)};
         bool eDeliver_{ true };
     };
 }
