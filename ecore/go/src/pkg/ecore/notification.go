@@ -73,15 +73,13 @@ func (notif *notification) GetFeatureId() int {
 
 func (notif *notification) Merge(eNotif ENotification) bool {
 	switch ev := notif.eventType_; ev {
-	case SET:
-	case UNSET:
+	case SET, UNSET:
 		switch notifEv := eNotif.GetEventType(); notifEv {
-		case SET:
-		case UNSET:
+		case SET, UNSET:
 			if notif.GetNotifier() == eNotif.GetNotifier() &&
 				notif.GetFeatureId() == eNotif.GetFeatureId() {
 				notif.newValue_ = eNotif.GetNewValue()
-				if notif.GetEventType() == SET {
+				if eNotif.GetEventType() == SET {
 					notif.eventType_ = SET
 					return true
 				}
