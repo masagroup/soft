@@ -26,5 +26,5 @@ func TestNotificationMerge(t *testing.T) {
 	check(t, notif.Size(), 2, "Notification count")
 	firstNotif := notif.Get(0).(ENotification)
 	check(t, firstNotif.Merge(notif.Get(1).(ENotification)), true, "Notification merge")
-	check(t, firstNotif.GetOldValue(), 5, "Notification new value after merge")
+	check(t, firstNotif.GetNewValue(), 9, "Notification new value after merge")
 }
