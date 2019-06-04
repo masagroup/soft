@@ -81,7 +81,7 @@ func (notif *notification) Merge(eNotif ENotification) bool {
 			if notif.GetNotifier() == eNotif.GetNotifier() &&
 				notif.GetFeatureId() == eNotif.GetFeatureId() {
 				notif.newValue_ = eNotif.GetNewValue()
-				if notif.GetEventType() == SET {
+				if eNotif.GetEventType() == SET {
 					notif.eventType_ = SET
 					return true
 				}
