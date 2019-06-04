@@ -16,11 +16,6 @@ EFactoryExt::~EFactoryExt()
 {
 }
 
-void EFactoryExt::setThisPtr( const std::shared_ptr<EFactoryExt>& thisPtr )
-{
-    EFactoryImpl::setThisPtr( thisPtr );
-}
-
 std::shared_ptr<ecore::EObject> EFactoryExt::create( const std::shared_ptr<ecore::EClass>& eClass ) const
 {
     if( getEPackage() != eClass->getEPackage() || eClass->isAbstract() )

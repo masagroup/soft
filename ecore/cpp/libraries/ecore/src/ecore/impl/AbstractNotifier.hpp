@@ -49,9 +49,48 @@ namespace ecore::impl
             return eDeliver_ && eAdapters_->size() > 0;
         }
 
+        void setThisPtr( const std::shared_ptr<AbstractNotifier>& thisPtr )
+        {
+            thisPtr_ = thisPtr;
+        }
+        
+        std::shared_ptr<AbstractNotifier> getThisPtr() const
+        {
+            return thisPtr_.lock();
+        }
+
+    private:
+
+        class AdapterList : public ArrayEList<EAdapter*>
+        {
+        public:
+            AdapterList( AbstractNotifier& notifier )
+                : notifier_( notifier )
+            {
+
+            }
+
+        protected:
+            
+            virtual void didAdd( std::size_t pos, const ValueType& adapter ) override
+            {
+                std::shared_ptr<ENotifier> notifier = notifier_.thisPtr_.lock();
+                const_cast<EAdapter*>( adapter )->setTarget( notifier );
+            }
+
+            virtual void didRemove( std::size_t pos, const ValueType& adapter ) override
+            {
+                std::shared_ptr<ENotifier> notifier;
+                const_cast<EAdapter*>( adapter )->setTarget( notifier );
+            }
+
+        private:
+            AbstractNotifier& notifier_;
+        };
 
     protected:
-        std::unique_ptr< EList<EAdapter*> > eAdapters_{ new ArrayEList<EAdapter*>() };
+        std::weak_ptr<AbstractNotifier> thisPtr_;
+        std::unique_ptr<EList<EAdapter*>> eAdapters_{new AdapterList(*this)};
         bool eDeliver_{ true };
     };
 }

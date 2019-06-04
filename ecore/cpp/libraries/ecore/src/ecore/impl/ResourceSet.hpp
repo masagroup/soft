@@ -24,9 +24,6 @@ namespace ecore::impl
 
         virtual ~ResourceSet();
 
-        void setThisPtr( const std::shared_ptr<ResourceSet>& resource );
-        std::shared_ptr<ResourceSet> getThisPtr() const;
-
         virtual std::shared_ptr<EList<std::shared_ptr<EResource>>> getResources() const;
    
         virtual std::shared_ptr<EUriConverter> getUriConverter() const;
@@ -39,7 +36,6 @@ namespace ecore::impl
         std::shared_ptr<EList<std::shared_ptr<EResource>>> initResources();
      
     private:
-        std::weak_ptr<ResourceSet> thisPtr_;
         Lazy<std::shared_ptr<EList<std::shared_ptr<EResource>>>> resources_;
         Lazy<std::shared_ptr<EUriConverter>> uriConverter_;
         Lazy<std::shared_ptr<EResourceFactoryRegistry>> resourceFactoryRegistry_;

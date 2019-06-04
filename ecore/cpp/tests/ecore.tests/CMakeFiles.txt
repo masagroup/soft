@@ -19,6 +19,7 @@ set(SOURCE_FILES
     src/LazyTests.cpp
     src/NotificationTests.cpp
     src/NotificationChainTests.cpp
+    src/NotifierTests.cpp
     src/ProxyTests.cpp
     src/ResourceTests.cpp
     src/ResourceSetTests.cpp

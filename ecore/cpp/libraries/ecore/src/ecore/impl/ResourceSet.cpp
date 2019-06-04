@@ -20,16 +20,6 @@ ResourceSet::~ResourceSet()
 {
 }
 
-void ResourceSet::setThisPtr( const std::shared_ptr<ResourceSet>& thisPtr )
-{
-    thisPtr_ = thisPtr;
-}
-
-std::shared_ptr<ResourceSet> ResourceSet::getThisPtr() const
-{
-    return thisPtr_.lock();
-}
-
 std::shared_ptr<EList<std::shared_ptr<EResource>>> ResourceSet::getResources() const
 {
     return resources_;
@@ -60,7 +50,7 @@ std::shared_ptr<EList<std::shared_ptr<EResource>>> ResourceSet::initResources()
     class ResourcesEList : public AbstractENotifyingList<ENotifyingList<std::shared_ptr<EResource>>, std::shared_ptr<EResource>>
     {
     public:
-        ResourcesEList( const std::weak_ptr<ResourceSet>& resourceSet )
+        ResourcesEList( ResourceSet& resourceSet )
             : resourceSet_( resourceSet )
         {
 
@@ -68,7 +58,7 @@ std::shared_ptr<EList<std::shared_ptr<EResource>>> ResourceSet::initResources()
 
         virtual std::shared_ptr<ENotifier> getNotifier() const
         {
-            return resourceSet_.lock();
+            return resourceSet_.getThisPtr();
         }
 
         virtual int getFeatureID() const
@@ -80,7 +70,7 @@ std::shared_ptr<EList<std::shared_ptr<EResource>>> ResourceSet::initResources()
                                                               , const std::shared_ptr<ENotificationChain>& notifications ) const
         {
             auto resource = std::dynamic_pointer_cast<AbstractResource>( object );
-            return resource ? resource->basicSetResourceSet( resourceSet_.lock(), notifications ) : notifications;
+            return resource ? resource->basicSetResourceSet( resourceSet_.getThisPtr(), notifications ) : notifications;
         }
 
         virtual std::shared_ptr<ENotificationChain> inverseRemove( const std::shared_ptr<EResource>& object
@@ -91,8 +81,8 @@ std::shared_ptr<EList<std::shared_ptr<EResource>>> ResourceSet::initResources()
         }
 
     private:
-        std::weak_ptr<ResourceSet> resourceSet_;
+        ResourceSet& resourceSet_;
     };
 
-    return std::make_shared<ResourcesEList>( thisPtr_ );
+    return std::make_shared<ResourcesEList>( *this );
 }

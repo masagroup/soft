@@ -20,11 +20,11 @@ namespace ecore::impl
     {
     public:
         AbstractAdapter() = default;
+        virtual ~AbstractAdapter() = default;
+
         AbstractAdapter( AbstractAdapter const& ) = delete;
         AbstractAdapter& operator=( AbstractAdapter const& ) = delete;
         
-        virtual ~AbstractAdapter();
-
         virtual std::shared_ptr<ENotifier> getTarget() const;
 
         virtual void setTarget( const std::shared_ptr<ENotifier>& target );

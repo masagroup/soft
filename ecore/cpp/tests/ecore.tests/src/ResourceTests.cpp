@@ -39,11 +39,14 @@ namespace
         {
             BOOST_CHECK( resource );
             resource->setThisPtr( resource );
+
+            MOCK_EXPECT( eAdapter->setTarget ).with( resource ).once();
             resource->eAdapters().add( eAdapter.get() );
         }
 
         ~NotificationsFixture()
         {
+            MOCK_EXPECT( eAdapter->setTarget ).with( nullptr ).once();
             resource->eAdapters().remove( eAdapter.get() );
         }
 

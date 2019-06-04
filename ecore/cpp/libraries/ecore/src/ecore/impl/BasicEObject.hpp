@@ -30,10 +30,6 @@ namespace ecore::impl
         BasicEObject();
         virtual ~BasicEObject();
 
-        // ThisPtr
-        void setThisPtr( const std::shared_ptr<BasicEObject>& thisPtr );
-        std::shared_ptr<BasicEObject> getThisPtr() const;
-
         // Operations
         virtual std::shared_ptr<ecore::EClass> eClass() const;
         virtual std::shared_ptr<ecore::EObject> eContainer() const;
@@ -102,9 +98,6 @@ namespace ecore::impl
         std::weak_ptr<EObject> eContainer_;
         int eContainerFeatureID_;
         std::optional<Uri> eProxyUri_;
-
-    private:
-        std::weak_ptr<BasicEObject> thisPtr_;
     };
 
     template <typename T>
