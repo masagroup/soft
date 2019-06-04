@@ -66,16 +66,6 @@ AbstractResource::~AbstractResource()
 {
 }
 
-void AbstractResource::setThisPtr( const std::shared_ptr<AbstractResource>& resource )
-{
-    thisPtr_ = resource;
-}
-
-std::shared_ptr<AbstractResource> AbstractResource::getThisPtr() const
-{
-    return thisPtr_.lock();
-}
-
 std::shared_ptr<EResourceSet> AbstractResource::getResourceSet() const
 {
     return resourceSet_.lock();
@@ -332,7 +322,7 @@ std::shared_ptr<EList<std::shared_ptr<EObject>>> AbstractResource::initContents(
 
         virtual std::shared_ptr<ENotifier> getNotifier() const
         {
-            return getThisPtr();
+            return resource_.getThisPtr();
         }
 
         virtual int getFeatureID() const
@@ -345,7 +335,7 @@ std::shared_ptr<EList<std::shared_ptr<EObject>>> AbstractResource::initContents(
                                                                 const std::shared_ptr<ENotificationChain>& n ) const
         {
             auto notifications = n;
-            notifications = eObject->eSetResource( getThisPtr(), notifications );
+            notifications = eObject->eSetResource( resource_.getThisPtr(), notifications );
             resource_.attached( eObject );
             return notifications;
         }
@@ -357,12 +347,6 @@ std::shared_ptr<EList<std::shared_ptr<EObject>>> AbstractResource::initContents(
             resource_.detached( eObject );
             notifications = eObject->eSetResource( nullptr, notifications );
             return notifications;
-        }
-
-    private:
-        std::shared_ptr<AbstractResource> getThisPtr() const
-        {
-            return resource_.getThisPtr();
         }
 
     private:

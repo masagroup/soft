@@ -22,7 +22,6 @@ using namespace ecore::impl;
 BasicEObject::BasicEObject()
     : eContainer_()
     , eContainerFeatureID_( -1 )
-    , thisPtr_()
 {
 
 }
@@ -30,16 +29,6 @@ BasicEObject::BasicEObject()
 BasicEObject::~BasicEObject()
 {
 
-}
-
-void BasicEObject::setThisPtr( const std::shared_ptr<BasicEObject>& thisPtr )
-{
-    thisPtr_ = thisPtr;
-}
-
-std::shared_ptr<BasicEObject> BasicEObject::getThisPtr() const
-{
-    return thisPtr_.lock();
 }
 
 std::shared_ptr<const ECollectionView<std::shared_ptr<ecore::EObject>>> BasicEObject::eAllContents() const

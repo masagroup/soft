@@ -25,8 +25,6 @@ namespace ecore::ext
         EFactoryExt();
         virtual ~EFactoryExt();
 
-        void setThisPtr( const std::shared_ptr<EFactoryExt>& thisPtr );
-
         //*********************************
         // Operations
         //*********************************
