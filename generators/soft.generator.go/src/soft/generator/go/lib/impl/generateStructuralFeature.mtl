@@ -73,7 +73,11 @@ func New[getImplementationName(baseClass)/]() *[getImplementationName(baseClass)
 [template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature, baseClass : EClass)]
 // [aStructuralFeature.getUnSetterName()/] unset the value of [getReceiverName(aStructuralFeature.name)/]
 [generateImplementationMember(baseClass)/] [aStructuralFeature.getUnSetterName()/]() {
+	old[getPascalCaseName(aStructuralFeature.name)/] := [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/]
     [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
+	if [getReceiverTypeName(baseClass)/].Notifier.ENotificationRequired() {
+        [getReceiverTypeName(baseClass)/].Notifier.ENotify(NewNotificationByFeatureId([getReceiverTypeName(baseClass)/], UNSET, ECLASSIFIER__INSTANCE_CLASS, old[getPascalCaseName(aStructuralFeature.name)/], [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/], NO_INDEX))
+    }
 }
 
 [/template]
