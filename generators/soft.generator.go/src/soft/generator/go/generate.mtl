@@ -12,7 +12,6 @@
     [aClass.generateInterface()/]
     [aClass.generateImplementation()/]
 [/for]
-[aPackage.generatePackage()/]
 [generateFactory()/]
 [/template]
 
