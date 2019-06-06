@@ -43,7 +43,13 @@ func ([getReceiverTypeName(cl)/] *[getImplementationName(cl)/])
 func New[getImplementationName(baseClass)/]() *[getImplementationName(baseClass)/] {
 	new[getImplementationName(baseClass)/] := &[getImplementationName(baseClass)/]{}
 	[if baseClass.name <> 'EObject']
+	[if baseClass.eSuperTypes->size() = 0]
 	new[getImplementationName(baseClass)/].Notifier = *NewNotifier()
+	[else]
+	[for (extend: EClass | baseClass.eSuperTypes)]
+	new[getImplementationName(baseClass)/].[getImplementationName(extend)/] = *New[getImplementationName(extend)/]()
+	[/for]
+	[/if]
 	[/if]
 	return new[getImplementationName(baseClass)/]
 }
