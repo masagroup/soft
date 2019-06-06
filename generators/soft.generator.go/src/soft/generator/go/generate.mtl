@@ -3,6 +3,7 @@
 
 [import soft::generator::go::lib::generateInterface/]
 [import soft::generator::go::lib::impl::generateImplementation/]
+[import soft::generator::go::lib::factory::generateFactory/]
 
 [template public generateModel(aPackage : EPackage)]
 [comment @main/]
@@ -10,6 +11,7 @@
     [aClass.generateInterface()/]
     [aClass.generateImplementation()/]
 [/for]
+[generateFactory()/]
 [/template]
 
 
