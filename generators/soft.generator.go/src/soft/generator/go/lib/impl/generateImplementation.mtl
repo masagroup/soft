@@ -5,11 +5,12 @@
 [import soft::generator::go::generateCommon/]
 [import soft::generator::go::lib::generateCommon/]
 [import soft::generator::go::lib::impl::generateCommon/]
+[import soft::generator::go::lib::impl::generateOperation/]
 [import soft::generator::go::lib::impl::generateStructuralFeature/]
 
 [template private generateInheritedMethods(aClass : EClass, firstClass : EClass, baseClass : EClass)]
 [let operations : OrderedSet(EOperation) = aClass.eOperations]
-[operations.generateOperationParent(firstClass, baseClass)/]
+[operations.generateInheritedOperation(firstClass, baseClass)/]
 [/let]
 [let features : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( isGet() or isSet() )]
 [features.generateInheritedImplementation(firstClass, baseClass)/]
@@ -28,15 +29,20 @@
 [/template]
 
 [template public generateImplementation(aClass : EClass) { implementationName : String = aClass.name; } ]
-[file (aClass.ePackage.getOutputDirectory() + '/' + aClass.getInterfaceImplementationFileName() , false, 'UTF-8')]
+[file (aClass.ePackage.getOutputDirectory() + '/' + aClass.getInterfaceImplementationFileName(), false, 'UTF-8')]
 package [aClass.ePackage.name/]
 
 type [getImplementationName(aClass)/] struct {
 [for (extend: EClass | aClass.eSuperTypes)]    [getImplementationName(extend)/][/for]
+[if aClass.name <> 'EObject' and aClass.eSuperTypes->size() = 0]
+	Notifier
+	EObjectImpl
+[/if]
 [let features : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( isGet() or isSet() )]
     [features.generateVariable()/]
 [/let]
 }
+[generateConstructor(aClass)/]
 [generateMethods(aClass)/]
 
 [/file]

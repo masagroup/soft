@@ -1,0 +1,38 @@
+[comment encoding = UTF-8 /]
+[module generateCommon('http://www.eclipse.org/emf/2002/Ecore')/]
+
+[import soft::generator::go::generateCommon /]
+[import soft::generator::common::generateCommon /]
+
+[query public upperPackageName(anEPackage : EPackage) : String = anEPackage.name.toUpperFirst() /]
+[query public getPackageImplementation(anEPackage : EPackage) : String = anEPackage.name + '_package_impl' /]
+[query public getPackageInterface(anEPackage : EPackage) : String = anEPackage.name + '_package_interface' /]
+
+[template public generateStaticClassID(aEClass : EClass)]
+/**
+ * The meta object id for the class [aEClass.name/].
+ */
+[aEClass.getClassifierIDName()/] = [aEClass.getClassifierIDValue()/]
+
+[/template]
+
+[template public generateStaticFeatureID(anStructFeature : EStructuralFeature,anEClass : EClass )]
+/**
+ * The feature id for the [anEClass.name/] '[anStructFeature.name.toUpperFirst()/]' [anStructFeature.getFeatureKind()/].
+ */
+[anEClass.getFeatureIDName(anStructFeature)/] = [anEClass.getFeatureValue(anStructFeature)/]
+
+[/template]
+
+[template public generateStaticFeatureCountID(anEClass : EClass )]
+/**
+ * The number of structural features of the class [anEClass.name/].
+ */
+[anEClass.getFeatureCountID()/] = [anEClass.getFeatureCountValue()/]
+
+[/template]
+
+[query public getClassifierIDValue(anEClassifier : EClassifier) : EInt = if (anEClassifier.getClassifierID() = 0) then anEClassifier.ePackage.eClassifiers->selectByKind(EClassifier)->size() else anEClassifier.getClassifierID() endif/]
+
+[query public getOrderedClasses( anEPackage : EPackage ) : Sequence(EClass) = invoke('soft.generator.go.utils.GenerateUtils','getOrderedClasses(org.eclipse.emf.ecore.EPackage)',Sequence{anEPackage}) /]
+[query public splitAndCombineWords( eEObject : EObject , s : String, sep: String) : String = invoke('soft.generator.go.utils.GenerateUtils','splitAndCombineWords(java.lang.String,java.lang.String)',Sequence{s,sep}) /]
