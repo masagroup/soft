@@ -2,10 +2,39 @@
 [module generateFactoryImplementationSource('http://www.eclipse.org/emf/2002/Ecore')]
 
 [import soft::generator::common::generateCommon/]
+[import soft::generator::go::generateCommon/]
 [import soft::generator::go::lib::generateCommon/]
+[import soft::generator::go::lib::impl::generateStructuralFeature/]
+[import soft::generator::go::lib::impl::generateCommon/]
 
 [template public generateFactoryImplementationSource(anEPackage : EPackage) { className : String = anEPackage.getFactoryImplementationName() ; }]
 [file (anEPackage.getOutputDirectory() + '/' + className.toLower() + '_gen.go', false, 'UTF-8')]
+package [anEPackage.name/]
+
+import "log"
+
+type [getImplementationName(anEPackage.eClass())/] struct {
+}
+
+[generateImplementationMember(anEPackage.eClass())/] Create(eClass EClass) EObject {
+	classID := eClass.GetClassifierID()
+	switch classID {
+    [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
+    case [aClass.getClassifierIDName()/]:
+        return [getReceiverTypeName(anEPackage.eClass())/].Create[aClass.name/]();
+    [/for]
+    default:
+        log.Fatalln("Create: ", classID, " not found")
+	}
+	return nil
+}
+
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
+[generateImplementationMember(anEPackage.eClass())/] Create[aClass.name/]() [aClass.getInterfaceName()/] {
+	element := New[getImplementationName(aClass)/]();
+    return element;
+}
+[/for]
 
 [/file]
 [/template]
