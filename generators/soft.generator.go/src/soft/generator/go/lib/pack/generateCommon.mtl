@@ -4,10 +4,6 @@
 [import soft::generator::common::generateCommon /]
 [import soft::generator::go::generateCommon /]
 
-[query public upperPackageName(anEPackage : EPackage) : String = anEPackage.name.toUpperFirst() /]
-[query public getPackageImplementation(anEPackage : EPackage) : String = anEPackage.name + 'packageimpl' /]
-[query public getPackageInterface(anEPackage : EPackage) : String = anEPackage.name + 'package' /]
-
 [template public generateStaticClassID(aEClass : EClass)]
 // [aEClass.getClassifierIDName()/] is the meta object id for the class [aEClass.name/].
 [aEClass.getClassifierIDName()/] = [aEClass.getClassifierIDValue()/]

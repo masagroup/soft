@@ -9,7 +9,7 @@
 [import soft::generator::go::lib::generateStructuralFeature/]
 
 [template public generateInterface(aClass : EClass) { interfaceName : String = aClass.getInterfaceName(); } ]
-[file (aClass.ePackage.getOutputDirectory() + '/' + aClass.getInterfaceFileName() , false, 'UTF-8')]
+[file (aClass.ePackage.getOutputDirectory() + '/' + aClass.ePackage.getOutputFileName( aClass.getInterfaceName() ), false, 'UTF-8')]
 package [aClass.ePackage.name/]
 
 type [interfaceName/] interface {
