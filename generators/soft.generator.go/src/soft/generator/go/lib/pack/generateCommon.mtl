@@ -9,25 +9,20 @@
 [query public getPackageInterface(anEPackage : EPackage) : String = anEPackage.name + 'package' /]
 
 [template public generateStaticClassID(aEClass : EClass)]
-/**
- * The meta object id for the class [aEClass.name/].
- */
+// [aEClass.getClassifierIDName()/] is the meta object id for the class [aEClass.name/].
 [aEClass.getClassifierIDName()/] = [aEClass.getClassifierIDValue()/]
 
 [/template]
 
 [template public generateStaticFeatureID(anStructFeature : EStructuralFeature,anEClass : EClass )]
-/**
- * The feature id for the [anEClass.name/] '[anStructFeature.name.toUpperFirst()/]' [anStructFeature.getFeatureKind()/].
- */
+// [anEClass.getFeatureIDName(anStructFeature)/] is the feature id for the [anEClass.name/] '[anStructFeature.name.toUpperFirst()/]' [anStructFeature.getFeatureKind()/].
 [anEClass.getFeatureIDName(anStructFeature)/] = [anEClass.getFeatureValue(anStructFeature)/]
+
 
 [/template]
 
 [template public generateStaticFeatureCountID(anEClass : EClass )]
-/**
- * The number of structural features of the class [anEClass.name/].
- */
+// [anEClass.getFeatureCountID()/] is the number of structural features of the class [anEClass.name/].
 [anEClass.getFeatureCountID()/] = [anEClass.getFeatureCountValue()/]
 
 [/template]
