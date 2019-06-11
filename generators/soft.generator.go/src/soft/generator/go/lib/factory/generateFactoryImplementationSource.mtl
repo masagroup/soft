@@ -4,8 +4,8 @@
 [import soft::generator::common::generateCommon/]
 [import soft::generator::go::generateCommon/]
 [import soft::generator::go::lib::generateCommon/]
-[import soft::generator::go::lib::impl::generateStructuralFeature/]
 [import soft::generator::go::lib::impl::generateCommon/]
+[import soft::generator::go::lib::factory::generateCommon/]
 
 [template public generateFactoryImplementationSource(anEPackage : EPackage) { className : String = anEPackage.getFactoryImplementationName() ; }]
 [file (anEPackage.getOutputDirectory() + '/' + className.toLower() + '_gen.go', false, 'UTF-8')]
@@ -13,15 +13,15 @@ package [anEPackage.name/]
 
 import "log"
 
-type [getImplementationName(anEPackage.eClass())/] struct {
+type [anEPackage.getFactoryImplementationName()/] struct {
 }
 
-[generateImplementationMember(anEPackage.eClass())/] Create(eClass EClass) EObject {
+[anEPackage.generateFactoryImplementationMember()/] Create(eClass EClass) EObject {
 	classID := eClass.GetClassifierID()
 	switch classID {
     [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
     case [aClass.getClassifierIDName()/]:
-        return [getReceiverTypeName(anEPackage.eClass())/].Create[aClass.name/]();
+        return [anEPackage.getFactoryReceiverTypeName()/].Create[aClass.name/]();
     [/for]
     default:
         log.Fatalln("Create: ", classID, " not found")
@@ -30,7 +30,7 @@ type [getImplementationName(anEPackage.eClass())/] struct {
 }
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
-[generateImplementationMember(anEPackage.eClass())/] Create[aClass.name/]() [aClass.getInterfaceName()/] {
+[anEPackage.generateFactoryImplementationMember()/] Create[aClass.name/]() [aClass.getInterfaceName()/] {
 	element := New[getImplementationName(aClass)/]();
     return element;
 }
