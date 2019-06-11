@@ -10,11 +10,14 @@
 package [anEPackage.name/]
 
 const (
-	[upperPackageName(anEPackage)/]_eNAME = "[anEPackage.name/]";
+    // NAME is the package name. 
+    NAME = "[anEPackage.name/]";
 
-	[upperPackageName(anEPackage)/]_eNS_URI = "[anEPackage.nsURI/]";
+    // NS_URI is the package URI.
+    NS_URI = "[anEPackage.nsURI/]";
 
-	[upperPackageName(anEPackage)/]_eNS_PREFIX = "[anEPackage.nsPrefix/]";
+    // NS_PREFIX is the package prefix.
+    NS_PREFIX = "[anEPackage.nsPrefix/]";
 
 [for (aClass : EClass | anEPackage.getOrderedClasses())]
     [aClass.generateStaticClassID()/]
