@@ -34,7 +34,33 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 	element := New[getImplementationName(aClass)/]();
     return element;
 }
+[let ref : OrderedSet(EReference) = aClass.getAllContainers()]
+[for(aReference:EReference | ref->sortedBy(name))]
+[anEPackage.generateFactoryImplementationMember()/] Create[aClass.name/]FromContainer(eContainer [aReference.getTypeFromReference()/]) [aClass.getInterfaceName()/] {
+    
+}
+
+[/for]
+[/let]
 [/for]
 
 [/file]
+[/template]
+
+[template public generateCreateFunctionContent(aClass : EClass, ref : OrderedSet(EReference), aReference : EReference, anEPackage : EPackage, addID : Boolean)]
+[if(addID)]
+element := Create[aClass.name/]()
+element->set[aClass.getElementIDAccessorName()/]ID(classID);
+[else]
+auto element = create[aClass.name/]();
+[/if]
+[if(not aReference.eOpposite.name.oclIsUndefined())]
+if( eContainer)
+[if(aReference.eOpposite.upperBound <> 1)]
+    eContainer->get[aReference.eOpposite.name.toUpperFirst()/]()->add(element);
+[else]
+    eContainer->set[aReference.eOpposite.name.toUpperFirst()/](element);
+[/if]
+[/if]
+return element;
 [/template]
