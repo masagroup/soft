@@ -9,7 +9,7 @@
 [template private generateGetter(anENamedElement : ENamedElement, anEPackage : EPackage)]
 
 // Returns the meta object for the [anENamedElement.name.toUpperFirst()/]
-[getMetaType(anENamedElement)/] get[anENamedElement.getElementAccessorName()/]();
+get[anENamedElement.getElementAccessorName()/]() [getMetaType(anENamedElement)/]
 [/template]
 
 [template public generatePackageInterface(anEPackage : EPackage) { className : String = anEPackage.getInterfaceName();  } ]
@@ -18,13 +18,13 @@ package [anEPackage.name/]
 
 const (
     // NAME is the package name. 
-    NAME = "[anEPackage.name/]";
+    NAME = "[anEPackage.name/]"
 
     // NS_URI is the package URI.
-    NS_URI = "[anEPackage.nsURI/]";
+    NS_URI = "[anEPackage.nsURI/]"
 
     // NS_PREFIX is the package prefix.
-    NS_PREFIX = "[anEPackage.nsPrefix/]";
+    NS_PREFIX = "[anEPackage.nsPrefix/]"
 
 [for (aClass : EClass | anEPackage.getOrderedClasses())]
     [aClass.generateStaticClassID()/]
