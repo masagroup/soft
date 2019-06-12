@@ -37,9 +37,13 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 [let ref : OrderedSet(EReference) = aClass.getAllContainers()]
 [for(aReference:EReference | ref->sortedBy(name))]
 [anEPackage.generateFactoryImplementationMember()/] Create[aClass.name/]FromContainer(eContainer [aReference.getTypeFromReference()/]) [aClass.getInterfaceName()/] {
-    
+    [generateCreateFunctionContent(aClass, aReference, false)/]
 }
-
+[if(aClass.getElementIDAccessorName().size() > 0)]
+[anEPackage.generateFactoryImplementationMember()/] Create[aClass.name/]FromContainerAndClassID(eContainer [aReference.getTypeFromReference()/], classID int) [aClass.getInterfaceName()/] {
+    [generateCreateFunctionContent(aClass, aReference, true)/]
+}
+[/if]
 [/for]
 [/let]
 [/for]
@@ -47,20 +51,19 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 [/file]
 [/template]
 
-[template public generateCreateFunctionContent(aClass : EClass, ref : OrderedSet(EReference), aReference : EReference, anEPackage : EPackage, addID : Boolean)]
+[template public generateCreateFunctionContent(aClass : EClass, aReference : EReference, addID : Boolean)]
+element := New[aClass.name/]Impl()
 [if(addID)]
-element := Create[aClass.name/]()
-element->set[aClass.getElementIDAccessorName()/]ID(classID);
-[else]
-auto element = create[aClass.name/]();
+element.Set[aClass.getElementIDAccessorName()/]ID(classID)
 [/if]
 [if(not aReference.eOpposite.name.oclIsUndefined())]
-if( eContainer)
+if eContainer != nil {
 [if(aReference.eOpposite.upperBound <> 1)]
-    eContainer->get[aReference.eOpposite.name.toUpperFirst()/]()->add(element);
+    eContainer.Get[aReference.eOpposite.name.toUpperFirst()/]().Add(element)
 [else]
-    eContainer->set[aReference.eOpposite.name.toUpperFirst()/](element);
+    eContainer.Set[aReference.eOpposite.name.toUpperFirst()/](element)
 [/if]
+}
 [/if]
-return element;
+return element
 [/template]
