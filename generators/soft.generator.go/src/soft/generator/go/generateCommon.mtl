@@ -59,3 +59,4 @@
 [query private getParameterListDetailsName(aOperation : EOperation) : String = if aOperation.eParameters->size()>1 then aOperation.eParameters->first().eType.name.concat('_').concat(aOperation.eParameters->last().eType.name) else aOperation.eParameters->first().eType.name endif /]
 
 [query public getElementAccessorName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName().toUpperFirst() /]
+[query public getElementInstanceName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName() /]

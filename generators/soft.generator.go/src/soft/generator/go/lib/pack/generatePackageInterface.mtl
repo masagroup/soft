@@ -12,8 +12,8 @@
 [getMetaType(anENamedElement)/] get[anENamedElement.getElementAccessorName()/]();
 [/template]
 
-[template public generatePackageInterface(anEPackage : EPackage) { className : String = anEPackage.getInterfaceName() ; fileName : String = anEPackage.getOutputFileName(className)} ]
-[file (anEPackage.getOutputDirectory() + '/'+ fileName , false, 'UTF-8')]
+[template public generatePackageInterface(anEPackage : EPackage) { className : String = anEPackage.getInterfaceName();  } ]
+[file (anEPackage.getOutputDirectory() + '/'+ anEPackage.getOutputFileName(className) , false, 'UTF-8')]
 package [anEPackage.name/]
 
 const (
