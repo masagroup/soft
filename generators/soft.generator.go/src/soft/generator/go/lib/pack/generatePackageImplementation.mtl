@@ -6,7 +6,7 @@
 [import soft::generator::go::lib::pack::generateCommon/]
 
 [template private generateDataMember(anENamedElement : ENamedElement, anEPackage : EPackage)] 
-[getMetaType(anENamedElement)/] [anENamedElement.getElementInstanceName()/]
+[anENamedElement.getElementInstanceName()/] [getMetaType(anENamedElement)/] 
 
 [/template]
 
