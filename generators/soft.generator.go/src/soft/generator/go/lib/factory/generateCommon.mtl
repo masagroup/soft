@@ -8,3 +8,4 @@ func ([anEPackage.getFactoryReceiverTypeName()/] *[anEPackage.getFactoryImplemen
 [/template]
 
 [query public getFactoryReceiverTypeName(anEPackage : EPackage) : String = anEPackage.getFactoryImplementationName().toLowerFirst() /]
+[query public getTypeFromReference(aRef : EReference) : String = aRef.eClass().name /]

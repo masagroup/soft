@@ -130,3 +130,10 @@
 
 [query public hasGenModel(aModelElement : EModelElement) : Boolean = eAnnotations->select( source = 'http://net.masagroup/soft/2018/GenCpp' )->notEmpty() /]
 [query public getGenModelAnnotation(aModelElement : EModelElement) : EAnnotation = eAnnotations->select( source = 'http://net.masagroup/soft/2018/GenCpp' )->first() /]
+
+[query public getElementIDAccessorName(anEClass : EClass) : String = 
+    if(name = 'EClass' or name = 'EDataType' or name = 'EEnum') then 'Classifier'
+    else if(name = 'EAttribute' or name = 'EReference') then 'Feature' 
+    else if(name = 'EOperation') then 'Operation'
+    else ''
+    endif endif endif/]
