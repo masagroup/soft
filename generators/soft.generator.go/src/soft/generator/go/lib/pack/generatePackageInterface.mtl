@@ -6,6 +6,12 @@
 [import soft::generator::go::lib::generateCommon/]
 [import soft::generator::go::lib::pack::generateCommon/]
 
+[template private generateGetter(anENamedElement : ENamedElement, anEPackage : EPackage)]
+// Returns the meta object for the [anENamedElement.name.toUpperFirst()/]
+[getMetaType(anENamedElement)/] get[anENamedElement.getElementAccessorName()/]();
+
+[/template]
+
 [template public generatePackageInterface(anEPackage : EPackage) { className : String = anEPackage.getInterfaceName() ; fileName : String = anEPackage.getOutputFileName(className)} ]
 [file (anEPackage.getOutputDirectory() + '/'+ fileName , false, 'UTF-8')]
 package [anEPackage.name/]
@@ -27,8 +33,18 @@ const (
 [/for]
 )
 
+// [className/] is The Metamodel Package for the [anEPackage.name/] metamodel. 
+// This package is used to enable the reflection of model elements. 
+// It contains all model elements which were described in an ecore file.
 type [className/] interface {
 
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
+    [aClass.generateGetter(anEPackage)/]
+    [aClass.eAttributes->sortedBy(name).generateGetter(anEPackage)/]
+    [aClass.eReferences->sortedBy(name).generateGetter(anEPackage)/]
+    [aClass.eOperations->sortedBy(name).generateGetter(anEPackage)/]
+[/for]
+    [anEPackage.eAllContents(EDataType)->sortedBy(name).generateGetter(anEPackage)/]
 }
 
 [/file]
