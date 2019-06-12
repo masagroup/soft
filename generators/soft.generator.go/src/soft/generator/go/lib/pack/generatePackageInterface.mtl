@@ -7,9 +7,9 @@
 [import soft::generator::go::lib::pack::generateCommon/]
 
 [template private generateGetter(anENamedElement : ENamedElement, anEPackage : EPackage)]
+
 // Returns the meta object for the [anENamedElement.name.toUpperFirst()/]
 [getMetaType(anENamedElement)/] get[anENamedElement.getElementAccessorName()/]();
-
 [/template]
 
 [template public generatePackageInterface(anEPackage : EPackage) { className : String = anEPackage.getInterfaceName() ; fileName : String = anEPackage.getOutputFileName(className)} ]
@@ -38,7 +38,7 @@ const (
 // It contains all model elements which were described in an ecore file.
 type [className/] interface {
 
-[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
     [aClass.generateGetter(anEPackage)/]
     [aClass.eAttributes->sortedBy(name).generateGetter(anEPackage)/]
     [aClass.eReferences->sortedBy(name).generateGetter(anEPackage)/]
