@@ -47,7 +47,32 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 [/for]
 [/let]
 [/for]
+[let dataTypes : Sequence(EDataType) = anEPackage.eAllContents(EDataType)->select( serializable )->sortedBy(name)]
+[anEPackage.generateFactoryImplementationMember()/] CreateFromString(eDataType EDataType, literalValue string) interface{} {
+	classID := eClass.GetClassifierID()
+	switch classID {
+    [for (aDataType : EDataType | dataTypes)]
+    case [aDataType.getClassifierIDName()/]:
+        return Create[aDataType.name/]FromString(eDataType, literalValue)
+    [/for]
+    default:
+        log.Fatalln("The datatype '", eDataType.getName(), "' is not a valid classifier")
+	}
+	return nil
+}
 
+[anEPackage.generateFactoryImplementationMember()/] ConvertToString(eDataType EDataType, instanceValue interface{}) string {
+    classID := eDataType.GetClassifierID()
+    switch classID {
+[for (aDataType : EDataType | dataTypes)]
+        case [aDataType.getClassifierIDName()/]:
+            return Convert[aDataType.name/]ToString(eDataType, instanceValue)
+[/for]
+        default:
+        log.Fatalln("The datatype '", eDataType.getName(), "' is not a valid classifier")
+    }
+}
+[/let]
 [/file]
 [/template]
 
