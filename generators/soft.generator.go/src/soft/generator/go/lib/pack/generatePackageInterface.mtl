@@ -12,9 +12,9 @@
 get[anENamedElement.getElementAccessorName()/]() [getMetaType(anENamedElement)/]
 [/template]
 
-[template public generatePackageInterface(anEPackage : EPackage) { className : String = anEPackage.getInterfaceName();  } ]
+[template public generatePackageInterface(anEPackage : EPackage) { className : String = anEPackage.getInterfaceName(); packageName : String = anEPackage.name; } ]
 [file (anEPackage.getOutputDirectory() + '/'+ anEPackage.getOutputFileName(className) , false, 'UTF-8')]
-package [anEPackage.name/]
+package [packageName/]
 
 const (
     // NAME is the package name. 
@@ -37,7 +37,7 @@ const (
 // This package is used to enable the reflection of model elements. 
 // It contains all model elements which were described in an ecore file.
 type [className/] interface {
-
+    [getShortQualifiedName('ecore.EPackage', packageName )/]
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
     [aClass.generateGetter(anEPackage)/]
     [aClass.eAttributes->sortedBy(name).generateGetter(anEPackage)/]

@@ -60,3 +60,17 @@
 
 [query public getElementAccessorName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName().toUpperFirst() /]
 [query public getElementInstanceName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName() /]
+
+[query public getShortQualifiedName( aQualifiedName : String , aNamespaceName : String ) : String =
+    let aQualifiedNames : Sequence(String) = aQualifiedName.tokenize('.') in
+    let aNamespaceNames : Sequence(String) = aNamespaceName.tokenize('.') in
+    let shortQualifiedNames : Sequence(String) = Sequence{1..aQualifiedNames->size()}->iterate( index ; res : Sequence(String) = Sequence{} |
+        let n : String = aQualifiedNames->at(index) in
+        if ( res->isEmpty() and index <= aNamespaceNames->size() and (n = aNamespaceNames->at(index)) ) then
+            res
+        else
+            res->append(n)
+        endif
+    ) in
+    shortQualifiedNames->join('.')
+/]
