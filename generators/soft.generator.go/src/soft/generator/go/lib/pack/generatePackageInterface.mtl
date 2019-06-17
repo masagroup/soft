@@ -6,10 +6,10 @@
 [import soft::generator::go::lib::generateCommon/]
 [import soft::generator::go::lib::pack::generateCommon/]
 
-[template private generateGetter(anENamedElement : ENamedElement, anEPackage : EPackage)]
+[template private generateGetter(anENamedElement : ENamedElement )]
 
 // Returns the meta object for the [anENamedElement.name.toUpperFirst()/]
-get[anENamedElement.getElementAccessorName()/]() [getMetaType(anENamedElement)/]
+[anENamedElement.getReflectiveGetterName()/]() [getMetaType(anENamedElement)/]
 [/template]
 
 [template public generatePackageInterface(anEPackage : EPackage) { className : String = anEPackage.getInterfaceName(); packageName : String = anEPackage.name; } ]
@@ -39,13 +39,23 @@ const (
 type [className/] interface {
     [getShortQualifiedName('ecore.EPackage', packageName )/]
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
-    [aClass.generateGetter(anEPackage)/]
-    [aClass.eAttributes->sortedBy(name).generateGetter(anEPackage)/]
-    [aClass.eReferences->sortedBy(name).generateGetter(anEPackage)/]
-    [aClass.eOperations->sortedBy(name).generateGetter(anEPackage)/]
+    [aClass.generateGetter()/]
+    [aClass.eAttributes->sortedBy(name).generateGetter()/]
+    [aClass.eReferences->sortedBy(name).generateGetter()/]
+    [aClass.eOperations->sortedBy(name).generateGetter()/]
 [/for]
-    [anEPackage.eAllContents(EDataType)->sortedBy(name).generateGetter(anEPackage)/]
+    [anEPackage.eAllContents(EDataType)->sortedBy(name).generateGetter()/]
 }
+
+var packageInstance [className/] 
+
+func GetPackage() [className/] {
+    if packageInstance == nil {
+        packageInstance = New[anEPackage.getImplementationName()/]()
+    }
+    return packageInstance
+}
+
 
 [/file]
 [/template]

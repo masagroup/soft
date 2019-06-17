@@ -13,7 +13,7 @@
 [template private generateGetter(anENamedElement : ENamedElement, anEPackage : EPackage)]
 [let thisType : String = anEPackage.getImplementationName()]
 [let thisName : String = thisType.toLowerFirst()] 
-func ([thisName/] *[thisType/]) get[anENamedElement.getElementAccessorName()/]() [getMetaType(anENamedElement)/] {
+func ([thisName/] *[thisType/]) [anENamedElement.getReflectiveGetterName()/]() [getMetaType(anENamedElement)/] {
     return [thisName/].[anENamedElement.getElementInstanceName()/]
 }
 [/let]
