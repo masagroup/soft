@@ -79,8 +79,4 @@ endif endif endif
 
 [query public getThisPtrName(anEClass : EClass) : String = 'thisPtr'/]
 [query public getThisPtrSetterName(anEClass : EClass) : String = 'Set' + getThisPtrName().toUpperFirst()/]
-<<<<<<< HEAD
 [query public getThisPtrGetterName(anEClass : EClass) : String = 'Get' + getThisPtrName().toUpperFirst()/]
-=======
-[query public getThisPtrGetterName(anEClass : EClass) : String = 'Get' + getThisPtrName().toUpperFirst()/]
->>>>>>> a74c0190f9684c4614f9c37f26c21d0535eb93cf
