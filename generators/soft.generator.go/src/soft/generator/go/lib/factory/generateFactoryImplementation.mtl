@@ -71,21 +71,25 @@ type [anEPackage.getFactoryImplementationName()/] struct {
     default:
         log.Fatalln("The datatype '", eDataType.GetName(), "' is not a valid classifier")
     }
+	return ""
 }
 [for (aDataType : EDataType | dataTypes)]
 [let createMethodName : String = 'Create' + aDataType.name + 'FromString']
 [anEPackage.generateFactoryImplementationMember()/] [createMethodName/](eDataType EDataType, literalValue string) interface{} {
 	log.Fatal("NotImplementedException")
+	return nil
 }
 [/let]
 [let convertMethodName : String = 'Convert' + aDataType.name + 'ToString']
-[anEPackage.generateFactoryImplementationMember()/] [convertMethodName/](eDataType EDataType, literalValue string) interface{} {
+[anEPackage.generateFactoryImplementationMember()/] [convertMethodName/](eDataType EDataType, literalValue interface{}) string {
 	log.Fatal("NotImplementedException")
+	return ""
 }
 [/let]
 [/for]
 [/let]
-func Get[anEPackage.getFactoryImplementationName()/]() [anEPackage.getFactoryImplementationName()/] {
+
+func Get[anEPackage.getFactoryImplementationName()/]() *[anEPackage.getFactoryImplementationName()/] {
 	return [anEPackage.getFactoryImplementationName()/]Instance
 }
 

@@ -12,7 +12,7 @@ type EcoreFactoryExt struct {
 
 func NewEcoreFactoryExt() *EcoreFactoryExt {
 	return &EcoreFactoryExt{
-		EcoreFactoryImpl: GetEcoreFactoryImpl(),
+		EcoreFactoryImpl: *GetEcoreFactoryImpl(),
 	}
 }
 
