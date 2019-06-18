@@ -53,7 +53,7 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 	switch classID {
     [for (aDataType : EDataType | dataTypes)]
     case [aDataType.getClassifierIDName()/]:
-        return Create[aDataType.name/]FromString(eDataType, literalValue)
+        return ecoreFactoryImpl.Create[aDataType.name/]FromString(eDataType, literalValue)
     [/for]
     default:
         log.Fatalln("The datatype '", eDataType.getName(), "' is not a valid classifier")
@@ -66,13 +66,26 @@ type [anEPackage.getFactoryImplementationName()/] struct {
     switch classID {
 [for (aDataType : EDataType | dataTypes)]
     case [aDataType.getClassifierIDName()/]:
-        return Convert[aDataType.name/]ToString(eDataType, instanceValue)
+        return ecoreFactoryImpl.Convert[aDataType.name/]ToString(eDataType, instanceValue)
 [/for]
     default:
         log.Fatalln("The datatype '", eDataType.getName(), "' is not a valid classifier")
     }
 }
+[for (aDataType : EDataType | dataTypes)]
+[let createMethodName : String = 'Create' + aDataType.name + 'FromString']
+[anEPackage.generateFactoryImplementationMember()/] [createMethodName/](eDataType EDataType, literalValue string) interface{} {
+	log.Fatal("NotImplementedException")
+}
 [/let]
+[let convertMethodName : String = 'Convert' + aDataType.name + 'ToString']
+[anEPackage.generateFactoryImplementationMember()/] [convertMethodName/](eDataType EDataType, literalValue string) interface{} {
+	log.Fatal("NotImplementedException")
+}
+[/let]
+[/for]
+[/let]
+
 [/file]
 [/template]
 
