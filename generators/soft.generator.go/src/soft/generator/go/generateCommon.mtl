@@ -72,10 +72,10 @@ endif endif endif
 
 [query public getterPrefix(feature : EStructuralFeature) : String = if feature.eType.name = 'EBoolean' then 'Is' else 'Get' endif/]
 
-[query public getSetterName(feature : EStructuralFeature) : String = if hasKey('setterName') then valueKey('setterName') else 'Set'.concat(name.toUpperFirst()) endif/]
-[query public getGetterName(feature : EStructuralFeature) : String = if hasKey('getterName') then valueKey('getterName') else getterPrefix().concat(name.toUpperFirst()) endif/]
-[query public getUnSetterName(feature : EStructuralFeature) : String = if hasKey('unSetterName') then valueKey('unSetterName') else 'Unset'.concat(name.toUpperFirst()) endif/]
-[query public getIsSetName(feature : EStructuralFeature) : String = if hasKey('isSetName') then valueKey('isSetName') else 'IsSet'.concat(name.toUpperFirst()) endif/]
+[query public getSetterName(feature : EStructuralFeature) : String = feature.getElementName( name.toUpperFirst(), 'setterName', 'Set$1')/]
+[query public getGetterName(feature : EStructuralFeature) : String =  feature.getElementName( name.toUpperFirst(), 'getterName', feature.getterPrefix() + '$1')/]
+[query public getUnSetterName(feature : EStructuralFeature) : String = feature.getElementName( name.toUpperFirst(), 'unSetterName', 'Unset$1')/]
+[query public getIsSetName(feature : EStructuralFeature) : String = feature.getElementName( name.toUpperFirst(), 'isSetName', 'IsSet$1')/]
 
 [query public getThisPtrName(anEClass : EClass) : String = 'thisPtr'/]
 [query public getThisPtrSetterName(anEClass : EClass) : String = 'Set' + getThisPtrName().toUpperFirst()/]
