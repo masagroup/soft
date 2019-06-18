@@ -85,7 +85,11 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 [/let]
 [/for]
 [/let]
+func Get[anEPackage.getFactoryImplementationName()/]() [anEPackage.getFactoryImplementationName()/] {
+	return [anEPackage.getFactoryImplementationName()/]Instance
+}
 
+var [anEPackage.getFactoryImplementationName()/]Instance = &[anEPackage.getFactoryImplementationName()/]{}
 [/file]
 [/template]
 
