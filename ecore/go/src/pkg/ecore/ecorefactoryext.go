@@ -7,10 +7,13 @@ import (
 )
 
 type EcoreFactoryExt struct {
+	EcoreFactoryImpl
 }
 
 func NewEcoreFactoryExt() *EcoreFactoryExt {
-	return &EcoreFactoryExt{}
+	return &EcoreFactoryExt{
+		EcoreFactoryImpl: GetEcoreFactoryImpl(),
+	}
 }
 
 func (factory *EcoreFactoryExt) CreateEBooleanFromString(dataType EDataType, literalValue string) interface{} {
