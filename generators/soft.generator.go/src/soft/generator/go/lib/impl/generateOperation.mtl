@@ -15,11 +15,11 @@
 [/template]
 
 [template public generateInheritedOperation(anEOperation : EOperation, firstClass : EClass, baseClass : EClass)]
-[generateImplementationMember(baseClass)/] [anEOperation.getName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/] [sParameter.generateType()/][/for]) [anEOperation.generateType()/] {
+[generateImplementationMember(baseClass)/] [anEOperation.getFunctionName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/] [sParameter.generateType()/][/for]) [anEOperation.generateType()/] {
 [if anEOperation.generateType() = '']
-    [getReceiverTypeName(baseClass)/].[firstClass.getImplementationName()/].[getName(anEOperation)/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
+    [getReceiverTypeName(baseClass)/].[firstClass.getImplementationName()/].[anEOperation.getFunctionName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
 [else]
-    return [getReceiverTypeName(baseClass)/].[firstClass.getImplementationName()/].[getName(anEOperation)/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
+    return [getReceiverTypeName(baseClass)/].[firstClass.getImplementationName()/].[anEOperation.getFunctionName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
 [/if]
 }
 

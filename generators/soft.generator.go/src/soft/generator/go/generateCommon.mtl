@@ -9,35 +9,75 @@
 [query public hasKey(aModelElement : EModelElement, aKey:String) : Boolean = if aModelElement.hasGenModel() then aModelElement.getGenModelAnnotation().details->select(key = aKey)->notEmpty() else false endif /]
 [query public valueKey(aModelElement : EModelElement, aKey:String) : String = aModelElement.getGenModelAnnotation().details->select(key = aKey)->first().value /]
 
-[query private getFactoryName( aPackage : EPackage ) : String = aPackage.name.toUpperFirst() + 'Factory'/]
-[query private getPackageName( aPackage : EPackage ) : String = aPackage.name.toUpperFirst() + 'Package'/]
+[query private getAncestor( aElement : EModelElement ) : EModelElement = 
+if aElement.oclIsKindOf(EOperation) then aElement.oclAsType(EOperation).eContainingClass
+else if aElement.oclIsKindOf(EStructuralFeature) then aElement.oclAsType(EStructuralFeature).eContainingClass
+else if aElement.oclIsKindOf(EClass) then aElement.oclAsType(EClass).ePackage
+else null
+endif endif endif 
+/]
 
-[query public getInterfaceName( aClass : EClass ) : String = getInterfaceName(aClass.name,aClass.ePackage) /]
-[query public getInterfaceName( aPackage : EPackage ) : String = getInterfaceName( getPackageName(),aPackage) /]
-[query private getInterfaceName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getInterfaceNamePattern() in if pattern ='' then aElementName else pattern.format(Sequence{aElementName}) endif /]
-[query private getInterfaceNamePattern( aPackage : EPackage ) : String = if hasKey('interfaceNamePattern') then valueKey('interfaceNamePattern') else '' endif/]
+[query private getAncestors( aElement : EModelElement ) : Sequence(EModelElement) = 
+    let ancestor : EModelElement = aElement.getAncestor() in
+    if ( ancestor.oclIsUndefined() ) then
+        Sequence(EModelElement){}
+    else
+        ancestor.getAncestors()->prepend( ancestor )
+    endif
+/]
+
+[query private getAnnotationValue(aElement : EModelElement, aKey:String ) : String =
+    if aElement.hasKey(aKey) then
+        aElement.valueKey( aKey )
+    else
+        let ancestor : EModelElement = aElement.getAncestor() in
+        if ancestor.oclIsUndefined() then
+            null
+        else
+            ancestor.getAnnotationValue(aKey)
+        endif
+    endif     
+/]
+
+[query private getElementName( aElement : ENamedElement, aKey:String ) : String = aElement.getElementName(aElement.name, aKey, null)/]
+[query private getElementName( aElement : ENamedElement, aName : String , aKey:String ) : String = aElement.getElementName(aName, aKey, null)/]
+[query private getElementName( aElement : ENamedElement, aName : String , aKey:String , defaultRule : String ) : String =
+    let value : String = aElement.getAnnotationValue( aKey ) in
+    let rule : String = if value.oclIsUndefined() then defaultRule else value endif in
+    if rule.oclIsUndefined() then
+        aName
+    else
+        let index : Integer = rule.index( ':' ) in
+        let pattern : String = if index = -1 then '(.*)' else rule.substring(1, index - 1) endif in
+        let replacement : String = if index = -1 then rule else rule.substring(index + 1) endif in
+        aName.replaceFirst( pattern , replacement )
+    endif
+/]
+
+[query private getFactoryName( aPackage : EPackage ) : String = aPackage.getElementName(aPackage.name, 'factoryName','$1Factory').toUpperFirst()/]
+[query private getPackageName( aPackage : EPackage ) : String = aPackage.getElementName(aPackage.name, 'packageName','$1Package').toUpperFirst()/]
+
+[query public getInterfaceName( aClass : EClass ) : String = aClass.getInterfaceName(aClass.name)/]
+[query public getInterfaceName( aPackage : EPackage ) : String = aPackage.getInterfaceName( getPackageName() )/]
+[query private getInterfaceName( aNamedElement : ENamedElement , aName : String ) : String = aNamedElement.getElementName( aName, 'interfaceName').toUpperFirst() /]
 
 [query public getQualifiedInterfaceName( aClass : EClass ) : String = aClass.ePackage.name + '.'  + aClass.getInterfaceName()/]
 [query public getQualifiedInterfaceName( aPackage : EPackage ) : String = aPackage.name + '.' + aPackage.getInterfaceName()/]
 
-[query public getImplementationName( aClass : EClass ) : String = getImplementationName(aClass.name,aClass.ePackage) /]
-[query public getImplementationName( aPackage : EPackage ) : String = getImplementationName( getPackageName(),aPackage) /]
-[query private getImplementationName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getImplementationNamePattern() in if pattern ='' then aElementName else pattern.format(Sequence{aElementName}) endif /]
-[query private getImplementationNamePattern( aPackage : EPackage ) : String = if hasKey('implementationNamePattern') then valueKey('implementationNamePattern') else '{0}Impl' endif/]
+[query public getImplementationName( aClass : EClass ) : String = aClass.getImplementationName( aClass.name )/]
+[query public getImplementationName( aPackage : EPackage ) : String = aPackage.getImplementationName( getPackageName() ) /]
+[query private getImplementationName( aNamedElement : ENamedElement , aName : String ) : String = aNamedElement.getElementName( aName, 'implementationName', '$1Impl').toUpperFirst() /]
 
-[query public getOutputFileName( aPackage : EPackage , aName : String ) : String = 
-    let fileName : String = aName.toLower() in 
-    let pattern : String = aPackage.getOutputFileNamePattern() in 
-    if pattern ='' then fileName else pattern.format(Sequence{fileName}) endif 
-/]
-[query private getOutputFileNamePattern( aPackage : EPackage ) : String = if hasKey('outputFileNamePattern') then valueKey('outputFileNamePattern') else '{0}_gen.go' endif/]
+[query public getOutputFileName( aPackage : EPackage , aName : String ) : String = aPackage.getElementName( aName , 'ouputName', '$1_gen.go').toLower()/]
 
 [query public getterPrefix(feature : EStructuralFeature) : String = if feature.eType.name = 'EBoolean' then 'Is' else 'Get' endif/]
 
-[query public getSetterName(feature : EStructuralFeature) : String = if hasKey('setterName') then valueKey('setterName') else 'Set'.concat(name.toUpperFirst()) endif/]
-[query public getGetterName(feature : EStructuralFeature) : String = if hasKey('getterName') then valueKey('getterName') else getterPrefix().concat(name.toUpperFirst()) endif/]
-[query public getUnSetterName(feature : EStructuralFeature) : String = if hasKey('unSetterName') then valueKey('unSetterName') else 'Unset'.concat(name.toUpperFirst()) endif/]
-[query public getIsSetName(feature : EStructuralFeature) : String = if hasKey('isSetName') then valueKey('isSetName') else 'IsSet'.concat(name.toUpperFirst()) endif/]
+[query public getSetterName(feature : EStructuralFeature) : String = feature.getElementName( name.toUpperFirst(), 'setterName', 'Set$1')/]
+[query public getGetterName(feature : EStructuralFeature) : String =  feature.getElementName( name.toUpperFirst(), 'getterName', feature.getterPrefix() + '$1')/]
+[query public getUnSetterName(feature : EStructuralFeature) : String = feature.getElementName( name.toUpperFirst(), 'unSetterName', 'Unset$1')/]
+[query public getIsSetName(feature : EStructuralFeature) : String = feature.getElementName( name.toUpperFirst(), 'isSetName', 'IsSet$1')/]
+
+[query public getFunctionName(aOperation : EOperation ) : String = aOperation.getElementName( aOperation.name , 'operationName' ).toUpperFirst()/]
 
 [query public getMetaType(anENamedElement : ENamedElement) : String = if anENamedElement.eClass().ePackage.name ='ecore' then anENamedElement.eClass().getInterfaceName() else anENamedElement.eClass().getQualifiedInterfaceName() endif /]
 

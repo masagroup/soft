@@ -5,45 +5,7 @@
 [import soft::generator::go::generateType/]
 [import soft::generator::go::lib::generateCommon/]
 
-
-[query public getNameRegex(anEOperation : EOperation) : String =
-    if anEOperation.hasKey('nameRegex') then
-        anEOperation.valueKey('nameRegex')
-    else if anEOperation.eContainingClass.hasKey('nameRegex') then
-        anEOperation.eContainingClass.valueKey('nameRegex')
-    else
-        null
-    endif
-    endif
-/]
-[query public getNameReplacement(anEOperation : EOperation) : String =
-    if anEOperation.hasKey('nameReplacement') then
-        anEOperation.valueKey('nameReplacement')
-    else if anEOperation.eContainingClass.hasKey('nameReplacement') then
-        anEOperation.eContainingClass.valueKey('nameReplacement')
-    else
-        null
-    endif
-    endif
-/]    
-
-[query public getName(anEOperation : EOperation) : String =
-    let name : String =
-        if anEOperation.hasKey('name') then
-            anEOperation.valueKey('name')
-        else
-            let regex : String = anEOperation.getNameRegex() in
-            let replacement : String = anEOperation.getNameReplacement() in
-            if ( regex.oclIsUndefined() ) then
-                anEOperation.name
-            else
-                anEOperation.name.replaceFirst(regex,replacement)
-            endif
-        endif
-    in
-    name.toUpperFirst() /]
-
 [template public generateDeclaration(anEOperation : EOperation)]
-[anEOperation.getName()/]([anEOperation.generateParameterList()/]) [anEOperation.generateType()/]
+[anEOperation.getFunctionName()/]([anEOperation.generateParameterList()/]) [anEOperation.generateType()/]
 
 [/template]

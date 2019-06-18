@@ -46,7 +46,7 @@
     </eOperations>
     <eOperations name="getEStructuralFeature" eType="#//EStructuralFeature">
       <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
-        <details key="name" value="GetEStructuralFeatureFromString"/>
+        <details key="operationName" value="GetEStructuralFeatureFromString"/>
       </eAnnotations>
       <eParameters name="featureName" eType="#//EString"/>
     </eOperations>
@@ -197,13 +197,13 @@
     </eAnnotations>
     <eOperations name="getEEnumLiteral" eType="#//EEnumLiteral">
       <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
-        <details key="name" value="GetEEnumLiteralByName"/>
+        <details key="operationName" value="GetEEnumLiteralByName"/>
       </eAnnotations>
       <eParameters name="name" eType="#//EString"/>
     </eOperations>
     <eOperations name="getEEnumLiteral" eType="#//EEnumLiteral">
       <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
-        <details key="name" value="GetEEnumLiteralByValue"/>
+        <details key="operationName" value="GetEEnumLiteralByValue"/>
       </eAnnotations>
       <eParameters name="value" eType="#//EInt"/>
     </eOperations>
@@ -266,8 +266,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EObject">
     <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
-      <details key="nameRegex" value="e(.*)"/>
-      <details key="nameReplacement" value="$1"/>
+      <details key="operationName" value="e(.*):$1"/>
     </eAnnotations>
     <eOperations name="eClass" eType="#//EClass">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
@@ -345,7 +344,7 @@
         <details key="visibility" value="public:no"/>
       </eAnnotations>
       <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
-        <details key="name" value="GetResolve"/>
+        <details key="operationName" value="GetResolve"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
       <eParameters name="resolve" eType="#//EBoolean"/>
