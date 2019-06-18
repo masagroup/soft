@@ -12,6 +12,10 @@
     [aClass.generateInterface()/]
     [aClass.generateImplementation()/]
 [/for]
+<<<<<<< HEAD
+=======
+[aPackage.generatePackage()/]
+>>>>>>> a74c0190f9684c4614f9c37f26c21d0535eb93cf
 [generateFactory()/]
 [/template]
 
