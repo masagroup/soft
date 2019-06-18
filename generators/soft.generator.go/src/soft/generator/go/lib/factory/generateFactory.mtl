@@ -1,8 +1,8 @@
 [comment encoding = UTF-8 /]
 [module generateFactory('http://www.eclipse.org/emf/2002/Ecore')/]
 
-[import soft::generator::go::lib::factory::generateFactoryImplementationSource/]
+[import soft::generator::go::lib::factory::generateFactoryImplementation]
 
 [template public generateFactory(anEPackage : EPackage)]
-[generateFactoryImplementationSource(anEPackage)/]
+[generateFactoryImplementation(anEPackage)/]
 [/template]

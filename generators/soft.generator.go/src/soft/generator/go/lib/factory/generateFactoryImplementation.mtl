@@ -1,5 +1,5 @@
 [comment encoding = UTF-8 /]
-[module generateFactoryImplementationSource('http://www.eclipse.org/emf/2002/Ecore')]
+[module generateFactoryImplementation('http://www.eclipse.org/emf/2002/Ecore')]
 
 [import soft::generator::common::generateCommon/]
 [import soft::generator::go::generateCommon/]
@@ -7,7 +7,7 @@
 [import soft::generator::go::lib::impl::generateCommon/]
 [import soft::generator::go::lib::factory::generateCommon/]
 
-[template public generateFactoryImplementationSource(anEPackage : EPackage) { className : String = anEPackage.getFactoryImplementationName() ; }]
+[template public generateFactoryImplementation(anEPackage : EPackage) { className : String = anEPackage.getFactoryImplementationName() ; }]
 [file (anEPackage.getOutputDirectory() + '/' + className.toLower() + '_gen.go', false, 'UTF-8')]
 package [anEPackage.name/]
 
@@ -56,7 +56,7 @@ type [anEPackage.getFactoryImplementationName()/] struct {
         return ecoreFactoryImpl.Create[aDataType.name/]FromString(eDataType, literalValue)
     [/for]
     default:
-        log.Fatalln("The datatype '", eDataType.getName(), "' is not a valid classifier")
+        log.Fatalln("The datatype '", eDataType.GetName(), "' is not a valid classifier")
 	}
 	return nil
 }
@@ -69,7 +69,7 @@ type [anEPackage.getFactoryImplementationName()/] struct {
         return ecoreFactoryImpl.Convert[aDataType.name/]ToString(eDataType, instanceValue)
 [/for]
     default:
-        log.Fatalln("The datatype '", eDataType.getName(), "' is not a valid classifier")
+        log.Fatalln("The datatype '", eDataType.GetName(), "' is not a valid classifier")
     }
 }
 [for (aDataType : EDataType | dataTypes)]

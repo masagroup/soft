@@ -80,3 +80,21 @@ endif endif endif
 [query public getThisPtrName(anEClass : EClass) : String = 'thisPtr'/]
 [query public getThisPtrSetterName(anEClass : EClass) : String = 'Set' + getThisPtrName().toUpperFirst()/]
 [query public getThisPtrGetterName(anEClass : EClass) : String = 'Get' + getThisPtrName().toUpperFirst()/]
+
+[query public getFunctionName(aOperation : EOperation ) : String = aOperation.getElementName( aOperation.name , 'operationName' ).toUpperFirst()/]
+
+[query public getMetaType(anENamedElement : ENamedElement) : String = if anENamedElement.eClass().ePackage.name ='ecore' then anENamedElement.eClass().getInterfaceName() else anENamedElement.eClass().getQualifiedInterfaceName() endif /]
+
+[query public getShortQualifiedName( aQualifiedName : String , aNamespaceName : String ) : String =
+    let aQualifiedNames : Sequence(String) = aQualifiedName.tokenize('.') in
+    let aNamespaceNames : Sequence(String) = aNamespaceName.tokenize('.') in
+    let shortQualifiedNames : Sequence(String) = Sequence{1..aQualifiedNames->size()}->iterate( index ; res : Sequence(String) = Sequence{} |
+        let n : String = aQualifiedNames->at(index) in
+        if ( res->isEmpty() and index <= aNamespaceNames->size() and (n = aNamespaceNames->at(index)) ) then
+            res
+        else
+            res->append(n)
+        endif
+    ) in
+    shortQualifiedNames->join('.')
+/]
