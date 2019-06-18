@@ -30,7 +30,10 @@ const (
     [aClass.generateStaticClassID()/]
     [aClass.eAllStructuralFeatures.generateStaticFeatureID(aClass)/]
     [aClass.generateStaticFeatureCountID()/]
+    [aClass.eAllOperations.generateStaticOperationID(aClass)/]
+    [aClass.generateStaticOperationCountID()/]
 [/for]
+    [anEPackage.eAllContents(EDataType)->sortedBy(name).generateStaticDataTypeID()/]
 )
 
 // [className/] is The Metamodel Package for the [anEPackage.name/] metamodel. 
@@ -47,14 +50,14 @@ type [className/] interface {
     [anEPackage.eAllContents(EDataType)->sortedBy(name).generateGetter()/]
 }
 
-var packageInstance [className/] 
+// var packageInstance [className/] 
 
-func GetPackage() [className/] {
-    if packageInstance == nil {
-        packageInstance = New[anEPackage.getImplementationName()/]()
-    }
-    return packageInstance
-}
+// func GetPackage() [className/] {
+//    if packageInstance == nil {
+//        packageInstance = New[anEPackage.getImplementationName()/]()
+//    }
+//    return packageInstance
+// }
 
 
 [/file]
