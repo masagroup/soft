@@ -190,3 +190,7 @@
 
 [query public hasGenModel(aModelElement : EModelElement) : Boolean = eAnnotations->select( source = 'http://net.masagroup/soft/2018/GenCpp' )->notEmpty() /]
 [query public getGenModelAnnotation(aModelElement : EModelElement) : EAnnotation = eAnnotations->select( source = 'http://net.masagroup/soft/2018/GenCpp' )->first() /]
+
+[query public getInterfaceName( aClass : EClass ) : String = getInterfaceName(aClass.name,aClass.ePackage) /]
+[query public getInterfaceName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getInterfaceNamePattern() in if pattern ='' then aElementName else pattern.format(Sequence{aElementName}) endif /]
+[query public getInterfaceNamePattern( aPackage : EPackage ) : String = if hasKey('interfaceNamePattern') then valueKey('interfaceNamePattern') else '' endif/]

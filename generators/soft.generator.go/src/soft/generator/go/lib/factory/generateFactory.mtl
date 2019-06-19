@@ -2,7 +2,9 @@
 [module generateFactory('http://www.eclipse.org/emf/2002/Ecore')/]
 
 [import soft::generator::go::lib::factory::generateFactoryImplementation]
+[import soft::generator::go::lib::factory::generateFactoryInterface]
 
 [template public generateFactory(anEPackage : EPackage)]
 [generateFactoryImplementation(anEPackage)/]
+[generateFactoryInterface(anEPackage)/]
 [/template]

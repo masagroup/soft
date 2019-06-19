@@ -16,81 +16,81 @@ func NewEcoreFactoryExt() *EcoreFactoryExt {
 	}
 }
 
-func (factory *EcoreFactoryExt) CreateEBooleanFromString(dataType EDataType, literalValue string) interface{} {
+func (factory *EcoreFactoryExt) createEBooleanFromString(dataType EDataType, literalValue string) interface{} {
 	value, _ := strconv.ParseBool(literalValue)
 	return value
 }
 
-func (factory *EcoreFactoryExt) ConvertEBooleanToString(dataType EDataType, instanceValue interface{}) string {
+func (factory *EcoreFactoryExt) convertEBooleanToString(dataType EDataType, instanceValue interface{}) string {
 	return fmt.Sprintf("%t", instanceValue)
 }
 
-func (factory *EcoreFactoryExt) CreateECharFromString(dataType EDataType, literalValue string) interface{} {
+func (factory *EcoreFactoryExt) createECharFromString(dataType EDataType, literalValue string) interface{} {
 	return literalValue[0]
 }
 
-func (factory *EcoreFactoryExt) ConvertECharToString(dataType EDataType, instanceValue interface{}) string {
+func (factory *EcoreFactoryExt) convertECharToString(dataType EDataType, instanceValue interface{}) string {
 	return fmt.Sprintf("%c", instanceValue)
 }
 
-func (factory *EcoreFactoryExt) CreateEDateFromString(dataType EDataType, literalValue string) interface{} {
+func (factory *EcoreFactoryExt) createEDateFromString(dataType EDataType, literalValue string) interface{} {
 	strTime, _ := strconv.ParseInt(literalValue, 10, 32)
 	return time.Unix(strTime, 0)
 }
 
-func (factory *EcoreFactoryExt) ConvertEDateToString(dataType EDataType, instanceValue interface{}) string {
+func (factory *EcoreFactoryExt) convertEDateToString(dataType EDataType, instanceValue interface{}) string {
 	return fmt.Sprintf("%d", instanceValue.(time.Time).Unix())
 }
 
-func (factory *EcoreFactoryExt) CreateEDoubleFromString(dataType EDataType, literalValue string) interface{} {
+func (factory *EcoreFactoryExt) createEDoubleFromString(dataType EDataType, literalValue string) interface{} {
 	value, _ := strconv.ParseFloat(literalValue, 64)
 	return value
 }
 
-func (factory *EcoreFactoryExt) ConvertEDoubleToString(dataType EDataType, instanceValue interface{}) string {
+func (factory *EcoreFactoryExt) convertEDoubleToString(dataType EDataType, instanceValue interface{}) string {
 	return fmt.Sprintf("%f", instanceValue)
 }
 
-func (factory *EcoreFactoryExt) CreateEFloatFromString(dataType EDataType, literalValue string) interface{} {
+func (factory *EcoreFactoryExt) createEFloatFromString(dataType EDataType, literalValue string) interface{} {
 	value, _ := strconv.ParseFloat(literalValue, 32)
 	return float32(value)
 }
 
-func (factory *EcoreFactoryExt) ConvertEFloatToString(dataType EDataType, instanceValue interface{}) string {
+func (factory *EcoreFactoryExt) convertEFloatToString(dataType EDataType, instanceValue interface{}) string {
 	return fmt.Sprintf("%f", instanceValue)
 }
 
-func (factory *EcoreFactoryExt) CreateEIntFromString(dataType EDataType, literalValue string) interface{} {
+func (factory *EcoreFactoryExt) createEIntFromString(dataType EDataType, literalValue string) interface{} {
 	value, _ := strconv.ParseInt(literalValue, 10, 32)
 	return int32(value)
 }
 
-func (factory *EcoreFactoryExt) ConvertEIntToString(dataType EDataType, instanceValue interface{}) string {
+func (factory *EcoreFactoryExt) convertEIntToString(dataType EDataType, instanceValue interface{}) string {
 	return fmt.Sprintf("%d", instanceValue)
 }
 
-func (factory *EcoreFactoryExt) CreateELongFromString(dataType EDataType, literalValue string) interface{} {
+func (factory *EcoreFactoryExt) createELongFromString(dataType EDataType, literalValue string) interface{} {
 	value, _ := strconv.ParseInt(literalValue, 10, 64)
 	return value
 }
 
-func (factory *EcoreFactoryExt) ConvertELongToString(dataType EDataType, instanceValue interface{}) string {
+func (factory *EcoreFactoryExt) convertELongToString(dataType EDataType, instanceValue interface{}) string {
 	return fmt.Sprintf("%d", instanceValue)
 }
 
-func (factory *EcoreFactoryExt) CreateEShortFromString(dataType EDataType, literalValue string) interface{} {
+func (factory *EcoreFactoryExt) createEShortFromString(dataType EDataType, literalValue string) interface{} {
 	value, _ := strconv.ParseInt(literalValue, 10, 16)
 	return int16(value)
 }
 
-func (factory *EcoreFactoryExt) ConvertEShortToString(dataType EDataType, instanceValue interface{}) string {
+func (factory *EcoreFactoryExt) convertEShortToString(dataType EDataType, instanceValue interface{}) string {
 	return fmt.Sprintf("%d", instanceValue)
 }
 
-func (factory *EcoreFactoryExt) CreateEStringFromString(dataType EDataType, literalValue string) interface{} {
+func (factory *EcoreFactoryExt) createEStringFromString(dataType EDataType, literalValue string) interface{} {
 	return literalValue
 }
 
-func (factory *EcoreFactoryExt) ConvertEStringToString(dataType EDataType, instanceValue interface{}) string {
+func (factory *EcoreFactoryExt) convertEStringToString(dataType EDataType, instanceValue interface{}) string {
 	return fmt.Sprintf("%s", instanceValue)
 }
