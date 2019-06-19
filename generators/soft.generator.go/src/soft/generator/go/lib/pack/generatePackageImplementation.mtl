@@ -2,7 +2,9 @@
 [module generatePackageImplementation('http://www.eclipse.org/emf/2002/Ecore')]
 
 [import soft::generator::common::generateCommon/]
+
 [import soft::generator::go::generateCommon/]
+[import soft::generator::go::generateType/]
 [import soft::generator::go::lib::generateCommon/]
 [import soft::generator::go::lib::pack::generateCommon/]
 
@@ -28,6 +30,7 @@ func ([thisName/] *[thisType/]) [anENamedElement.getReflectiveGetterName()/]() [
 package [anEPackage.name/]
 
 type [className/] struct {
+    EPackageImpl
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
     [let dataMembers : Sequence(ENamedElement) = Sequence{ Sequence{ aClass } , aClass.eStructuralFeatures, aClass.eOperations}->flatten()]
     [dataMembers.generateDataMember(anEPackage)/]
@@ -47,5 +50,6 @@ func New[className/]() *[className/] {
 [aClass.eOperations->sortedBy(name).generateGetter(anEPackage)/]
 [/for]
 [anEPackage.eAllContents(EDataType)->sortedBy(name).generateGetter(anEPackage)/]
+
 [/file]
 [/template]
