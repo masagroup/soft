@@ -4,9 +4,8 @@
 [import soft::generator::common::generateCommon/]
 [import soft::generator::go::generateCommon/]
 [import soft::generator::go::lib::generateCommon/]
-[import soft::generator::go::lib::impl::generateCommon/]
-[import soft::generator::go::lib::impl::generateOperation/]
-[import soft::generator::go::lib::impl::generateStructuralFeature/]
+[import soft::generator::go::lib::generateOperation/]
+[import soft::generator::go::lib::generateStructuralFeature/]
 
 [template private generateInheritedMethods(aClass : EClass, firstClass : EClass, baseClass : EClass)]
 [let operations : OrderedSet(EOperation) = aClass.eOperations]

@@ -13,4 +13,9 @@
     endif
 /]
 
+[query public getReceiverName(aClass : EClass) : String = aClass.name.toLowerFirst()/]
+
+[template public generateFunctionReceiver(aClass : EClass)]
+func ([aClass.getReceiverName()/] *[aClass.getImplementationName()/])
+[/template]
 

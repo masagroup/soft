@@ -9,3 +9,23 @@
 [anEOperation.getFunctionName()/]([anEOperation.generateParameterList()/]) [anEOperation.generateType()/]
 
 [/template]
+
+[template public generateImplementation(anEOperation : EOperation )]
+// [anEOperation.getFunctionName()/] 
+[anEOperation.eContainingClass.generateFunctionReceiver()/] [anEOperation.getFunctionName()/]([anEOperation.generateParameterList()/]) [anEOperation.generateType()/] {
+    panic("[anEOperation.getFunctionName()/] not implemented")
+}
+
+[/template]
+
+[template public generateInheritedOperation(anEOperation : EOperation, firstClass : EClass, aClass : EClass)]
+// [anEOperation.getFunctionName()/]
+[aClass.generateFunctionReceiver()/] [anEOperation.getFunctionName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/] [sParameter.generateType()/][/for]) [anEOperation.generateType()/] {
+[if anEOperation.generateType() = '']
+    [aClass.getReceiverName()/].[firstClass.getImplementationName()/].[anEOperation.getFunctionName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
+[else]
+    return [aClass.getReceiverName()/].[firstClass.getImplementationName()/].[anEOperation.getFunctionName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
+[/if]
+}
+
+[/template]
