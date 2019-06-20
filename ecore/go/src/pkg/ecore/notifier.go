@@ -1,35 +1,35 @@
 package ecore
 
 type Notifier struct {
-	eDeliver_  bool
-	eAdapters_ EList
+	eDeliver  bool
+	eAdapters EList
 }
 
 func NewNotifier() *Notifier {
 	return &Notifier{
-		eDeliver_:  true,
-		eAdapters_: NewArrayEList([]interface{}{}),
+		eDeliver:  true,
+		eAdapters: NewArrayEList([]interface{}{}),
 	}
 }
 
 func (notif *Notifier) EAdapters() EList {
-	return notif.eAdapters_
+	return notif.eAdapters
 }
 
 func (notif *Notifier) EDeliver() bool {
-	return notif.eDeliver_
+	return notif.eDeliver
 }
 
 func (notif *Notifier) ESetDeliver(value bool) {
-	notif.eDeliver_ = value
+	notif.eDeliver = value
 }
 
 func (notif *Notifier) ENotify(notification ENotification) {
-	for it := notif.eAdapters_.Iterate(); it.Next(); {
+	for it := notif.eAdapters.Iterate(); it.Next(); {
 		it.Value().(EAdapter).NotifyChanged(notification)
 	}
 }
 
 func (notif *Notifier) ENotificationRequired() bool {
-	return notif.eAdapters_ != nil && notif.eAdapters_.Size() > 0
+	return notif.eAdapters != nil && notif.eAdapters.Size() > 0
 }
