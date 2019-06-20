@@ -17,12 +17,29 @@
 [for (extend: EClass | aClass.eSuperTypes)][generateInheritedMethods(extend, firstClass, baseClass)/][/for]
 [/template]
 
+[template public generateConstructor(aClass : EClass)]
+// new[aClass.getImplementationName()/] is [aClass.getImplementationName()/] contructor 
+func new[aClass.getImplementationName()/]() *[aClass.getImplementationName()/] {
+    new[aClass.getImplementationName()/] := new([aClass.getImplementationName()/])
+    [if aClass.name <> 'EObject']
+    [if aClass.eSuperTypes->size() = 0]
+    new[aClass.getImplementationName()/].Notifier = *NewNotifier()
+    [else]
+    [for (extend: EClass | aClass.eSuperTypes)]
+    new[aClass.getImplementationName()/].[getImplementationName(extend)/] = *new[getImplementationName(extend)/]()
+    [/for]
+    [/if]
+    [/if]
+    return new[aClass.getImplementationName()/]
+}
+
+[/template]
+
 [template private generateMethods(aClass : EClass)]
 [aClass.eOperations.generateImplementation()/]
 [let features : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( isGet() or isSet() )]
 [features.generateImplementation(aClass)/]
 [/let]
-[for (extend: EClass | aClass.eSuperTypes)][generateInheritedMethods(extend, extend, aClass)/][/for]
 [/template]
 
 [template public generateImplementation(aClass : EClass) { implementationName : String = aClass.getImplementationName(); } ]
@@ -40,7 +57,9 @@ type [implementationName/] struct {
     [features.generateVariable()/]
 [/let]
 }
+
 [aClass.generateConstructor()/]
+
 [aClass.generateMethods()/]
 
 [/file]

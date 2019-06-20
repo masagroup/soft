@@ -65,24 +65,6 @@ if aFeature.eType.name = 'EBoolean' then 'is' + aFeature.name.toUpperFirst() els
 [/if]
 [/template]
 
-
-[template public generateConstructor(aClass : EClass)]
-func New[aClass.getImplementationName()/]() *[aClass.getImplementationName()/] {
-    new[aClass.getImplementationName()/] := &[aClass.getImplementationName()/]{}
-    [if aClass.name <> 'EObject']
-    [if aClass.eSuperTypes->size() = 0]
-    new[aClass.getImplementationName()/].Notifier = *NewNotifier()
-    [else]
-    [for (extend: EClass | aClass.eSuperTypes)]
-    new[aClass.getImplementationName()/].[getImplementationName(extend)/] = *New[getImplementationName(extend)/]()
-    [/for]
-    [/if]
-    [/if]
-    return new[aClass.getImplementationName()/]
-}
-
-[/template]
-
 [template public generateGetImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
 [let varName : String = aStructuralFeature.getVariableName() ]
 // [aStructuralFeature.getGetterName()/] get the value of [varName/]
@@ -101,8 +83,8 @@ func New[aClass.getImplementationName()/]() *[aClass.getImplementationName()/] {
 [aClass.generateFunctionReceiver()/] [aStructuralFeature.getSetterName()/]( [newVarName/] [aStructuralFeature.generateType()/] ) {
     [oldVarName/] := [aClass.getReceiverName()/].[varName/]
     [aClass.getReceiverName()/].[varName/] = [newVarName/]
-    if [aClass.getReceiverName()/].Notifier.ENotificationRequired() {
-        [aClass.getReceiverName()/].Notifier.ENotify(NewNotificationByFeatureId([aClass.getReceiverName()/], SET, ECLASSIFIER__INSTANCE_CLASS, [oldVarName/], [newVarName/], NO_INDEX))
+    if [aClass.getReceiverName()/].ENotificationRequired() {
+        [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureId([aClass.getReceiverName()/], SET, ECLASSIFIER__INSTANCE_CLASS, [oldVarName/], [newVarName/], NO_INDEX))
     }
 }
 [/let]
@@ -118,8 +100,8 @@ func New[aClass.getImplementationName()/]() *[aClass.getImplementationName()/] {
 [aClass.generateFunctionReceiver()/] [aStructuralFeature.getUnSetterName()/]() {
     [oldVarName/] := [aClass.getReceiverName()/].[varName/]
     [aClass.getReceiverName()/].[varName/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
-    if [aClass.getReceiverName()/].Notifier.ENotificationRequired() {
-        [aClass.getReceiverName()/].Notifier.ENotify(NewNotificationByFeatureId([aClass.getReceiverName()/], UNSET, ECLASSIFIER__INSTANCE_CLASS, [oldVarName/], [aClass.getReceiverName()/].[varName/], NO_INDEX))
+    if [aClass.getReceiverName()/].ENotificationRequired() {
+        [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureId([aClass.getReceiverName()/], UNSET, ECLASSIFIER__INSTANCE_CLASS, [oldVarName/], [aClass.getReceiverName()/].[varName/], NO_INDEX))
     }
 }
 
