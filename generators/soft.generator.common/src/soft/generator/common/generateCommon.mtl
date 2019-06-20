@@ -182,6 +182,7 @@
 
 [query public getFactoryImplementationName( aPackage : EPackage ) : String = getImplementationName( getFactoryName() , aPackage )/]
 [query public getFactoryName( aPackage : EPackage ) : String = aPackage.name.toUpperFirst() + 'Factory'/]
+[query public getFactoryInternalName( aPackage : EPackage ) : String = aPackage.name.toUpperFirst() + 'FactoryInternal'/]
 [query public getImplementationName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getImplementationNamePattern() in if pattern ='' then aElementName + 'Impl' else pattern.format(Sequence{aElementName}) endif /]
 [query private getImplementationNamePattern( aPackage : EPackage ) : String = if hasKey('implementationNamePattern') then valueKey('implementationNamePattern') else '' endif/]
 

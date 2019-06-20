@@ -22,12 +22,6 @@ type [className/] interface {
 [/for]
 [/let]
 [/for]
-[let dataTypes : Sequence(EDataType) = anEPackage.eAllContents(EDataType)->select( serializable )->sortedBy(name)]
-[for (aDataType : EDataType | dataTypes)]
-create[aDataType.name/]FromString(eDataType EDataType, literalValue string) interface{}
-convert[aDataType.name/]FromString(eDataType EDataType, literalValue interface{}) string
-[/for]
-[/let]
 }
 [/file]
 [/template]
