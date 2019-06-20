@@ -6,10 +6,15 @@
 [import soft::generator::go::generateCommon/]
 [import soft::generator::go::lib::impl::generateCommon/]
 
+[query private getVariableName( aFeature : EStructuralFeature ) : String = 
+if aFeature.eType.name = 'EBoolean' then 'is' + aFeature.name.toUpperFirst() else aFeature.name endif/]
+
 [template public generateVariable(aStructuralFeature : EStructuralFeature)]
-[getReceiverName(aStructuralFeature.name)/] [generateType(aStructuralFeature)/]
+[aStructuralFeature.getVariableName()/] [generateType(aStructuralFeature)/]
 
 [/template]
+
+
 
 [template public generateImplementation(aStructuralFeature : EStructuralFeature, baseClass : EClass)]
 [if isGet()]
@@ -35,79 +40,90 @@
 [/if]
 [/template]
 
-[template public generateImplementationMember(cl : EClass)]
-func ([getReceiverTypeName(cl)/] *[getImplementationName(cl)/])
-[/template]
 
-[template public generateConstructor(baseClass : EClass)]
-func New[getImplementationName(baseClass)/]() *[getImplementationName(baseClass)/] {
-	new[getImplementationName(baseClass)/] := &[getImplementationName(baseClass)/]{}
-	[if baseClass.name <> 'EObject']
-	[if baseClass.eSuperTypes->size() = 0]
-	new[getImplementationName(baseClass)/].Notifier = *NewNotifier()
+[template public generateConstructor(aClass : EClass)]
+func New[aClass.getImplementationName()/]() *[aClass.getImplementationName()/] {
+	new[aClass.getImplementationName()/] := &[aClass.getImplementationName()/]{}
+	[if aClass.name <> 'EObject']
+	[if aClass.eSuperTypes->size() = 0]
+	new[aClass.getImplementationName()/].Notifier = *NewNotifier()
 	[else]
-	[for (extend: EClass | baseClass.eSuperTypes)]
-	new[getImplementationName(baseClass)/].[getImplementationName(extend)/] = *New[getImplementationName(extend)/]()
+	[for (extend: EClass | aClass.eSuperTypes)]
+	new[aClass.getImplementationName()/].[getImplementationName(extend)/] = *New[getImplementationName(extend)/]()
 	[/for]
 	[/if]
 	[/if]
-	return new[getImplementationName(baseClass)/]
+	return new[aClass.getImplementationName()/]
 }
 
 [/template]
 
-[template public generateGetImplementation(aStructuralFeature : EStructuralFeature, baseClass : EClass)]
-// [aStructuralFeature.getGetterName()/] get the value of [getReceiverName(aStructuralFeature.name)/]
-[generateImplementationMember(baseClass)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
-    return [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/]
+[template public generateGetImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
+[let varName : String = aStructuralFeature.getVariableName() ]
+// [aStructuralFeature.getGetterName()/] get the value of [varName/]
+[aClass.generateFunctionReceiver()/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
+    return [aClass.getReceiverTypeName()/].[varName/]
 }
+[/let]
 
 [/template]
 
-[template public generateSetImplementation(aStructuralFeature : EStructuralFeature, baseClass : EClass)]
-// [aStructuralFeature.getSetterName()/] set the value of [getReceiverName(aStructuralFeature.name)/]
-[generateImplementationMember(baseClass)/] [aStructuralFeature.getSetterName()/]( new[getPascalCaseName(aStructuralFeature.name)/] [aStructuralFeature.generateType()/] ) {
-    old[getPascalCaseName(aStructuralFeature.name)/] := [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/]
-    [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/] = new[getPascalCaseName(aStructuralFeature.name)/]
-    if [getReceiverTypeName(baseClass)/].Notifier.ENotificationRequired() {
-        [getReceiverTypeName(baseClass)/].Notifier.ENotify(NewNotificationByFeatureId([getReceiverTypeName(baseClass)/], SET, ECLASSIFIER__INSTANCE_CLASS, old[getPascalCaseName(aStructuralFeature.name)/], new[getPascalCaseName(aStructuralFeature.name)/], NO_INDEX))
+[template public generateSetImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
+[let varName : String = aStructuralFeature.getVariableName() ]
+[let newVarName : String = 'new' + aStructuralFeature.getVariableName().toUpperFirst() ]
+[let oldVarName : String = 'old' + aStructuralFeature.getVariableName().toUpperFirst() ]
+// [aStructuralFeature.getSetterName()/] set the value of [varName/]
+[aClass.generateFunctionReceiver()/] [aStructuralFeature.getSetterName()/]( [newVarName/] [aStructuralFeature.generateType()/] ) {
+    [oldVarName/] := [aClass.getReceiverTypeName()/].[varName/]
+    [aClass.getReceiverTypeName()/].[varName/] = [newVarName/]
+    if [aClass.getReceiverTypeName()/].Notifier.ENotificationRequired() {
+        [aClass.getReceiverTypeName()/].Notifier.ENotify(NewNotificationByFeatureId([aClass.getReceiverTypeName()/], SET, ECLASSIFIER__INSTANCE_CLASS, [oldVarName/], [newVarName/], NO_INDEX))
+    }
+}
+[/let]
+[/let]
+[/let]
+
+[/template]
+
+[template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
+[let varName : String = aStructuralFeature.getVariableName() ]
+[let oldVarName : String = 'old' + aStructuralFeature.getVariableName().toUpperFirst() ]
+// [aStructuralFeature.getUnSetterName()/] unset the value of [varName/]
+[aClass.generateFunctionReceiver()/] [aStructuralFeature.getUnSetterName()/]() {
+    [oldVarName/] := [aClass.getReceiverTypeName()/].[varName/]
+    [aClass.getReceiverTypeName()/].[varName/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
+    if [aClass.getReceiverTypeName()/].Notifier.ENotificationRequired() {
+        [aClass.getReceiverTypeName()/].Notifier.ENotify(NewNotificationByFeatureId([aClass.getReceiverTypeName()/], UNSET, ECLASSIFIER__INSTANCE_CLASS, [oldVarName/], [aClass.getReceiverTypeName()/].[varName/], NO_INDEX))
     }
 }
 
+[/let]
+[/let]
 [/template]
 
-[template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature, baseClass : EClass)]
-// [aStructuralFeature.getUnSetterName()/] unset the value of [getReceiverName(aStructuralFeature.name)/]
-[generateImplementationMember(baseClass)/] [aStructuralFeature.getUnSetterName()/]() {
-	old[getPascalCaseName(aStructuralFeature.name)/] := [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/]
-    [getReceiverTypeName(baseClass)/].[getReceiverName(aStructuralFeature.name)/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
-	if [getReceiverTypeName(baseClass)/].Notifier.ENotificationRequired() {
-        [getReceiverTypeName(baseClass)/].Notifier.ENotify(NewNotificationByFeatureId([getReceiverTypeName(baseClass)/], UNSET, ECLASSIFIER__INSTANCE_CLASS, old[getPascalCaseName(aStructuralFeature.name)/], [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/], NO_INDEX))
-    }
+[template public generateGetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, aClass : EClass)]
+// [aStructuralFeature.getGetterName()/] get the value of [aStructuralFeature.getVariableName()/]
+[aClass.generateFunctionReceiver()/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
+    return [aClass.getReceiverTypeName()/].[firstClass.getImplementationName()/].[aStructuralFeature.getGetterName()/]()
 }
 
 [/template]
 
-[template public generateGetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
-// [aStructuralFeature.getGetterName()/] get the value of [getReceiverName(aStructuralFeature.name)/]
-[generateImplementationMember(baseClass)/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
-    return [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[aStructuralFeature.getGetterName()/]()
+[template public generateSetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, aClass : EClass)]
+[let newVarName : String = 'new' + aStructuralFeature.getVariableName().toUpperFirst() ]
+// [aStructuralFeature.getSetterName()/] set the value of [aStructuralFeature.name/]
+[aClass.generateFunctionReceiver()/] [aStructuralFeature.getSetterName()/]( [newVarName/] [aStructuralFeature.generateType()/] ) {
+    [aClass.getReceiverTypeName()/].[firstClass.getImplementationName()/].[aStructuralFeature.getSetterName()/]([newVarName/])
 }
 
+[/let]
 [/template]
 
-[template public generateSetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
-// [aStructuralFeature.getSetterName()/] set the value of [getReceiverName(aStructuralFeature.name)/]
-[generateImplementationMember(baseClass)/] [aStructuralFeature.getSetterName()/]( new[getPascalCaseName(aStructuralFeature.name)/] [aStructuralFeature.generateType()/] ) {
-    [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[aStructuralFeature.getSetterName()/](new[getPascalCaseName(aStructuralFeature.name)/])
-}
-
-[/template]
-
-[template public generateUnSetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
-// [aStructuralFeature.getUnSetterName()/] unset the value of [getReceiverName(aStructuralFeature.name)/]
-[generateImplementationMember(baseClass)/] [aStructuralFeature.getUnSetterName()/]() {
-    [getReceiverTypeName(baseClass)/].[getImplementationName(firstClass)/].[aStructuralFeature.getUnSetterName()/]()
+[template public generateUnSetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, aClass : EClass)]
+// [aStructuralFeature.getUnSetterName()/] unset the value of [aStructuralFeature.getVariableName()/]
+[aClass.generateFunctionReceiver()/] [aStructuralFeature.getUnSetterName()/]() {
+    [aClass.getReceiverTypeName()/].[firstClass.getImplementationName()/].[aStructuralFeature.getUnSetterName()/]()
 }
 
 [/template]

@@ -5,21 +5,27 @@
 [import soft::generator::go::generateType/]
 [import soft::generator::go::lib::generateOperation/]
 [import soft::generator::go::lib::impl::generateCommon/]
-[import soft::generator::go::lib::impl::generateStructuralFeature/]
 
-[template public generateOperationPanic(anEOperation : EOperation, baseClass : EClass)]
-[generateImplementationMember(baseClass)/] [generateDeclaration(anEOperation).toString().trim()/] {
-    panic("[generateDeclaration(anEOperation).toString().trim()/] not implemented")
+[template public generateDeclaration(anEOperation : EOperation)]
+[anEOperation.getFunctionName()/]([anEOperation.generateParameterList()/]) [anEOperation.generateType()/]
+
+[/template]
+
+[template public generateImplementation(anEOperation : EOperation )]
+// [anEOperation.getFunctionName()/] 
+[anEOperation.eContainingClass.generateFunctionReceiver()/] [anEOperation.getFunctionName()/]([anEOperation.generateParameterList()/]) [anEOperation.generateType()/] {
+    panic("[anEOperation.getFunctionName()/] not implemented")
 }
 
 [/template]
 
-[template public generateInheritedOperation(anEOperation : EOperation, firstClass : EClass, baseClass : EClass)]
-[generateImplementationMember(baseClass)/] [anEOperation.getFunctionName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/] [sParameter.generateType()/][/for]) [anEOperation.generateType()/] {
+[template public generateInheritedOperation(anEOperation : EOperation, firstClass : EClass, aClass : EClass)]
+// [anEOperation.getFunctionName()/]
+[aClass.generateFunctionReceiver()/] [anEOperation.getFunctionName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/] [sParameter.generateType()/][/for]) [anEOperation.generateType()/] {
 [if anEOperation.generateType() = '']
-    [getReceiverTypeName(baseClass)/].[firstClass.getImplementationName()/].[anEOperation.getFunctionName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
+    [aClass.getReceiverTypeName()/].[firstClass.getImplementationName()/].[anEOperation.getFunctionName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
 [else]
-    return [getReceiverTypeName(baseClass)/].[firstClass.getImplementationName()/].[anEOperation.getFunctionName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
+    return [aClass.getReceiverTypeName()/].[firstClass.getImplementationName()/].[anEOperation.getFunctionName()/]([for (sParameter : EParameter | anEOperation.eParameters) separator (',')][sParameter.name/][/for])
 [/if]
 }
 
