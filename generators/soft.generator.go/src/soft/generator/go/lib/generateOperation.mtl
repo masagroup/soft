@@ -11,7 +11,7 @@
 [/template]
 
 [template public generateImplementation(anEOperation : EOperation )]
-// [anEOperation.getFunctionName()/] 
+// [anEOperation.getFunctionName()/] default implementation
 [anEOperation.eContainingClass.generateFunctionReceiver()/] [anEOperation.getFunctionName()/]([anEOperation.generateParameterList()/]) [anEOperation.generateType()/] {
     panic("[anEOperation.getFunctionName()/] not implemented")
 }

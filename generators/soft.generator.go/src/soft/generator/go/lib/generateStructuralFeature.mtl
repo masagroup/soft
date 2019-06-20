@@ -72,7 +72,7 @@ if aFeature.eType.name = 'EBoolean' then 'is' + aFeature.name.toUpperFirst() els
     [oldVarName/] := [aClass.getReceiverName()/].[varName/]
     [aClass.getReceiverName()/].[varName/] = [newVarName/]
     if [aClass.getReceiverName()/].ENotificationRequired() {
-        [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureId([aClass.getReceiverName()/], SET, ECLASSIFIER__INSTANCE_CLASS, [oldVarName/], [newVarName/], NO_INDEX))
+        [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureID([aClass.getReceiverName()/], SET, ECLASSIFIER__INSTANCE_CLASS, [oldVarName/], [newVarName/], NO_INDEX))
     }
 }
 [/let]
@@ -89,7 +89,7 @@ if aFeature.eType.name = 'EBoolean' then 'is' + aFeature.name.toUpperFirst() els
     [oldVarName/] := [aClass.getReceiverName()/].[varName/]
     [aClass.getReceiverName()/].[varName/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
     if [aClass.getReceiverName()/].ENotificationRequired() {
-        [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureId([aClass.getReceiverName()/], UNSET, ECLASSIFIER__INSTANCE_CLASS, [oldVarName/], [aClass.getReceiverName()/].[varName/], NO_INDEX))
+        [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureID([aClass.getReceiverName()/], UNSET, ECLASSIFIER__INSTANCE_CLASS, [oldVarName/], [aClass.getReceiverName()/].[varName/], NO_INDEX))
     }
 }
 

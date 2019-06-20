@@ -23,7 +23,7 @@ func NewNotificationByFeature(notifier EObject, eType EventType, feature EStruct
 	}
 }
 
-func NewNotificationByFeatureId(notifier EObject, eType EventType, featureId int, oldValue interface{}, newValue interface{}, position int) *notification {
+func NewNotificationByFeatureID(notifier EObject, eType EventType, featureId int, oldValue interface{}, newValue interface{}, position int) *notification {
 	return &notification{
 		eventType_: eType,
 		oldValue_:  oldValue,
