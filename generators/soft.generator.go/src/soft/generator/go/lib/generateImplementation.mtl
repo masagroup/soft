@@ -7,16 +7,6 @@
 [import soft::generator::go::lib::generateOperation/]
 [import soft::generator::go::lib::generateStructuralFeature/]
 
-[template private generateInheritedMethods(aClass : EClass, firstClass : EClass, baseClass : EClass)]
-[let operations : OrderedSet(EOperation) = aClass.eOperations]
-[operations.generateInheritedOperation(firstClass, baseClass)/]
-[/let]
-[let features : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( isGet() or isSet() )]
-[features.generateInheritedImplementation(firstClass, baseClass)/]
-[/let]
-[for (extend: EClass | aClass.eSuperTypes)][generateInheritedMethods(extend, firstClass, baseClass)/][/for]
-[/template]
-
 [template public generateConstructor(aClass : EClass)]
 // new[aClass.getImplementationName()/] is [aClass.getImplementationName()/] contructor 
 func new[aClass.getImplementationName()/]() *[aClass.getImplementationName()/] {

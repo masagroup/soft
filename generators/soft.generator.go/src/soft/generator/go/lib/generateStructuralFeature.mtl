@@ -53,18 +53,6 @@ if aFeature.eType.name = 'EBoolean' then 'is' + aFeature.name.toUpperFirst() els
 [/if]
 [/template]
 
-[template public generateInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, baseClass : EClass)]
-[if isGet()]
-[aStructuralFeature.generateGetInheritedImplementation(firstClass, baseClass)/]
-[/if]
-[if isSet()]
-[aStructuralFeature.generateSetInheritedImplementation(firstClass, baseClass)/]
-[/if]
-[if isUnSet()]
-[aStructuralFeature.generateUnSetInheritedImplementation(firstClass, baseClass)/]
-[/if]
-[/template]
-
 [template public generateGetImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
 [let varName : String = aStructuralFeature.getVariableName() ]
 // [aStructuralFeature.getGetterName()/] get the value of [varName/]
