@@ -10,7 +10,7 @@
 [template public generateInit(aClass : EClass)]
 [aClass.generateFunctionReceiver()/] Init() {
 [for ( qualifiedExtend : String | aClass.getClassExtends() )]
-    [aClass.getReceiverName()/].[aClass.ePackage.getContextQualifiedName(qualifiedExtend)/].Init()
+    [aClass.getReceiverName()/].[getShortQualifiedName(qualifiedExtend,aClass.ePackage.name)/].Init()
 [/for] 
     [aClass.eStructuralFeatures.generateVariableInitialization()/]
 }
@@ -30,7 +30,7 @@ package [aPackage.name/]
 // [implementationName/] is the implementation of the model object '[aClass.name/]'
 type [implementationName/] struct {
 [for ( qualifiedExtend : String | aClass.getClassExtends() )]
-    [aPackage.getContextQualifiedName(qualifiedExtend)/]
+    [getShortQualifiedName(qualifiedExtend,aPackage.name)/]
 [/for]
 [let features : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( isGet() or isSet() )]
     [features.generateVariable()/]

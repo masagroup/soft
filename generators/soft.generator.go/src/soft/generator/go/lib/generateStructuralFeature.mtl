@@ -39,9 +39,9 @@ if aFeature.eType.name = 'EBoolean' then 'is' + aFeature.name.toUpperFirst() els
 
 [/template]
 
-[template public generateVariableInitialization(aStructuralFeature : EStructuralFeature) post(trim())]
+[template public generateVariableInitialization(aStructuralFeature : EStructuralFeature)]
 [if aStructuralFeature.oclIsKindOf(EAttribute)]
-[aStructuralFeature.eClass().getReceiverName()/].[aStructuralFeature.getVariableName()/] = [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/]
+[aStructuralFeature.eContainingClass.getReceiverName()/].[aStructuralFeature.getVariableName()/] = [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/]
 [else]
 [/if]
 [/template]
