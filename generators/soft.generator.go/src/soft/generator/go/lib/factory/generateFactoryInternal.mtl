@@ -13,7 +13,9 @@ type [className/] interface {
 [let dataTypes : Sequence(EDataType) = anEPackage.eAllContents(EDataType)->select( serializable )->sortedBy(name)]
 [for (aDataType : EDataType | dataTypes)]
 	create[aDataType.name/]FromString(eDataType EDataType, literalValue string) interface{}
-	convert[aDataType.name/]FromString(eDataType EDataType, literalValue interface{}) string
+[/for]
+[for (aDataType : EDataType | dataTypes)]
+	convert[aDataType.name/]ToString(eDataType EDataType, literalValue interface{}) string
 [/for]
 [/let]
 }

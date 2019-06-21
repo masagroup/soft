@@ -16,7 +16,7 @@ import "log"
 type [anEPackage.getFactoryImplementationName()/] struct {
 }
 
-[anEPackage.generateFactoryImplementationMember()/] Create(eClass EClass) EObject {
+[anEPackage.generateFactoryImplementationMember()/] Create(factory [anEPackage.getFactoryInternalName()/], eClass EClass) EObject {
 	classID := eClass.GetClassifierID()
 	switch classID {
     [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
@@ -48,12 +48,12 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 [/let]
 [/for]
 [let dataTypes : Sequence(EDataType) = anEPackage.eAllContents(EDataType)->select( serializable )->sortedBy(name)]
-[anEPackage.generateFactoryImplementationMember()/] CreateFromString(eDataType EDataType, literalValue string) interface{} {
+[anEPackage.generateFactoryImplementationMember()/] CreateFromString(factory [anEPackage.getFactoryInternalName()/], eDataType EDataType, literalValue string) interface{} {
 	classID := eDataType.GetClassifierID()
 	switch classID {
     [for (aDataType : EDataType | dataTypes)]
     case [aDataType.getClassifierIDName()/]:
-        return ecoreFactoryImpl.create[aDataType.name/]FromString(eDataType, literalValue)
+        return factory.create[aDataType.name/]FromString(eDataType, literalValue)
     [/for]
     default:
         log.Fatalln("The datatype '", eDataType.GetName(), "' is not a valid classifier")
@@ -61,12 +61,12 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 	return nil
 }
 
-[anEPackage.generateFactoryImplementationMember()/] ConvertToString(eDataType EDataType, instanceValue interface{}) string {
+[anEPackage.generateFactoryImplementationMember()/] ConvertToString(factory [anEPackage.getFactoryInternalName()/], eDataType EDataType, instanceValue interface{}) string {
     classID := eDataType.GetClassifierID()
     switch classID {
 [for (aDataType : EDataType | dataTypes)]
     case [aDataType.getClassifierIDName()/]:
-        return ecoreFactoryImpl.convert[aDataType.name/]ToString(eDataType, instanceValue)
+        return factory.convert[aDataType.name/]ToString(eDataType, instanceValue)
 [/for]
     default:
         log.Fatalln("The datatype '", eDataType.GetName(), "' is not a valid classifier")
