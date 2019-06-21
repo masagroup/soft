@@ -22,7 +22,7 @@ func TestNotificationMerge(t *testing.T) {
 	testClassifier.EAdapters().Add(adapter)
 	testClassifier.SetClassifierID(5)
 	check(t, notif.Size(), 1, "Notification count")
-	check(t, notif.Get(0).(ENotification).GetOldValue(), 0, "Notification old value")
+	check(t, notif.Get(0).(ENotification).GetOldValue(), -1, "Notification old value")
 	check(t, notif.Get(0).(ENotification).GetNewValue(), 5, "Notification new value")
 	testClassifier.SetClassifierID(9)
 	check(t, notif.Size(), 2, "Notification count")
