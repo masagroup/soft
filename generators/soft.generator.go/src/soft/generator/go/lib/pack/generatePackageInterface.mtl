@@ -50,14 +50,14 @@ type [className/] interface {
     [anEPackage.eAllContents(EDataType)->sortedBy(name).generateGetter()/]
 }
 
-// var packageInstance [className/] 
+var packageInstance [className/] 
 
-// func GetPackage() [className/] {
-//    if packageInstance == nil {
-//        packageInstance = New[anEPackage.getImplementationName()/]()
-//    }
-//    return packageInstance
-// }
+func GetPackage() [className/] {
+    if packageInstance == nil {
+      packageInstance = New[anEPackage.getImplementationName()/]()
+    }
+    return packageInstance
+}
 
 
 [/file]
