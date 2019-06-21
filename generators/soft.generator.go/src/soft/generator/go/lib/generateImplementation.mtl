@@ -12,6 +12,7 @@
 [for ( qualifiedExtend : String | aClass.getClassExtends() )]
     [aClass.getReceiverName()/].[aClass.ePackage.getContextQualifiedName(qualifiedExtend)/].Init()
 [/for] 
+    [aClass.eStructuralFeatures.generateVariableInitialization()/]
 }
 [/template]
 
