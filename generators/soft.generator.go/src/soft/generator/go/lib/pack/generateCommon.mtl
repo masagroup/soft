@@ -36,7 +36,7 @@
 [/template]
 
 [template public generateStaticDataTypeID(aEDatatype : EDataType )]
-// The meta object id for the [if aEDatatype.oclIsKindOf(EEnum)]enum[else]data type[/if] [aEDatatype.name/].
+// [aEDatatype.getClassifierIDName()/] The meta object id for the [if aEDatatype.oclIsKindOf(EEnum)]enum[else]data type[/if] [aEDatatype.name/].
 [aEDatatype.getClassifierIDName()/] = [aEDatatype.getClassifierIDValue()/];
 
 [/template]

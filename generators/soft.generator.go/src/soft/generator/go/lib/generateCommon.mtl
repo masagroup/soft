@@ -13,4 +13,61 @@
     endif
 /]
 
+[query public getReceiverName(aClass : EClass) : String = aClass.name.toLowerFirst()/]
+
+[template public generateFunctionReceiver(aClass : EClass)]
+func ([aClass.getReceiverName()/] *[aClass.getImplementationName()/])
+[/template]
+
+
+[**
+ * Classes Onthology
+*/]
+[query public hasExtension( aEClass : EClass ) : Boolean = hasKey('extension') and valueKey('extension' )='true'/]
+
+[query public getInterfaceExtends(aClass : EClass ) : Sequence(String) =
+    if ( aClass.eSuperTypes->isEmpty() ) then
+        if ( aClass.name = 'EObject' ) then
+            Sequence{'ecore.ENotifier'}
+        else
+            Sequence{'ecore.EObject'}
+        endif
+    else
+        aClass.eSuperTypes->iterate( cl ; res : Sequence(String) = Sequence{} | res->append(cl.getQualifiedInterfaceName()))
+    endif
+/]
+
+[query public getClassExtends(aClass : EClass ) : String =
+    let aPackage : EPackage = aClass.ePackage in 
+    let extendsClass : EClass = aClass.getClassExtendsClass() in
+    if ( extendsClass.oclIsUndefined() ) then
+        if ( aClass.name = 'EObject' ) then
+            'ecore.BasicEObject'
+        else
+            'ecore.EObjectImpl'
+        endif  
+    else
+        if ( extendsClass.hasExtension() ) then
+            extendsClass.getQualifiedExtensionName()
+        else
+            extendsClass.getQualifiedImplementationName()
+        endif
+    endif
+/]
+
+[query public getClassImplements(aClass : EClass ) : Sequence(String) = Sequence{ aClass.getQualifiedInterfaceName() }/]
+
+[query private getClassExtendsClass( aClass : EClass ) : EClass = getClassExtendsClass( aClass , aClass.getBaseClass() )/]
+[query private getClassExtendsClass( aClass : EClass , aBaseClass : EClass ) : EClass =
+    if ( aClass = aBaseClass ) then
+        null
+    else
+        if ( aBaseClass.oclIsUndefined() or (not aBaseClass.interface) ) then
+            aBaseClass
+        else
+            getClassExtendsClass(aClass , aBaseClass.getBaseClass())
+        endif
+    endif
+/]
+
 

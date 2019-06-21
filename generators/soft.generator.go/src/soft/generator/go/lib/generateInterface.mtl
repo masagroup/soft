@@ -8,27 +8,27 @@
 [import soft::generator::go::lib::generateOperation/]
 [import soft::generator::go::lib::generateStructuralFeature/]
 
-[template public generateInterface(aClass : EClass) { interfaceName : String = aClass.getInterfaceName(); } ]
+[template public generateInterface(aClass : EClass) { interfaceName : String = aClass.getInterfaceName(); aPackage : EPackage = aClass.ePackage } ]
 [file (aClass.ePackage.getOutputDirectory() + '/' + aClass.ePackage.getOutputFileName( aClass.getInterfaceName() ), false, 'UTF-8')]
-package [aClass.ePackage.name/]
+package [aPackage.name/]
 
+// [interfaceName/] is the representation of the model object '[aClass.name/]'
 type [interfaceName/] interface {
-[for (extend: EClass | aClass.eSuperTypes)]    [extend.name/][/for]
-[if aClass.name <> 'EObject' and aClass.eSuperTypes->size() = 0]
-	ENotifier
-	EObject
-[/if]
+[for ( qualifiedExtend : String | aClass.getInterfaceExtends() )]
+    [getShortQualifiedName(qualifiedExtend, aPackage.name)/]
+[/for]
+
 [let operations : OrderedSet(EOperation) = aClass.eOperations]
 [if operations->notEmpty()]
     [operations.generateDeclaration()/]
 [/if]
 [/let]
-[let attributes : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EAttribute)->select( isGet() or isSet() )]
+[let attributes : OrderedSet(EAttribute) = aClass.eAttributes->select( isGet() or isSet() )]
 [if attributes->notEmpty()]
     [attributes.generateDeclaration()/]
 [/if]
 [/let]
-[let references : OrderedSet(EAttribute) = aClass.eStructuralFeatures->selectByKind(EReference)->select( isGet() or isSet() )]
+[let references : OrderedSet(EAttribute) = aClass.eReferences->select( isGet() or isSet() )]
 [if references->notEmpty()]
     [references.generateDeclaration()/]
 [/if]

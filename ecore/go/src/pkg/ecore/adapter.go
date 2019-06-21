@@ -1,17 +1,21 @@
 package ecore
 
+// Adapter is basic implementation of EAdapter interface
 type Adapter struct {
-	target_ ENotifier
+	target ENotifier
 }
 
+// NewAdapter Constructor
 func NewAdapter() *Adapter {
-	return &Adapter{target_: nil}
+	return &Adapter{target: nil}
 }
 
+// GetTarget Returns the target from which the adapter receives notification.
 func (adapter *Adapter) GetTarget() ENotifier {
-	return adapter.target_
+	return adapter.target
 }
 
+// SetTarget Sets the target from which the adapter will receive notification.
 func (adapter *Adapter) SetTarget(notifier ENotifier) {
-	adapter.target_ = notifier
+	adapter.target = notifier
 }

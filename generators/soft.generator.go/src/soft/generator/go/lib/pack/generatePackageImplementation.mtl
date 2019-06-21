@@ -16,6 +16,7 @@
 [template private generateGetter(anENamedElement : ENamedElement, anEPackage : EPackage)]
 [let thisType : String = anEPackage.getImplementationName()]
 [let thisName : String = thisType.toLowerFirst()] 
+// [anENamedElement.getReflectiveGetterName()/] returns the meta object corresponding to 
 func ([thisName/] *[thisType/]) [anENamedElement.getReflectiveGetterName()/]() [getMetaType(anENamedElement)/] {
     return [thisName/].[anENamedElement.getElementInstanceName()/]
 }
@@ -29,6 +30,7 @@ func ([thisName/] *[thisType/]) [anENamedElement.getReflectiveGetterName()/]() [
 [file (anEPackage.getOutputDirectory() + '/'+ anEPackage.getOutputFileName(className) , false, 'UTF-8')]
 package [anEPackage.name/]
 
+// [className/] is the [anEPackage.getInterfaceName()/] implementation
 type [className/] struct {
     EPackageImpl
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
@@ -39,7 +41,7 @@ type [className/] struct {
     [anEPackage.eAllContents(EDataType)->sortedBy(name).generateDataMember(anEPackage)/]
 }
 
-func New[className/]() *[className/] {
+func new[className.toUpperFirst()/]() *[className/] {
     p := new([className/])
     p.createPackageContents()
     p.initializePackageContents()

@@ -54,7 +54,7 @@ var packageInstance [className/]
 
 func GetPackage() [className/] {
     if packageInstance == nil {
-      packageInstance = New[anEPackage.getImplementationName()/]()
+      packageInstance = new[anEPackage.getImplementationName().toUpperFirst()/]()
     }
     return packageInstance
 }
