@@ -64,9 +64,27 @@ endif endif endif
 [query public getQualifiedInterfaceName( aClass : EClass ) : String = aClass.ePackage.name + '.'  + aClass.getInterfaceName()/]
 [query public getQualifiedInterfaceName( aPackage : EPackage ) : String = aPackage.name + '.' + aPackage.getInterfaceName()/]
 
+[query public getContextQualifiedName( aPackage : EPackage , aQualifiedName : String  ) : String = 
+    let index : Integer = aQualifiedName.index( aPackage.name + '.' ) in
+    if ( index = -1 ) then
+        aQualifiedName
+    else
+        aQualifiedName.substring( aPackage.name.size() + 2)
+    endif
+/]
+
 [query public getImplementationName( aClass : EClass ) : String = aClass.getImplementationName( aClass.name )/]
 [query public getImplementationName( aPackage : EPackage ) : String = aPackage.getImplementationName( getPackageName() ) /]
 [query private getImplementationName( aNamedElement : ENamedElement , aName : String ) : String = aNamedElement.getElementName( aName, 'implementationName', '$1Impl').toUpperFirst() /]
+
+[query public getQualifiedImplementationName( aClass : EClass ) : String = aClass.ePackage.name + '.' + aClass.getImplementationName()/]
+
+[query public getExtensionName( aClass : EClass ) : String = aClass.getExtensionName(aClass.name )/]
+[query public getExtensionName( aPackage : EPackage ) : String = aPackage.getExtensionName( getPackageName() )/]
+[query private getExtensionName( aNamedElement : ENamedElement , aName : String ) : String = aNamedElement.getElementName( aName, 'extensionName', '$1Ext').toUpperFirst() /]
+
+[query public getQualifiedExtensionName( aClass : EClass ) : String = aClass.ePackage.name + '.' + aClass.getExtensionName()/]
+
 
 [query public getOutputFileName( aPackage : EPackage , aName : String ) : String = aPackage.getElementName( aName , 'ouputName', '$1_gen.go').toLower()/]
 
