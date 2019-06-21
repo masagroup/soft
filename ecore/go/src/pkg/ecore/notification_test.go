@@ -15,7 +15,8 @@ func (adapter *customTestAdapterMerge) NotifyChanged(notification ENotification)
 }
 
 func TestNotificationMerge(t *testing.T) {
-	testClassifier := newEClassifierImpl()
+	testClassifier := &eClassifierImpl{}
+	testClassifier.Init()
 
 	adapter := &customTestAdapterMerge{Adapter: *NewAdapter()}
 	testClassifier.EAdapters().Add(adapter)

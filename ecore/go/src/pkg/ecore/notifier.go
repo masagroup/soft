@@ -5,11 +5,9 @@ type Notifier struct {
 	eAdapters EList
 }
 
-func NewNotifier() *Notifier {
-	return &Notifier{
-		eDeliver:  true,
-		eAdapters: NewArrayEList([]interface{}{}),
-	}
+func (notif *Notifier) Init() {
+	notif.eDeliver = true
+	notif.eAdapters = NewArrayEList([]interface{}{})
 }
 
 func (notif *Notifier) EAdapters() EList {

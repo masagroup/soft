@@ -7,22 +7,12 @@
 [import soft::generator::go::lib::generateOperation/]
 [import soft::generator::go::lib::generateStructuralFeature/]
 
-[template public generateConstructor(aClass : EClass)]
-// new[aClass.getImplementationName()/] is [aClass.getImplementationName()/] contructor 
-func new[aClass.getImplementationName()/]() *[aClass.getImplementationName()/] {
-    new[aClass.getImplementationName()/] := new([aClass.getImplementationName()/])
-    [if aClass.name <> 'EObject']
-    [if aClass.eSuperTypes->size() = 0]
-    new[aClass.getImplementationName()/].Notifier = *NewNotifier()
-    [else]
-    [for (extend: EClass | aClass.eSuperTypes)]
-    new[aClass.getImplementationName()/].[getImplementationName(extend)/] = *new[getImplementationName(extend)/]()
-    [/for]
-    [/if]
-    [/if]
-    return new[aClass.getImplementationName()/]
+[template public generateInit(aClass : EClass)]
+[aClass.generateFunctionReceiver()/] Init() {
+[for ( qualifiedExtend : String | aClass.getClassExtends() )]
+    [aClass.getReceiverName()/].[aClass.ePackage.getContextQualifiedName(qualifiedExtend)/].Init()
+[/for] 
 }
-
 [/template]
 
 [template private generateMethods(aClass : EClass)]
@@ -46,7 +36,7 @@ type [implementationName/] struct {
 [/let]
 }
 
-[aClass.generateConstructor()/]
+[aClass.generateInit()/]
 
 [aClass.generateMethods()/]
 
