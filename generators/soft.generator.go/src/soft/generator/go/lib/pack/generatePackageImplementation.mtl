@@ -41,7 +41,7 @@ type [className/] struct {
     [anEPackage.eAllContents(EDataType)->sortedBy(name).generateDataMember(anEPackage)/]
 }
 
-func New[className/]() *[className/] {
+func new[className.toUpperFirst()/]() *[className/] {
     p := new([className/])
     p.createPackageContents()
     p.initializePackageContents()
