@@ -32,17 +32,15 @@ func new[aClass.getImplementationName()/]() *[aClass.getImplementationName()/] {
 [/let]
 [/template]
 
-[template public generateImplementation(aClass : EClass) { implementationName : String = aClass.getImplementationName(); } ]
+[template public generateImplementation(aClass : EClass) { implementationName : String = aClass.getImplementationName(); aPackage : EPackage = aClass.ePackage } ]
 [file (aClass.ePackage.getOutputDirectory() + '/' + aClass.ePackage.getOutputFileName(implementationName), false, 'UTF-8')]
-package [aClass.ePackage.name/]
+package [aPackage.name/]
 
 // [implementationName/] is the implementation of the model object '[aClass.name/]'
 type [implementationName/] struct {
-[for (extend: EClass | aClass.eSuperTypes)]    [getImplementationName(extend)/][/for]
-[if aClass.name <> 'EObject' and aClass.eSuperTypes->size() = 0]
-    Notifier
-    EObjectImpl
-[/if]
+[for ( qualifiedExtend : String | aClass.getClassExtends() )]
+    [aPackage.getContextQualifiedName(qualifiedExtend)/]
+[/for]
 [let features : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( isGet() or isSet() )]
     [features.generateVariable()/]
 [/let]
