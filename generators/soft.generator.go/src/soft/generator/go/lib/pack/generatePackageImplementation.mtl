@@ -2,7 +2,9 @@
 [module generatePackageImplementation('http://www.eclipse.org/emf/2002/Ecore')]
 
 [import soft::generator::common::generateCommon/]
+
 [import soft::generator::go::generateCommon/]
+[import soft::generator::go::generateType/]
 [import soft::generator::go::lib::generateCommon/]
 [import soft::generator::go::lib::pack::generateCommon/]
 
@@ -23,11 +25,12 @@ func ([thisName/] *[thisType/]) [anENamedElement.getReflectiveGetterName()/]() [
 
 
 
-[template public generatePackageImplementation(anEPackage : EPackage){ className : String = anEPackage.getImplementationName() ; } ]]
+[template public generatePackageImplementation(anEPackage : EPackage){ className : String = anEPackage.getImplementationName() ; receiverName : String = className.toLowerFirst() } ]]
 [file (anEPackage.getOutputDirectory() + '/'+ anEPackage.getOutputFileName(className) , false, 'UTF-8')]
 package [anEPackage.name/]
 
 type [className/] struct {
+    EPackageImpl
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
     [let dataMembers : Sequence(ENamedElement) = Sequence{ Sequence{ aClass } , aClass.eStructuralFeatures, aClass.eOperations}->flatten()]
     [dataMembers.generateDataMember(anEPackage)/]
@@ -37,7 +40,10 @@ type [className/] struct {
 }
 
 func New[className/]() *[className/] {
-    return &[className/]{}
+    p := new([className/])
+    p.createPackageContents()
+    p.initializePackageContents()
+    return p
 }
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
@@ -47,5 +53,17 @@ func New[className/]() *[className/] {
 [aClass.eOperations->sortedBy(name).generateGetter(anEPackage)/]
 [/for]
 [anEPackage.eAllContents(EDataType)->sortedBy(name).generateGetter(anEPackage)/]
+
+func ([receiverName/] *[className/])createPackageContents() {
+}
+
+func ([receiverName/] *[className/])initializePackageContents() {
+    // Initialize package
+    [receiverName/].SetName(NAME);
+    [receiverName/].SetNsPrefix(NS_PREFIX);
+    [receiverName/].SetNsURI(NS_URI);
+}
+
+
 [/file]
 [/template]
