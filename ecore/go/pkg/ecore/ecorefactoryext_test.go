@@ -1,49 +1,53 @@
 package ecore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestFactoryBoolean(t *testing.T) {
 	factory := newEcoreFactoryExt()
-	check(t, factory.convertEBooleanToString(nil, factory.createEBooleanFromString(nil, "true")), "true", "Factory boolean")
-	check(t, factory.convertEBooleanToString(nil, factory.createEBooleanFromString(nil, "false")), "false", "Factory boolean")
+	assert.Equal(t, factory.convertEBooleanToString(nil, factory.createEBooleanFromString(nil, "true")), "true")
+	assert.Equal(t, factory.convertEBooleanToString(nil, factory.createEBooleanFromString(nil, "false")), "false")
 }
 
 func TestFactoryChar(t *testing.T) {
 	factory := newEcoreFactoryExt()
-	check(t, factory.convertECharToString(nil, factory.createECharFromString(nil, "e")), "e", "Factory char")
+	assert.Equal(t, factory.convertECharToString(nil, factory.createECharFromString(nil, "e")), "e")
 }
 
 func TestFactoryDate(t *testing.T) {
 	factory := newEcoreFactoryExt()
-	check(t, factory.convertEDateToString(nil, factory.createEDateFromString(nil, "1559826929")), "1559826929", "Factory date")
+	assert.Equal(t, factory.convertEDateToString(nil, factory.createEDateFromString(nil, "1559826929")), "1559826929")
 }
 
 func TestFactoryDouble(t *testing.T) {
 	factory := newEcoreFactoryExt()
-	check(t, factory.convertEDoubleToString(nil, factory.createEDoubleFromString(nil, "4.987453")), "4.987453", "Factory double")
+	assert.Equal(t, factory.convertEDoubleToString(nil, factory.createEDoubleFromString(nil, "4.987453")), "4.987453")
 }
 
 func TestFactoryFloat(t *testing.T) {
 	factory := newEcoreFactoryExt()
-	check(t, factory.convertEFloatToString(nil, factory.createEFloatFromString(nil, "4.987453")), "4.987453", "Factory float")
+	assert.Equal(t, factory.convertEFloatToString(nil, factory.createEFloatFromString(nil, "4.987453")), "4.987453")
 }
 
 func TestFactoryInt(t *testing.T) {
 	factory := newEcoreFactoryExt()
-	check(t, factory.convertEIntToString(nil, factory.createEIntFromString(nil, "50000000")), "50000000", "Factory int")
+	assert.Equal(t, factory.convertEIntToString(nil, factory.createEIntFromString(nil, "50000000")), "50000000")
 }
 
 func TestFactoryLong(t *testing.T) {
 	factory := newEcoreFactoryExt()
-	check(t, factory.convertELongToString(nil, factory.createELongFromString(nil, "5000000000000")), "5000000000000", "Factory long")
+	assert.Equal(t, factory.convertELongToString(nil, factory.createELongFromString(nil, "5000000000000")), "5000000000000")
 }
 
 func TestFactoryShort(t *testing.T) {
 	factory := newEcoreFactoryExt()
-	check(t, factory.convertEShortToString(nil, factory.createEShortFromString(nil, "5000")), "5000", "Factory short")
+	assert.Equal(t, factory.convertEShortToString(nil, factory.createEShortFromString(nil, "5000")), "5000")
 }
 
 func TestFactoryString(t *testing.T) {
 	factory := newEcoreFactoryExt()
-	check(t, factory.convertEStringToString(nil, factory.createEStringFromString(nil, "Hi I'm a string")), "Hi I'm a string", "Factory string")
+	assert.Equal(t, factory.convertEStringToString(nil, factory.createEStringFromString(nil, "Hi I'm a string")), "Hi I'm a string")
 }

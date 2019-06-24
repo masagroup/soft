@@ -2,6 +2,8 @@ package ecore
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type customTestAdapterMerge struct {
@@ -20,12 +22,12 @@ func TestNotificationMerge(t *testing.T) {
 	adapter := &customTestAdapterMerge{Adapter: *NewAdapter()}
 	testClassifier.EAdapters().Add(adapter)
 	testClassifier.SetClassifierID(5)
-	check(t, notif.Size(), 1, "Notification count")
-	check(t, notif.Get(0).(ENotification).GetOldValue(), -1, "Notification old value")
-	check(t, notif.Get(0).(ENotification).GetNewValue(), 5, "Notification new value")
+	assert.Equal(t, notif.Size(), 1, "Notification count")
+	assert.Equal(t, notif.Get(0).(ENotification).GetOldValue(), -1)
+	assert.Equal(t, notif.Get(0).(ENotification).GetNewValue(), 5)
 	testClassifier.SetClassifierID(9)
-	check(t, notif.Size(), 2, "Notification count")
+	assert.Equal(t, notif.Size(), 2, "Notification count")
 	firstNotif := notif.Get(0).(ENotification)
-	check(t, firstNotif.Merge(notif.Get(1).(ENotification)), true, "Notification merge")
-	check(t, firstNotif.GetNewValue(), 9, "Notification new value after merge")
+	assert.Equal(t, firstNotif.Merge(notif.Get(1).(ENotification)), true)
+	assert.Equal(t, firstNotif.GetNewValue(), 9)
 }
