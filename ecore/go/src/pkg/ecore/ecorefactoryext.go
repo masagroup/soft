@@ -16,6 +16,10 @@ func NewEcoreFactoryExt() *EcoreFactoryExt {
 	}
 }
 
+func (factory *EcoreFactoryExt) init() {
+	factory.internalFactory = factory
+}
+
 func (factory *EcoreFactoryExt) createEBooleanFromString(dataType EDataType, literalValue string) interface{} {
 	value, _ := strconv.ParseBool(literalValue)
 	return value
