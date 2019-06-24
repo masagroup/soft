@@ -1,6 +1,7 @@
 [comment encoding = UTF-8 /]
 [module generateFactoryImplementationHeader('http://www.eclipse.org/emf/2002/Ecore')]
 
+[import soft::generator::common::generateCommon /]
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::lib::generateCommon/]
 [import soft::generator::cpp::lib::generateDataType/]

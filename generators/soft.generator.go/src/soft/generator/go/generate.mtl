@@ -4,6 +4,7 @@
 [import soft::generator::go::lib::generateInterface/]
 [import soft::generator::go::lib::generateImplementation/]
 [import soft::generator::go::lib::pack::generatePackage/]
+[import soft::generator::go::lib::factory::generateFactory/]
 
 [template public generateModel(aPackage : EPackage)]
 [comment @main/]
@@ -12,6 +13,7 @@
     [aClass.generateImplementation()/]
 [/for]
 [aPackage.generatePackage()/]
+[generateFactory()/]
 [/template]
 
 

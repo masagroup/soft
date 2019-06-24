@@ -54,7 +54,9 @@ endif endif endif
     endif
 /]
 
-[query private getFactoryName( aPackage : EPackage ) : String = aPackage.getElementName(aPackage.name, 'factoryName','$1Factory').toUpperFirst()/]
+[query public getElementInstanceName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName()/]
+
+[query public getFactoryName( aPackage : EPackage ) : String = aPackage.getElementName(aPackage.name, 'factoryName','$1Factory').toUpperFirst()/]
 [query private getPackageName( aPackage : EPackage ) : String = aPackage.getElementName(aPackage.name, 'packageName','$1Package').toUpperFirst()/]
 
 [query public getInterfaceName( aClass : EClass ) : String = aClass.getInterfaceName(aClass.name)/]
@@ -90,6 +92,10 @@ endif endif endif
 [query public getUnSetterName(feature : EStructuralFeature) : String = feature.getElementName( name.toUpperFirst(), 'unSetterName', 'Unset$1')/]
 [query public getIsSetName(feature : EStructuralFeature) : String = feature.getElementName( name.toUpperFirst(), 'isSetName', 'IsSet$1')/]
 
+[query public getThisPtrName(anEClass : EClass) : String = 'thisPtr'/]
+[query public getThisPtrSetterName(anEClass : EClass) : String = 'Set' + getThisPtrName().toUpperFirst()/]
+[query public getThisPtrGetterName(anEClass : EClass) : String = 'Get' + getThisPtrName().toUpperFirst()/]
+
 [query public getFunctionName(aOperation : EOperation ) : String = aOperation.getElementName( aOperation.name , 'operationName' ).toUpperFirst()/]
 
 [query public getMetaType(anENamedElement : ENamedElement) : String = if anENamedElement.eClass().ePackage.name ='ecore' then anENamedElement.eClass().getInterfaceName() else anENamedElement.eClass().getQualifiedInterfaceName() endif /]
@@ -107,3 +113,9 @@ endif endif endif
     ) in
     shortQualifiedNames->join('.')
 /]
+
+[query public getFactoryImplementationName( aPackage : EPackage ) : String = getImplementationName( getFactoryName() , aPackage )/]
+[query public getImplementationName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getImplementationNamePattern() in if pattern ='' then aElementName + 'Impl' else pattern.format(Sequence{aElementName}) endif /]
+[query private getImplementationNamePattern( aPackage : EPackage ) : String = if hasKey('implementationNamePattern') then valueKey('implementationNamePattern') else '' endif/]
+[query public getFactoryInternalName( aPackage : EPackage ) : String = aPackage.name.toUpperFirst() + 'FactoryInternal'/]
+

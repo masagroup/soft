@@ -10,6 +10,12 @@ func check(t *testing.T, result, expectation interface{}, currentTest string) {
 	}
 }
 
+func checkNot(t *testing.T, result, expectation interface{}, currentTest string) {
+	if result == expectation {
+		t.Error("Incorrect ", currentTest, ", got: ", result, ", expected: ", expectation)
+	}
+}
+
 func TestGet(t *testing.T) {
 	arr := NewArrayEList([]interface{}{3, 5, 7})
 	check(t, arr.Get(0), 3, "Get [0]")

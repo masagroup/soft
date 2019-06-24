@@ -1,0 +1,121 @@
+[comment encoding = UTF-8 /]
+[module generateFactoryImplementation('http://www.eclipse.org/emf/2002/Ecore')]
+
+[import soft::generator::common::generateCommon/]
+[import soft::generator::go::generateCommon/]
+[import soft::generator::go::lib::generateCommon/]
+[import soft::generator::go::lib::factory::generateCommon/]
+
+[template public generateFactoryImplementation(anEPackage : EPackage) { className : String = anEPackage.getFactoryImplementationName() ; }]
+[file (anEPackage.getOutputDirectory() + '/' + anEPackage.getOutputFileName(className), false, 'UTF-8')]
+package [anEPackage.name/]
+
+import "log"
+
+type [anEPackage.getFactoryImplementationName()/] struct {
+	internalFactory interface{}
+}
+
+[anEPackage.generateFactoryImplementationMember()/] Create(eClass EClass) EObject {
+	classID := eClass.GetClassifierID()
+	switch classID {
+    [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
+    case [aClass.getClassifierIDName()/]:
+        return [anEPackage.getFactoryReceiverTypeName()/].Create[aClass.name/]()
+    [/for]
+    default:
+        log.Fatalln("Create: ", classID, " not found")
+	}
+	return nil
+}
+
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
+[anEPackage.generateFactoryImplementationMember()/] Create[aClass.name/]() [aClass.getInterfaceName()/] {
+	element := &[getImplementationName(aClass)/]{}
+	element.Init()
+    return element
+}
+[let ref : OrderedSet(EReference) = aClass.getAllContainers()]
+[for(aReference:EReference | ref->sortedBy(name))]
+[anEPackage.generateFactoryImplementationMember()/] Create[aClass.name/]FromContainer(eContainer [aReference.eGenericType.eClassifier.name/]) [aClass.getInterfaceName()/] {
+    [generateCreateFunctionContent(aClass, aReference, false)/]
+}
+[if(aClass.getElementIDAccessorName().size() > 0)]
+[anEPackage.generateFactoryImplementationMember()/] Create[aClass.name/]FromContainerAndClassID(eContainer [aReference.eGenericType.eClassifier.name/], classID int) [aClass.getInterfaceName()/] {
+    [generateCreateFunctionContent(aClass, aReference, true)/]
+}
+[/if]
+[/for]
+[/let]
+[/for]
+[let dataTypes : Sequence(EDataType) = anEPackage.eAllContents(EDataType)->select( serializable )->sortedBy(name)]
+[anEPackage.generateFactoryImplementationMember()/] CreateFromString(eDataType EDataType, literalValue string) interface{} {
+	classID := eDataType.GetClassifierID()
+	switch classID {
+    [for (aDataType : EDataType | dataTypes)]
+    case [aDataType.getClassifierIDName()/]:
+        return [anEPackage.getFactoryReceiverTypeName()/].internalFactory.(EcoreFactoryInternal).create[aDataType.name/]FromString(eDataType, literalValue)
+    [/for]
+    default:
+        log.Fatalln("The datatype '", eDataType.GetName(), "' is not a valid classifier")
+	}
+	return nil
+}
+
+[anEPackage.generateFactoryImplementationMember()/] ConvertToString(eDataType EDataType, instanceValue interface{}) string {
+    classID := eDataType.GetClassifierID()
+    switch classID {
+[for (aDataType : EDataType | dataTypes)]
+    case [aDataType.getClassifierIDName()/]:
+        return [anEPackage.getFactoryReceiverTypeName()/].internalFactory.(EcoreFactoryInternal).convert[aDataType.name/]ToString(eDataType, instanceValue)
+[/for]
+    default:
+        log.Fatalln("The datatype '", eDataType.GetName(), "' is not a valid classifier")
+    }
+	return ""
+}
+[for (aDataType : EDataType | dataTypes)]
+[let createMethodName : String = 'create' + aDataType.name + 'FromString']
+[anEPackage.generateFactoryImplementationMember()/] [createMethodName/](eDataType EDataType, literalValue string) interface{} {
+	log.Fatal("NotImplementedException")
+	return nil
+}
+[/let]
+[let convertMethodName : String = 'convert' + aDataType.name + 'ToString']
+[anEPackage.generateFactoryImplementationMember()/] [convertMethodName/](eDataType EDataType, literalValue interface{}) string {
+	log.Fatal("NotImplementedException")
+	return ""
+}
+[/let]
+[/for]
+[/let]
+
+func Get[anEPackage.getFactoryImplementationName()/]() *[anEPackage.getFactoryImplementationName()/] {
+	return [anEPackage.getFactoryImplementationName()/]Instance
+}
+
+var [anEPackage.getFactoryImplementationName()/]Instance = &[anEPackage.getFactoryImplementationName()/]{}
+
+[anEPackage.generateFactoryImplementationMember()/] Init() {
+	[anEPackage.getFactoryReceiverTypeName()/].internalFactory = [anEPackage.getFactoryReceiverTypeName()/]
+}
+[/file]
+[/template]
+
+[template public generateCreateFunctionContent(aClass : EClass, aReference : EReference, addID : Boolean)]
+element := &[getImplementationName(aClass)/]{}
+element.Init()
+[if(addID)]
+element.Set[aClass.getElementIDAccessorName()/]ID(classID)
+[/if]
+[if(not aReference.eOpposite.name.oclIsUndefined())]
+if eContainer != nil {
+[if(aReference.eOpposite.upperBound <> 1)]
+    eContainer.Get[aReference.eOpposite.name.toUpperFirst()/]().Add(element)
+[else]
+    eContainer.Set[aReference.eOpposite.name.toUpperFirst()/](element)
+[/if]
+}
+[/if]
+return element
+[/template]

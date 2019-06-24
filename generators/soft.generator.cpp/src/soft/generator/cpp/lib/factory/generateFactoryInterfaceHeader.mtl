@@ -4,7 +4,8 @@
 [import soft::generator::cpp::generateSingleton /]
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::lib::generateCommon /]
-[import soft::generator::cpp::lib::generateClass /] 
+[import soft::generator::cpp::lib::generateClass /]
+[import soft::generator::common::generateCommon /]
 
 [template public generateFactoryInterfaceHeader(anEPackage : EPackage) { className : String = anEPackage.getFactoryInterfaceName() ; namespaceName : String = anEPackage.getInterfaceNamespaceName(); }]
 [file (anEPackage.getOutputDirectory() + '/src-gen/' + anEPackage.getInterfaceFolder() + '/' + className +'.hpp', false, 'UTF-8')]
