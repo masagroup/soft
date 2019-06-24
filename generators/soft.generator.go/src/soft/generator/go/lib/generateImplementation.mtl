@@ -7,12 +7,17 @@
 [import soft::generator::go::lib::generateOperation/]
 [import soft::generator::go::lib::generateStructuralFeature/]
 
-[template public generateInit(aClass : EClass)]
-[aClass.generateFunctionReceiver()/] Init() {
+[template public generateConstructor(aClass : EClass)]
+// [aClass.getConstructorName()/] is the constructor of a [aClass.getImplementationName()/]
+func [aClass.getConstructorName()/]() *[aClass.getImplementationName()/] {
+    [aClass.getReceiverName()/] := new([aClass.getImplementationName()/])
 [for ( qualifiedExtend : String | aClass.getClassExtends() )]
-    [aClass.getReceiverName()/].[getShortQualifiedName(qualifiedExtend,aClass.ePackage.name)/].Init()
+    [aClass.getReceiverName()/].[getShortQualifiedName(qualifiedExtend,aClass.ePackage.name)/] = [getShortQualifiedName(getConstructorName(qualifiedExtend), aClass.ePackage.name)/]()
 [/for] 
+[if aClass.eStructuralFeatures->notEmpty()]
     [aClass.eStructuralFeatures.generateVariableInitialization()/]
+[/if]
+    return [aClass.getReceiverName()/]
 }
 [/template]
 
@@ -30,14 +35,14 @@ package [aPackage.name/]
 // [implementationName/] is the implementation of the model object '[aClass.name/]'
 type [implementationName/] struct {
 [for ( qualifiedExtend : String | aClass.getClassExtends() )]
-    [getShortQualifiedName(qualifiedExtend,aPackage.name)/]
+    *[getShortQualifiedName(qualifiedExtend,aPackage.name)/]
 [/for]
 [let features : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( isGet() or isSet() )]
     [features.generateVariable()/]
 [/let]
 }
 
-[aClass.generateInit()/]
+[aClass.generateConstructor()/]
 
 [aClass.generateMethods()/]
 

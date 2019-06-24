@@ -5,6 +5,6 @@ import (
 )
 
 func TestEClassInstance(t *testing.T) {
-	var eClass EClass = &eClassImpl{}
+	eClass := newEClassImpl()
 	eClass.SetName("eClass")
 }
