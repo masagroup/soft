@@ -272,11 +272,8 @@
     <macrodef name="go_exec">
         <attribute name="command"/>
         <sequential>
-            <exec executable="${bin.dir}/go/bin/go.exe" dir="${root.dir}/ecore/go/pkg/ecore/" failonerror="true">
+            <exec executable="${bin.dir}/go/bin/go.exe" dir="${root.dir}/ecore/go/pkg/ecore" failonerror="true">
                 <arg value="@{command}"/>
-                <env key="GOROOT" value="${bin.dir}/go/"/>
-                <env key="GOPATH" value="${root.dir}/ecore/go/"/>
-                <env key="GOTOOLDIR" value="${bin.dir}/go/pkg/tool/windows_amd64/"/>
             </exec>
         </sequential>
     </macrodef>
