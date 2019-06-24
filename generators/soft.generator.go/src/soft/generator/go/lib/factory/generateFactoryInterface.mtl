@@ -23,5 +23,15 @@ type [className/] interface {
 [/let]
 [/for]
 }
+
+var factoryInstance [className/]
+
+func Get[className/]() [className/] {
+    if factoryInstance == nil {
+		factoryInstance = Get[className/]Impl()
+    }
+    return factoryInstance
+}
+
 [/file]
 [/template]
