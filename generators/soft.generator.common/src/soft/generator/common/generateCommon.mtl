@@ -86,7 +86,7 @@
 
 [query public getElementIdentifier(anENamedElement : ENamedElement) : String = anENamedElement.name.concat( if anENamedElement.oclIsKindOf(EOperation) then anENamedElement.oclAsType(EOperation).getParameterListName() else '' endif) /]
 [query public getElementAccessorName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName().toUpperFirst() /]
-[query public getElementInstanceName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName().concat('_') /]
+[query public getElementInstanceName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName()/]
 [query public getElementIDAccessorName(anEClass : EClass) : String = 
     if(name = 'EClass' or name = 'EDataType' or name = 'EEnum') then 'Classifier'
     else if(name = 'EAttribute' or name = 'EReference') then 'Feature' 
