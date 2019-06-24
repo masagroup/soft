@@ -10,6 +10,7 @@
 package ecore
 
 type [className/] interface {
+	EcoreFactory
 [let dataTypes : Sequence(EDataType) = anEPackage.eAllContents(EDataType)->select( serializable )->sortedBy(name)]
 [for (aDataType : EDataType | dataTypes)]
 	create[aDataType.name/]FromString(eDataType EDataType, literalValue string) interface{}

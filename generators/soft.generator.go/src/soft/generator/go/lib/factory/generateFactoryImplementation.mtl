@@ -13,9 +13,10 @@ package [anEPackage.name/]
 import "log"
 
 type [anEPackage.getFactoryImplementationName()/] struct {
+	internalFactory interface{}
 }
 
-[anEPackage.generateFactoryImplementationMember()/] Create(factory [anEPackage.getFactoryInternalName()/], eClass EClass) EObject {
+[anEPackage.generateFactoryImplementationMember()/] Create(eClass EClass) EObject {
 	classID := eClass.GetClassifierID()
 	switch classID {
     [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
@@ -48,12 +49,12 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 [/let]
 [/for]
 [let dataTypes : Sequence(EDataType) = anEPackage.eAllContents(EDataType)->select( serializable )->sortedBy(name)]
-[anEPackage.generateFactoryImplementationMember()/] CreateFromString(factory [anEPackage.getFactoryInternalName()/], eDataType EDataType, literalValue string) interface{} {
+[anEPackage.generateFactoryImplementationMember()/] CreateFromString(eDataType EDataType, literalValue string) interface{} {
 	classID := eDataType.GetClassifierID()
 	switch classID {
     [for (aDataType : EDataType | dataTypes)]
     case [aDataType.getClassifierIDName()/]:
-        return factory.create[aDataType.name/]FromString(eDataType, literalValue)
+        return [anEPackage.getFactoryReceiverTypeName()/].internalFactory.(EcoreFactoryInternal).create[aDataType.name/]FromString(eDataType, literalValue)
     [/for]
     default:
         log.Fatalln("The datatype '", eDataType.GetName(), "' is not a valid classifier")
@@ -61,12 +62,12 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 	return nil
 }
 
-[anEPackage.generateFactoryImplementationMember()/] ConvertToString(factory [anEPackage.getFactoryInternalName()/], eDataType EDataType, instanceValue interface{}) string {
+[anEPackage.generateFactoryImplementationMember()/] ConvertToString(eDataType EDataType, instanceValue interface{}) string {
     classID := eDataType.GetClassifierID()
     switch classID {
 [for (aDataType : EDataType | dataTypes)]
     case [aDataType.getClassifierIDName()/]:
-        return factory.convert[aDataType.name/]ToString(eDataType, instanceValue)
+        return [anEPackage.getFactoryReceiverTypeName()/].internalFactory.(EcoreFactoryInternal).convert[aDataType.name/]ToString(eDataType, instanceValue)
 [/for]
     default:
         log.Fatalln("The datatype '", eDataType.GetName(), "' is not a valid classifier")
@@ -94,6 +95,10 @@ func Get[anEPackage.getFactoryImplementationName()/]() *[anEPackage.getFactoryIm
 }
 
 var [anEPackage.getFactoryImplementationName()/]Instance = &[anEPackage.getFactoryImplementationName()/]{}
+
+[anEPackage.generateFactoryImplementationMember()/] Init() {
+	[anEPackage.getFactoryReceiverTypeName()/].internalFactory = [anEPackage.getFactoryReceiverTypeName()/]
+}
 [/file]
 [/template]
 
