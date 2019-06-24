@@ -272,7 +272,7 @@
     <macrodef name="go_exec">
         <attribute name="command"/>
         <sequential>
-            <exec executable="${bin.dir}/go/bin/go.exe" dir="${root.dir}/ecore/go/src/pkg/ecore/" failonerror="true">
+            <exec executable="${bin.dir}/go/bin/go.exe" dir="${root.dir}/ecore/go/pkg/ecore/" failonerror="true">
                 <arg value="@{command}"/>
                 <env key="GOROOT" value="${bin.dir}/go/"/>
                 <env key="GOPATH" value="${root.dir}/ecore/go/"/>
@@ -378,7 +378,7 @@
     ============================================================================
     -->
     <target name="ecore.go.generate">
-        <generator langage="go" input="ecore/model/ecore.ecore" output="ecore/go">
+        <generator langage="go" input="ecore/model/ecore.ecore" output="${root.dir}/ecore/go">
         </generator>
     </target>
 
