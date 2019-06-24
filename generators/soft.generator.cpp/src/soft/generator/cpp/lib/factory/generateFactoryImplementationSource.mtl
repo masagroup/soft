@@ -63,7 +63,7 @@ std::shared_ptr<[getShortQualifiedName('ecore::EObject',namespaceName)/]> [class
             return this->create[aClass.name/]();
     [/for]
     default:
-            throw "create: " + classID + " not found";
+            throw "create: " + eClass->getName() + " not found";
     }
     return nullptr;
 }

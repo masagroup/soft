@@ -54,6 +54,8 @@ endif endif endif
     endif
 /]
 
+[query public getElementInstanceName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName()/]
+
 [query public getFactoryName( aPackage : EPackage ) : String = aPackage.getElementName(aPackage.name, 'factoryName','$1Factory').toUpperFirst()/]
 [query private getPackageName( aPackage : EPackage ) : String = aPackage.getElementName(aPackage.name, 'packageName','$1Package').toUpperFirst()/]
 

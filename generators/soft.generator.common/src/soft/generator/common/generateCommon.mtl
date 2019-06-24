@@ -67,7 +67,7 @@
 
 [query public splitAndCombineWords( eEObject : EObject , s : String, sep: String) : String = invoke('soft.generator.common.GenerateUtils','splitAndCombineWords(java.lang.String,java.lang.String)',Sequence{s,sep}) /]
 
-[query private getMemberName(anENamedElement : ENamedElement) : String = 
+[query public getMemberName(anENamedElement : ENamedElement) : String = 
     if anENamedElement.oclIsKindOf(EClassifier) then 
         anENamedElement.oclAsType(EClassifier).getMemberName() 
     else if anENamedElement.oclIsKindOf(EStructuralFeature) then 
@@ -86,7 +86,6 @@
 
 [query public getElementIdentifier(anENamedElement : ENamedElement) : String = anENamedElement.name.concat( if anENamedElement.oclIsKindOf(EOperation) then anENamedElement.oclAsType(EOperation).getParameterListName() else '' endif) /]
 [query public getElementAccessorName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName().toUpperFirst() /]
-[query public getElementInstanceName(anENamedElement : ENamedElement) : String = anENamedElement.getMemberName()/]
 [query public getElementIDAccessorName(anEClass : EClass) : String = 
     if(name = 'EClass' or name = 'EDataType' or name = 'EEnum') then 'Classifier'
     else if(name = 'EAttribute' or name = 'EReference') then 'Feature' 
