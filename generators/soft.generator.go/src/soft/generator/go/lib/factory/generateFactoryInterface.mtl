@@ -30,7 +30,11 @@ var factoryInstance [className/]
 
 func Get[className/]() [className/] {
     if factoryInstance == nil {
-		factoryInstance = Get[className/]Impl()
+[let extension : Boolean = anEPackage.hasKey('factory') and anEPackage.valueKey('factory') = 'extension']
+[let factoryName : String = if extension then anEPackage.getFactoryExtensionName() else anEPackage.getFactoryImplementationName() endif] 
+		factoryInstance = new[factoryName/]()
+[/let]
+[/let]
     }
     return factoryInstance
 }

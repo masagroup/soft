@@ -5,6 +5,9 @@
     <details key="factory" value="extension"/>
     <details key="lazy" value="list:function"/>
   </eAnnotations>
+  <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+    <details key="factory" value="extension"/>
+  </eAnnotations>
   <eClassifiers xsi:type="ecore:EClass" name="EAttribute" eSuperTypes="#//EStructuralFeature">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="ConsistentTransient"/>

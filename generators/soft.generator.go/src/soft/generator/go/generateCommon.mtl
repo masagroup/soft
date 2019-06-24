@@ -58,7 +58,8 @@ endif endif endif
 
 [query public getFactoryName( aPackage : EPackage ) : String = aPackage.getElementName(aPackage.name, 'factoryName','$1Factory').toUpperFirst()/]
 [query public getFactoryImplementationName( aPackage : EPackage ) : String = aPackage.getImplementationName( getFactoryName() )/]
-[query public getFactoryInternalName( aPackage : EPackage ) : String = aPackage.name.toUpperFirst() + 'FactoryInternal'/]
+[query public getFactoryInternalName( aPackage : EPackage ) : String = aPackage.name + 'FactoryInternal'/]
+[query public getFactoryExtensionName( aPackage : EPackage ) : String = aPackage.getExtensionName( aPackage.getFactoryName() )/]
 
 [query private getPackageName( aPackage : EPackage ) : String = aPackage.getElementName(aPackage.name, 'packageName','$1Package').toUpperFirst()/]
 
