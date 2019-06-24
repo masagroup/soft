@@ -4,7 +4,6 @@
 [import soft::generator::common::generateCommon/]
 [import soft::generator::go::generateCommon/]
 [import soft::generator::go::lib::generateCommon/]
-[import soft::generator::go::lib::impl::generateCommon/]
 [import soft::generator::go::lib::factory::generateCommon/]
 
 [template public generateFactoryImplementation(anEPackage : EPackage) { className : String = anEPackage.getFactoryImplementationName() ; }]
@@ -21,7 +20,7 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 	switch classID {
     [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
     case [aClass.getClassifierIDName()/]:
-        return [anEPackage.getFactoryReceiverTypeName()/].Create[aClass.name/]();
+        return [anEPackage.getFactoryReceiverTypeName()/].Create[aClass.name/]()
     [/for]
     default:
         log.Fatalln("Create: ", classID, " not found")
@@ -31,7 +30,8 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
 [anEPackage.generateFactoryImplementationMember()/] Create[aClass.name/]() [aClass.getInterfaceName()/] {
-	element := New[getImplementationName(aClass)/]()
+	element := &[getImplementationName(aClass)/]{}
+	element.Init()
     return element
 }
 [let ref : OrderedSet(EReference) = aClass.getAllContainers()]
@@ -98,7 +98,8 @@ var [anEPackage.getFactoryImplementationName()/]Instance = &[anEPackage.getFacto
 [/template]
 
 [template public generateCreateFunctionContent(aClass : EClass, aReference : EReference, addID : Boolean)]
-element := New[aClass.name/]Impl()
+element := &[getImplementationName(aClass)/]{}
+element.Init()
 [if(addID)]
 element.Set[aClass.getElementIDAccessorName()/]ID(classID)
 [/if]

@@ -54,7 +54,7 @@ endif endif endif
     endif
 /]
 
-[query private getFactoryName( aPackage : EPackage ) : String = aPackage.getElementName(aPackage.name, 'factoryName','$1Factory').toUpperFirst()/]
+[query public getFactoryName( aPackage : EPackage ) : String = aPackage.getElementName(aPackage.name, 'factoryName','$1Factory').toUpperFirst()/]
 [query private getPackageName( aPackage : EPackage ) : String = aPackage.getElementName(aPackage.name, 'packageName','$1Package').toUpperFirst()/]
 
 [query public getInterfaceName( aClass : EClass ) : String = aClass.getInterfaceName(aClass.name)/]
@@ -111,3 +111,9 @@ endif endif endif
     ) in
     shortQualifiedNames->join('.')
 /]
+
+[query public getFactoryImplementationName( aPackage : EPackage ) : String = getImplementationName( getFactoryName() , aPackage )/]
+[query public getImplementationName( aElementName : String , aPackage : EPackage ) : String = let pattern : String = aPackage.getImplementationNamePattern() in if pattern ='' then aElementName + 'Impl' else pattern.format(Sequence{aElementName}) endif /]
+[query private getImplementationNamePattern( aPackage : EPackage ) : String = if hasKey('implementationNamePattern') then valueKey('implementationNamePattern') else '' endif/]
+[query public getFactoryInternalName( aPackage : EPackage ) : String = aPackage.name.toUpperFirst() + 'FactoryInternal'/]
+
