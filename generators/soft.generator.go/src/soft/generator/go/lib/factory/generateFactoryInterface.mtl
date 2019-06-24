@@ -12,6 +12,7 @@ package ecore
 
 type [className/] interface {
 [for (aEClass : EClass | anEPackage.eAllContents(EClass)->sortedBy(name))]
+[if (aEClass.abstract = false)]
 	Create[aEClass.name/]() [aEClass.getInterfaceName()/]
 [let ref:OrderedSet(EReference) = aEClass.getAllContainers()]
 [for(aReference:EReference | ref->sortedBy(name))]
@@ -21,6 +22,7 @@ type [className/] interface {
 [/if]
 [/for]
 [/let]
+[/if]
 [/for]
 }
 
