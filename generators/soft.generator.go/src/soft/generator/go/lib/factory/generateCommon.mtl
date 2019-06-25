@@ -4,8 +4,8 @@
 [import soft::generator::go::generateCommon/]
 
 [template public generateFactoryImplementationMember(anEPackage : EPackage)]
-func ([anEPackage.getFactoryReceiverTypeName()/] *[anEPackage.getFactoryImplementationName()/])
+func ([anEPackage.getFactoryReceiverName()/] *[anEPackage.getFactoryImplementationName()/])
 [/template]
 
-[query public getFactoryReceiverTypeName(anEPackage : EPackage) : String = anEPackage.getFactoryImplementationName().toLowerFirst() /]
+[query public getFactoryReceiverName(anEPackage : EPackage) : String = anEPackage.getFactoryImplementationName().toLowerFirst() /]
 [query public getTypeFromReference(aRef : EReference) : String = aRef.eClass().name /]

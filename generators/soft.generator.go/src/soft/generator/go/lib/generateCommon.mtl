@@ -55,6 +55,16 @@ func ([aClass.getReceiverName()/] *[aClass.getImplementationName()/])
     endif
 /]
 
+[query private isUpperFirst( aString : String ) : Boolean = aString.toUpperFirst() = aString /]
+
+[query public getConstructorName( aClass : EClass ) : String = getConstructorName(aClass.getImplementationName())/]
+[query public getConstructorName( aQualifiedName : String ) : String =
+    let index : Integer = aQualifiedName.index('.') in
+    let className : String = if index = -1 then aQualifiedName else aQualifiedName.substring( index + 1 ) endif in
+    let new : String = if isUpperFirst( className ) then 'New' else 'new' endif in
+    if index = -1 then new + className.toUpperFirst() else aQualifiedName.substring(1, index - 1) + '.' + new + className.toUpperFirst() endif
+/]
+
 [query public getClassImplements(aClass : EClass ) : Sequence(String) = Sequence{ aClass.getQualifiedInterfaceName() }/]
 
 [query private getClassExtendsClass( aClass : EClass ) : EClass = getClassExtendsClass( aClass , aClass.getBaseClass() )/]

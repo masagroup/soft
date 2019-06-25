@@ -12,8 +12,26 @@ package [anEPackage.name/]
 
 import "log"
 
-type [anEPackage.getFactoryImplementationName()/] struct {
-	internalFactory interface{}
+type [anEPackage.getFactoryInternalName()/] interface {
+[let dataTypes : Sequence(EDataType) = anEPackage.eAllContents(EDataType)->select( serializable )->sortedBy(name)]
+[for (aDataType : EDataType | dataTypes)]
+    create[aDataType.name/]FromString(eDataType EDataType, literalValue string) interface{}
+[/for]
+[for (aDataType : EDataType | dataTypes)]
+    convert[aDataType.name/]ToString(eDataType EDataType, literalValue interface{}) string
+[/for]
+[/let]
+}
+
+type [className/] struct {
+    *EFactoryImpl
+}
+
+func new[className.toUpperFirst()/]() *[className/] {
+    factory := new([className/])
+    factory.EFactoryImpl = NewEFactoryImpl()
+    factory.internal = factory
+    return factory 
 }
 
 [anEPackage.generateFactoryImplementationMember()/] Create(eClass EClass) EObject {
@@ -21,7 +39,7 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 	switch classID {
     [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
     case [aClass.getClassifierIDName()/]:
-        return [anEPackage.getFactoryReceiverTypeName()/].Create[aClass.name/]()
+        return [anEPackage.getFactoryReceiverName()/].Create[aClass.name/]()
     [/for]
     default:
         log.Fatalln("Create: ", classID, " not found")
@@ -31,9 +49,7 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
 [anEPackage.generateFactoryImplementationMember()/] Create[aClass.name/]() [aClass.getInterfaceName()/] {
-	element := &[getImplementationName(aClass)/]{}
-	element.Init()
-    return element
+	return [aClass.getConstructorName()/]()
 }
 [let ref : OrderedSet(EReference) = aClass.getAllContainers()]
 [for(aReference:EReference | ref->sortedBy(name))]
@@ -54,7 +70,7 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 	switch classID {
     [for (aDataType : EDataType | dataTypes)]
     case [aDataType.getClassifierIDName()/]:
-        return [anEPackage.getFactoryReceiverTypeName()/].internalFactory.(EcoreFactoryInternal).create[aDataType.name/]FromString(eDataType, literalValue)
+        return [anEPackage.getFactoryReceiverName()/].internal.([anEPackage.getFactoryInternalName()/]).create[aDataType.name/]FromString(eDataType, literalValue)
     [/for]
     default:
         log.Fatalln("The datatype '", eDataType.GetName(), "' is not a valid classifier")
@@ -67,7 +83,7 @@ type [anEPackage.getFactoryImplementationName()/] struct {
     switch classID {
 [for (aDataType : EDataType | dataTypes)]
     case [aDataType.getClassifierIDName()/]:
-        return [anEPackage.getFactoryReceiverTypeName()/].internalFactory.(EcoreFactoryInternal).convert[aDataType.name/]ToString(eDataType, instanceValue)
+        return [anEPackage.getFactoryReceiverName()/].internal.([anEPackage.getFactoryInternalName()/]).convert[aDataType.name/]ToString(eDataType, instanceValue)
 [/for]
     default:
         log.Fatalln("The datatype '", eDataType.GetName(), "' is not a valid classifier")
@@ -90,21 +106,12 @@ type [anEPackage.getFactoryImplementationName()/] struct {
 [/for]
 [/let]
 
-func Get[anEPackage.getFactoryImplementationName()/]() *[anEPackage.getFactoryImplementationName()/] {
-	return [anEPackage.getFactoryImplementationName()/]Instance
-}
-
-var [anEPackage.getFactoryImplementationName()/]Instance = &[anEPackage.getFactoryImplementationName()/]{}
-
-[anEPackage.generateFactoryImplementationMember()/] Init() {
-	[anEPackage.getFactoryReceiverTypeName()/].internalFactory = [anEPackage.getFactoryReceiverTypeName()/]
-}
 [/file]
 [/template]
 
 [template public generateCreateFunctionContent(aClass : EClass, aReference : EReference, addID : Boolean)]
-element := &[getImplementationName(aClass)/]{}
-element.Init()
+element := [aClass.getConstructorName()/]()
+element.internal = element
 [if(addID)]
 element.Set[aClass.getElementIDAccessorName()/]ID(classID)
 [/if]

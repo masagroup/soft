@@ -5,29 +5,31 @@ type Notifier struct {
 	eAdapters EList
 }
 
-func (notif *Notifier) Init() {
-	notif.eDeliver = true
-	notif.eAdapters = NewArrayEList([]interface{}{})
+func NewNotifier() *Notifier {
+	notifier := new(Notifier)
+	notifier.eDeliver = true
+	notifier.eAdapters = NewArrayEList([]interface{}{})
+	return notifier
 }
 
-func (notif *Notifier) EAdapters() EList {
-	return notif.eAdapters
+func (notifier *Notifier) EAdapters() EList {
+	return notifier.eAdapters
 }
 
-func (notif *Notifier) EDeliver() bool {
-	return notif.eDeliver
+func (notifier *Notifier) EDeliver() bool {
+	return notifier.eDeliver
 }
 
-func (notif *Notifier) ESetDeliver(value bool) {
-	notif.eDeliver = value
+func (notifier *Notifier) ESetDeliver(value bool) {
+	notifier.eDeliver = value
 }
 
-func (notif *Notifier) ENotify(notification ENotification) {
-	for it := notif.eAdapters.Iterate(); it.Next(); {
+func (notifier *Notifier) ENotify(notification ENotification) {
+	for it := notifier.eAdapters.Iterate(); it.Next(); {
 		it.Value().(EAdapter).NotifyChanged(notification)
 	}
 }
 
-func (notif *Notifier) ENotificationRequired() bool {
-	return notif.eAdapters != nil && notif.eAdapters.Size() > 0
+func (notifier *Notifier) ENotificationRequired() bool {
+	return notifier.eAdapters != nil && notifier.eAdapters.Size() > 0
 }

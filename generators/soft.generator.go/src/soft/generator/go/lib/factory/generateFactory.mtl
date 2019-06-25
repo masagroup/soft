@@ -3,10 +3,8 @@
 
 [import soft::generator::go::lib::factory::generateFactoryImplementation]
 [import soft::generator::go::lib::factory::generateFactoryInterface]
-[import soft::generator::go::lib::factory::generateFactoryInternal]
 
 [template public generateFactory(anEPackage : EPackage)]
 [generateFactoryImplementation(anEPackage)/]
 [generateFactoryInterface(anEPackage)/]
-[generateFactoryInternal(anEPackage)/]
 [/template]
