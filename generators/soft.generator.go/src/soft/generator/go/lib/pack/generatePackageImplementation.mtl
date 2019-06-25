@@ -8,6 +8,16 @@
 [import soft::generator::go::lib::generateCommon/]
 [import soft::generator::go::lib::pack::generateCommon/]
 
+[query public getPackageGetter(aReference : EReference) : String = if oclIsUndefined() then 'nil' else getReflectiveGetterName() + '()' endif/]
+[query public getPackageGetter(aAttribute : EAttribute) : String = getReflectiveGetterName() + '()' /]
+
+[query private getPackageGetter(aEClassifier : EClassifier, aStruct : EStructuralFeature) : String = getPackageGetter(aEClassifier,aStruct.eContainingClass) /]
+[query private getPackageGetter(aEClass : EClass, supertype : EClass) : String = getPackageGetter(supertype.oclAsType(EClassifier),aEClass.oclAsType(EClassifier)) /]
+[query private getPackageGetter(aEClassifier1 : EClassifier, aEClassifier2 : EClassifier) : String = getPackageInstance(aEClassifier1, aEClassifier2).concat('Get').concat(aEClassifier1.getElementAccessorName()).concat('()') /]
+[query private getPackageInstance(aClassifier1 : EClassifier ,aClassifier2 : EClassifier ) : String = if(aClassifier1.ePackage.name = aClassifier2.ePackage.name ) then 'p.' else  aClassifier1.ePackage.name + '.Get' + aClassifier1.ePackage.getInterfaceName() + '().'  endif /]
+
+[query private getPackageGetter(anEClassifier : EClassifier, anOperation: EOperation) : String = if anOperation.eType.oclIsUndefined() or anOperation.eTypeParameters->notEmpty() then 'nil' else getPackageInstance(anEClassifier, anOperation.eContainingClass).concat(anEClassifier.getReflectiveGetterName()).concat('()') endif/]
+
 [template private generateDataMember(anENamedElement : ENamedElement, anEPackage : EPackage)] 
 [anENamedElement.getElementInstanceName()/] [getMetaType(anENamedElement)/] 
 
@@ -18,17 +28,12 @@
 func (p *[anEPackage.getImplementationName()/]) [anENamedElement.getReflectiveGetterName()/]() [getMetaType(anENamedElement)/] {
     return p.[anENamedElement.getElementInstanceName()/]
 }
+
 [/template]
 
 [template private generateCreation(aEClass : EClass)]
 p.[aEClass.getElementInstanceName()/] = factory.CreateEClassFromContainerAndClassID(p, [aEClass.getClassifierIDName()/]);
 
-[/template]
-
-[template private generateInitialization(aEClass : EClass)]
-p.[aEClass.getElementInstanceName()/].SetName("[aEClass.name/]");
-p.[aEClass.getElementInstanceName()/].SetAbstract([aEClass.abstract.toString()/]);
-p.[aEClass.getElementInstanceName()/].SetInterface([aEClass.interface.toString()/]);
 [/template]
 
 [template private generateCreation(aStructuralFeature : EStructuralFeature)]
@@ -44,13 +49,112 @@ p.[anEReference.getElementInstanceName()/] = factory.CreateEReferenceFromContain
 
 [/template] 
 
-[template public generateCreation(anEOperation : EOperation)]
+[template private generateCreation(anEOperation : EOperation)]
 p.[anEOperation.getElementInstanceName()/] = factory.CreateEOperationFromContainerAndClassID(p.[anEOperation.eContainingClass.getElementInstanceName()/], [anEOperation.eContainingClass.getOperationIDName(anEOperation)/]);
 
 [/template]
 
-[template public generateCreation(anEDatatype : EDataType)]
+[template private generateCreation(anEDatatype : EDataType)]
 p.[anEDatatype.getElementInstanceName()/] = factory.Create[if (anEDatatype.oclIsKindOf(EEnum))]EEnum[else]EDataType[/if]FromContainerAndClassID(p, [anEDatatype.getClassifierIDName()/]);
+
+[/template]
+
+[template public initSuperTypes(aEClass : EClass)]
+[for (superClass : EClass | aEClass.eSuperTypes->asOrderedSet()->sortedBy(name))]
+p.[aEClass.getElementInstanceName()/].GetESuperTypes().Add([aEClass.getPackageGetter(superClass)/]);
+[/for]
+[/template]
+
+[template private generateInitialization(aEClass : EClass)]
+p.[aEClass.getElementInstanceName()/].SetName("[aEClass.name/]");
+p.[aEClass.getElementInstanceName()/].SetAbstract([aEClass.abstract.toString()/]);
+p.[aEClass.getElementInstanceName()/].SetInterface([aEClass.interface.toString()/]);
+[/template]
+
+[template private generateInitialization(anEAttribute : EAttribute)]
+p.[anEAttribute.getElementInstanceName()/] = [anEAttribute.getPackageGetter()/];
+p.[anEAttribute.getElementInstanceName()/].SetName("[anEAttribute.name/]");
+p.[anEAttribute.getElementInstanceName()/].SetEType([anEAttribute.eType.oclAsType(EDataType).getPackageGetter(anEAttribute)/]);
+p.[anEAttribute.getElementInstanceName()/].SetLowerBound([anEAttribute.lowerBound/]);
+p.[anEAttribute.getElementInstanceName()/].SetUpperBound([anEAttribute.upperBound/]);
+p.[anEAttribute.getElementInstanceName()/].SetTransient([anEAttribute.transient.toString()/]);
+p.[anEAttribute.getElementInstanceName()/].SetVolatile([anEAttribute.volatile.toString()/]);
+p.[anEAttribute.getElementInstanceName()/].SetChangeable([anEAttribute.changeable.toString()/]);
+p.[anEAttribute.getElementInstanceName()/].SetUnsettable([anEAttribute.unsettable.toString()/]);
+p.[anEAttribute.getElementInstanceName()/].SetUnique([anEAttribute.unique.toString()/]);
+p.[anEAttribute.getElementInstanceName()/].SetDerived([anEAttribute.derived.toString()/]);
+p.[anEAttribute.getElementInstanceName()/].SetOrdered([anEAttribute.ordered.toString()/]);
+p.[anEAttribute.getElementInstanceName()/].SetID([anEAttribute.iD.toString()/]);
+{
+    defaultValue := "[anEAttribute.defaultValueLiteral/]";
+    if (!defaultValue.empty()) {
+       p.[anEAttribute.getElementInstanceName()/].SetDefaultValueLiteral(defaultValue);
+    }
+}
+
+[/template]
+
+[template private generateInitialization(anEReference : EReference)]
+p.[anEReference.getElementInstanceName()/].SetName("[anEReference.name/]");
+p.[anEReference.getElementInstanceName()/].SetEType([anEReference.eGenericType.eClassifier.getPackageGetter(anEReference)/]);
+p.[anEReference.getElementInstanceName()/].SetLowerBound([anEReference.lowerBound/]);
+p.[anEReference.getElementInstanceName()/].SetUpperBound([anEReference.upperBound/]);
+p.[anEReference.getElementInstanceName()/].SetTransient([anEReference.transient.toString()/]);
+p.[anEReference.getElementInstanceName()/].SetVolatile([anEReference.volatile.toString()/]);
+p.[anEReference.getElementInstanceName()/].SetChangeable([anEReference.changeable.toString()/]);
+p.[anEReference.getElementInstanceName()/].SetUnsettable([anEReference.unsettable.toString()/]);
+p.[anEReference.getElementInstanceName()/].SetUnique([anEReference.unique.toString()/]);
+p.[anEReference.getElementInstanceName()/].SetDerived([anEReference.derived.toString()/]);
+p.[anEReference.getElementInstanceName()/].SetOrdered([anEReference.ordered.toString()/]);
+p.[anEReference.getElementInstanceName()/].SetContainment([anEReference.containment.toString()/]);
+p.[anEReference.getElementInstanceName()/].SetResolveProxies([anEReference.resolveProxies.toString()/]);
+{
+    defaultValue := "[anEReference.defaultValueLiteral/]";
+    if (!defaultValue.empty()) {
+        [anEReference.getElementInstanceName()/].SetDefaultValueLiteral(defaultValue);
+    }
+
+    otherEnd := [anEReference.eOpposite.getPackageGetter()/];
+    if (otherEnd != nil) {
+        p.[anEReference.getElementInstanceName()/].SetEOpposite(otherEnd);
+    }
+}
+
+[/template]
+
+[template private generateInitialization(anEOperation : EOperation)]
+p.[anEOperation.getElementInstanceName()/].SetEType([anEOperation.eType.getPackageGetter(anEOperation)/]);
+p.[anEOperation.getElementInstanceName()/].SetName("[anEOperation.name.toString()/]");
+p.[anEOperation.getElementInstanceName()/].SetLowerBound([anEOperation.lowerBound/]);
+p.[anEOperation.getElementInstanceName()/].SetUpperBound([anEOperation.upperBound/]);
+p.[anEOperation.getElementInstanceName()/].SetUnique([anEOperation.unique.toString()/]);
+p.[anEOperation.getElementInstanceName()/].SetOrdered([anEOperation.ordered.toString()/]);
+
+
+[for (anEParameter : EParameter | anEOperation.eParameters) separator ('\r\n')]
+{
+[let factoryName : String = if anEOperation.eContainingClass.ePackage.name = 'ecore' then '' else 'ecore.' endif + 'GetEcoreFactory']
+    parameter := [factoryName/]().CreateEParameterFromContainer([anEOperation.getElementInstanceName()/]);
+[/let]
+    parameter.SetName("[anEParameter.name/]");
+    parameter.SetEType([anEParameter.eType.getPackageGetter(anEParameter.eOperation)/]);
+    parameter.SetLowerBound(0);
+    parameter.SetUpperBound(1);
+    parameter.SetUnique(true);
+    parameter.SetOrdered(true);
+}
+[/for]
+
+[/template]
+
+[template private generateInitialization(aDataType : EDataType)]
+p.[aDataType.getElementInstanceName()/].SetName("[aDataType.name/]");
+[if not aDataType.instanceTypeName.oclIsUndefined() and not (aDataType.instanceTypeName = '')] 
+//p.[aDataType.getElementInstanceName()/].SetInstanceClass( reflect.TypeOf([aDataType.instanceTypeName/]));
+[/if]
+[if (not aDataType.oclIsKindOf(EEnum))]
+p.[aDataType.getElementInstanceName()/].SetSerializable([aDataType.serializable.toString()/]);
+[/if]
 
 [/template]
 
@@ -112,8 +216,27 @@ func (p *[className/])initializePackageContents() {
     p.SetName(NAME);
     p.SetNsPrefix(NS_PREFIX);
     p.SetNsURI(NS_URI);
+
+    // Add supertypes to classes
+    [anEPackage.eAllContents(EClass)->sortedBy(name).initSuperTypes()/]
+
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
+    p.initialize[aClass.name.toUpperFirst()/]Content();
+[/for]
+    p.initializePackageEDataTypes();
 }
 
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
+func (p *[className/])initialize[aClass.name.toUpperFirst()/]Content() {
+    [aClass.generateInitialization()/]
+    [aClass.eAttributes->sortedBy(name).generateInitialization()/]
+    [aClass.eReferences->sortedBy(name).generateInitialization()/]
+    [aClass.eOperations->sortedBy(name).generateInitialization()/]
+}
+[/for]
 
+func (p *[className/])initializePackageEDataTypes() {
+    [anEPackage.eAllContents(EDataType)->sortedBy(name).generateInitialization()/]
+}
 [/file]
 [/template]
