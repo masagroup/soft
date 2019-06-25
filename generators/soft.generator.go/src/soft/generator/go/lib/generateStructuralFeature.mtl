@@ -35,12 +35,25 @@
 if aFeature.eType.name = 'EBoolean' then 'is' + aFeature.name.toUpperFirst() else aFeature.name endif/]
 
 [template public generateVariable(aStructuralFeature : EStructuralFeature)]
-[aStructuralFeature.getVariableName()/] [generateType(aStructuralFeature)/]
+[aStructuralFeature.getVariableName()/] [aStructuralFeature.generateType()/]
 
 [/template]
 
+[template private getListConstructor( anEAttribute : EStructuralFeature ) post(trim())]
+[/template]
+
+[template private getListConstructor( anEAttribute : EAttribute ) post(trim())]
+NewEmptyArrayEList()
+[/template]
+
+[template private getListConstructor( anReference : EReference ) post(trim())]
+NewEmptyArrayEList()
+[/template]
+
 [template public generateVariableInitialization(aStructuralFeature : EStructuralFeature)]
-[if aStructuralFeature.oclIsKindOf(EAttribute)]
+[if aStructuralFeature.isListType()]
+[aStructuralFeature.eContainingClass.getReceiverName()/].[aStructuralFeature.getVariableName()/] = [aStructuralFeature.getListConstructor()/]
+[elseif aStructuralFeature.oclIsKindOf(EAttribute)]
 [aStructuralFeature.eContainingClass.getReceiverName()/].[aStructuralFeature.getVariableName()/] = [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/]
 [else]
 [/if]
