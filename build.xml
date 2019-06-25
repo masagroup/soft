@@ -9,7 +9,7 @@
     <property name="cmake.SHA-512" value="44ea4ffd21fbdaa7158749a0a86de7ec294dc2569f743ff6a5ef4e650cd16063bad55b54d35a506d7c7985bdf63f9207b918d18d9381801a9e321f71c622aee1"/>
     <property name="maven.SHA-512" value="0bb466363a7f60a9cd48f680ff14bdab64ded3cf5cffeb280c3c711acdd12cdb5c4891a0f1215bf69a22e6c4736f449f35b1e6a3c43c5ac8d397b24b71c02c1a"/>
     <property name="ninja.SHA-512" value="56f3b94ed7f9e36446bb6fe2a786156befdde6b279ee6d9d7ebd8b6e5d6664cdfe1d526e158f68bfc5cf947bcf9360df8d1e1a8939b6db1b2f0658256a17d66b"/>
-    <property name="go.SHA-512" value="55db934ec31718ca2745f2de93b52929e110ee9b52b88a327c7c29bee2b4651efecbd2d98c6a37e15ae92bf7a1ad2cfb08aa99e2b8f487634287c944e427d745"/>
+    <property name="go.SHA-512" value="5b7d060564be0bac615188c15195ad543c169346940a7a76238caba8f751276bc4e1e0cbbb7472cfd03ebfcb158ba38fe9bc5cce3c170edf9b04df803650bdc2"/>
     
     
     <macrodef name="property-to-location">
@@ -266,17 +266,16 @@
     </target>
 
     <target name="go.install" depends="aria2.install,go.checksum" unless="go.installed">
-        <install name="go" url="https://dl.google.com/go/go1.12.3.windows-amd64.zip"/>
+        <install name="go" url="https://dl.google.com/go/go1.12.6.windows-amd64.zip"/>
     </target>
 
     <macrodef name="go_exec">
         <attribute name="command"/>
         <sequential>
-            <exec executable="${bin.dir}/go/bin/go.exe" dir="${root.dir}/ecore/go/src/pkg/ecore/" failonerror="true">
+            <exec executable="${bin.dir}/go/bin/go.exe" dir="${root.dir}/ecore/go/pkg/ecore" failonerror="true">
                 <arg value="@{command}"/>
                 <env key="GOROOT" value="${bin.dir}/go/"/>
-                <env key="GOPATH" value="${root.dir}/ecore/go/"/>
-                <env key="GOTOOLDIR" value="${bin.dir}/go/pkg/tool/windows_amd64/"/>
+                <env key="GOTOOLDIR" value="${bin.dir}/go/pkg/tool/windows_amd64/"/> 
             </exec>
         </sequential>
     </macrodef>
@@ -378,7 +377,7 @@
     ============================================================================
     -->
     <target name="ecore.go.generate">
-        <generator langage="go" input="ecore/model/ecore.ecore" output="ecore/go">
+        <generator langage="go" input="ecore/model/ecore.ecore" output="${root.dir}/ecore/go">
         </generator>
     </target>
 
