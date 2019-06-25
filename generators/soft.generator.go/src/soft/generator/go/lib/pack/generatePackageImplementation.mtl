@@ -8,15 +8,15 @@
 [import soft::generator::go::lib::generateCommon/]
 [import soft::generator::go::lib::pack::generateCommon/]
 
-[query public getPackageGetter(aReference : EReference) : String = if oclIsUndefined() then 'nil' else getReflectiveGetterName() + '()' endif/]
-[query public getPackageGetter(aAttribute : EAttribute) : String = getReflectiveGetterName() + '()' /]
+[query public getPackageGetter(aReference : EReference) : String = if oclIsUndefined() then 'nil' else 'p.' + aReference.getReflectiveGetterName() + '()' endif/]
+[query public getPackageGetter(aAttribute : EAttribute) : String = aAttribute.getReflectiveGetterName() + '()' /]
 
 [query private getPackageGetter(aEClassifier : EClassifier, aStruct : EStructuralFeature) : String = getPackageGetter(aEClassifier,aStruct.eContainingClass) /]
 [query private getPackageGetter(aEClass : EClass, supertype : EClass) : String = getPackageGetter(supertype.oclAsType(EClassifier),aEClass.oclAsType(EClassifier)) /]
-[query private getPackageGetter(aEClassifier1 : EClassifier, aEClassifier2 : EClassifier) : String = getPackageInstance(aEClassifier1, aEClassifier2).concat('Get').concat(aEClassifier1.getElementAccessorName()).concat('()') /]
+[query private getPackageGetter(aEClassifier1 : EClassifier, aEClassifier2 : EClassifier) : String = getPackageInstance(aEClassifier1, aEClassifier2) + aEClassifier1.getReflectiveGetterName() + '()' /]
 [query private getPackageInstance(aClassifier1 : EClassifier ,aClassifier2 : EClassifier ) : String = if(aClassifier1.ePackage.name = aClassifier2.ePackage.name ) then 'p.' else  aClassifier1.ePackage.name + '.Get' + aClassifier1.ePackage.getInterfaceName() + '().'  endif /]
 
-[query private getPackageGetter(anEClassifier : EClassifier, anOperation: EOperation) : String = if anOperation.eType.oclIsUndefined() or anOperation.eTypeParameters->notEmpty() then 'nil' else getPackageInstance(anEClassifier, anOperation.eContainingClass).concat(anEClassifier.getReflectiveGetterName()).concat('()') endif/]
+[query private getPackageGetter(anEClassifier : EClassifier, anOperation: EOperation) : String = if anOperation.eType.oclIsUndefined() or anOperation.eTypeParameters->notEmpty() then 'nil' else getPackageInstance(anEClassifier, anOperation.eContainingClass) + anEClassifier.getReflectiveGetterName() + '()' endif/]
 
 [template private generateDataMember(anENamedElement : ENamedElement, anEPackage : EPackage)] 
 [anENamedElement.getElementInstanceName()/] [getMetaType(anENamedElement)/] 
@@ -72,7 +72,6 @@ p.[aEClass.getElementInstanceName()/].SetInterface([aEClass.interface.toString()
 [/template]
 
 [template private generateInitialization(anEAttribute : EAttribute)]
-p.[anEAttribute.getElementInstanceName()/] = [anEAttribute.getPackageGetter()/];
 p.[anEAttribute.getElementInstanceName()/].SetName("[anEAttribute.name/]");
 p.[anEAttribute.getElementInstanceName()/].SetEType([anEAttribute.eType.oclAsType(EDataType).getPackageGetter(anEAttribute)/]);
 p.[anEAttribute.getElementInstanceName()/].SetLowerBound([anEAttribute.lowerBound/]);
@@ -85,12 +84,9 @@ p.[anEAttribute.getElementInstanceName()/].SetUnique([anEAttribute.unique.toStri
 p.[anEAttribute.getElementInstanceName()/].SetDerived([anEAttribute.derived.toString()/]);
 p.[anEAttribute.getElementInstanceName()/].SetOrdered([anEAttribute.ordered.toString()/]);
 p.[anEAttribute.getElementInstanceName()/].SetID([anEAttribute.iD.toString()/]);
-{
-    defaultValue := "[anEAttribute.defaultValueLiteral/]";
-    if (!defaultValue.empty()) {
-       p.[anEAttribute.getElementInstanceName()/].SetDefaultValueLiteral(defaultValue);
-    }
-}
+[if ( anEAttribute.defaultValueLiteral <> '' )]
+p.[anEAttribute.getElementInstanceName()/].SetDefaultValueLiteral("[anEAttribute.defaultValueLiteral/]");
+[/if]
 
 [/template]
 
@@ -108,13 +104,11 @@ p.[anEReference.getElementInstanceName()/].SetDerived([anEReference.derived.toSt
 p.[anEReference.getElementInstanceName()/].SetOrdered([anEReference.ordered.toString()/]);
 p.[anEReference.getElementInstanceName()/].SetContainment([anEReference.containment.toString()/]);
 p.[anEReference.getElementInstanceName()/].SetResolveProxies([anEReference.resolveProxies.toString()/]);
+[if ( anEReference.defaultValueLiteral <> '' )]
+p.[anEReference.getElementInstanceName()/].SetDefaultValueLiteral("[anEReference.defaultValueLiteral/]");
+[/if]
 {
-    defaultValue := "[anEReference.defaultValueLiteral/]";
-    if (!defaultValue.empty()) {
-        [anEReference.getElementInstanceName()/].SetDefaultValueLiteral(defaultValue);
-    }
-
-    otherEnd := [anEReference.eOpposite.getPackageGetter()/];
+    var otherEnd EReference = [anEReference.eOpposite.getPackageGetter()/];
     if (otherEnd != nil) {
         p.[anEReference.getElementInstanceName()/].SetEOpposite(otherEnd);
     }
@@ -134,7 +128,7 @@ p.[anEOperation.getElementInstanceName()/].SetOrdered([anEOperation.ordered.toSt
 [for (anEParameter : EParameter | anEOperation.eParameters) separator ('\r\n')]
 {
 [let factoryName : String = if anEOperation.eContainingClass.ePackage.name = 'ecore' then '' else 'ecore.' endif + 'GetEcoreFactory']
-    parameter := [factoryName/]().CreateEParameterFromContainer([anEOperation.getElementInstanceName()/]);
+    parameter := [factoryName/]().CreateEParameterFromContainer(p.[anEOperation.getElementInstanceName()/]);
 [/let]
     parameter.SetName("[anEParameter.name/]");
     parameter.SetEType([anEParameter.eType.getPackageGetter(anEParameter.eOperation)/]);
