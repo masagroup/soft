@@ -14,19 +14,47 @@
 [/template]
 
 [template private generateGetter(anENamedElement : ENamedElement, anEPackage : EPackage)]
-[let thisType : String = anEPackage.getImplementationName()]
-[let thisName : String = thisType.toLowerFirst()] 
 // [anENamedElement.getReflectiveGetterName()/] returns the meta object corresponding to 
-func ([thisName/] *[thisType/]) [anENamedElement.getReflectiveGetterName()/]() [getMetaType(anENamedElement)/] {
-    return [thisName/].[anENamedElement.getElementInstanceName()/]
+func (p *[anEPackage.getImplementationName()/]) [anENamedElement.getReflectiveGetterName()/]() [getMetaType(anENamedElement)/] {
+    return p.[anENamedElement.getElementInstanceName()/]
 }
-[/let]
-[/let]
 [/template]
 
+[template private generateCreation(aEClass : EClass)]
+p.[aEClass.getElementInstanceName()/] = factory.CreateEClassFromContainerAndClassID(p, [aEClass.getClassifierIDName()/]);
 
+[/template]
 
-[template public generatePackageImplementation(anEPackage : EPackage){ className : String = anEPackage.getImplementationName() ; receiverName : String = className.toLowerFirst() } ]]
+[template private generateInitialization(aEClass : EClass)]
+p.[aEClass.getElementInstanceName()/].SetName("[aEClass.name/]");
+p.[aEClass.getElementInstanceName()/].SetAbstract([aEClass.abstract.toString()/]);
+p.[aEClass.getElementInstanceName()/].SetInterface([aEClass.interface.toString()/]);
+[/template]
+
+[template private generateCreation(aStructuralFeature : EStructuralFeature)]
+[/template]
+
+[template private generateCreation(anEAttribute : EAttribute)]
+p.[anEAttribute.getElementInstanceName()/] = factory.CreateEAttributeFromContainerAndClassID(p.[anEAttribute.eContainingClass.getElementInstanceName()/], [anEAttribute.eContainingClass.getFeatureIDName(anEAttribute)/]);
+
+[/template]
+
+[template private generateCreation(anEReference : EReference)]
+p.[anEReference.getElementInstanceName()/] = factory.CreateEReferenceFromContainerAndClassID(p.[anEReference.eContainingClass.getElementInstanceName()/], [anEReference.eContainingClass.getFeatureIDName(anEReference)/]);
+
+[/template] 
+
+[template public generateCreation(anEOperation : EOperation)]
+p.[anEOperation.getElementInstanceName()/] = factory.CreateEOperationFromContainerAndClassID(p.[anEOperation.eContainingClass.getElementInstanceName()/], [anEOperation.eContainingClass.getOperationIDName(anEOperation)/]);
+
+[/template]
+
+[template public generateCreation(anEDatatype : EDataType)]
+p.[anEDatatype.getElementInstanceName()/] = factory.Create[if (anEDatatype.oclIsKindOf(EEnum))]EEnum[else]EDataType[/if]FromContainerAndClassID(p, [anEDatatype.getClassifierIDName()/]);
+
+[/template]
+
+[template public generatePackageImplementation(anEPackage : EPackage){ className : String = anEPackage.getImplementationName(); } ]]
 [file (anEPackage.getOutputDirectory() + '/'+ anEPackage.getOutputFileName(className) , false, 'UTF-8')]
 package [anEPackage.name/]
 
@@ -57,14 +85,33 @@ func new[className.toUpperFirst()/]() *[className/] {
 [/for]
 [anEPackage.eAllContents(EDataType)->sortedBy(name).generateGetter(anEPackage)/]
 
-func ([receiverName/] *[className/])createPackageContents() {
+func (p *[className/])createPackageContents() {
+[let factoryName : String = if anEPackage.name = 'ecore' then '' else 'ecore.' endif + 'GetEcoreFactory']
+    factory := [factoryName/]()
+[/let]
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
+    p.create[aClass.name.toUpperFirst()/]Content(factory);
+[/for]
+    p.createPackageEDataTypes(factory)
 }
 
-func ([receiverName/] *[className/])initializePackageContents() {
+[for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
+func (p *[className/])create[aClass.name.toUpperFirst()/]Content(factory EcoreFactory) {
+    [aClass.generateCreation()/]
+    [aClass.eStructuralFeatures.generateCreation()/]
+    [aClass.eOperations.generateCreation()/]
+}
+[/for]
+
+func (p *[className/])createPackageEDataTypes(factory EcoreFactory) {
+    [anEPackage.eAllContents(EDataType)->sortedBy(name).generateCreation()/]
+}
+
+func (p *[className/])initializePackageContents() {
     // Initialize package
-    [receiverName/].SetName(NAME);
-    [receiverName/].SetNsPrefix(NS_PREFIX);
-    [receiverName/].SetNsURI(NS_URI);
+    p.SetName(NAME);
+    p.SetNsPrefix(NS_PREFIX);
+    p.SetNsURI(NS_URI);
 }
 
 
