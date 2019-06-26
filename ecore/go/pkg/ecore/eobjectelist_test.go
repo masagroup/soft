@@ -1,6 +1,7 @@
 package ecore
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -29,9 +30,16 @@ func (arr *testingObjectEList) unset() bool {
 }
 
 func TestEObjectEList(t *testing.T) {
+<<<<<<< HEAD
 	arr := &testingObjectEList{}
 	arr.eObjectEListImpl = NewEObjectEList(NewBasicEObject(), -1, -1)
 
 	adapter := &customTestAdapterMerge{Adapter: *NewAdapter()}
 	arr.owner.EAdapters().Add(adapter)
+=======
+	test := &testingObjectEList{}
+	test.eObjectEListImpl = NewEObjectEList()
+	test.eObjectEListImpl.internal = test
+	fmt.Println(test.resolve())
+>>>>>>> [Go] Add EObjectEList inheritance
 }

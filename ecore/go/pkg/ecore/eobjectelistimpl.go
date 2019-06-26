@@ -1,7 +1,6 @@
 package ecore
 
 type eObjectEListImpl struct {
-<<<<<<< HEAD
 	*ENotifyingListImpl
 	owner            EObjectInternal
 	featureID        int
@@ -143,15 +142,10 @@ func (arr *eObjectEListImpl) Set(index int, elem interface{}) {
 		notifications = arr.owner.EInverseAdd(elem.(EObject), EOPPOSITE_FEATURE_BASE-arr.featureID, notifications)
 	}
 }
-=======
-	arrayEList
-}
 
 func NewEObjectEList() *eObjectEListImpl {
-	
+	factory := new(eObjectEListImpl)
+	factory.arrayEList = NewArrayEList([]interface{}{})
+	factory.internal = factory
+	return factory
 }
-
-func (arr *eObjectEListImpl) test() bool {
-	return arr.containment()
-}
->>>>>>> [Go] Add beginning of lists implementation
