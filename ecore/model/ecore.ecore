@@ -15,6 +15,9 @@
     <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="extension" value="true"/>
     </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+      <details key="extension" value="true"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="iD" eType="#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAttributeType" lowerBound="1"
         eType="#//EDataType" changeable="false" volatile="true" transient="true" derived="true"/>
@@ -38,6 +41,9 @@
       <details key="constraints" value="InterfaceIsAbstract AtMostOneID UniqueFeatureNames UniqueOperationSignatures NoCircularSuperTypes WellFormedMapEntryClass ConsistentSuperTypes DisjointFeatureAndOperationSignatures"/>
     </eAnnotations>
     <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
+      <details key="extension" value="true"/>
+    </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
       <details key="extension" value="true"/>
     </eAnnotations>
     <eOperations name="isSuperTypeOf" eType="#//EBoolean">
@@ -167,6 +173,9 @@
     <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="extension" value="true"/>
     </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+      <details key="extension" value="true"/>
+    </eAnnotations>
     <eOperations name="isInstance" eType="#//EBoolean">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const" value="true"/>
@@ -230,6 +239,7 @@
     </eAnnotations>
     <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
       <details key="exported" value="true"/>
+      <details key="extension" value="true"/>
     </eAnnotations>
     <eOperations name="create" eType="#//EObject">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
@@ -256,6 +266,9 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EModelElement" abstract="true">
     <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
+      <details key="extension" value="true"/>
+    </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
       <details key="extension" value="true"/>
     </eAnnotations>
     <eOperations name="getEAnnotation" eType="#//EAnnotation">
@@ -395,6 +408,9 @@
     <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="extension" value="true"/>
     </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+      <details key="extension" value="true"/>
+    </eAnnotations>
     <eOperations name="isOverrideOf" eType="#//EBoolean">
       <eParameters name="someOperation" eType="#//EOperation"/>
     </eOperations>
@@ -424,6 +440,7 @@
       <details key="extension" value="true"/>
     </eAnnotations>
     <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+      <details key="extension" value="true"/>
       <details key="exported" value="true"/>
     </eAnnotations>
     <eOperations name="getEClassifier" eType="#//EClassifier">
@@ -452,6 +469,9 @@
     <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
       <details key="extension" value="true"/>
     </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+      <details key="extension" value="true"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="containment" eType="#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="container" eType="#//EBoolean"
         changeable="false" volatile="true" transient="true" derived="true"/>
@@ -469,6 +489,9 @@
       <details key="constraints" value="ValidDefaultValueLiteral"/>
     </eAnnotations>
     <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
+      <details key="extension" value="true"/>
+    </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
       <details key="extension" value="true"/>
     </eAnnotations>
     <eOperations name="getContainerClass">
@@ -499,6 +522,9 @@
       <details key="constraints" value="ValidLowerBound ValidUpperBound ConsistentBounds ValidType"/>
     </eAnnotations>
     <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
+      <details key="extension" value="true"/>
+    </eAnnotations>
+    <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
       <details key="extension" value="true"/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="ordered" eType="#//EBoolean"
