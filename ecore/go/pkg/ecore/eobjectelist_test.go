@@ -1,17 +1,16 @@
 package ecore
 
 import (
+	"fmt"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
-type testingObjectEList {
-	ArrayEList
+type testingObjectEList struct {
+	*eObjectEListImpl
 }
 
 func (arr *testingObjectEList) containment() bool {
-	return false
+	return true
 }
 
 func (arr *testingObjectEList) inverse() bool {
@@ -30,7 +29,9 @@ func (arr *testingObjectEList) unset() bool {
 	return false
 }
 
-func TestFactoryChar(t *testing.T) {
-	factory := newEcoreFactoryExt()
-	assert.Equal(t, factory.convertECharToString(nil, factory.createECharFromString(nil, "e")), "e")
+func TestEObjectEList(t *testing.T) {
+	test := &testingObjectEList{}
+	test.eObjectEListImpl = NewEObjectEList()
+	test.eObjectEListImpl.internal = test
+	fmt.Println(test.resolve())
 }
