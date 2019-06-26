@@ -37,7 +37,7 @@ type [implementationName/] struct {
 [for ( qualifiedExtend : String | aClass.getClassExtends() )]
     *[getShortQualifiedName(qualifiedExtend,aPackage.name)/]
 [/for]
-[let features : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( isGet() or isSet() )]
+[let features : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( isField() )]
     [features.generateVariable()/]
 [/let]
 }

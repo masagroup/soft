@@ -76,7 +76,13 @@ NewEmptyArrayEList()
 [let varName : String = aStructuralFeature.getVariableName() ]
 // [aStructuralFeature.getGetterName()/] get the value of [varName/]
 [aClass.generateFunctionReceiver()/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
+[if not isVolatile()]
     return [aClass.getReceiverName()/].[varName/]
+[elseif hasKey('getterBody')]
+    [valueKey('getterBody')/]
+[else]
+    panic("[aStructuralFeature.getGetterName()/] not implemented")
+[/if]
 }
 [/let]
 
@@ -88,11 +94,17 @@ NewEmptyArrayEList()
 [let oldVarName : String = 'old' + aStructuralFeature.getVariableName().toUpperFirst() ]
 // [aStructuralFeature.getSetterName()/] set the value of [varName/]
 [aClass.generateFunctionReceiver()/] [aStructuralFeature.getSetterName()/]( [newVarName/] [aStructuralFeature.generateType()/] ) {
+[if not isVolatile()]
     [oldVarName/] := [aClass.getReceiverName()/].[varName/]
     [aClass.getReceiverName()/].[varName/] = [newVarName/]
     if [aClass.getReceiverName()/].ENotificationRequired() {
         [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureID([aClass.getReceiverName()/], SET, ECLASSIFIER__INSTANCE_CLASS, [oldVarName/], [newVarName/], NO_INDEX))
     }
+[elseif hasKey('setterBody')]
+    [valueKey('setterBody')/]
+[else]
+    panic("[aStructuralFeature.getSetterName()/] not implemented")
+[/if]
 }
 [/let]
 [/let]
@@ -105,39 +117,21 @@ NewEmptyArrayEList()
 [let oldVarName : String = 'old' + aStructuralFeature.getVariableName().toUpperFirst() ]
 // [aStructuralFeature.getUnSetterName()/] unset the value of [varName/]
 [aClass.generateFunctionReceiver()/] [aStructuralFeature.getUnSetterName()/]() {
+[if not isVolatile()]
     [oldVarName/] := [aClass.getReceiverName()/].[varName/]
     [aClass.getReceiverName()/].[varName/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
     if [aClass.getReceiverName()/].ENotificationRequired() {
         [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureID([aClass.getReceiverName()/], UNSET, ECLASSIFIER__INSTANCE_CLASS, [oldVarName/], [aClass.getReceiverName()/].[varName/], NO_INDEX))
     }
+[elseif hasKey('unsetterBody')]
+    [valueKey('unsetterBody')/]
+[else]
+    panic("[aStructuralFeature.getUnSetterName()/] not implemented")
+[/if]
 }
 
 [/let]
 [/let]
 [/template]
 
-[template public generateGetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, aClass : EClass)]
-// [aStructuralFeature.getGetterName()/] get the value of [aStructuralFeature.getVariableName()/]
-[aClass.generateFunctionReceiver()/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
-    return [aClass.getReceiverName()/].[firstClass.getImplementationName()/].[aStructuralFeature.getGetterName()/]()
-}
 
-[/template]
-
-[template public generateSetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, aClass : EClass)]
-[let newVarName : String = 'new' + aStructuralFeature.getVariableName().toUpperFirst() ]
-// [aStructuralFeature.getSetterName()/] set the value of [aStructuralFeature.name/]
-[aClass.generateFunctionReceiver()/] [aStructuralFeature.getSetterName()/]( [newVarName/] [aStructuralFeature.generateType()/] ) {
-    [aClass.getReceiverName()/].[firstClass.getImplementationName()/].[aStructuralFeature.getSetterName()/]([newVarName/])
-}
-
-[/let]
-[/template]
-
-[template public generateUnSetInheritedImplementation(aStructuralFeature : EStructuralFeature, firstClass : EClass, aClass : EClass)]
-// [aStructuralFeature.getUnSetterName()/] unset the value of [aStructuralFeature.getVariableName()/]
-[aClass.generateFunctionReceiver()/] [aStructuralFeature.getUnSetterName()/]() {
-    [aClass.getReceiverName()/].[firstClass.getImplementationName()/].[aStructuralFeature.getUnSetterName()/]()
-}
-
-[/template]
