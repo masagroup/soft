@@ -1,13 +1,17 @@
 package ecore
 
 type eObjectEListImpl struct {
-	arrayEList
+	*arrayEList
+	internal interface{}
 }
 
 func NewEObjectEList() *eObjectEListImpl {
-	
+	factory := new(eObjectEListImpl)
+	factory.arrayEList = NewArrayEList([]interface{}{})
+	factory.internal = factory
+	return factory
 }
 
-func (arr *eObjectEListImpl) test() bool {
-	return arr.containment()
+func (arr *eObjectEListImpl) resolve() bool {
+	return arr.internal.(eObjectEListInternal).containment()
 }
