@@ -158,7 +158,7 @@ package [anEPackage.name/]
 
 // [className/] is the [anEPackage.getInterfaceName()/] implementation
 type [className/] struct {
-    *EPackageImpl
+    *EPackageExt
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
     [let dataMembers : Sequence(ENamedElement) = Sequence{ Sequence{ aClass } , aClass.eStructuralFeatures, aClass.eOperations}->flatten()]
     [dataMembers.generateDataMember(anEPackage)/]
@@ -169,7 +169,7 @@ type [className/] struct {
 
 func new[className.toUpperFirst()/]() *[className/] {
     p := new([className/])
-    p.EPackageImpl = NewEPackageImpl()
+    p.EPackageExt = NewEPackageExt()
     p.createPackageContents()
     p.initializePackageContents()
     return p

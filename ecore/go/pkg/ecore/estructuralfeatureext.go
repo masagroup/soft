@@ -1,4 +1,4 @@
-StructuralFeature ecore
+package ecore
 
 // eStructuralFeatureExt is the extension of the model object 'EStructuralFeature'
 type eStructuralFeatureExt struct {

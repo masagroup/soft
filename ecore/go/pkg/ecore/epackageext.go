@@ -1,12 +1,12 @@
 package ecore
 
-// ePackageExt is the extension of the model object 'EPackage'
-type ePackageExt struct {
+// EPackageExt is the extension of the model object 'EFactory'
+type EPackageExt struct {
     *ePackageImpl
 }
 
-func newEPackageExt() *ePackageExt {
-	ePackage := new(ePackageExt)
+func NewEPackageExt() *EPackageExt {
+	ePackage := new(EPackageExt)
 	ePackage.ePackageImpl = newEPackageImpl()
 	return ePackage
 }

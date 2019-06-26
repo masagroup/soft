@@ -14,9 +14,11 @@ func [aClass.getConstructorName()/]() *[aClass.getImplementationName()/] {
 [for ( qualifiedExtend : String | aClass.getClassExtends() )]
     [aClass.getReceiverName()/].[getShortQualifiedName(qualifiedExtend,aClass.ePackage.name)/] = [getShortQualifiedName(getConstructorName(qualifiedExtend), aClass.ePackage.name)/]()
 [/for] 
-[if aClass.eStructuralFeatures->notEmpty()]
-    [aClass.eStructuralFeatures.generateVariableInitialization()/]
+[let features : OrderedSet(EAttribute) = aClass.eStructuralFeatures->select( isField() )]
+[if features->notEmpty()]
+    [features.generateVariableInitialization()/]
 [/if]
+[/let]
     return [aClass.getReceiverName()/]
 }
 [/template]

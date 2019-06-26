@@ -1,4 +1,4 @@
-TypedElement ecore
+package ecore
 
 // eTypedElementExt is the extension of the model object 'ETypedElement'
 type eTypedElementExt struct {

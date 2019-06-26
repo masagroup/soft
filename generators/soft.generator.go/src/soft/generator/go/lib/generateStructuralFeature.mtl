@@ -72,11 +72,19 @@ NewEmptyArrayEList()
 [/if]
 [/template]
 
+
 [template public generateGetImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
 [let varName : String = aStructuralFeature.getVariableName() ]
 // [aStructuralFeature.getGetterName()/] get the value of [varName/]
 [aClass.generateFunctionReceiver()/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
-[if not isVolatile()]
+[if isContainer()]
+    panic("[aStructuralFeature.getGetterName()/] to be implemented")
+    // if EContainerFeatureID() != [aStructuralFeature.eContainingClass.getFeatureIDName(aStructuralFeature)/] {
+    //    return nil
+    //} else {
+    //    return EContainer();
+    //}
+[elseif not isVolatile()]
     return [aClass.getReceiverName()/].[varName/]
 [elseif hasKey('getterBody')]
     [valueKey('getterBody')/]
@@ -94,7 +102,9 @@ NewEmptyArrayEList()
 [let oldVarName : String = 'old' + aStructuralFeature.getVariableName().toUpperFirst() ]
 // [aStructuralFeature.getSetterName()/] set the value of [varName/]
 [aClass.generateFunctionReceiver()/] [aStructuralFeature.getSetterName()/]( [newVarName/] [aStructuralFeature.generateType()/] ) {
-[if not isVolatile()]
+[if isContainer()]
+    panic("[aStructuralFeature.getSetterName()/] to be implemented")
+[elseif not isVolatile()]
     [oldVarName/] := [aClass.getReceiverName()/].[varName/]
     [aClass.getReceiverName()/].[varName/] = [newVarName/]
     if [aClass.getReceiverName()/].ENotificationRequired() {
@@ -117,7 +127,9 @@ NewEmptyArrayEList()
 [let oldVarName : String = 'old' + aStructuralFeature.getVariableName().toUpperFirst() ]
 // [aStructuralFeature.getUnSetterName()/] unset the value of [varName/]
 [aClass.generateFunctionReceiver()/] [aStructuralFeature.getUnSetterName()/]() {
-[if not isVolatile()]
+[if isContainer()]
+    panic("[aStructuralFeature.getSetterName()/] to be implemented")
+[elseif not isVolatile()]
     [oldVarName/] := [aClass.getReceiverName()/].[varName/]
     [aClass.getReceiverName()/].[varName/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
     if [aClass.getReceiverName()/].ENotificationRequired() {

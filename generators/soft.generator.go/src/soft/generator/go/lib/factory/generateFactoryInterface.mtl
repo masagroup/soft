@@ -32,7 +32,7 @@ func Get[className/]() [className/] {
     if factoryInstance == nil {
 [let extension : Boolean = anEPackage.hasKey('factory') and anEPackage.valueKey('factory') = 'extension']
 [let factoryName : String = if extension then anEPackage.getFactoryExtensionName() else anEPackage.getFactoryImplementationName() endif] 
-		factoryInstance = new[factoryName/]()
+		factoryInstance = new[factoryName.toUpperFirst()/]()
 [/let]
 [/let]
     }
