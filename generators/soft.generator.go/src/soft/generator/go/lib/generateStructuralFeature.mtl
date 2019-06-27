@@ -132,7 +132,7 @@ NewEmptyArrayEList()
 [/template]
 
 [template public generateVariableInitializationMethodDeclaration(aStructuralFeature : EStructuralFeature)]
-[aStructuralFeature.getMethodInitializationName()/]()[if aStructuralFeature.getLazy() = 'function'][aStructuralFeature.generateType()/][/if]
+[aStructuralFeature.getMethodInitializationName()/]()[if aStructuralFeature.getLazy() = 'function'] [aStructuralFeature.generateType()/][/if]
 
 [/template]
 
@@ -146,6 +146,8 @@ NewEmptyArrayEList()
     panic("[aStructuralFeature.getMethodInitializationName()/] not implemented")
 [/if]
 }
+
+
 [/template]
 
 [template public generateVariableInitializationMethodDefinition(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'action' )]
@@ -163,6 +165,7 @@ NewEmptyArrayEList()
 }
 [/let]
 [/let]
+
 
 [/template]
 
