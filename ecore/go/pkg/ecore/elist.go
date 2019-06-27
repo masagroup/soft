@@ -55,4 +55,6 @@ type EListInternal interface {
 	RemoveAt(int) bool
 
 	Remove(interface{}) bool
+
+	Clear()
 }
