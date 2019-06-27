@@ -319,7 +319,6 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EObject">
     <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
-      <details key="operationName" value="e(.*):$1"/>
       <details key="exported" value="true"/>
     </eAnnotations>
     <eOperations name="eClass" eType="#//EClass">
@@ -398,7 +397,7 @@
         <details key="visibility" value="public:no"/>
       </eAnnotations>
       <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
-        <details key="operationName" value="GetResolve"/>
+        <details key="operationName" value="EGetResolve"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
       <eParameters name="resolve" eType="#//EBoolean"/>

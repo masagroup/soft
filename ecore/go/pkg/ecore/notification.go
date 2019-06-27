@@ -60,7 +60,7 @@ func (notif *notification) GetFeature() EStructuralFeature {
 	if notif.feature != nil {
 		return notif.feature
 	}
-	return notif.notifier.Class().GetEStructuralFeature(notif.featureID)
+	return notif.notifier.EClass().GetEStructuralFeature(notif.featureID)
 }
 
 func (notif *notification) GetFeatureID() int {
