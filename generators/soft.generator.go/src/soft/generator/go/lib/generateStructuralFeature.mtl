@@ -6,6 +6,81 @@
 [import soft::generator::go::generateType/]
 [import soft::generator::go::lib::generateCommon/]
 
+[**
+ * lazy property can be defined as follow lazy = no|function|action
+ **]
+[query private getLazy( aStructuralFeature : EStructuralFeature ) : String =
+if aStructuralFeature.hasKey('lazy') then 
+    aStructuralFeature.valueKey('lazy')
+else
+    let aPackage : EPackage = aStructuralFeature.eContainingClass.ePackage in
+    if aStructuralFeature.isListType() then
+        aPackage.getLazy('list')
+    else if aStructuralFeature.isProxy() then
+        aPackage.getLazy('proxy')
+    else 
+        aPackage.getLazy('')
+    endif
+    endif
+endif/]
+
+[**
+ * lazy property can be defined as follow lazy = ((*|list|proxy):(no|function|action))+
+ **]
+[query private getLazy( aPackage : EPackage , type : String ) : String =
+if aPackage.hasKey('lazy') then
+    let lazy : String = aPackage.valueKey('lazy') in
+    let value : String = lazy.tokenize()->iterate( s ; res: String = '' | (
+        if res = '' then 
+            let index : Integer = s.index( ':' ) in 
+            if index = -1 then
+                s
+            else
+                let t : String = s.substring(1 , index - 1 ) in
+                if t = type then
+                    s.substring( index + 1 )
+                else
+                    ''
+                endif
+            endif
+        else
+            res
+        endif
+    )) in
+    if value = '' then
+        'no'
+    else
+        value
+    endif
+else 
+    'no'
+endif
+/]
+
+[query private getVariableName( aFeature : EStructuralFeature ) : String = 
+if aFeature.eType.name = 'EBoolean' then 'is' + aFeature.name.toUpperFirst() else aFeature.name endif/]
+
+[query public isLazy( aStructuralFeature : EStructuralFeature ) : Boolean = aStructuralFeature.getLazy() <> 'no'/] 
+
+[query public isVariableInitializationDefered( aStructuralFeature : EStructuralFeature ) : Boolean = isListType() or isProxy()/]
+
+[query public hasVariableInitializationMethod( aStructuralFeature : EStructuralFeature ) : Boolean = 
+isLazy() and ( let lazyType : String = aStructuralFeature.getLazy() in lazyType = 'action' or lazyType = 'function')/]
+
+[query public getVariableInitializationFeatures( aClass : EClass ) : OrderedSet(EStructuralFeature) = 
+         aClass.eStructuralFeatures->select( not isVolatile() and hasVariableInitializationMethod() and getLazy() = 'function')
+->addAll(aClass.eStructuralFeatures->select( not isVolatile() and hasVariableInitializationMethod() and getLazy() = 'action' ))/]
+
+[query public getVariableInitializersInterface( aClass : EClass ) : String = aClass.getImplementationName() + 'Initializers'/]
+
+
+[query private getMethodInitializationName(feature : EStructuralFeature) : String = 
+if hasKey('initializationName') then 
+    valueKey('initializationName') 
+else 
+    'init'.concat(name.toUpperFirst()) 
+endif/]
+
 [template public generateDeclaration(aStructuralFeature : EStructuralFeature)]
 [if isGet()]
 [aStructuralFeature.generateGetDeclaration()/]
@@ -31,14 +106,6 @@
 [aStructuralFeature.getUnSetterName()/]()
 [/template]
 
-[query private getVariableName( aFeature : EStructuralFeature ) : String = 
-if aFeature.eType.name = 'EBoolean' then 'is' + aFeature.name.toUpperFirst() else aFeature.name endif/]
-
-[template public generateVariable(aStructuralFeature : EStructuralFeature)]
-[aStructuralFeature.getVariableName()/] [aStructuralFeature.generateType()/]
-
-[/template]
-
 [template private getListConstructor( anEAttribute : EStructuralFeature ) post(trim())]
 [/template]
 
@@ -50,13 +117,52 @@ NewEmptyArrayEList()
 NewEmptyArrayEList()
 [/template]
 
+[template public generateVariableDeclaration(aStructuralFeature : EStructuralFeature)]
+[aStructuralFeature.getVariableName()/] [aStructuralFeature.generateType()/]
+
+[/template]
+
 [template public generateVariableInitialization(aStructuralFeature : EStructuralFeature)]
-[if aStructuralFeature.isListType()]
-[aStructuralFeature.eContainingClass.getReceiverName()/].[aStructuralFeature.getVariableName()/] = [aStructuralFeature.getListConstructor()/]
-[elseif aStructuralFeature.oclIsKindOf(EAttribute)]
+[if aStructuralFeature.oclIsKindOf(EAttribute) ]
 [aStructuralFeature.eContainingClass.getReceiverName()/].[aStructuralFeature.getVariableName()/] = [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/]
+[elseif aStructuralFeature.isListType() and not aStructuralFeature.isLazy()]
+[aStructuralFeature.eContainingClass.getReceiverName()/].[aStructuralFeature.getVariableName()/] = [aStructuralFeature.getListConstructor()/]
 [else]
 [/if]
+[/template]
+
+[template public generateVariableInitializationMethodDeclaration(aStructuralFeature : EStructuralFeature)]
+[aStructuralFeature.getMethodInitializationName()/]()[if aStructuralFeature.getLazy() = 'function'][aStructuralFeature.generateType()/][/if]
+
+[/template]
+
+[template public generateVariableInitializationMethodDefinition(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'function' )]
+[aStructuralFeature.eContainingClass.generateFunctionReceiver()/][aStructuralFeature.getMethodInitializationName()/]()[aStructuralFeature.generateType()/] {
+[if isListType()]
+    return [getListConstructor()/];
+[elseif aStructuralFeature.oclIsKindOf(EAttribute)]
+    return [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/];
+[else]
+    panic("[aStructuralFeature.getMethodInitializationName()/] not implemented")
+[/if]
+}
+[/template]
+
+[template public generateVariableInitializationMethodDefinition(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'action' )]
+[aStructuralFeature.eContainingClass.generateFunctionReceiver()/][aStructuralFeature.getMethodInitializationName()/]() {
+[let varName : String = aStructuralFeature.getVariableName() ]
+[let receiverName : String = aStructuralFeature.eContainingClass.getReceiverName()]
+[if isListType()]
+    [receiverName/].[varName/] = [getListConstructor()/];
+[elseif isProxy()]
+[elseif aStructuralFeature.oclIsKindOf(EAttribute)]
+    [receiverName/].[varName/] = [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/];
+[else]
+    panic("[aStructuralFeature.getMethodInitializationName()/] not implemented")
+[/if]
+}
+[/let]
+[/let]
 [/template]
 
 
@@ -75,6 +181,7 @@ NewEmptyArrayEList()
 
 [template public generateGetImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
 [let varName : String = aStructuralFeature.getVariableName() ]
+[let receiverName : String = aStructuralFeature.eContainingClass.getReceiverName()]
 // [aStructuralFeature.getGetterName()/] get the value of [varName/]
 [aClass.generateFunctionReceiver()/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
 [if isContainer()]
@@ -85,13 +192,29 @@ NewEmptyArrayEList()
     //    return EContainer();
     //}
 [elseif not isVolatile()]
-    return [aClass.getReceiverName()/].[varName/]
+    [let lazy : String = aStructuralFeature.getLazy()]
+    [if lazy <> 'no']
+        [if aStructuralFeature.oclIsKindOf(EAttribute)]
+    if [receiverName/].[varName/] == [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/] {
+        [else]
+    if [receiverName/].[varName/] == nil {
+        [/if]
+        [if  lazy = 'function']
+        [receiverName/].[varName/] = [receiverName/].internal.([aClass.getVariableInitializersInterface()/]).[aStructuralFeature.getMethodInitializationName()/]()
+        [elseif lazy = 'action']
+        [receiverName/].internal.([aClass.getVariableInitializersInterface()/]).[aStructuralFeature.getMethodInitializationName()/]()
+        [/if]
+    }
+    [/if]
+    [/let]
+    return [receiverName/].[varName/]
 [elseif hasKey('getterBody')]
     [valueKey('getterBody')/]
 [else]
     panic("[aStructuralFeature.getGetterName()/] not implemented")
 [/if]
 }
+[/let]
 [/let]
 
 [/template]

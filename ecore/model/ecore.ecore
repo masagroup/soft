@@ -85,12 +85,18 @@
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="lazy" value="action"/>
+      </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eReferences" upperBound="-1"
         eType="#//EReference" changeable="false" transient="true" derived="true">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
+      </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="lazy" value="action"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eSuperTypes" upperBound="-1"
@@ -108,12 +114,18 @@
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="lazy" value="action"/>
+      </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eCrossReferences" upperBound="-1"
         eType="#//EReference" changeable="false" transient="true" derived="true">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
+      </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="lazy" value="action"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllAttributes" upperBound="-1"
@@ -122,12 +134,18 @@
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="lazy" value="action"/>
+      </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllReferences" upperBound="-1"
         eType="#//EReference" changeable="false" transient="true" derived="true">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
+      </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="lazy" value="action"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllContainments" upperBound="-1"
@@ -136,12 +154,18 @@
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="lazy" value="action"/>
+      </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllOperations" upperBound="-1"
         eType="#//EOperation" changeable="false" transient="true" derived="true">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
+      </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="lazy" value="action"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllStructuralFeatures"
@@ -151,6 +175,9 @@
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="lazy" value="action"/>
+      </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eAllSuperTypes" upperBound="-1"
         eType="#//EClass" changeable="false" transient="true" derived="true">
@@ -158,10 +185,16 @@
         <details key="lazy" value="action"/>
         <details key="const" value="return"/>
       </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="lazy" value="action"/>
+      </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eIDAttribute" eType="#//EAttribute"
         changeable="false" transient="true" derived="true" resolveProxies="false">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
+        <details key="lazy" value="action"/>
+      </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
         <details key="lazy" value="action"/>
       </eAnnotations>
     </eStructuralFeatures>
