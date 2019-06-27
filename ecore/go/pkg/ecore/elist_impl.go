@@ -2,7 +2,8 @@ package ecore
 
 // arrayEList is an array of a dynamic size
 type arrayEList struct {
-	data []interface{}
+	data     []interface{}
+	internal interface{}
 }
 
 type immutableEList struct {
@@ -16,7 +17,10 @@ func NewEmptyArrayEList() *arrayEList {
 
 // NewArrayEList return a new ArrayEList
 func NewArrayEList(data []interface{}) *arrayEList {
-	return &arrayEList{data: data}
+	return &arrayEList{
+		data:     data,
+		internal: nil,
+	}
 }
 
 // NewImmutableEList return a new ImmutableEList
@@ -42,35 +46,46 @@ func (it *iterator) Next() bool {
 
 // Add a new element to the array
 func (arr *arrayEList) Add(elem interface{}) bool {
-	arr.data = append(arr.data, elem)
-	return true
+	if arr.internal == nil {
+		arr.data = append(arr.data, elem)
+		return true
+	}
+	return arr.internal.(EListInternal).Add(elem)
 }
 
 // AddAll elements of an array in the current one
 func (arr *arrayEList) AddAll(list EList) bool {
-	arr.data = append(arr.data, list.ToArray()...)
-	return true
+	if arr.internal == nil {
+		arr.data = append(arr.data, list.ToArray()...)
+		return true
+	}
+	return arr.internal.(EListInternal).AddAll(list)
 }
 
 // Insert an element in the array
 func (arr *arrayEList) Insert(index int, elem interface{}) bool {
-
-	if index < 0 || index > arr.Size() {
-		panic("Index out of bounds")
+	if arr.internal == nil {
+		if index < 0 || index > arr.Size() {
+			panic("Index out of bounds")
+		}
+		arr.data = append(arr.data, nil)
+		copy(arr.data[index+1:], arr.data[index:])
+		arr.data[index] = elem
+		return true
 	}
-	arr.data = append(arr.data, nil)
-	copy(arr.data[index+1:], arr.data[index:])
-	arr.data[index] = elem
-	return true
+	return arr.internal.(EListInternal).Insert(index, elem)
 }
 
 // InsertAll element of an array at a given position
 func (arr *arrayEList) InsertAll(index int, list EList) bool {
-	if index < 0 || index > arr.Size() {
-		panic("Index out of bounds")
+	if arr.internal == nil {
+		if index < 0 || index > arr.Size() {
+			panic("Index out of bounds")
+		}
+		arr.data = append(arr.data[:index], append(list.ToArray(), arr.data[index:]...)...)
+		return true
 	}
-	arr.data = append(arr.data[:index], append(list.ToArray(), arr.data[index:]...)...)
-	return true
+	return arr.internal.(EListInternal).InsertAll(index, list)
 }
 
 // Move an element to the given index
@@ -116,20 +131,26 @@ func (arr *arrayEList) Set(index int, elem interface{}) {
 
 // RemoveAt remove an element at a given position
 func (arr *arrayEList) RemoveAt(index int) bool {
-	if index < 0 || index >= arr.Size() {
-		panic("Index out of bounds")
+	if arr.internal == nil {
+		if index < 0 || index >= arr.Size() {
+			panic("Index out of bounds")
+		}
+		arr.data = append(arr.data[:index], arr.data[index+1:]...)
+		return true
 	}
-	arr.data = append(arr.data[:index], arr.data[index+1:]...)
-	return true
+	return arr.internal.(EListInternal).RemoveAt(index)
 }
 
 // Remove an element in an array
 func (arr *arrayEList) Remove(elem interface{}) bool {
-	index := arr.IndexOf(elem)
-	if index == -1 {
-		return false
+	if arr.internal == nil {
+		index := arr.IndexOf(elem)
+		if index == -1 {
+			return false
+		}
+		return arr.RemoveAt(index)
 	}
-	return arr.RemoveAt(index)
+	return arr.internal.(EListInternal).Remove(elem)
 }
 
 // Size count the number of element in the array
