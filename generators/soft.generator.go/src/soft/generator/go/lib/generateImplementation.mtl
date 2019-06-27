@@ -25,9 +25,9 @@ type [implementationName/] struct {
 [if initializerFeatures->notEmpty()]
 type [aClass.getVariableInitializersInterface()/] interface {
     [initializerFeatures.generateVariableInitializationMethodDeclaration()/]
+}
 [/if]
 [/let]
-}
 
 // [aClass.getConstructorName()/] is the constructor of a [aClass.getImplementationName()/]
 func [aClass.getConstructorName()/]() *[aClass.getImplementationName()/] {
@@ -46,6 +46,6 @@ func [aClass.getConstructorName()/]() *[aClass.getImplementationName()/] {
 
 [aClass.eOperations.generateImplementation()/]
 [aClass.eStructuralFeatures.generateImplementation(aClass)/]
-
+[aClass.getVariableInitializationFeatures().generateVariableInitializationMethodDefinition()/]
 [/file]
 [/template]

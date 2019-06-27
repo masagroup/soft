@@ -137,7 +137,7 @@ NewEmptyArrayEList()
 [/template]
 
 [template public generateVariableInitializationMethodDefinition(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'function' )]
-[aStructuralFeature.eContainingClass.generateFunctionReceiver()/][aStructuralFeature.getMethodInitializationName()/]()[aStructuralFeature.generateType()/] {
+[aStructuralFeature.eContainingClass.generateFunctionReceiver()/] [aStructuralFeature.getMethodInitializationName()/]()[aStructuralFeature.generateType()/] {
 [if isListType()]
     return [getListConstructor()/];
 [elseif aStructuralFeature.oclIsKindOf(EAttribute)]
@@ -149,7 +149,7 @@ NewEmptyArrayEList()
 [/template]
 
 [template public generateVariableInitializationMethodDefinition(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'action' )]
-[aStructuralFeature.eContainingClass.generateFunctionReceiver()/][aStructuralFeature.getMethodInitializationName()/]() {
+[aStructuralFeature.eContainingClass.generateFunctionReceiver()/] [aStructuralFeature.getMethodInitializationName()/]() {
 [let varName : String = aStructuralFeature.getVariableName() ]
 [let receiverName : String = aStructuralFeature.eContainingClass.getReceiverName()]
 [if isListType()]
@@ -163,6 +163,7 @@ NewEmptyArrayEList()
 }
 [/let]
 [/let]
+
 [/template]
 
 
