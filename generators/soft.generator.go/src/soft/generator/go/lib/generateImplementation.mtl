@@ -45,7 +45,7 @@ func [aClass.getConstructorName()/]() *[aClass.getImplementationName()/] {
 }
 
 [aClass.eOperations.generateImplementation()/]
-[aClass.eStructuralFeatures.generateImplementation(aClass)/]
+[aClass.eStructuralFeatures.generateImplementation()/]
 [aClass.getVariableInitializationFeatures().generateVariableInitializationMethodDefinition()/]
 [/file]
 [/template]

@@ -170,20 +170,21 @@ NewEmptyArrayEList()
 [/template]
 
 
-[template public generateImplementation(aStructuralFeature : EStructuralFeature, baseClass : EClass)]
+[template public generateImplementation(aStructuralFeature : EStructuralFeature )]
 [if isGet()]
-[aStructuralFeature.generateGetImplementation(baseClass)/]
+[aStructuralFeature.generateGetImplementation()/]
 [/if]
 [if isSet()]
-[aStructuralFeature.generateSetImplementation(baseClass)/]
+[aStructuralFeature.generateSetImplementation()/]
 [/if]
 [if isUnSet()]
-[aStructuralFeature.generateUnSetImplementation(baseClass)/]
+[aStructuralFeature.generateUnSetImplementation()/]
 [/if]
 [/template]
 
 
-[template public generateGetImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
+[template public generateGetImplementation(aStructuralFeature : EStructuralFeature)]
+[let aClass : EClass = aStructuralFeature.eContainingClass]
 [let varName : String = aStructuralFeature.getVariableName() ]
 [let receiverName : String = aStructuralFeature.eContainingClass.getReceiverName()]
 // [aStructuralFeature.getGetterName()/] get the value of [varName/]
@@ -220,10 +221,12 @@ NewEmptyArrayEList()
 }
 [/let]
 [/let]
+[/let]
 
 [/template]
 
-[template public generateSetImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
+[template public generateSetImplementation(aStructuralFeature : EStructuralFeature )]
+[let aClass : EClass = aStructuralFeature.eContainingClass]
 [let varName : String = aStructuralFeature.getVariableName() ]
 [let newVarName : String = 'new' + aStructuralFeature.getVariableName().toUpperFirst() ]
 [let oldVarName : String = 'old' + aStructuralFeature.getVariableName().toUpperFirst() ]
@@ -246,10 +249,12 @@ NewEmptyArrayEList()
 [/let]
 [/let]
 [/let]
+[/let]
 
 [/template]
 
-[template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
+[template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature )]
+[let aClass : EClass = aStructuralFeature.eContainingClass]
 [let varName : String = aStructuralFeature.getVariableName() ]
 [let oldVarName : String = 'old' + aStructuralFeature.getVariableName().toUpperFirst() ]
 // [aStructuralFeature.getUnSetterName()/] unset the value of [varName/]
@@ -268,9 +273,10 @@ NewEmptyArrayEList()
     panic("[aStructuralFeature.getUnSetterName()/] not implemented")
 [/if]
 }
+[/let]
+[/let]
+[/let]
 
-[/let]
-[/let]
 [/template]
 
 
