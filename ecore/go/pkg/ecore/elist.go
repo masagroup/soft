@@ -42,3 +42,17 @@ type EIterator interface {
 	Value() interface{}
 	Next() bool
 }
+
+type EListInternal interface {
+	Add(interface{}) bool
+
+	AddAll(EList) bool
+
+	Insert(int, interface{}) bool
+
+	InsertAll(int, EList) bool
+
+	RemoveAt(int) bool
+
+	Remove(interface{}) bool
+}
