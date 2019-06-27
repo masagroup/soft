@@ -57,4 +57,6 @@ type EListInternal interface {
 	Remove(interface{}) bool
 
 	Clear()
+
+	Set(int, interface{})
 }
