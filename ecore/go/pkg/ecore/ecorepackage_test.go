@@ -20,7 +20,7 @@ func TestEcorePackageClassAndAttribute(t *testing.T) {
 	assert.Equal(t, eClassAbstract.GetName(), "abstract")
 	assert.Equal(t, eClassAbstract.GetEAttributeType().GetName(), "EBoolean")
 
-	eAttributes := eClass.GetEAttributes()
-	assert.True( t, eAttributes.Contains(eClassAbstract) )
+	eFeatures := eClass.GetEStructuralFeatures()
+	assert.True( t, eFeatures.Contains(eClassAbstract) )
 }
 
