@@ -4,6 +4,7 @@ type ENotifyingList interface {
 }
 
 type ENotifyingListImpl struct {
+<<<<<<< HEAD
 	*arrayEList
 	owner     EObject
 	featureID int
@@ -15,17 +16,35 @@ func NewENotifyingListImpl(owner EObject, featureID int) *ENotifyingListImpl {
 		featureID:  featureID,
 		arrayEList: NewUniqueArrayEList([]interface{}{}),
 	}
+=======
+	EList
+	notifier *Notifier
+}
+
+func NewENotifyingListImpl() *ENotifyingListImpl {
+	list := &ENotifyingListImpl{}
+	list.notifier = NewNotifier()
+>>>>>>> [Go] Begin to implement Notifying List
 	return list
 }
 
 // Add a new element to the array
 func (arr *ENotifyingListImpl) Add(elem interface{}) bool {
+<<<<<<< HEAD
 	defer arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, elem, arr.Size()))
 	return arr.arrayEList.Add(elem)
+=======
+	if arr.EList.Add(elem) {
+		arr.notifier.ENotify(NewNotificationByFeatureID(nil, ADD, ECLASSIFIER__INSTANCE_CLASS, nil, elem, arr.Size()))
+		return true
+	}
+	return false
+>>>>>>> [Go] Begin to implement Notifying List
 }
 
 // AddAll elements of an array in the current one
 func (arr *ENotifyingListImpl) AddAll(list EList) bool {
+<<<<<<< HEAD
 	val := arr.arrayEList.AddAll(list)
 	size := arr.Size()
 	if size == 1 {
@@ -87,4 +106,15 @@ func (arr *ENotifyingListImpl) Set(index int, elem interface{}) {
 	old := arr.Get(index)
 	arr.Set(index, elem)
 	arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, SET, arr.featureID, old, elem, index))
+=======
+	if arr.EList.AddAll(list) {
+		if list.Size() == 1 {
+			arr.notifier.ENotify(NewNotificationByFeatureID(nil, ADD, ECLASSIFIER__INSTANCE_CLASS, nil, list, arr.Size()))
+		} else {
+			arr.notifier.ENotify(NewNotificationByFeatureID(nil, ADD_MANY, ECLASSIFIER__INSTANCE_CLASS, nil, list, arr.Size()))
+		}
+		return true
+	}
+	return false
+>>>>>>> [Go] Begin to implement Notifying List
 }

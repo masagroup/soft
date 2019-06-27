@@ -55,8 +55,11 @@ type EListInternal interface {
 	RemoveAt(int) bool
 
 	Remove(interface{}) bool
+<<<<<<< HEAD
 
 	Clear()
 
 	Set(int, interface{})
+=======
+>>>>>>> [Go] Begin to implement Notifying List
 }
