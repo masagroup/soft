@@ -155,7 +155,10 @@ func (arr *arrayEList) Size() int {
 
 // Clear remove all elements of the array
 func (arr *arrayEList) Clear() {
-	arr.data = make([]interface{}, 0)
+	if arr.internal == nil {
+		arr.data = make([]interface{}, 0)
+	}
+	arr.internal.(EListInternal).Clear()
 }
 
 // Empty return true if the array contains 0 element
