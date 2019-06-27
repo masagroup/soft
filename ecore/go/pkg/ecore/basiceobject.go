@@ -37,6 +37,11 @@ func ( o *BasicEObject) EIsProxy() bool {
 }
 
 func ( o *BasicEObject) EResource() EResource {
+	if ( o.resource == nil) {
+		if ( o.container != nil ) {
+			o.resource = o.container.EResource()
+		}
+	}
 	return o.resource
 }
 
