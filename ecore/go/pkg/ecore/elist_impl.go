@@ -213,8 +213,9 @@ func (arr *arrayEList) Size() int {
 func (arr *arrayEList) Clear() {
 	if arr.internal == nil {
 		arr.data = make([]interface{}, 0)
+	} else {
+		arr.internal.(EListInternal).Clear()
 	}
-	arr.internal.(EListInternal).Clear()
 }
 
 // Empty return true if the array contains 0 element
