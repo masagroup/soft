@@ -107,12 +107,9 @@ p.[anEReference.getElementInstanceName()/].SetResolveProxies([anEReference.resol
 [if ( anEReference.defaultValueLiteral <> '' )]
 p.[anEReference.getElementInstanceName()/].SetDefaultValueLiteral("[anEReference.defaultValueLiteral/]");
 [/if]
-{
-    var otherEnd EReference = [anEReference.eOpposite.getPackageGetter()/];
-    if (otherEnd != nil) {
-        p.[anEReference.getElementInstanceName()/].SetEOpposite(otherEnd);
-    }
-}
+[if not anEReference.eOpposite.oclIsUndefined()]
+p.[anEReference.getElementInstanceName()/].SetEOpposite([anEReference.eOpposite.getPackageGetter()/]);
+[/if]
 
 [/template]
 

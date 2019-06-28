@@ -100,11 +100,9 @@ std::shared_ptr<[getMetaType(anENamedElement, anEPackage)/]> [anENamedElement.ge
 [if ( anEReference.defaultValueLiteral <> '' )]
 [anEReference.getElementInstanceName()/]->setDefaultValueLiteral("[anEReference.defaultValueLiteral/]");
 [/if]
-{
-    std::shared_ptr<ecore::EReference>  otherEnd = [anEReference.eOpposite.getPackageGetter()/];
-    if (otherEnd != nullptr)
-        [anEReference.getElementInstanceName()/]->setEOpposite(otherEnd);
-}
+[if not anEReference.eOpposite.oclIsUndefined()]
+[anEReference.getElementInstanceName()/]->setEOpposite([anEReference.eOpposite.getPackageGetter()/]);
+[/if]
 
 [/template]
 
