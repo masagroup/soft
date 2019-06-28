@@ -17,15 +17,20 @@ type BasicEObject struct {
 }
 
 type EObjectInternal interface {
+	EObject
+
 	EStaticClass() EClass
 
+	ESetResource( resource EResource, notifications ENotificationChain ) ENotificationChain
+	EInverseAdd( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain
+	EInverseRemove( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain
+	
 	EGetFromID(featureID int , resolve bool , core bool ) interface{}
 	ESetFromID( featureID int, newValue interface{})
 	EUnsetFromID(featureID int )
 	EIsSetFromID(featureID int ) bool
 	EInvokeFromID(operationID int, arguments EList) interface{}
 
-	ESetResource( resource EResource, notifications ENotificationChain ) ENotificationChain
 	EBasicInverseAdd( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain
 	EBasicInverseRemove( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain
 	
@@ -218,16 +223,27 @@ func ( o *BasicEObject) EStaticClass() EClass {
 }
 
 
-func ( o *BasicEObject) ESetResource( resource EResource , notifications ENotificationChain ) ENotificationChain {
-
+func ( o *BasicEObject) ESetResource( resource EResource , n ENotificationChain ) ENotificationChain {
+	return n
 }
 
-func ( o *BasicEObject) EInverseAdd( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain {
-	
+func ( o *BasicEObject) EInverseAdd( otherEnd EObject, featureID int, n ENotificationChain ) ENotificationChain {
+	notifications := n;
+    if( featureID >= 0 ) {
+        return o.internal.(EObjectInternal).EBasicInverseAdd( otherEnd, featureID, notifications )
+	} else {
+        notifications = o.EBasicRemoveFromContainer( notifications );
+        return o.EBasicSetContainer( otherEnd, featureID, notifications )
+	}
+	return notifications
 }
 
-func ( o *BasicEObject) EInverseRemove( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain {
-
+func ( o *BasicEObject) EInverseRemove( otherEnd EObject, featureID int, n ENotificationChain ) ENotificationChain {
+	if( featureID >= 0 ) {
+		return o.internal.(EObjectInternal).EBasicInverseRemove( otherEnd, featureID, n )
+	} else {
+		return o.EBasicSetContainer( nil, featureID, n )
+	}
 }
 
 func ( o *BasicEObject) EProxyUri() *url.URL {
@@ -244,11 +260,11 @@ func ( o *BasicEObject) EResolveProxy( proxy EObject) EObject {
 
 
 func ( o *BasicEObject) EBasicInverseAdd( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain {
-	
+	return nil
 }
 
 func ( o *BasicEObject) EBasicInverseRemove( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain {
-
+	return nil
 }
 
 func ( o *BasicEObject) EBasicSetContainer( newContainer EObject, newContainerFeatureID int , n ENotificationChain ) ENotificationChain {
@@ -323,7 +339,7 @@ func ( o *BasicEObject) EBasicRemoveFromContainer( notifications ENotificationCh
 		return o.EBasicRemoveFromContainerFeature( notifications )
 	} else {
         if( o.container != nil ) {
-			return o.container.EInverseRemove( o, EOPPOSITE_FEATURE_BASE - o.containerFeatureID, notifications )
+			return o.container.(EObjectInternal).EInverseRemove( o, EOPPOSITE_FEATURE_BASE - o.containerFeatureID, notifications )
 		}
     }
     return notifications
@@ -334,7 +350,7 @@ func ( o *BasicEObject) EBasicRemoveFromContainerFeature( notifications ENotific
     if( isReference ) {
         inverseFeature := reference.GetEOpposite()
         if( o.container != nil && inverseFeature != nil ) {
-			return o.container.EInverseRemove( o, inverseFeature.GetFeatureID(), notifications )
+			return o.container.(EObjectInternal).EInverseRemove( o, inverseFeature.GetFeatureID(), notifications )
 		}
     }
     return notifications;
