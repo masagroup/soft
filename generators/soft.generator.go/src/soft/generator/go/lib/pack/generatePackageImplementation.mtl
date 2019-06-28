@@ -32,7 +32,7 @@ func (p *[anEPackage.getImplementationName()/]) [anENamedElement.getReflectiveGe
 [/template]
 
 [template private generateCreation(aEClass : EClass)]
-p.[aEClass.getElementInstanceName()/] = factory.CreateEClassFromContainerAndClassID(p, [aEClass.getClassifierIDName()/]);
+p.[aEClass.getElementInstanceName()/] = factory.CreateEClassFromContainerAndClassID(p, [aEClass.getClassifierIDName()/])
 
 [/template]
 
@@ -40,111 +40,111 @@ p.[aEClass.getElementInstanceName()/] = factory.CreateEClassFromContainerAndClas
 [/template]
 
 [template private generateCreation(anEAttribute : EAttribute)]
-p.[anEAttribute.getElementInstanceName()/] = factory.CreateEAttributeFromContainerAndClassID(p.[anEAttribute.eContainingClass.getElementInstanceName()/], [anEAttribute.eContainingClass.getFeatureIDName(anEAttribute)/]);
+p.[anEAttribute.getElementInstanceName()/] = factory.CreateEAttributeFromContainerAndClassID(p.[anEAttribute.eContainingClass.getElementInstanceName()/], [anEAttribute.eContainingClass.getFeatureIDName(anEAttribute)/])
 
 [/template]
 
 [template private generateCreation(anEReference : EReference)]
-p.[anEReference.getElementInstanceName()/] = factory.CreateEReferenceFromContainerAndClassID(p.[anEReference.eContainingClass.getElementInstanceName()/], [anEReference.eContainingClass.getFeatureIDName(anEReference)/]);
+p.[anEReference.getElementInstanceName()/] = factory.CreateEReferenceFromContainerAndClassID(p.[anEReference.eContainingClass.getElementInstanceName()/], [anEReference.eContainingClass.getFeatureIDName(anEReference)/])
 
 [/template] 
 
 [template private generateCreation(anEOperation : EOperation)]
-p.[anEOperation.getElementInstanceName()/] = factory.CreateEOperationFromContainerAndClassID(p.[anEOperation.eContainingClass.getElementInstanceName()/], [anEOperation.eContainingClass.getOperationIDName(anEOperation)/]);
+p.[anEOperation.getElementInstanceName()/] = factory.CreateEOperationFromContainerAndClassID(p.[anEOperation.eContainingClass.getElementInstanceName()/], [anEOperation.eContainingClass.getOperationIDName(anEOperation)/])
 
 [/template]
 
 [template private generateCreation(anEDatatype : EDataType)]
-p.[anEDatatype.getElementInstanceName()/] = factory.Create[if (anEDatatype.oclIsKindOf(EEnum))]EEnum[else]EDataType[/if]FromContainerAndClassID(p, [anEDatatype.getClassifierIDName()/]);
+p.[anEDatatype.getElementInstanceName()/] = factory.Create[if (anEDatatype.oclIsKindOf(EEnum))]EEnum[else]EDataType[/if]FromContainerAndClassID(p, [anEDatatype.getClassifierIDName()/])
 
 [/template]
 
 [template public initSuperTypes(aEClass : EClass)]
 [for (superClass : EClass | aEClass.eSuperTypes->asOrderedSet()->sortedBy(name))]
-p.[aEClass.getElementInstanceName()/].GetESuperTypes().Add([aEClass.getPackageGetter(superClass)/]);
+p.[aEClass.getElementInstanceName()/].GetESuperTypes().Add([aEClass.getPackageGetter(superClass)/])
 [/for]
 [/template]
 
 [template private generateInitialization(aEClass : EClass)]
-p.[aEClass.getElementInstanceName()/].SetName("[aEClass.name/]");
-p.[aEClass.getElementInstanceName()/].SetAbstract([aEClass.abstract.toString()/]);
-p.[aEClass.getElementInstanceName()/].SetInterface([aEClass.interface.toString()/]);
+p.[aEClass.getElementInstanceName()/].SetName("[aEClass.name/]")
+p.[aEClass.getElementInstanceName()/].SetAbstract([aEClass.abstract.toString()/])
+p.[aEClass.getElementInstanceName()/].SetInterface([aEClass.interface.toString()/])
 [/template]
 
 [template private generateInitialization(anEAttribute : EAttribute)]
-p.[anEAttribute.getElementInstanceName()/].SetName("[anEAttribute.name/]");
-p.[anEAttribute.getElementInstanceName()/].SetEType([anEAttribute.eType.oclAsType(EDataType).getPackageGetter(anEAttribute)/]);
-p.[anEAttribute.getElementInstanceName()/].SetLowerBound([anEAttribute.lowerBound/]);
-p.[anEAttribute.getElementInstanceName()/].SetUpperBound([anEAttribute.upperBound/]);
-p.[anEAttribute.getElementInstanceName()/].SetTransient([anEAttribute.transient.toString()/]);
-p.[anEAttribute.getElementInstanceName()/].SetVolatile([anEAttribute.volatile.toString()/]);
-p.[anEAttribute.getElementInstanceName()/].SetChangeable([anEAttribute.changeable.toString()/]);
-p.[anEAttribute.getElementInstanceName()/].SetUnsettable([anEAttribute.unsettable.toString()/]);
-p.[anEAttribute.getElementInstanceName()/].SetUnique([anEAttribute.unique.toString()/]);
-p.[anEAttribute.getElementInstanceName()/].SetDerived([anEAttribute.derived.toString()/]);
-p.[anEAttribute.getElementInstanceName()/].SetOrdered([anEAttribute.ordered.toString()/]);
-p.[anEAttribute.getElementInstanceName()/].SetID([anEAttribute.iD.toString()/]);
+p.[anEAttribute.getElementInstanceName()/].SetName("[anEAttribute.name/]")
+p.[anEAttribute.getElementInstanceName()/].SetEType([anEAttribute.eType.oclAsType(EDataType).getPackageGetter(anEAttribute)/])
+p.[anEAttribute.getElementInstanceName()/].SetLowerBound([anEAttribute.lowerBound/])
+p.[anEAttribute.getElementInstanceName()/].SetUpperBound([anEAttribute.upperBound/])
+p.[anEAttribute.getElementInstanceName()/].SetTransient([anEAttribute.transient.toString()/])
+p.[anEAttribute.getElementInstanceName()/].SetVolatile([anEAttribute.volatile.toString()/])
+p.[anEAttribute.getElementInstanceName()/].SetChangeable([anEAttribute.changeable.toString()/])
+p.[anEAttribute.getElementInstanceName()/].SetUnsettable([anEAttribute.unsettable.toString()/])
+p.[anEAttribute.getElementInstanceName()/].SetUnique([anEAttribute.unique.toString()/])
+p.[anEAttribute.getElementInstanceName()/].SetDerived([anEAttribute.derived.toString()/])
+p.[anEAttribute.getElementInstanceName()/].SetOrdered([anEAttribute.ordered.toString()/])
+p.[anEAttribute.getElementInstanceName()/].SetID([anEAttribute.iD.toString()/])
 [if ( anEAttribute.defaultValueLiteral <> '' )]
-p.[anEAttribute.getElementInstanceName()/].SetDefaultValueLiteral("[anEAttribute.defaultValueLiteral/]");
+p.[anEAttribute.getElementInstanceName()/].SetDefaultValueLiteral("[anEAttribute.defaultValueLiteral/]")
 [/if]
 
 [/template]
 
 [template private generateInitialization(anEReference : EReference)]
-p.[anEReference.getElementInstanceName()/].SetName("[anEReference.name/]");
-p.[anEReference.getElementInstanceName()/].SetEType([anEReference.eGenericType.eClassifier.getPackageGetter(anEReference)/]);
-p.[anEReference.getElementInstanceName()/].SetLowerBound([anEReference.lowerBound/]);
-p.[anEReference.getElementInstanceName()/].SetUpperBound([anEReference.upperBound/]);
-p.[anEReference.getElementInstanceName()/].SetTransient([anEReference.transient.toString()/]);
-p.[anEReference.getElementInstanceName()/].SetVolatile([anEReference.volatile.toString()/]);
-p.[anEReference.getElementInstanceName()/].SetChangeable([anEReference.changeable.toString()/]);
-p.[anEReference.getElementInstanceName()/].SetUnsettable([anEReference.unsettable.toString()/]);
-p.[anEReference.getElementInstanceName()/].SetUnique([anEReference.unique.toString()/]);
-p.[anEReference.getElementInstanceName()/].SetDerived([anEReference.derived.toString()/]);
-p.[anEReference.getElementInstanceName()/].SetOrdered([anEReference.ordered.toString()/]);
-p.[anEReference.getElementInstanceName()/].SetContainment([anEReference.containment.toString()/]);
-p.[anEReference.getElementInstanceName()/].SetResolveProxies([anEReference.resolveProxies.toString()/]);
+p.[anEReference.getElementInstanceName()/].SetName("[anEReference.name/]")
+p.[anEReference.getElementInstanceName()/].SetEType([anEReference.eGenericType.eClassifier.getPackageGetter(anEReference)/])
+p.[anEReference.getElementInstanceName()/].SetLowerBound([anEReference.lowerBound/])
+p.[anEReference.getElementInstanceName()/].SetUpperBound([anEReference.upperBound/])
+p.[anEReference.getElementInstanceName()/].SetTransient([anEReference.transient.toString()/])
+p.[anEReference.getElementInstanceName()/].SetVolatile([anEReference.volatile.toString()/])
+p.[anEReference.getElementInstanceName()/].SetChangeable([anEReference.changeable.toString()/])
+p.[anEReference.getElementInstanceName()/].SetUnsettable([anEReference.unsettable.toString()/])
+p.[anEReference.getElementInstanceName()/].SetUnique([anEReference.unique.toString()/])
+p.[anEReference.getElementInstanceName()/].SetDerived([anEReference.derived.toString()/])
+p.[anEReference.getElementInstanceName()/].SetOrdered([anEReference.ordered.toString()/])
+p.[anEReference.getElementInstanceName()/].SetContainment([anEReference.containment.toString()/])
+p.[anEReference.getElementInstanceName()/].SetResolveProxies([anEReference.resolveProxies.toString()/])
 [if ( anEReference.defaultValueLiteral <> '' )]
-p.[anEReference.getElementInstanceName()/].SetDefaultValueLiteral("[anEReference.defaultValueLiteral/]");
+p.[anEReference.getElementInstanceName()/].SetDefaultValueLiteral("[anEReference.defaultValueLiteral/]")
 [/if]
 [if not anEReference.eOpposite.oclIsUndefined()]
-p.[anEReference.getElementInstanceName()/].SetEOpposite([anEReference.eOpposite.getPackageGetter()/]);
+p.[anEReference.getElementInstanceName()/].SetEOpposite([anEReference.eOpposite.getPackageGetter()/])
 [/if]
 
 [/template]
 
 [template private generateInitialization(anEOperation : EOperation)]
-p.[anEOperation.getElementInstanceName()/].SetEType([anEOperation.eType.getPackageGetter(anEOperation)/]);
-p.[anEOperation.getElementInstanceName()/].SetName("[anEOperation.name.toString()/]");
-p.[anEOperation.getElementInstanceName()/].SetLowerBound([anEOperation.lowerBound/]);
-p.[anEOperation.getElementInstanceName()/].SetUpperBound([anEOperation.upperBound/]);
-p.[anEOperation.getElementInstanceName()/].SetUnique([anEOperation.unique.toString()/]);
-p.[anEOperation.getElementInstanceName()/].SetOrdered([anEOperation.ordered.toString()/]);
+p.[anEOperation.getElementInstanceName()/].SetEType([anEOperation.eType.getPackageGetter(anEOperation)/])
+p.[anEOperation.getElementInstanceName()/].SetName("[anEOperation.name.toString()/]")
+p.[anEOperation.getElementInstanceName()/].SetLowerBound([anEOperation.lowerBound/])
+p.[anEOperation.getElementInstanceName()/].SetUpperBound([anEOperation.upperBound/])
+p.[anEOperation.getElementInstanceName()/].SetUnique([anEOperation.unique.toString()/])
+p.[anEOperation.getElementInstanceName()/].SetOrdered([anEOperation.ordered.toString()/])
 
 
 [for (anEParameter : EParameter | anEOperation.eParameters) separator ('\r\n')]
 {
 [let factoryName : String = if anEOperation.eContainingClass.ePackage.name = 'ecore' then '' else 'ecore.' endif + 'GetEcoreFactory']
-    parameter := [factoryName/]().CreateEParameterFromContainer(p.[anEOperation.getElementInstanceName()/]);
+    parameter := [factoryName/]().CreateEParameterFromContainer(p.[anEOperation.getElementInstanceName()/])
 [/let]
-    parameter.SetName("[anEParameter.name/]");
-    parameter.SetEType([anEParameter.eType.getPackageGetter(anEParameter.eOperation)/]);
-    parameter.SetLowerBound(0);
-    parameter.SetUpperBound(1);
-    parameter.SetUnique(true);
-    parameter.SetOrdered(true);
+    parameter.SetName("[anEParameter.name/]")
+    parameter.SetEType([anEParameter.eType.getPackageGetter(anEParameter.eOperation)/])
+    parameter.SetLowerBound(0)
+    parameter.SetUpperBound(1)
+    parameter.SetUnique(true)
+    parameter.SetOrdered(true)
 }
 [/for]
 
 [/template]
 
 [template private generateInitialization(aDataType : EDataType)]
-p.[aDataType.getElementInstanceName()/].SetName("[aDataType.name/]");
+p.[aDataType.getElementInstanceName()/].SetName("[aDataType.name/]")
 [if not aDataType.instanceTypeName.oclIsUndefined() and not (aDataType.instanceTypeName = '')] 
-//p.[aDataType.getElementInstanceName()/].SetInstanceClass( reflect.TypeOf([aDataType.instanceTypeName/]));
+//p.[aDataType.getElementInstanceName()/].SetInstanceClass( reflect.TypeOf([aDataType.instanceTypeName/]))
 [/if]
 [if (not aDataType.oclIsKindOf(EEnum))]
-p.[aDataType.getElementInstanceName()/].SetSerializable([aDataType.serializable.toString()/]);
+p.[aDataType.getElementInstanceName()/].SetSerializable([aDataType.serializable.toString()/])
 [/if]
 
 [/template]
@@ -185,7 +185,7 @@ func (p *[className/])createPackageContents() {
     factory := [factoryName/]()
 [/let]
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
-    p.create[aClass.name.toUpperFirst()/]Content(factory);
+    p.create[aClass.name.toUpperFirst()/]Content(factory)
 [/for]
     p.createPackageEDataTypes(factory)
 }
@@ -204,17 +204,17 @@ func (p *[className/])createPackageEDataTypes(factory EcoreFactory) {
 
 func (p *[className/])initializePackageContents() {
     // Initialize package
-    p.SetName(NAME);
-    p.SetNsPrefix(NS_PREFIX);
-    p.SetNsURI(NS_URI);
+    p.SetName(NAME)
+    p.SetNsPrefix(NS_PREFIX)
+    p.SetNsURI(NS_URI)
 
     // Add supertypes to classes
     [anEPackage.eAllContents(EClass)->sortedBy(name).initSuperTypes()/]
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
-    p.initialize[aClass.name.toUpperFirst()/]Content();
+    p.initialize[aClass.name.toUpperFirst()/]Content()
 [/for]
-    p.initializePackageEDataTypes();
+    p.initializePackageEDataTypes()
 }
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
