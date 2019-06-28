@@ -18,11 +18,20 @@ type BasicEObject struct {
 
 type EObjectInternal interface {
 	EStaticClass() EClass
+
 	EGetFromID(featureID int , resolve bool , core bool ) interface{}
 	ESetFromID( featureID int, newValue interface{})
 	EUnsetFromID(featureID int )
 	EIsSetFromID(featureID int ) bool
 	EInvokeFromID(operationID int, arguments EList) interface{}
+
+	ESetResource( resource EResource, notifications ENotificationChain ) ENotificationChain
+	EBasicInverseAdd( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain
+	EBasicInverseRemove( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain
+	
+	EProxyUri() *url.URL
+	ESetProxyURI( uri *url.URL)
+	EResolveProxy( proxy EObject) EObject
 }
 
 // NewBasicEObject is BasicEObject constructor
@@ -102,103 +111,103 @@ func ( o *BasicEObject) ECrossReferences() EList {
 	return nil
 }
 
-func ( o *BasicEObject) eDerivedStructuralFeatureID( eFeature EStructuralFeature) int {
-	if !o.EClass().GetEAllStructuralFeatures().Contains( eFeature ) {
-		panic( "The feature '"+ eFeature.GetName() + "' is not a valid feature" )
+func ( o *BasicEObject) eDerivedStructuralFeatureID( feature EStructuralFeature) int {
+	if !o.EClass().GetEAllStructuralFeatures().Contains( feature ) {
+		panic( "The feature '"+ feature.GetName() + "' is not a valid feature" )
 	} 
-    return eFeature.GetFeatureID()
+    return feature.GetFeatureID()
 }
 
-func ( o *BasicEObject) eDerivedOperationID( eOperation EOperation ) int {
-	if !o.EClass().GetEAllOperations().Contains( eOperation ) {
-		panic( "The operation '"+ eOperation.GetName() + "' is not a valid operation" )
+func ( o *BasicEObject) eDerivedOperationID( operation EOperation ) int {
+	if !o.EClass().GetEAllOperations().Contains( operation ) {
+		panic( "The operation '"+ operation.GetName() + "' is not a valid operation" )
 	} 
-    return eOperation.GetOperationID()
+    return operation.GetOperationID()
 }
 
-func ( o *BasicEObject) EGet(eFeature EStructuralFeature) interface{} {
-	return o.eGetFromFeature( eFeature, true, true )
+func ( o *BasicEObject) EGet(feature EStructuralFeature) interface{} {
+	return o.eGetFromFeature( feature, true, true )
 }
 
-func ( o *BasicEObject) EGetResolve( eFeature EStructuralFeature, resolve bool) interface{} {
-	return o.eGetFromFeature( eFeature, resolve, true )
+func ( o *BasicEObject) EGetResolve( feature EStructuralFeature, resolve bool) interface{} {
+	return o.eGetFromFeature( feature, resolve, true )
 }
 
-func ( o *BasicEObject) eGetFromFeature(eFeature EStructuralFeature , resolve bool , core bool ) interface{} {
-	featureID := o.eDerivedStructuralFeatureID( eFeature )
+func ( o *BasicEObject) eGetFromFeature(feature EStructuralFeature , resolve bool , core bool ) interface{} {
+	featureID := o.eDerivedStructuralFeatureID( feature )
     if featureID >= 0 {
 		return o.internal.(EObjectInternal).EGetFromID( featureID, resolve, core )
 	}
-    panic("The feature '" + eFeature.GetName() + "' is not a valid feature")
+    panic("The feature '" + feature.GetName() + "' is not a valid feature")
 }
 
 func ( o *BasicEObject) EGetFromID(featureID int , resolve bool , core bool ) interface{} {
-	eFeature := o.EClass().GetEStructuralFeature( featureID );
-	if eFeature == nil {
+	feature := o.EClass().GetEStructuralFeature( featureID );
+	if feature == nil {
 		panic( "Invalid featureID: " + strconv.Itoa(featureID) )
 	}
 	return nil
 }
 
-func ( o *BasicEObject) ESet( eFeature EStructuralFeature, newValue interface{}) {
-	featureID := o.eDerivedStructuralFeatureID( eFeature );
+func ( o *BasicEObject) ESet( feature EStructuralFeature, newValue interface{}) {
+	featureID := o.eDerivedStructuralFeatureID( feature );
     if( featureID >= 0 ) {
 		o.internal.(EObjectInternal).ESetFromID( featureID, newValue );
 	} else {
-		panic("The feature '" + eFeature.GetName() + "' is not a valid feature")
+		panic("The feature '" + feature.GetName() + "' is not a valid feature")
 	}
 }
 
 func ( o *BasicEObject) ESetFromID( featureID int, newValue interface{}) {
-	eFeature := o.EClass().GetEStructuralFeature( featureID );
-	if ( eFeature == nil ) {
+	feature := o.EClass().GetEStructuralFeature( featureID );
+	if ( feature == nil ) {
 		panic( "Invalid featureID: " + strconv.Itoa(featureID) )
 	}
 }
 
-func ( o *BasicEObject) EIsSet( eFeature EStructuralFeature) bool {
-	featureID := o.eDerivedStructuralFeatureID( eFeature )
+func ( o *BasicEObject) EIsSet( feature EStructuralFeature) bool {
+	featureID := o.eDerivedStructuralFeatureID( feature )
     if( featureID >= 0 ) {
 		return o.internal.(EObjectInternal).EIsSetFromID( featureID )
 	}
-	panic( "The feature '" + eFeature.GetName() + "' is not a valid feature" )
+	panic( "The feature '" + feature.GetName() + "' is not a valid feature" )
 }
 
 func ( o *BasicEObject) EIsSetFromID(featureID int ) bool {
-	eFeature := o.EClass().GetEStructuralFeature( featureID )
-	if eFeature == nil {
+	feature := o.EClass().GetEStructuralFeature( featureID )
+	if feature == nil {
 		panic( "Invalid featureID: " + strconv.Itoa(featureID) )
 	}
     return false;
 }
 
-func ( o *BasicEObject) EUnset(eFeature EStructuralFeature)  {
-	featureID := o.eDerivedStructuralFeatureID( eFeature )
+func ( o *BasicEObject) EUnset(feature EStructuralFeature)  {
+	featureID := o.eDerivedStructuralFeatureID( feature )
     if( featureID >= 0 ) {
 		o.internal.(EObjectInternal).EUnsetFromID( featureID  )
 	} else {
-		panic("The feature '" + eFeature.GetName() + "' is not a valid feature")
+		panic("The feature '" + feature.GetName() + "' is not a valid feature")
 	}
 }
 
 func ( o *BasicEObject) EUnsetFromID(featureID int ) {
-	eFeature := o.EClass().GetEStructuralFeature( featureID )
-	if eFeature == nil {
+	feature := o.EClass().GetEStructuralFeature( featureID )
+	if feature == nil {
 		panic( "Invalid featureID: " + strconv.Itoa(featureID) )
 	}
 }
 
-func ( o *BasicEObject) EInvoke(eOperation EOperation, arguments EList) interface{}  {
-	operationID := o.eDerivedOperationID( eOperation );
+func ( o *BasicEObject) EInvoke(operation EOperation, arguments EList) interface{}  {
+	operationID := o.eDerivedOperationID( operation );
     if( operationID >= 0 ) {
 		return o.internal.(EObjectInternal).EInvokeFromID( operationID, arguments )
 	}
-    panic("The operation '" + eOperation.GetName() + "' is not a valid operation");
+    panic("The operation '" + operation.GetName() + "' is not a valid operation");
 }
 
 func ( o *BasicEObject) EInvokeFromID(operationID int, arguments EList) interface{}  {
-	eOperation := o.EClass().GetEOperation( operationID )
-	if eOperation == nil {
+	operation := o.EClass().GetEOperation( operationID )
+	if operation == nil {
 		panic( "Invalid operationID: " + strconv.Itoa(operationID) )
 	}
 	return nil
@@ -206,4 +215,127 @@ func ( o *BasicEObject) EInvokeFromID(operationID int, arguments EList) interfac
 
 func ( o *BasicEObject) EStaticClass() EClass {
 	return GetPackage().GetEObject();
+}
+
+
+func ( o *BasicEObject) ESetResource( resource EResource , notifications ENotificationChain ) ENotificationChain {
+
+}
+
+func ( o *BasicEObject) EInverseAdd( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain {
+	
+}
+
+func ( o *BasicEObject) EInverseRemove( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain {
+
+}
+
+func ( o *BasicEObject) EProxyUri() *url.URL {
+	return o.proxyURI
+}
+
+func ( o *BasicEObject) ESetProxyURI( uri *url.URL) {
+	o.proxyURI = uri
+}
+
+func ( o *BasicEObject) EResolveProxy( proxy EObject) EObject {
+	return nil
+}
+
+
+func ( o *BasicEObject) EBasicInverseAdd( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain {
+	
+}
+
+func ( o *BasicEObject) EBasicInverseRemove( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain {
+
+}
+
+func ( o *BasicEObject) EBasicSetContainer( newContainer EObject, newContainerFeatureID int , n ENotificationChain ) ENotificationChain {
+    notifications := n;
+	oldResource := o.resource
+	oldContainer := o.container
+    oldContainerFeatureID := o.containerFeatureID;
+
+    // resource
+    var newResource EResource
+    if( oldResource != nil ) {
+        if( newContainer != nil  && eContainmentFeature( o, newContainer, newContainerFeatureID ) == nil ) {
+            //auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
+            //notifications = list->remove( thisPtr, notifications );
+
+            o.resource = nil
+            newResource = newContainer.EResource()
+        } else {
+			oldResource = nil
+		}
+    } else {
+        if( oldContainer != nil) {
+			oldResource = oldContainer.EResource()
+		}	
+        
+        if( newContainer != nil) {
+			newResource = newContainer.EResource()
+		}
+    }
+
+    if( oldResource != nil && oldResource != newResource ) {
+		oldResource.Detached( o )
+	}
+    
+    if( newResource != nil && newResource != oldResource ) {
+		newResource.Attached( o )
+	}
+ 
+    // basic set
+    o.container = newContainer
+    o.containerFeatureID = newContainerFeatureID
+	o.resource = newResource
+
+    // notification
+    if( o.ENotificationRequired() ) {
+        if( oldContainer != nil  && oldContainerFeatureID >= 0 && oldContainerFeatureID != newContainerFeatureID ) {
+			notification := NewNotificationByFeatureID( o, SET, oldContainerFeatureID, oldContainer, nil, -1 )
+            if( notifications != nil ) {
+                notifications.Add( notification );
+			} else {
+				notifications = notification;
+			}
+        }
+        if( newContainerFeatureID >= 0 ) {
+			var c EObject 
+			if oldContainerFeatureID == newContainerFeatureID {
+				c = oldContainer
+			} 
+			notification := NewNotificationByFeatureID( o, SET, newContainerFeatureID, c , newContainer, -1 )
+            if( notifications != nil ) {
+                notifications.Add( notification )
+			} else {
+				notifications = notification
+			}
+        }
+    }
+    return notifications
+}
+
+func ( o *BasicEObject) EBasicRemoveFromContainer( notifications ENotificationChain ) ENotificationChain {
+    if( o.containerFeatureID >= 0 ) {
+		return o.EBasicRemoveFromContainerFeature( notifications )
+	} else {
+        if( o.container != nil ) {
+			return o.container.EInverseRemove( o, EOPPOSITE_FEATURE_BASE - o.containerFeatureID, notifications )
+		}
+    }
+    return notifications
+}
+
+func ( o *BasicEObject) EBasicRemoveFromContainerFeature( notifications ENotificationChain ) ENotificationChain {
+    reference , isReference := o.EClass().GetEStructuralFeature( o.containerFeatureID ).(EReference);
+    if( isReference ) {
+        inverseFeature := reference.GetEOpposite()
+        if( o.container != nil && inverseFeature != nil ) {
+			return o.container.EInverseRemove( o, inverseFeature.GetFeatureID(), notifications )
+		}
+    }
+    return notifications;
 }
