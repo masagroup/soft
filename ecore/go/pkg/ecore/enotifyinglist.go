@@ -5,19 +5,24 @@ type ENotifyingList interface {
 
 type ENotifyingListImpl struct {
 	EList
-	notifier *Notifier
+	notifier  *Notifier
+	owner     EObject
+	featureID int
 }
 
-func NewENotifyingListImpl() *ENotifyingListImpl {
-	list := &ENotifyingListImpl{}
-	list.notifier = NewNotifier()
+func NewENotifyingListImpl(owner EObject, featureID int) *ENotifyingListImpl {
+	list := &ENotifyingListImpl{
+		notifier:  NewNotifier(),
+		owner:     owner,
+		featureID: featureID,
+	}
 	return list
 }
 
 // Add a new element to the array
 func (arr *ENotifyingListImpl) Add(elem interface{}) bool {
 	if arr.Add(elem) {
-		arr.notifier.ENotify(NewNotificationByFeatureID(nil, ADD, ECLASSIFIER__INSTANCE_CLASS, nil, elem, arr.Size()))
+		arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, elem, arr.Size()))
 		return true
 	}
 	return false
@@ -28,9 +33,9 @@ func (arr *ENotifyingListImpl) AddAll(list EList) bool {
 	if arr.AddAll(list) {
 		size := list.Size()
 		if size == 1 {
-			arr.notifier.ENotify(NewNotificationByFeatureID(nil, ADD, ECLASSIFIER__INSTANCE_CLASS, nil, list, arr.Size()))
+			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, list, arr.Size()))
 		} else if size > 1 {
-			arr.notifier.ENotify(NewNotificationByFeatureID(nil, ADD_MANY, ECLASSIFIER__INSTANCE_CLASS, nil, list, arr.Size()))
+			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD_MANY, arr.featureID, nil, list, arr.Size()))
 		}
 		return true
 	}
@@ -40,7 +45,7 @@ func (arr *ENotifyingListImpl) AddAll(list EList) bool {
 // Insert an element in the array
 func (arr *ENotifyingListImpl) Insert(index int, elem interface{}) bool {
 	if arr.Insert(index, elem) {
-		arr.notifier.ENotify(NewNotificationByFeatureID(nil, ADD, ECLASSIFIER__INSTANCE_CLASS, nil, elem, index))
+		arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, elem, index))
 		return true
 	}
 	return false
@@ -51,9 +56,9 @@ func (arr *ENotifyingListImpl) InsertAll(index int, list EList) bool {
 	if arr.InsertAll(index, list) {
 		size := list.Size()
 		if size == 1 {
-			arr.notifier.ENotify(NewNotificationByFeatureID(nil, ADD, ECLASSIFIER__INSTANCE_CLASS, nil, list, index))
+			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, list, index))
 		} else if size > 1 {
-			arr.notifier.ENotify(NewNotificationByFeatureID(nil, ADD_MANY, ECLASSIFIER__INSTANCE_CLASS, nil, list, index))
+			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD_MANY, arr.featureID, nil, list, index))
 		}
 		return true
 	}
@@ -64,7 +69,7 @@ func (arr *ENotifyingListImpl) InsertAll(index int, list EList) bool {
 func (arr *ENotifyingListImpl) RemoveAt(index int) bool {
 	old := arr.Get(index)
 	if arr.RemoveAt(index) {
-		arr.notifier.ENotify(NewNotificationByFeatureID(nil, REMOVE, ECLASSIFIER__INSTANCE_CLASS, old, nil, index))
+		arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE, arr.featureID, old, nil, index))
 		return true
 	}
 	return false
@@ -75,7 +80,7 @@ func (arr *ENotifyingListImpl) Remove(elem interface{}) bool {
 	index := arr.IndexOf(elem)
 	old := arr.Get(index)
 	if arr.Remove(elem) {
-		arr.notifier.ENotify(NewNotificationByFeatureID(nil, REMOVE, ECLASSIFIER__INSTANCE_CLASS, old, nil, index))
+		arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE, arr.featureID, old, nil, index))
 		return true
 	}
 	return false
@@ -86,9 +91,9 @@ func (arr *ENotifyingListImpl) Clear() {
 	size := arr.Size()
 	arr.Clear()
 	if size == 1 {
-		arr.notifier.ENotify(NewNotificationByFeatureID(nil, ADD, ECLASSIFIER__INSTANCE_CLASS, nil, nil, NO_INDEX))
+		arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, nil, NO_INDEX))
 	} else if size > 1 {
-		arr.notifier.ENotify(NewNotificationByFeatureID(nil, ADD_MANY, ECLASSIFIER__INSTANCE_CLASS, nil, nil, NO_INDEX))
+		arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD_MANY, arr.featureID, nil, nil, NO_INDEX))
 	}
 }
 
@@ -96,5 +101,5 @@ func (arr *ENotifyingListImpl) Clear() {
 func (arr *ENotifyingListImpl) Set(index int, elem interface{}) {
 	old := arr.Get(index)
 	arr.Set(index, elem)
-	arr.notifier.ENotify(NewNotificationByFeatureID(nil, ADD_MANY, ECLASSIFIER__INSTANCE_CLASS, old, elem, index))
+	arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD_MANY, arr.featureID, old, elem, index))
 }
