@@ -1,7 +1,4 @@
 #include "ecore/impl/BasicEObject.hpp"
-#include "ecore/impl/ArrayEList.hpp"
-#include "ecore/impl/EClassImpl.hpp"
-#include "ecore/impl/Notification.hpp"
 #include "ecore/Constants.hpp"
 #include "ecore/EAdapter.hpp"
 #include "ecore/EClass.hpp"
@@ -12,9 +9,12 @@
 #include "ecore/EResource.hpp"
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/EcorePackage.hpp"
+#include "ecore/impl/ArrayEList.hpp"
+#include "ecore/impl/EClassImpl.hpp"
+#include "ecore/impl/Notification.hpp"
 
-#include <string>
 #include <sstream>
+#include <string>
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -23,17 +23,15 @@ BasicEObject::BasicEObject()
     : eContainer_()
     , eContainerFeatureID_( -1 )
 {
-
 }
 
 BasicEObject::~BasicEObject()
 {
-
 }
 
 std::shared_ptr<const ECollectionView<std::shared_ptr<ecore::EObject>>> BasicEObject::eAllContents() const
 {
-    return std::make_shared< ECollectionView<std::shared_ptr<ecore::EObject>>>( eContents() );
+    return std::make_shared<ECollectionView<std::shared_ptr<ecore::EObject>>>( eContents() );
 }
 
 std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eContents() const
@@ -70,10 +68,9 @@ std::shared_ptr<ecore::EStructuralFeature> BasicEObject::eContainingFeature() co
     auto eContainer = eContainer_.lock();
     if( eContainer )
     {
-        return
-            eContainerFeatureID_ <= EOPPOSITE_FEATURE_BASE ?
-            eContainer->eClass()->getEStructuralFeature( EOPPOSITE_FEATURE_BASE - eContainerFeatureID_ ) :
-            std::dynamic_pointer_cast<EReference>( eClass()->getEStructuralFeature( eContainerFeatureID_ ) )->getEOpposite();
+        return eContainerFeatureID_ <= EOPPOSITE_FEATURE_BASE
+                   ? eContainer->eClass()->getEStructuralFeature( EOPPOSITE_FEATURE_BASE - eContainerFeatureID_ )
+                   : std::dynamic_pointer_cast<EReference>( eClass()->getEStructuralFeature( eContainerFeatureID_ ) )->getEOpposite();
     }
     return std::shared_ptr<ecore::EStructuralFeature>();
 }
@@ -83,8 +80,9 @@ std::shared_ptr<ecore::EReference> BasicEObject::eContainmentFeature() const
     return eContainmentFeature( getThisPtr(), eContainer_.lock(), eContainerFeatureID_ );
 }
 
-
-std::shared_ptr<EReference> BasicEObject::eContainmentFeature( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EObject>& eContainer, int eContainerFeatureID )
+std::shared_ptr<EReference> BasicEObject::eContainmentFeature( const std::shared_ptr<EObject>& eObject,
+                                                               const std::shared_ptr<EObject>& eContainer,
+                                                               int eContainerFeatureID )
 {
     if( eContainer )
     {
@@ -97,7 +95,7 @@ std::shared_ptr<EReference> BasicEObject::eContainmentFeature( const std::shared
         else
         {
             auto eFeature = eObject->eClass()->getEStructuralFeature( eContainerFeatureID );
-            if ( auto eReference = std::dynamic_pointer_cast<EReference>( eFeature ) )
+            if( auto eReference = std::dynamic_pointer_cast<EReference>( eFeature ) )
                 return eReference->getEOpposite();
         }
         throw "The containment feature could not be located";
@@ -107,7 +105,7 @@ std::shared_ptr<EReference> BasicEObject::eContainmentFeature( const std::shared
 
 bool BasicEObject::eIsProxy() const
 {
-    return static_cast<bool>(eProxyUri_);
+    return static_cast<bool>( eProxyUri_ );
 }
 
 std::shared_ptr<EResource> BasicEObject::eResource() const
@@ -122,7 +120,8 @@ std::shared_ptr<EResource> BasicEObject::eResource() const
     return eResource;
 }
 
-std::shared_ptr<ENotificationChain> BasicEObject::eSetResource( const std::shared_ptr<EResource>& newResource, const std::shared_ptr<ENotificationChain>& n )
+std::shared_ptr<ENotificationChain> BasicEObject::eSetResource( const std::shared_ptr<EResource>& newResource,
+                                                                const std::shared_ptr<ENotificationChain>& n )
 {
     auto notifications = n;
     auto oldResource = eResource_.lock();
@@ -148,14 +147,14 @@ std::shared_ptr<ENotificationChain> BasicEObject::eSetResource( const std::share
                 if( !newResource )
                     oldContainerResource->attached( thisPtr );
                 // If we didn't detach it from an old resource already, detach it from the old container's resource.
-                else if (!oldResource )
+                else if( !oldResource )
                     oldContainerResource->detached( thisPtr );
             }
         }
         else
         {
             notifications = eBasicRemoveFromContainer( notifications );
-            notifications = eBasicSetContainer( nullptr , -1, notifications );
+            notifications = eBasicSetContainer( nullptr, -1, notifications );
         }
     }
 
@@ -174,16 +173,19 @@ Any BasicEObject::eGet( const std::shared_ptr<EStructuralFeature>& feature, bool
     return eGet( feature, resolve, true );
 }
 
-
 int BasicEObject::eDerivedStructuralFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
 {
-    VERIFYN( eClass()->getEAllStructuralFeatures()->contains( eStructuralFeature ), "The feature '%s' is not a valid feature" , eStructuralFeature->getName() .c_str() );
+    VERIFYN( eClass()->getEAllStructuralFeatures()->contains( eStructuralFeature ),
+             "The feature '%s' is not a valid feature",
+             eStructuralFeature->getName().c_str() );
     return eStructuralFeature->getFeatureID();
 }
 
 int BasicEObject::eDerivedOperationID( const std::shared_ptr<EOperation>& eOperation ) const
 {
-    VERIFYN( eClass()->getEAllOperations()->contains( eOperation ), "The operation '%s' is not a valid operation", eOperation->getName().c_str() );
+    VERIFYN( eClass()->getEAllOperations()->contains( eOperation ),
+             "The operation '%s' is not a valid operation",
+             eOperation->getName().c_str() );
     return eOperation->getOperationID();
 }
 
@@ -217,7 +219,7 @@ bool BasicEObject::eIsSet( int featureID ) const
     return false;
 }
 
-void BasicEObject::eSet( const std::shared_ptr<EStructuralFeature>& eFeature, const Any & newValue )
+void BasicEObject::eSet( const std::shared_ptr<EStructuralFeature>& eFeature, const Any& newValue )
 {
     int featureID = eDerivedStructuralFeatureID( eFeature );
     if( featureID >= 0 )
@@ -226,12 +228,11 @@ void BasicEObject::eSet( const std::shared_ptr<EStructuralFeature>& eFeature, co
         throw "The feature '" + eFeature->getName() + "' is not a valid feature";
 }
 
-void BasicEObject::eSet( int featureID, const Any & newValue )
+void BasicEObject::eSet( int featureID, const Any& newValue )
 {
     std::shared_ptr<EStructuralFeature> eFeature = eClass()->getEStructuralFeature( featureID );
     VERIFYN( eFeature, "Invalid featureID: %i ", featureID );
 }
-
 
 void BasicEObject::eUnset( const std::shared_ptr<EStructuralFeature>& eFeature )
 {
@@ -263,17 +264,23 @@ Any BasicEObject::eInvoke( int operationID, const std::shared_ptr<EList<Any>>& a
     return Any();
 }
 
-std::shared_ptr<ENotificationChain> BasicEObject::eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
+std::shared_ptr<ENotificationChain> BasicEObject::eBasicInverseAdd( const std::shared_ptr<EObject>& otherEnd,
+                                                                    int featureID,
+                                                                    const std::shared_ptr<ENotificationChain>& notifications )
 {
     return notifications;
 }
 
-std::shared_ptr<ENotificationChain> BasicEObject::eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
+std::shared_ptr<ENotificationChain> BasicEObject::eBasicInverseRemove( const std::shared_ptr<EObject>& otherEnd,
+                                                                       int featureID,
+                                                                       const std::shared_ptr<ENotificationChain>& notifications )
 {
     return notifications;
 }
 
-std::shared_ptr<ENotificationChain> BasicEObject::eInverseAdd( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& n )
+std::shared_ptr<ENotificationChain> BasicEObject::eInverseAdd( const std::shared_ptr<EObject>& otherEnd,
+                                                               int featureID,
+                                                               const std::shared_ptr<ENotificationChain>& n )
 {
     auto notifications = n;
     if( featureID >= 0 )
@@ -285,7 +292,9 @@ std::shared_ptr<ENotificationChain> BasicEObject::eInverseAdd( const std::shared
     }
 }
 
-std::shared_ptr<ENotificationChain> BasicEObject::eInverseRemove( const std::shared_ptr<EObject>& otherEnd, int featureID, const std::shared_ptr<ENotificationChain>& notifications )
+std::shared_ptr<ENotificationChain> BasicEObject::eInverseRemove( const std::shared_ptr<EObject>& otherEnd,
+                                                                  int featureID,
+                                                                  const std::shared_ptr<ENotificationChain>& notifications )
 {
     if( featureID >= 0 )
         return eBasicInverseRemove( otherEnd, featureID, notifications );
@@ -295,7 +304,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eInverseRemove( const std::sha
 
 Uri BasicEObject::eProxyUri() const
 {
-    return eProxyUri_.value_or(Uri());
+    return eProxyUri_.value_or( Uri() );
 }
 
 void BasicEObject::eSetProxyURI( const Uri& uri )
@@ -308,7 +317,9 @@ std::shared_ptr<EObject> BasicEObject::eResolveProxy( const std::shared_ptr<EObj
     return std::shared_ptr<EObject>();
 }
 
-std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std::shared_ptr<EObject>& newContainer, int newContainerFeatureID, const std::shared_ptr<ENotificationChain>& n )
+std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std::shared_ptr<EObject>& newContainer,
+                                                                      int newContainerFeatureID,
+                                                                      const std::shared_ptr<ENotificationChain>& n )
 {
     auto notifications = n;
     auto thisPtr = thisPtr_.lock();
@@ -336,32 +347,30 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
     {
         if( oldContainer )
             oldResource = oldContainer->eResource();
-        
+
         if( newContainer )
             newResource = newContainer->eResource();
     }
 
     if( oldResource && oldResource != newResource )
         oldResource->detached( thisPtr );
-    
+
     if( newResource && newResource != oldResource )
         newResource->attached( thisPtr );
- 
+
     // basic set
     int oldContainerFeatureID = eContainerFeatureID_;
     eContainer_ = newContainer;
     eContainerFeatureID_ = newContainerFeatureID;
+    eResource_ = newResource;
 
     // notification
     if( eNotificationRequired() )
     {
-        if( oldContainer  && oldContainerFeatureID >= 0 && oldContainerFeatureID != newContainerFeatureID )
+        if( oldContainer && oldContainerFeatureID >= 0 && oldContainerFeatureID != newContainerFeatureID )
         {
-            auto notification = std::make_shared<Notification>( getThisPtr(), 
-                                                                ENotification::SET,
-                                                                oldContainerFeatureID,
-                                                                oldContainer,
-                                                                std::shared_ptr<EObject>() );
+            auto notification = std::make_shared<Notification>(
+                getThisPtr(), ENotification::SET, oldContainerFeatureID, oldContainer, std::shared_ptr<EObject>() );
             if( notifications )
                 notifications->add( notification );
             else
@@ -372,7 +381,8 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
             auto notification = std::make_shared<Notification>( getThisPtr(),
                                                                 ENotification::SET,
                                                                 newContainerFeatureID,
-                                                                oldContainerFeatureID == newContainerFeatureID ? oldContainer : std::shared_ptr<EObject>(),
+                                                                oldContainerFeatureID == newContainerFeatureID ? oldContainer
+                                                                                                               : std::shared_ptr<EObject>(),
                                                                 newContainer );
             if( notifications )
                 notifications->add( notification );
@@ -396,7 +406,8 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicRemoveFromContainer( con
     return notifications;
 }
 
-std::shared_ptr<ENotificationChain> BasicEObject::eBasicRemoveFromContainerFeature( const std::shared_ptr<ENotificationChain>& notifications )
+std::shared_ptr<ENotificationChain> BasicEObject::eBasicRemoveFromContainerFeature(
+    const std::shared_ptr<ENotificationChain>& notifications )
 {
     auto reference = std::dynamic_pointer_cast<EReference>( eClass()->getEStructuralFeature( eContainerFeatureID_ ) );
     if( reference )
@@ -408,13 +419,3 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicRemoveFromContainerFeatu
     }
     return notifications;
 }
-
-
-
-
-
-
-
-
-
-
