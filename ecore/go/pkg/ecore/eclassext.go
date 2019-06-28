@@ -16,7 +16,7 @@ func (eClass *eClassExt) initEAttributes() {
 }
 
 func (eClass *eClassExt) initEReferences() {
-    eClass.eReferences = NewEmptyArrayEList();
+    eClass.initEAllReferences();
 }
 
 func (eClass *eClassExt) initEContainments() {
@@ -33,14 +33,14 @@ func (eClass *eClassExt) initFeaturesSubSet() {
 
 func (eClass *eClassExt) initEAllAttributes() {
 	if eClass.eAllAttributes != nil {
-        return;
+        return
 	}
 
 	attributes := []interface{}{}
 	allAttributes := []interface{}{}
 	var eIDAttribute EAttribute
 	for itClass := eClass.GetESuperTypes().Iterate(); itClass.Next(); {
-		superAttributes := itClass.Value().(EClass).GetEAllAttributes();
+		superAttributes := itClass.Value().(EClass).GetEAllAttributes()
 		for itAttribute := superAttributes.Iterate(); itAttribute.Next(); {
 			attribute := itAttribute.Value().(EAttribute)
 			allAttributes = append(allAttributes , attribute )
@@ -61,12 +61,32 @@ func (eClass *eClassExt) initEAllAttributes() {
 		}
 	}
 	eClass.eIDAttribute = eIDAttribute;
-	eClass.eAttributes = NewImmutableEList(attributes);
-	eClass.eAllAttributes = NewImmutableEList(allAttributes);
+	eClass.eAttributes = NewImmutableEList(attributes)
+	eClass.eAllAttributes = NewImmutableEList(allAttributes)
 }
 
 func (eClass *eClassExt) initEAllReferences() {
-    eClass.eAllReferences = NewEmptyArrayEList();
+    if eClass.eAllReferences != nil {
+		return
+	}
+
+	allReferences :=  []interface{}{}
+	references := []interface{}{}
+	for itClass := eClass.GetESuperTypes().Iterate(); itClass.Next(); {
+		superReferences := itClass.Value().(EClass).GetEAllReferences()
+		allReferences = append( allReferences , superReferences.ToArray() )
+	}
+
+	for itFeature := eClass.GetEStructuralFeatures().Iterate(); itFeature.Next(); {
+		reference , isReference := itFeature.Value().(EReference)
+		if isReference {
+			references = append( references , reference )
+			allReferences = append(allReferences , reference )
+		}
+	}
+
+    eClass.eReferences = NewImmutableEList(references)
+    eClass.eAllReferences = NewImmutableEList(allReferences)
 }
 
 func (eClass *eClassExt) initEAllContainments() {
