@@ -184,3 +184,14 @@ func TestNotificationAdd(t *testing.T) {
 	//     notification.Dispatch()
 	// }
 }
+
+func TestNotificationListAdd(t *testing.T) {
+	arr := NewENotifyingListImpl(nil, -1)
+	notif = NewArrayEList([]interface{}{})
+
+	adapter := &customTestAdapterMerge{Adapter: *NewAdapter()}
+	arr.notifier.EAdapters().Add(adapter)
+	arr.Add(3)
+	assert.Equal(t, notif.Size(), 1, "Notification count")
+	assert.Equal(t, notif.Get(0).(ENotification).GetNewValue(), 3)
+}
