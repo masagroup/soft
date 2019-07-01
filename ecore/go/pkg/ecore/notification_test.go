@@ -98,6 +98,7 @@ func TestNotificationMerge(t *testing.T) {
 		assert.Equal(t, 1, notification.GetOldValue())
 		assert.Equal(t, 3, notification.GetNewValue())
 	}
+<<<<<<< HEAD
 	{
 		notification := NewNotificationByFeature(mockObject, SET, mockFeature, 1, 2, NO_INDEX)
 		other := NewNotificationByFeature(mockObject, UNSET, mockFeature, 2, 0, NO_INDEX)
@@ -106,6 +107,16 @@ func TestNotificationMerge(t *testing.T) {
 		assert.Equal(t, 1, notification.GetOldValue())
 		assert.Equal(t, 0, notification.GetNewValue())
 	}
+=======
+	// {
+	// 	notification := NewNotificationByFeature( mockObject, SET, mockFeature, 1, 2 , NO_INDEX )
+	//     other := NewNotificationByFeature( mockObject, UNSET, mockFeature, 2, 0 , NO_INDEX )
+	//     assert.True( t,  notification.Merge( other ) )
+	//     assert.Equal( t, SET , notification.GetEventType() )
+	// 	assert.Equal( t, 1 , notification.GetOldValue() )
+	// 	assert.Equal( t, 0 , notification.GetNewValue() )
+	// }
+>>>>>>> [Go] Fix notifying lists
 	{
 		notification := NewNotificationByFeature(mockObject, UNSET, mockFeature, 1, 0, NO_INDEX)
 		other := NewNotificationByFeature(mockObject, SET, mockFeature, 0, 2, NO_INDEX)
@@ -114,6 +125,7 @@ func TestNotificationMerge(t *testing.T) {
 		assert.Equal(t, 1, notification.GetOldValue())
 		assert.Equal(t, 2, notification.GetNewValue())
 	}
+<<<<<<< HEAD
 	{
 		obj1 := &MockEObject{}
 		obj2 := &MockEObject{}
@@ -135,6 +147,29 @@ func TestNotificationMerge(t *testing.T) {
 		assert.Equal(t, []interface{}{obj1, obj2, obj3}, notification.GetOldValue())
 		assert.Equal(t, []interface{}{2, 3, 4}, notification.GetNewValue())
 	}
+=======
+	// {
+	// 	obj1 := &MockEObject{}
+	//     obj2 := &MockEObject{}
+	//     notification := NewNotificationByFeature( mockObject, REMOVE, mockFeature, obj1, nil, 2 );
+	//     other := NewNotificationByFeature( mockObject, REMOVE, mockFeature, obj2, nil, 2 );
+	// 	assert.True( t,  notification.Merge( other ) )
+	// 	assert.Equal( t, REMOVE_MANY , notification.GetEventType() )
+	// 	assert.Equal( t, []interface{}{obj1, obj2} , notification.GetOldValue() )
+	// 	assert.Equal( t, []interface{}{2, 3} , notification.GetNewValue() )
+	// }
+	// {
+	//     obj1 := &MockEObject{}
+	//     obj2 := &MockEObject{}
+	//     obj3 := &MockEObject{}
+	//     notification := NewNotificationByFeature( mockObject, REMOVE_MANY, mockFeature, []interface{}{obj1, obj2}, []interface{}{2, 3}, NO_INDEX )
+	//     other := NewNotificationByFeature( mockObject, REMOVE, mockFeature, obj3, nil, 2 )
+	// 	assert.True( t,  notification.Merge( other ) )
+	// 	assert.Equal( t, REMOVE_MANY , notification.GetEventType() )
+	// 	assert.Equal( t, []interface{}{obj1, obj2, obj3} , notification.GetOldValue() )
+	// 	assert.Equal( t, []interface{}{2, 3, 4} , notification.GetNewValue() )
+	// }
+>>>>>>> [Go] Fix notifying lists
 }
 
 func TestNotificationAdd(t *testing.T) {
@@ -150,6 +185,7 @@ func TestNotificationAdd(t *testing.T) {
 		other := NewNotificationByFeature(mockObject, SET, mockFeature, 1, 2, NO_INDEX)
 		assert.False(t, notification.Add(other))
 	}
+<<<<<<< HEAD
 	{
 		obj1 := &MockEObject{}
 		obj2 := &MockEObject{}
@@ -173,4 +209,39 @@ func TestNotificationAdd(t *testing.T) {
 		mockNotifier.On("ENotify", mockOther).Once()
 		notification.Dispatch()
 	}
+=======
+	// {
+	// 	obj1 := &MockEObject{}
+	// 	obj2 := &MockEObject{}
+	// 	notification := NewNotificationByFeature( mockObject,  SET, mockFeature, nil, obj1 , NO_INDEX)
+	// 	other := NewNotificationByFeature( mockObject,  SET, mockFeature, nil, obj2 , NO_INDEX)
+	//     assert.True( t, notification.Add( other ) )
+	// 	mockObject.On("ENotify",notification).Once()
+	// 	mockObject.On("ENotify",other).Once()
+	//     notification.Dispatch()
+	// }
+	// {
+	// 	obj1 := &MockEObject{}
+	// 	obj2 := &MockEObject{}
+	// 	notification := NewNotificationByFeature( mockObject,  SET, mockFeature, nil, obj1 , NO_INDEX)
+	// 	other := NewNotificationByFeature( mockObject,  SET, mockFeature, nil, obj2 , NO_INDEX)
+	//     assert.True( t, notification.Add( other ) )
+	// 	mockObject.On("ENotify",notification).Once()
+	// 	mockObject.On("ENotify",other).Once()
+	//     notification.Dispatch()
+	// }
+	// {
+	// 	mockObj := &MockEObject{}
+	// 	notification := NewNotificationByFeature( mockObject,  ADD, mockFeature, nil, mockObj , NO_INDEX)
+	// 	mockOther := &MockENotification{}
+	// 	mockNotifier := &MockENotifier{}
+	// 	mockOther.On("getEventType").Return(SET)
+	// 	mockOther.On("GetNotifier").Return(mockNotifier)
+	// 	mockOther.On("GetFeature").Return(mockFeature)
+	// 	assert.True( t,  notification.Add( mockOther ) )
+	// 	mockObject.On("ENotify",notification).Once()
+	// 	mockNotifier.On("ENotify",mockOther).Once()
+	//     notification.Dispatch()
+	// }
+>>>>>>> [Go] Fix notifying lists
 }
