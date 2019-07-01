@@ -8,5 +8,6 @@ type eClassifierExt struct {
 func newEClassifierExt() *eClassifierExt {
 	eClassifier := new(eClassifierExt)
 	eClassifier.eClassifierImpl = newEClassifierImpl()
+	eClassifier.internal = eClassifier
 	return eClassifier
 }

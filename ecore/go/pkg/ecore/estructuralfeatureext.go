@@ -8,5 +8,6 @@ type eStructuralFeatureExt struct {
 func newEStructuralFeatureExt() *eStructuralFeatureExt {
 	eStructuralFeature := new(eStructuralFeatureExt)
 	eStructuralFeature.eStructuralFeatureImpl = newEStructuralFeatureImpl()
+	eStructuralFeature.internal = eStructuralFeature
 	return eStructuralFeature
 }

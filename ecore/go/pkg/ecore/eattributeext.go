@@ -8,6 +8,7 @@ type eAttributeExt struct {
 func newEAttributeExt() *eAttributeExt {
 	eAttribute := new(eAttributeExt)
 	eAttribute.eAttributeImpl = newEAttributeImpl()
+	eAttribute.internal = eAttribute
 	return eAttribute
 }
 

@@ -8,5 +8,6 @@ type eOperationExt struct {
 func newEOperationExt() *eOperationExt {
 	eOperation := new(eOperationExt)
 	eOperation.eOperationImpl = newEOperationImpl()
+	eOperation.internal = eOperation
 	return eOperation
 }

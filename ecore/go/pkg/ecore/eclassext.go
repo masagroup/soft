@@ -8,6 +8,7 @@ type eClassExt struct {
 func newEClassExt() *eClassExt {
 	eClass := new(eClassExt)
 	eClass.eClassImpl = newEClassImpl()
+	eClass.internal = eClass
 	return eClass
 }
 

@@ -8,5 +8,6 @@ type eTypedElementExt struct {
 func newETypedElementExt() *eTypedElementExt {
 	eTypedElement := new(eTypedElementExt)
 	eTypedElement.eTypedElementImpl = newETypedElementImpl()
+	eTypedElement.internal = eTypedElement
 	return eTypedElement
 }
