@@ -145,3 +145,32 @@ func TestIterateImmutable(t *testing.T) {
 	}
 	assert.Equal(t, 8, i)
 }
+
+func TestAddAllUnique(t *testing.T) {
+	arr := NewUniqueArrayEList([]interface{}{3, 5, 7, 5})
+	arr2 := NewUniqueArrayEList([]interface{}{2})
+	arr2.AddAll(arr)
+	assert.Equal(t, arr2.ToArray(), []interface{}{2, 3, 5, 7})
+}
+
+func TestAddUnique(t *testing.T) {
+	arr := NewUniqueArrayEList([]interface{}{})
+	assert.Equal(t, arr.Add(2), true)
+	assert.Equal(t, arr.Add(5), true)
+	assert.Equal(t, arr.Add(2), false)
+}
+
+func TestInsertUnique(t *testing.T) {
+	arr := NewUniqueArrayEList([]interface{}{3, 5, 7})
+	assert.Equal(t, arr.Insert(1, 2), true)
+	assert.Equal(t, arr.Insert(2, 9), true)
+	assert.Equal(t, arr.Insert(2, 3), false)
+	assert.Equal(t, arr.ToArray(), []interface{}{3, 2, 9, 5, 7})
+}
+
+func TestInsertAllUnique(t *testing.T) {
+	arr := NewUniqueArrayEList([]interface{}{3, 5, -5, 7})
+	arr2 := NewUniqueArrayEList([]interface{}{-3, -5, -7})
+	arr2.InsertAll(1, arr)
+	assert.Equal(t, arr2.ToArray(), []interface{}{-3, 3, 5, 7, -5, -7})
+}
