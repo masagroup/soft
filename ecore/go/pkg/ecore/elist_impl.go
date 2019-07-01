@@ -4,6 +4,7 @@ package ecore
 type arrayEList struct {
 	data     []interface{}
 	internal interface{}
+	isUnique bool
 }
 
 type immutableEList struct {
@@ -15,6 +16,16 @@ func NewArrayEList(data []interface{}) *arrayEList {
 	return &arrayEList{
 		data:     data,
 		internal: nil,
+		isUnique: false,
+	}
+}
+
+// NewUniqueArrayEList return a new ArrayEList with isUnique set as true
+func NewUniqueArrayEList(data []interface{}) *arrayEList {
+	return &arrayEList{
+		data:     data,
+		internal: nil,
+		isUnique: true,
 	}
 }
 
@@ -42,6 +53,9 @@ func (it *iterator) Next() bool {
 // Add a new element to the array
 func (arr *arrayEList) Add(elem interface{}) bool {
 	if arr.internal == nil {
+		if arr.isUnique && arr.Contains(elem) {
+			return false
+		}
 		arr.data = append(arr.data, elem)
 		return true
 	}
@@ -51,6 +65,15 @@ func (arr *arrayEList) Add(elem interface{}) bool {
 // AddAll elements of an array in the current one
 func (arr *arrayEList) AddAll(list EList) bool {
 	if arr.internal == nil {
+		if arr.isUnique {
+			size := arr.Size()
+			for it := list.Iterate(); it.Next(); {
+				if !arr.Contains(it.Value()) {
+					arr.data = append(arr.data, it.Value())
+				}
+			}
+			return arr.Size() > size
+		}
 		arr.data = append(arr.data, list.ToArray()...)
 		return true
 	}
@@ -62,6 +85,9 @@ func (arr *arrayEList) Insert(index int, elem interface{}) bool {
 	if arr.internal == nil {
 		if index < 0 || index > arr.Size() {
 			panic("Index out of bounds")
+		}
+		if arr.isUnique && arr.Contains(elem) {
+			return false
 		}
 		arr.data = append(arr.data, nil)
 		copy(arr.data[index+1:], arr.data[index:])
@@ -76,6 +102,18 @@ func (arr *arrayEList) InsertAll(index int, list EList) bool {
 	if arr.internal == nil {
 		if index < 0 || index > arr.Size() {
 			panic("Index out of bounds")
+		}
+		if arr.isUnique {
+			size := arr.Size()
+			for it := list.Iterate(); it.Next(); {
+				if !arr.Contains(it.Value()) {
+					arr.data = append(arr.data, nil)
+					copy(arr.data[index+1:], arr.data[index:])
+					arr.data[index] = it.Value()
+					index++
+				}
+			}
+			return arr.Size() > size
 		}
 		arr.data = append(arr.data[:index], append(list.ToArray(), arr.data[index:]...)...)
 		return true
