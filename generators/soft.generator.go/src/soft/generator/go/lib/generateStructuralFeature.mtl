@@ -174,8 +174,14 @@ NewEmptyArrayEList()
 [if isGet()]
 [aStructuralFeature.generateGetImplementation()/]
 [/if]
+[if isBasicGet()]
+[aStructuralFeature.generateBasicGetImplementation()/]
+[/if]
 [if isSet()]
 [aStructuralFeature.generateSetImplementation()/]
+[/if]
+[if isBasicSet()]
+[aStructuralFeature.generateBasicSetImplementation()/]
 [/if]
 [if isUnSet()]
 [aStructuralFeature.generateUnSetImplementation()/]
@@ -184,18 +190,30 @@ NewEmptyArrayEList()
 
 
 [template public generateGetImplementation(aStructuralFeature : EStructuralFeature)]
+// [aStructuralFeature.getGetterName()/] get the value of [aStructuralFeature.getVariableName()/]
+[aStructuralFeature.eContainingClass.generateFunctionReceiver()/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
+[aStructuralFeature.generateCommonGetImplementation()/]
+}
+
+[/template]
+
+[template public generateBasicGetImplementation(aStructuralFeature : EStructuralFeature)]
+[aStructuralFeature.eContainingClass.generateFunctionReceiver()/] basic[aStructuralFeature.getGetterName().toUpperFirst()/]() [aStructuralFeature.generateType()/] {
+[aStructuralFeature.generateCommonGetImplementation()/]
+}
+
+[/template]
+
+[template public generateCommonGetImplementation(aStructuralFeature : EStructuralFeature)]
 [let aClass : EClass = aStructuralFeature.eContainingClass]
 [let varName : String = aStructuralFeature.getVariableName() ]
 [let receiverName : String = aStructuralFeature.eContainingClass.getReceiverName()]
-// [aStructuralFeature.getGetterName()/] get the value of [varName/]
-[aClass.generateFunctionReceiver()/] [aStructuralFeature.getGetterName()/]() [aStructuralFeature.generateType()/] {
 [if isContainer()]
-    panic("[aStructuralFeature.getGetterName()/] to be implemented")
-    // if EContainerFeatureID() != [aStructuralFeature.eContainingClass.getFeatureIDName(aStructuralFeature)/] {
-    //    return nil
-    //} else {
-    //    return EContainer();
-    //}
+    if [receiverName/].eContainerFeatureID() != [aClass.getFeatureIDName(aStructuralFeature)/] {
+        return nil
+    } else {
+        return [receiverName/].EContainer().([aStructuralFeature.generateType()/]);
+    }
 [elseif not isVolatile()]
     [let lazy : String = aStructuralFeature.getLazy()]
     [if lazy <> 'no']
@@ -218,28 +236,74 @@ NewEmptyArrayEList()
 [else]
     panic("[aStructuralFeature.getGetterName()/] not implemented")
 [/if]
-}
 [/let]
 [/let]
 [/let]
-
 [/template]
+
+
 
 [template public generateSetImplementation(aStructuralFeature : EStructuralFeature )]
 [let aClass : EClass = aStructuralFeature.eContainingClass]
+[let methodName : String = aStructuralFeature.getSetterName()]
+[let receiverName : String = aClass.getReceiverName() ]
 [let varName : String = aStructuralFeature.getVariableName() ]
-[let newVarName : String = 'new' + aStructuralFeature.getVariableName().toUpperFirst() ]
-[let oldVarName : String = 'old' + aStructuralFeature.getVariableName().toUpperFirst() ]
-// [aStructuralFeature.getSetterName()/] set the value of [varName/]
-[aClass.generateFunctionReceiver()/] [aStructuralFeature.getSetterName()/]( [newVarName/] [aStructuralFeature.generateType()/] ) {
-[if isContainer()]
-    panic("[aStructuralFeature.getSetterName()/] to be implemented")
-[elseif not isVolatile()]
+[let newVarName : String = 'new' + varName.toUpperFirst() ]
+[let oldVarName : String = 'old' + varName.toUpperFirst() ]
+// [methodName/] set the value of [varName/]
+[aClass.generateFunctionReceiver()/] [methodName/]( [newVarName/] [aStructuralFeature.generateType()/] ) {
+[if not isVolatile()]
+    [if isContainer()]
+    if ( [newVarName/] != [receiverName/].EContainer() || ([newVarName/] != nil && [receiverName/].eContainerFeatureID() !=  [aClass.getFeatureIDName(aStructuralFeature)/])) {
+        var notifications ENotificationChain
+        if ( [receiverName/].EContainer() != nil) {
+            notifications = [receiverName/].EBasicRemoveFromContainer(notifications)
+        }
+        if ( [newVarName/] != nil ) {
+            notifications = [newVarName/].(EObjectInternal).EInverseAdd( [receiverName/] , [aClass.getFeatureIDName(aStructuralFeature)/], notifications )
+        }
+        notifications = [receiverName/].basic[methodName.toUpperFirst()/]( [newVarName/], notifications )
+        if ( notifications != nil ) {
+            notifications.Dispatch()
+        }
+    } else if ( [receiverName/].ENotificationRequired() ) {
+        [receiverName/].ENotify( NewNotificationByFeatureID([receiverName/], SET, [aClass.getFeatureIDName(aStructuralFeature)/], [newVarName/], [newVarName/], NO_INDEX) )
+    }
+    [elseif isBidirectional() or isContains()]
+    if ( [newVarName/] != [receiverName/].[varName/] ) {
+        var notifications ENotificationChain
+        if ( [receiverName/].[varName/] != nil ) {
+        [if not isBidirectional()]
+            notifications = [receiverName/].[varName/].(EObjectInternal).EInverseRemove( [receiverName/], EOPPOSITE_FEATURE_BASE - [aClass.getFeatureIDName(aStructuralFeature)/] , notifications )
+        }
+        if ( [newVarName/] != nil ) {
+            notifications = [newVarName/].(EObjectInternal).EInverseAdd( [receiverName/], EOPPOSITE_FEATURE_BASE - [aClass.getFeatureIDName(aStructuralFeature)/] , notifications )
+        }
+        [else]
+            [let reverseFeature : EStructuralFeature = aStructuralFeature.oclAsType(EReference).eOpposite]
+            [let reverseClass : EClass = reverseFeature.eContainingClass]
+            notifications = [receiverName/].[varName/].(EObjectInternal).EInverseRemove( [receiverName/], [reverseClass.getFeatureIDName(reverseFeature)/] , notifications )
+        }
+        if ( [newVarName/] != nil ) {
+            notifications = [newVarName/].(EObjectInternal).EInverseAdd( [receiverName/], [reverseClass.getFeatureIDName(reverseFeature)/] , notifications )
+        }
+            [/let]
+            [/let]
+        [/if]
+        notifications = [receiverName/].basic[methodName.toUpperFirst()/]([newVarName/],notifications)
+        if (notifications != nil) {
+            notifications.Dispatch()
+        }
+    }
+        [if isUnSettable()]
+        [/if]
+    [else]
     [oldVarName/] := [aClass.getReceiverName()/].[varName/]
     [aClass.getReceiverName()/].[varName/] = [newVarName/]
     if [aClass.getReceiverName()/].ENotificationRequired() {
-        [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureID([aClass.getReceiverName()/], SET, ECLASSIFIER__INSTANCE_CLASS, [oldVarName/], [newVarName/], NO_INDEX))
+        [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureID([receiverName/], SET, [aClass.getFeatureIDName(aStructuralFeature)/], [oldVarName/], [newVarName/], NO_INDEX))
     }
+    [/if]
 [elseif hasKey('setterBody')]
     [valueKey('setterBody')/]
 [else]
@@ -250,7 +314,44 @@ NewEmptyArrayEList()
 [/let]
 [/let]
 [/let]
+[/let]
+[/let]
 
+[/template]
+
+[template public generateBasicSetImplementation(aStructuralFeature : EStructuralFeature)]
+[let aClass : EClass = aStructuralFeature.eContainingClass]
+[let receiverName : String = aClass.getReceiverName() ]
+[let varName : String = aStructuralFeature.getVariableName() ]
+[let newVarName : String = 'new' + varName.toUpperFirst()]
+[aClass.generateFunctionReceiver()/] basic[aStructuralFeature.getSetterName().toUpperFirst()/]( [newVarName/] [aStructuralFeature.generateType()/] , msgs ENotificationChain ) ENotificationChain {
+[if isContainer()]
+    return [receiverName/].EBasicSetContainer([newVarName/],[aClass.getFeatureIDName(aStructuralFeature)/],msgs) 
+[elseif not isVolatile()]
+    [let oldVarName : String = 'old' + varName.toUpperFirst()]
+    [oldVarName/] := [receiverName/].[varName/]
+    [receiverName/].[varName/] = [newVarName/]
+    notifications := msgs
+    if ( [receiverName/].ENotificationRequired() ) {
+        notification := NewNotificationByFeatureID([receiverName/], SET, [aClass.getFeatureIDName(aStructuralFeature)/], [oldVarName/], [newVarName/], NO_INDEX)
+        if (notifications != nil ) {
+            notifications.Add( notification );
+        } else {
+            notifications = notification;
+        }
+    }
+    return notifications
+    [/let]
+[elseif (hasKey('setterBody'))]
+    [valueKey('setterBody')/]
+[else]
+    panic("[aStructuralFeature.getSetterName()/] not implemented")
+[/if]
+}
+[/let]
+[/let]
+[/let]
+[/let]
 [/template]
 
 [template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature )]
@@ -265,7 +366,7 @@ NewEmptyArrayEList()
     [oldVarName/] := [aClass.getReceiverName()/].[varName/]
     [aClass.getReceiverName()/].[varName/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
     if [aClass.getReceiverName()/].ENotificationRequired() {
-        [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureID([aClass.getReceiverName()/], UNSET, ECLASSIFIER__INSTANCE_CLASS, [oldVarName/], [aClass.getReceiverName()/].[varName/], NO_INDEX))
+        [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureID([aClass.getReceiverName()/], UNSET, [aClass.getFeatureIDName(aStructuralFeature)/], [oldVarName/], [aClass.getReceiverName()/].[varName/], NO_INDEX))
     }
 [elseif hasKey('unsetterBody')]
     [valueKey('unsetterBody')/]

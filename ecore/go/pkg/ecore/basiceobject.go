@@ -69,6 +69,10 @@ func ( o *BasicEObject) EContainer() EObject {
 	return o.container
 }
 
+func ( o *BasicEObject) eContainerFeatureID() int {
+	return o.containerFeatureID
+}
+
 func ( o *BasicEObject) EContainingFeature() EStructuralFeature {
 	if o.container != nil {
 		if o.containerFeatureID <= EOPPOSITE_FEATURE_BASE {

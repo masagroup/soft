@@ -15,3 +15,13 @@ func newEAttributeExt() *eAttributeExt {
 func (eAttribute *eAttributeExt) GetEAttributeType() EDataType {
 	return eAttribute.GetEType().(EDataType)
 }
+
+func (eAttribute *eAttributeExt) SetID( newIsID bool ) {
+	eAttribute.eAttributeImpl.SetID( newIsID )
+	eClass := eAttribute.GetEContainingClass()
+	if ( eClass != nil ) {
+		classExt := eClass.(eClassExt)
+		classExt.setModified( ECLASS__EATTRIBUTES )
+	}
+	
+}

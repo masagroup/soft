@@ -326,11 +326,17 @@
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="default" value="false"/>
+      </eAnnotations>
     </eOperations>
     <eOperations name="eIsProxy" eType="#//EBoolean">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
         <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="default" value="false"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eResource" eType="#//EResource">
@@ -338,11 +344,17 @@
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="default" value="false"/>
+      </eAnnotations>
     </eOperations>
     <eOperations name="eContainer" eType="#//EObject">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
         <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="default" value="false"/>
       </eAnnotations>
     </eOperations>
     <eOperations name="eContainingFeature" eType="#//EStructuralFeature">
@@ -350,17 +362,26 @@
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="default" value="false"/>
+      </eAnnotations>
     </eOperations>
     <eOperations name="eContainmentFeature" eType="#//EReference">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="default" value="false"/>
+      </eAnnotations>
     </eOperations>
     <eOperations name="eContents">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const" value="return"/>
         <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="default" value="false"/>
       </eAnnotations>
       <eGenericType eClassifier="#//EEList">
         <eTypeArguments eClassifier="#//EObject"/>
@@ -371,6 +392,9 @@
         <details key="const" value="return"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="default" value="false"/>
+      </eAnnotations>
       <eGenericType eClassifier="#//ETreeIterator">
         <eTypeArguments eClassifier="#//EObject"/>
       </eGenericType>
@@ -379,6 +403,9 @@
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="const" value="return"/>
         <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="default" value="false"/>
       </eAnnotations>
       <eGenericType eClassifier="#//EEList">
         <eTypeArguments eClassifier="#//EObject"/>
@@ -389,6 +416,9 @@
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="default" value="false"/>
+      </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="eGet" eType="#//EJavaObject">
@@ -398,6 +428,7 @@
       </eAnnotations>
       <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
         <details key="operationName" value="EGetResolve"/>
+        <details key="default" value="false"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
       <eParameters name="resolve" eType="#//EBoolean"/>
@@ -405,6 +436,9 @@
     <eOperations name="eSet">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="default" value="false"/>
       </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
       <eParameters name="newValue" eType="#//EJavaObject"/>
@@ -414,17 +448,26 @@
         <details key="const"/>
         <details key="visibility" value="public:no"/>
       </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="default" value="false"/>
+      </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="eUnset">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="visibility" value="public:no"/>
       </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="default" value="false"/>
+      </eAnnotations>
       <eParameters name="feature" eType="#//EStructuralFeature"/>
     </eOperations>
     <eOperations name="eInvoke" eType="#//EJavaObject" eExceptions="#//EInvocationTargetException">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="visibility" value="public:no"/>
+      </eAnnotations>
+      <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
+        <details key="default" value="false"/>
       </eAnnotations>
       <eParameters name="operation" eType="#//EOperation"/>
       <eParameters name="arguments">

@@ -128,5 +128,33 @@ func (eClass *eClassExt) initEAllSuperTypes() {
 }
 
 func (eClass *eClassExt) initEIDAttribute() {
-    panic("initEIDAttribute not implemented")
+    eClass.initEAllAttributes()
+}
+
+func (eClass *eClassExt) setModified( featureID int ) {
+	switch( featureID ) {
+	case ECLASS__ESTRUCTURAL_FEATURES:
+		eClass.eAllAttributes = nil
+        eClass.eAllStructuralFeatures = nil
+        eClass.eAllReferences = nil
+        eClass.eAllContainments = nil
+	case ECLASS__EATTRIBUTES:
+		eClass.eAllAttributes = nil
+        eClass.eAllStructuralFeatures = nil
+        eClass.eAllContainments = nil
+	case ECLASS__EREFERENCES:
+		eClass.eAllReferences = nil
+        eClass.eAllStructuralFeatures = nil
+        eClass.eAllContainments = nil
+	case ECLASS__EOPERATIONS:
+		eClass.eAllOperations = nil
+        eClass.eAllContainments = nil
+	case ECLASS__ESUPER_TYPES:
+		eClass.eAllSuperTypes = nil
+        eClass.eAllAttributes = nil
+        eClass.eAllStructuralFeatures = nil
+        eClass.eAllReferences = nil
+        eClass.eAllContainments = nil
+	}
+
 }
