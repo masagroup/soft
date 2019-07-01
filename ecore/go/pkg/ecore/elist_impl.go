@@ -121,6 +121,18 @@ func (arr *arrayEList) InsertAll(index int, list EList) bool {
 		if index < 0 || index > arr.Size() {
 			panic("Index out of bounds")
 		}
+		if arr.isUnique {
+			size := arr.Size()
+			for it := list.Iterate(); it.Next(); {
+				if !arr.Contains(it.Value()) {
+					arr.data = append(arr.data, nil)
+					copy(arr.data[index+1:], arr.data[index:])
+					arr.data[index] = it.Value()
+					index++
+				}
+			}
+			return arr.Size() > size
+		}
 		arr.data = append(arr.data[:index], append(list.ToArray(), arr.data[index:]...)...)
 		return true
 	}
