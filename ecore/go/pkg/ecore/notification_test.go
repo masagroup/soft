@@ -10,7 +10,7 @@ type customTestAdapterMerge struct {
 	Adapter
 }
 
-var notif = NewArrayEList([]interface{}{})
+var notif *arrayEList
 
 func (adapter *customTestAdapterMerge) NotifyChanged(notification ENotification) {
 	notif.Add(notification)
@@ -18,6 +18,7 @@ func (adapter *customTestAdapterMerge) NotifyChanged(notification ENotification)
 
 func TestNotificationMerge(t *testing.T) {
 	testClassifier := newEClassifierImpl()
+	notif = NewArrayEList([]interface{}{})
 
 	adapter := &customTestAdapterMerge{Adapter: *NewAdapter()}
 	testClassifier.EAdapters().Add(adapter)
