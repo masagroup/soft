@@ -86,14 +86,5 @@ func (arr *ENotifyingListImpl) Clear() {
 func (arr *ENotifyingListImpl) Set(index int, elem interface{}) {
 	old := arr.Get(index)
 	arr.Set(index, elem)
-	arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, SET, arr.featureID, old, elem, index))
-	if arr.EList.AddAll(list) {
-		if list.Size() == 1 {
-			arr.notifier.ENotify(NewNotificationByFeatureID(nil, ADD, ECLASSIFIER__INSTANCE_CLASS, nil, list, arr.Size()))
-		} else if size > 1 {
-			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD_MANY, arr.featureID, nil, list, arr.Size()))
-		}
-		return true
-	}
-	return false
+	arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, SET, arr.featureID, old, elem, index))
 }

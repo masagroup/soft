@@ -47,6 +47,7 @@ func TestNotificationConstructor(t *testing.T) {
 	}
 }
 
+<<<<<<< HEAD
 func TestNotificationGetFeatureID(t *testing.T) {
 	mockObject := &MockEObject{}
 	mockFeature := &MockEStructuralFeature{}
@@ -59,6 +60,9 @@ func TestNotificationGetFeatureID(t *testing.T) {
 		mockFeature.On("GetFeatureID").Return(5)
 		assert.Equal(t, 5, notification.GetFeatureID())
 	}
+=======
+var notif *arrayEList
+>>>>>>> [Go] Fix notifying lists
 
 }
 
@@ -87,6 +91,7 @@ func TestNotificationDispatch(t *testing.T) {
 }
 
 func TestNotificationMerge(t *testing.T) {
+<<<<<<< HEAD
 	mockObject := &MockEObject{}
 	mockFeature := &MockEStructuralFeature{}
 	mockFeature.On("GetFeatureID").Return(1)
@@ -243,5 +248,21 @@ func TestNotificationAdd(t *testing.T) {
 	// 	mockNotifier.On("ENotify",mockOther).Once()
 	//     notification.Dispatch()
 	// }
+>>>>>>> [Go] Fix notifying lists
+=======
+	testClassifier := newEClassifierImpl()
+	notif = NewArrayEList([]interface{}{})
+
+	adapter := &customTestAdapterMerge{Adapter: *NewAdapter()}
+	testClassifier.EAdapters().Add(adapter)
+	testClassifier.SetClassifierID(5)
+	assert.Equal(t, notif.Size(), 1, "Notification count")
+	assert.Equal(t, notif.Get(0).(ENotification).GetOldValue(), -1)
+	assert.Equal(t, notif.Get(0).(ENotification).GetNewValue(), 5)
+	testClassifier.SetClassifierID(9)
+	assert.Equal(t, notif.Size(), 2, "Notification count")
+	firstNotif := notif.Get(0).(ENotification)
+	assert.Equal(t, firstNotif.Merge(notif.Get(1).(ENotification)), true)
+	assert.Equal(t, firstNotif.GetNewValue(), 9)
 >>>>>>> [Go] Fix notifying lists
 }
