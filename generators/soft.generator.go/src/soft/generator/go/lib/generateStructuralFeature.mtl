@@ -209,11 +209,10 @@ NewEmptyArrayEList()
 [let varName : String = aStructuralFeature.getVariableName() ]
 [let receiverName : String = aStructuralFeature.eContainingClass.getReceiverName()]
 [if isContainer()]
-    if [receiverName/].eContainerFeatureID() != [aClass.getFeatureIDName(aStructuralFeature)/] {
-        return nil
-    } else {
+    if [receiverName/].eContainerFeatureID() == [aClass.getFeatureIDName(aStructuralFeature)/] {
         return [receiverName/].EContainer().([aStructuralFeature.generateType()/]);
-    }
+    } 
+    return nil
 [elseif not isVolatile()]
     [let lazy : String = aStructuralFeature.getLazy()]
     [if lazy <> 'no']
