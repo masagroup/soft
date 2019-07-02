@@ -186,6 +186,9 @@ NewEmptyArrayEList()
 [if isUnSet()]
 [aStructuralFeature.generateUnSetImplementation()/]
 [/if]
+[if isBasicUnSet()]
+[aStructuralFeature.generateBasicUnSetImplementation()/]
+[/if]
 [/template]
 
 
@@ -355,20 +358,38 @@ NewEmptyArrayEList()
 
 [template public generateUnSetImplementation(aStructuralFeature : EStructuralFeature )]
 [let aClass : EClass = aStructuralFeature.eContainingClass]
+[let receiverName : String = aClass.getReceiverName()]
 [let varName : String = aStructuralFeature.getVariableName() ]
 [let oldVarName : String = 'old' + aStructuralFeature.getVariableName().toUpperFirst() ]
 // [aStructuralFeature.getUnSetterName()/] unset the value of [varName/]
 [aClass.generateFunctionReceiver()/] [aStructuralFeature.getUnSetterName()/]() {
-[if isContainer()]
-    panic("[aStructuralFeature.getSetterName()/] to be implemented")
-[elseif not isVolatile()]
-    [oldVarName/] := [aClass.getReceiverName()/].[varName/]
-    [aClass.getReceiverName()/].[varName/] = [getDefaultValue(aStructuralFeature.eGenericType.eClassifier)/]
-    if [aClass.getReceiverName()/].ENotificationRequired() {
-        [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureID([aClass.getReceiverName()/], UNSET, [aClass.getFeatureIDName(aStructuralFeature)/], [oldVarName/], [aClass.getReceiverName()/].[varName/], NO_INDEX))
+[if not isVolatile()]
+    [if isListType()]
+        [receiverName/].[varName/].Clear()
+    [elseif isBidirectional() or isContains()]
+    if ( [receiverName/].[varName/] != nil ) {
+        notifications ENotificationChain
+        [if not isBidirectional()]
+        notifications = [receiverName/].[varName/].(EObjectInternal).EInverseRemove( [receiverName/], EOPPOSITE_FEATURE_BASE - [aClass.getFeatureIDName(aStructuralFeature)/] , notifications )
+        [else]
+            [let reverseFeature : EStructuralFeature = aStructuralFeature.oclAsType(EReference).eOpposite]
+        notifications = [receiverName/].[varName/].(EObjectInternal).EInverseRemove( [receiverName/], [reverseFeature.eContainingClass.getFeatureIDName(reverseFeature)/] , notifications )
+            [/let]
+        [/if]
+        notifications = basic[aStructuralFeature.getUnSetterName().toUpperFirst()/](notifications)
+        if ( notifications != nil ) {
+            notifications.Dispatch()
+        }
+    } else if [receiverName/].ENotificationRequired() {
+        [receiverName/].ENotify( NewNotificationByFeatureID([receiverName/], UNSET, [aClass.getFeatureIDName(aStructuralFeature)/],nil,nil, NO_INDEX))
     }
+    [else]
+        if [receiverName/].ENotificationRequired() {
+            [receiverName/].ENotify( NewNotificationByFeatureID([receiverName/], UNSET, [aClass.getFeatureIDName(aStructuralFeature)/],nil,nil, NO_INDEX))
+        }
+    [/if]
 [elseif hasKey('unsetterBody')]
-    [valueKey('unsetterBody')/]
+    [valueKey('unsetterBody')/] 
 [else]
     panic("[aStructuralFeature.getUnSetterName()/] not implemented")
 [/if]
@@ -376,7 +397,39 @@ NewEmptyArrayEList()
 [/let]
 [/let]
 [/let]
+[/let]
 
 [/template]
+
+[template public generateBasicUnSetImplementation(aStructuralFeature : EStructuralFeature)]
+[let aClass : EClass = aStructuralFeature.eContainingClass]
+[let receiverName : String = aClass.getReceiverName()]
+[let varName : String = aStructuralFeature.getVariableName()]    
+[let oldVarName : String = 'old' + varName.toUpperFirst()]
+[aClass.generateFunctionReceiver()/] basic[aStructuralFeature.getUnSetterName().toUpperFirst()/]( msgs ENotificationChain ) ENotificationChain {
+[if not isVolatile()]
+    [oldVarName/] := [receiverName/].[varName/]
+    [receiverName/].[varName/] = nil
+    notifications := msgs;
+    if [receiverName/].ENotificationRequired() {
+        notification := NewNotificationByFeatureID([aClass.getReceiverName()/], UNSET, [aClass.getFeatureIDName(aStructuralFeature)/], [oldVarName/], nil, NO_INDEX)
+        if ( notifications != nil ) {
+            notifications.Add( notification )
+        } else {
+            notifications = notification
+        }
+    }
+    return notifications
+[else]
+    panic("basic[aStructuralFeature.getUnSetterName().toUpperFirst()/] not implemented")
+[/if] 
+}
+[/let]
+[/let]
+[/let]
+[/let]
+[/template]
+
+
 
 
