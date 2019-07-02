@@ -9,7 +9,7 @@ type Notifier struct {
 func NewNotifier() *Notifier {
 	notifier := new(Notifier)
 	notifier.eDeliver = true
-	notifier.eAdapters = NewArrayEList([]interface{}{})
+	notifier.eAdapters = NewEmptyArrayEList()
 	return notifier
 }
 

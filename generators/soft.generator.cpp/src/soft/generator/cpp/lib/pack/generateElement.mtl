@@ -65,7 +65,6 @@ std::shared_ptr<[getMetaType(anENamedElement, anEPackage)/]> [anENamedElement.ge
 [/template] 
 
 [template public generateInitialization(anEAttribute : EAttribute)]
-[anEAttribute.getElementInstanceName()/] = [anEAttribute.getPackageGetter()/];
 [anEAttribute.getElementInstanceName()/]->setName("[anEAttribute.name/]");
 [anEAttribute.getElementInstanceName()/]->setEType([anEAttribute.eType.oclAsType(EDataType).packageGetter(anEAttribute)/]);
 [anEAttribute.getElementInstanceName()/]->setLowerBound([anEAttribute.lowerBound/]);
@@ -78,11 +77,9 @@ std::shared_ptr<[getMetaType(anENamedElement, anEPackage)/]> [anENamedElement.ge
 [anEAttribute.getElementInstanceName()/]->setDerived([anEAttribute.derived.toString()/]);
 [anEAttribute.getElementInstanceName()/]->setOrdered([anEAttribute.ordered.toString()/]);
 [anEAttribute.getElementInstanceName()/]->setID([anEAttribute.iD.toString()/]);
-{
-    std::string defaultValue = "[anEAttribute.defaultValueLiteral/]";
-    if (!defaultValue.empty())
-       [anEAttribute.getElementInstanceName()/]->setDefaultValueLiteral(defaultValue);
-}
+[if ( anEAttribute.defaultValueLiteral <> '' )]
+[anEAttribute.getElementInstanceName()/]->setDefaultValueLiteral("[anEAttribute.defaultValueLiteral/]");
+[/if]
 
 [/template]
 
@@ -100,15 +97,12 @@ std::shared_ptr<[getMetaType(anENamedElement, anEPackage)/]> [anENamedElement.ge
 [anEReference.getElementInstanceName()/]->setOrdered([anEReference.ordered.toString()/]);
 [anEReference.getElementInstanceName()/]->setContainment([anEReference.containment.toString()/]);
 [anEReference.getElementInstanceName()/]->setResolveProxies([anEReference.resolveProxies.toString()/]);
-{
-    std::string defaultValue = "[anEReference.defaultValueLiteral/]";
-    if (!defaultValue.empty())
-        [anEReference.getElementInstanceName()/]->setDefaultValueLiteral(defaultValue);
-
-    std::shared_ptr<ecore::EReference>  otherEnd = [anEReference.eOpposite.getPackageGetter()/];
-    if (otherEnd != nullptr)
-        [anEReference.getElementInstanceName()/]->setEOpposite(otherEnd);
-}
+[if ( anEReference.defaultValueLiteral <> '' )]
+[anEReference.getElementInstanceName()/]->setDefaultValueLiteral("[anEReference.defaultValueLiteral/]");
+[/if]
+[if not anEReference.eOpposite.oclIsUndefined()]
+[anEReference.getElementInstanceName()/]->setEOpposite([anEReference.eOpposite.getPackageGetter()/]);
+[/if]
 
 [/template]
 

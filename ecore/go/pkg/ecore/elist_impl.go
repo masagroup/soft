@@ -10,6 +10,11 @@ type immutableEList struct {
 	data []interface{}
 }
 
+// NewEmptyArrayEList return a new ArrayEList
+func NewEmptyArrayEList() *arrayEList {
+	return &arrayEList{data: []interface{}{}}
+}
+
 // NewArrayEList return a new ArrayEList
 func NewArrayEList(data []interface{}) *arrayEList {
 	return &arrayEList{

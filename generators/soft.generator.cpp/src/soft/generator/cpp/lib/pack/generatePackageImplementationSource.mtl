@@ -149,7 +149,7 @@ void [className/]::initializePackageContents()
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
 void [className/]::initialize[aClass.name.toUpperFirst()/]Content()
 {
-    [aClass.generateClassInit()/]
+    [aClass.generateInitialization()/]
     [aClass.eAttributes->sortedBy(name).generateInitialization()/]
     [aClass.eReferences->sortedBy(name).generateInitialization()/]
     [aClass.eOperations->sortedBy(name).generateInitialization()/]

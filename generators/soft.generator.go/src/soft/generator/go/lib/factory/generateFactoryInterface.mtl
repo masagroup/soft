@@ -28,11 +28,12 @@ type [className/] interface {
 
 var factoryInstance [className/]
 
-func Get[className/]() [className/] {
+// GetFactory returns the factory for the model [anEPackage.name/]
+func GetFactory() [className/] {
     if factoryInstance == nil {
 [let extension : Boolean = anEPackage.hasKey('factory') and anEPackage.valueKey('factory') = 'extension']
 [let factoryName : String = if extension then anEPackage.getFactoryExtensionName() else anEPackage.getFactoryImplementationName() endif] 
-		factoryInstance = new[factoryName/]()
+		factoryInstance = new[factoryName.toUpperFirst()/]()
 [/let]
 [/let]
     }

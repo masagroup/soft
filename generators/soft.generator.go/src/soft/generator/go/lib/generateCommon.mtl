@@ -23,7 +23,7 @@ func ([aClass.getReceiverName()/] *[aClass.getImplementationName()/])
 [**
  * Classes Onthology
 */]
-[query public hasExtension( aEClass : EClass ) : Boolean = hasKey('extension') and valueKey('extension' )='true'/]
+
 
 [query public getInterfaceExtends(aClass : EClass ) : Sequence(String) =
     if ( aClass.eSuperTypes->isEmpty() ) then
@@ -64,6 +64,8 @@ func ([aClass.getReceiverName()/] *[aClass.getImplementationName()/])
     let new : String = if isUpperFirst( className ) then 'New' else 'new' endif in
     if index = -1 then new + className.toUpperFirst() else aQualifiedName.substring(1, index - 1) + '.' + new + className.toUpperFirst() endif
 /]
+[query public getConstructorExtensionName( aClass : EClass ) : String = getConstructorName(aClass.getExtensionName())/]
+
 
 [query public getClassImplements(aClass : EClass ) : Sequence(String) = Sequence{ aClass.getQualifiedInterfaceName() }/]
 

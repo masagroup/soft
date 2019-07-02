@@ -7,27 +7,6 @@
 [import soft::generator::go::lib::generateOperation/]
 [import soft::generator::go::lib::generateStructuralFeature/]
 
-[template public generateConstructor(aClass : EClass)]
-// [aClass.getConstructorName()/] is the constructor of a [aClass.getImplementationName()/]
-func [aClass.getConstructorName()/]() *[aClass.getImplementationName()/] {
-    [aClass.getReceiverName()/] := new([aClass.getImplementationName()/])
-[for ( qualifiedExtend : String | aClass.getClassExtends() )]
-    [aClass.getReceiverName()/].[getShortQualifiedName(qualifiedExtend,aClass.ePackage.name)/] = [getShortQualifiedName(getConstructorName(qualifiedExtend), aClass.ePackage.name)/]()
-[/for] 
-[if aClass.eStructuralFeatures->notEmpty()]
-    [aClass.eStructuralFeatures.generateVariableInitialization()/]
-[/if]
-    return [aClass.getReceiverName()/]
-}
-[/template]
-
-[template private generateMethods(aClass : EClass)]
-[aClass.eOperations.generateImplementation()/]
-[let features : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( isGet() or isSet() )]
-[features.generateImplementation(aClass)/]
-[/let]
-[/template]
-
 [template public generateImplementation(aClass : EClass) { implementationName : String = aClass.getImplementationName(); aPackage : EPackage = aClass.ePackage } ]
 [file (aClass.ePackage.getOutputDirectory() + '/' + aClass.ePackage.getOutputFileName(implementationName), false, 'UTF-8')]
 package [aPackage.name/]
@@ -37,14 +16,36 @@ type [implementationName/] struct {
 [for ( qualifiedExtend : String | aClass.getClassExtends() )]
     *[getShortQualifiedName(qualifiedExtend,aPackage.name)/]
 [/for]
-[let features : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( isGet() or isSet() )]
-    [features.generateVariable()/]
+[let features : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( isField() )]
+    [features.generateVariableDeclaration()/]
 [/let]
 }
 
-[aClass.generateConstructor()/]
+[let initializerFeatures : OrderedSet(EStructuralFeature) = aClass.getVariableInitializationFeatures()]
+[if initializerFeatures->notEmpty()]
+type [aClass.getVariableInitializersInterface()/] interface {
+    [initializerFeatures.generateVariableInitializationMethodDeclaration()/]
+}
+[/if]
+[/let]
 
-[aClass.generateMethods()/]
+// [aClass.getConstructorName()/] is the constructor of a [aClass.getImplementationName()/]
+func [aClass.getConstructorName()/]() *[aClass.getImplementationName()/] {
+    [aClass.getReceiverName()/] := new([aClass.getImplementationName()/])
+[for ( qualifiedExtend : String | aClass.getClassExtends() )]
+    [aClass.getReceiverName()/].[getShortQualifiedName(qualifiedExtend,aClass.ePackage.name)/] = [getShortQualifiedName(getConstructorName(qualifiedExtend), aClass.ePackage.name)/]()
+[/for]
+    [aClass.getReceiverName()/].internal = [aClass.getReceiverName()/] 
+[let features : OrderedSet(EAttribute) = aClass.eStructuralFeatures->select( isField() )]
+[if features->notEmpty()]
+    [features.generateVariableInitialization()/]
+[/if]
+[/let]
+    return [aClass.getReceiverName()/]
+}
 
+[aClass.eOperations.generateImplementation()/]
+[aClass.eStructuralFeatures.generateImplementation()/]
+[aClass.getVariableInitializationFeatures().generateVariableInitializationMethodDefinition()/]
 [/file]
 [/template]
