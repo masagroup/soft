@@ -11,16 +11,9 @@ type ENotifyingListImpl struct {
 
 func NewENotifyingListImpl(owner EObject, featureID int) *ENotifyingListImpl {
 	list := &ENotifyingListImpl{
-<<<<<<< HEAD
 		owner:      owner,
 		featureID:  featureID,
 		arrayEList: NewUniqueArrayEList([]interface{}{}),
-=======
-		notifier:  NewNotifier(),
-		owner:     owner,
-		featureID: featureID,
-		EList:     NewUniqueArrayEList([]interface{}{}),
->>>>>>> [Go] Improve notifying unit tests
 	}
 	return list
 }
@@ -33,23 +26,12 @@ func (arr *ENotifyingListImpl) Add(elem interface{}) bool {
 
 // AddAll elements of an array in the current one
 func (arr *ENotifyingListImpl) AddAll(list EList) bool {
-<<<<<<< HEAD
 	val := arr.arrayEList.AddAll(list)
 	size := arr.Size()
 	if size == 1 {
 		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, list.Get(0), arr.Size()))
 	} else if size > 1 {
 		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, ADD_MANY, arr.featureID, nil, list.ToArray(), arr.Size()))
-=======
-	if arr.EList.AddAll(list) {
-		size := arr.Size()
-		if size == 1 {
-			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, list.Get(0), arr.Size()))
-		} else if size > 1 {
-			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD_MANY, arr.featureID, nil, list.ToArray(), arr.Size()))
-		}
-		return true
->>>>>>> [Go] Improve notifying unit tests
 	}
 	return val
 }
@@ -62,23 +44,12 @@ func (arr *ENotifyingListImpl) Insert(index int, elem interface{}) bool {
 
 // InsertAll element of an array at a given position
 func (arr *ENotifyingListImpl) InsertAll(index int, list EList) bool {
-<<<<<<< HEAD
 	val := arr.arrayEList.InsertAll(index, list)
 	size := list.Size()
 	if size == 1 {
 		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, list.Get(0), index))
 	} else if size > 1 {
 		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, ADD_MANY, arr.featureID, nil, list.ToArray(), index))
-=======
-	if arr.EList.InsertAll(index, list) {
-		size := list.Size()
-		if size == 1 {
-			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, list.Get(0), index))
-		} else if size > 1 {
-			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD_MANY, arr.featureID, nil, list.ToArray(), index))
-		}
-		return true
->>>>>>> [Go] Improve notifying unit tests
 	}
 	return val
 }
@@ -103,19 +74,11 @@ func (arr *ENotifyingListImpl) Remove(elem interface{}) bool {
 func (arr *ENotifyingListImpl) Clear() {
 	size := arr.Size()
 	oldArr := arr
-<<<<<<< HEAD
 	arr.arrayEList.Clear()
 	if size == 1 {
 		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE, arr.featureID, oldArr.Get(0), nil, NO_INDEX))
 	} else if size > 1 {
 		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE_MANY, arr.featureID, oldArr.ToArray(), nil, NO_INDEX))
-=======
-	arr.EList.Clear()
-	if size == 1 {
-		arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE, arr.featureID, oldArr.Get(0), nil, NO_INDEX))
-	} else if size > 1 {
-		arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE_MANY, arr.featureID, oldArr.ToArray(), nil, NO_INDEX))
->>>>>>> [Go] Improve notifying unit tests
 	}
 }
 
@@ -123,5 +86,5 @@ func (arr *ENotifyingListImpl) Clear() {
 func (arr *ENotifyingListImpl) Set(index int, elem interface{}) {
 	old := arr.Get(index)
 	arr.Set(index, elem)
-	arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, SET, arr.featureID, old, elem, index))
+	arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, SET, arr.featureID, old, elem, index))
 }
