@@ -145,7 +145,7 @@ func (arr *arrayEList) Get(index int) interface{} {
 }
 
 // Set an element of the array
-func (arr *arrayEList) Set(index int, elem interface{}) {
+func (arr *arrayEList) Set(index int, elem interface{}) { // TODO
 	if index < 0 || index >= arr.Size() {
 		panic("Index out of bounds")
 	}
@@ -153,12 +153,13 @@ func (arr *arrayEList) Set(index int, elem interface{}) {
 }
 
 // RemoveAt remove an element at a given position
-func (arr *arrayEList) RemoveAt(index int) bool {
+func (arr *arrayEList) RemoveAt(index int) interface{} {
 	if index < 0 || index >= arr.Size() {
 		panic("Index out of bounds")
 	}
+	elem := arr.Get(index)
 	arr.data = append(arr.data[:index], arr.data[index+1:]...)
-	return true
+	return elem
 }
 
 // Remove an element in an array
@@ -167,7 +168,8 @@ func (arr *arrayEList) Remove(elem interface{}) bool {
 	if index == -1 {
 		return false
 	}
-	return arr.RemoveAt(index)
+	arr.RemoveAt(index)
+	return true
 }
 
 // Size count the number of element in the array
@@ -245,7 +247,7 @@ func (arr *immutableEList) Set(index int, elem interface{}) {
 	panic("Immutable list can't be modified")
 }
 
-func (arr *immutableEList) RemoveAt(index int) bool {
+func (arr *immutableEList) RemoveAt(index int) interface{} {
 	panic("Immutable list can't be modified")
 }
 

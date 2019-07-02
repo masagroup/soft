@@ -2,13 +2,13 @@ package ecore
 
 type eObjectEListImpl struct {
 	*ENotifyingListImpl
-	owner            EObject
+	owner            EObjectInternal
 	featureID        int
 	inverseFeatureID int
 	internal         interface{}
 }
 
-func NewEObjectEList(owner EObject, featureID int, inverseFeatureID int) *eObjectEListImpl {
+func NewEObjectEList(owner EObjectInternal, featureID int, inverseFeatureID int) *eObjectEListImpl {
 	list := &eObjectEListImpl{
 		owner:              owner,
 		featureID:          featureID,
@@ -18,6 +18,14 @@ func NewEObjectEList(owner EObject, featureID int, inverseFeatureID int) *eObjec
 	return list
 }
 
-func (arr *eObjectEListImpl) resolve() bool {
-	return arr.internal.(eObjectEListInternal).containment()
+func (arr *eObjectEListImpl) Add(elem interface{}) bool {
+	inv := arr.internal.(eObjectEListInternal).inverse()
+	op := arr.internal.(eObjectEListInternal).opposite()
+	if arr.ENotifyingListImpl.Add(elem) {
+		if inv && !op {
+		} else if inv && op {
+
+		}
+	}
+	return false
 }
