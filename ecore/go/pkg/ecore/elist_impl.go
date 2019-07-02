@@ -55,73 +55,61 @@ func (it *iterator) Next() bool {
 
 // Add a new element to the array
 func (arr *arrayEList) Add(elem interface{}) bool {
-	if arr.internal == nil {
-		if arr.isUnique && arr.Contains(elem) {
-			return false
-		}
-		arr.data = append(arr.data, elem)
-		return true
+	if arr.isUnique && arr.Contains(elem) {
+		return false
 	}
-	return arr.internal.(EListInternal).Add(elem)
+	arr.data = append(arr.data, elem)
+	return true
 }
 
 // AddAll elements of an array in the current one
 func (arr *arrayEList) AddAll(list EList) bool {
-	if arr.internal == nil {
-		if arr.isUnique {
-			size := arr.Size()
-			for it := list.Iterate(); it.Next(); {
-				if !arr.Contains(it.Value()) {
-					arr.data = append(arr.data, it.Value())
-				}
+	if arr.isUnique {
+		size := arr.Size()
+		for it := list.Iterate(); it.Next(); {
+			if !arr.Contains(it.Value()) {
+				arr.data = append(arr.data, it.Value())
 			}
-			return arr.Size() > size
 		}
-		arr.data = append(arr.data, list.ToArray()...)
-		return true
+		return arr.Size() > size
 	}
-	return arr.internal.(EListInternal).AddAll(list)
+	arr.data = append(arr.data, list.ToArray()...)
+	return true
 }
 
 // Insert an element in the array
 func (arr *arrayEList) Insert(index int, elem interface{}) bool {
-	if arr.internal == nil {
-		if index < 0 || index > arr.Size() {
-			panic("Index out of bounds")
-		}
-		if arr.isUnique && arr.Contains(elem) {
-			return false
-		}
-		arr.data = append(arr.data, nil)
-		copy(arr.data[index+1:], arr.data[index:])
-		arr.data[index] = elem
-		return true
+	if index < 0 || index > arr.Size() {
+		panic("Index out of bounds")
 	}
-	return arr.internal.(EListInternal).Insert(index, elem)
+	if arr.isUnique && arr.Contains(elem) {
+		return false
+	}
+	arr.data = append(arr.data, nil)
+	copy(arr.data[index+1:], arr.data[index:])
+	arr.data[index] = elem
+	return true
 }
 
 // InsertAll element of an array at a given position
 func (arr *arrayEList) InsertAll(index int, list EList) bool {
-	if arr.internal == nil {
-		if index < 0 || index > arr.Size() {
-			panic("Index out of bounds")
-		}
-		if arr.isUnique {
-			size := arr.Size()
-			for it := list.Iterate(); it.Next(); {
-				if !arr.Contains(it.Value()) {
-					arr.data = append(arr.data, nil)
-					copy(arr.data[index+1:], arr.data[index:])
-					arr.data[index] = it.Value()
-					index++
-				}
-			}
-			return arr.Size() > size
-		}
-		arr.data = append(arr.data[:index], append(list.ToArray(), arr.data[index:]...)...)
-		return true
+	if index < 0 || index > arr.Size() {
+		panic("Index out of bounds")
 	}
-	return arr.internal.(EListInternal).InsertAll(index, list)
+	if arr.isUnique {
+		size := arr.Size()
+		for it := list.Iterate(); it.Next(); {
+			if !arr.Contains(it.Value()) {
+				arr.data = append(arr.data, nil)
+				copy(arr.data[index+1:], arr.data[index:])
+				arr.data[index] = it.Value()
+				index++
+			}
+		}
+		return arr.Size() > size
+	}
+	arr.data = append(arr.data[:index], append(list.ToArray(), arr.data[index:]...)...)
+	return true
 }
 
 // Move an element to the given index
@@ -167,26 +155,20 @@ func (arr *arrayEList) Set(index int, elem interface{}) {
 
 // RemoveAt remove an element at a given position
 func (arr *arrayEList) RemoveAt(index int) bool {
-	if arr.internal == nil {
-		if index < 0 || index >= arr.Size() {
-			panic("Index out of bounds")
-		}
-		arr.data = append(arr.data[:index], arr.data[index+1:]...)
-		return true
+	if index < 0 || index >= arr.Size() {
+		panic("Index out of bounds")
 	}
-	return arr.internal.(EListInternal).RemoveAt(index)
+	arr.data = append(arr.data[:index], arr.data[index+1:]...)
+	return true
 }
 
 // Remove an element in an array
 func (arr *arrayEList) Remove(elem interface{}) bool {
-	if arr.internal == nil {
-		index := arr.IndexOf(elem)
-		if index == -1 {
-			return false
-		}
-		return arr.RemoveAt(index)
+	index := arr.IndexOf(elem)
+	if index == -1 {
+		return false
 	}
-	return arr.internal.(EListInternal).Remove(elem)
+	return arr.RemoveAt(index)
 }
 
 // Size count the number of element in the array
