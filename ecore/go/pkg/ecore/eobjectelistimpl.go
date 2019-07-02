@@ -142,13 +142,3 @@ func (arr *eObjectEListImpl) Set(index int, elem interface{}) {
 		notifications = arr.owner.EInverseAdd(elem.(EObject), EOPPOSITE_FEATURE_BASE-arr.featureID, notifications)
 	}
 }
-
-func NewEObjectEList(owner EObject, featureID int, inverseFeatureID int) *eObjectEListImpl {
-	list := &eObjectEListImpl{
-		owner:              owner,
-		featureID:          featureID,
-		inverseFeatureID:   inverseFeatureID,
-		ENotifyingListImpl: NewENotifyingListImpl(owner, featureID),
-	}
-	return list
-}
