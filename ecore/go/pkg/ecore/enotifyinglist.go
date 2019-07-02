@@ -4,23 +4,23 @@ type ENotifyingList interface {
 }
 
 type ENotifyingListImpl struct {
-	EList
+	*arrayEList
 	owner     EObject
 	featureID int
 }
 
 func NewENotifyingListImpl(owner EObject, featureID int) *ENotifyingListImpl {
 	list := &ENotifyingListImpl{
-		owner:     owner,
-		featureID: featureID,
-		EList:     NewUniqueArrayEList([]interface{}{}),
+		owner:      owner,
+		featureID:  featureID,
+		arrayEList: NewUniqueArrayEList([]interface{}{}),
 	}
 	return list
 }
 
 // Add a new element to the array
 func (arr *ENotifyingListImpl) Add(elem interface{}) bool {
-	if arr.EList.Add(elem) {
+	if arr.arrayEList.Add(elem) {
 		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, elem, arr.Size()))
 		return true
 	}
@@ -29,7 +29,7 @@ func (arr *ENotifyingListImpl) Add(elem interface{}) bool {
 
 // AddAll elements of an array in the current one
 func (arr *ENotifyingListImpl) AddAll(list EList) bool {
-	if arr.EList.AddAll(list) {
+	if arr.arrayEList.AddAll(list) {
 		size := arr.Size()
 		if size == 1 {
 			arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, list.Get(0), arr.Size()))
@@ -43,7 +43,7 @@ func (arr *ENotifyingListImpl) AddAll(list EList) bool {
 
 // Insert an element in the array
 func (arr *ENotifyingListImpl) Insert(index int, elem interface{}) bool {
-	if arr.EList.Insert(index, elem) {
+	if arr.arrayEList.Insert(index, elem) {
 		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, elem, index))
 		return true
 	}
@@ -52,7 +52,7 @@ func (arr *ENotifyingListImpl) Insert(index int, elem interface{}) bool {
 
 // InsertAll element of an array at a given position
 func (arr *ENotifyingListImpl) InsertAll(index int, list EList) bool {
-	if arr.EList.InsertAll(index, list) {
+	if arr.arrayEList.InsertAll(index, list) {
 		size := list.Size()
 		if size == 1 {
 			arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, list.Get(0), index))
@@ -67,7 +67,7 @@ func (arr *ENotifyingListImpl) InsertAll(index int, list EList) bool {
 // RemoveAt remove an element at a given position
 func (arr *ENotifyingListImpl) RemoveAt(index int) bool {
 	old := arr.Get(index)
-	if arr.EList.RemoveAt(index) {
+	if arr.arrayEList.RemoveAt(index) {
 		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE, arr.featureID, old, nil, index))
 		return true
 	}
@@ -78,7 +78,7 @@ func (arr *ENotifyingListImpl) RemoveAt(index int) bool {
 func (arr *ENotifyingListImpl) Remove(elem interface{}) bool {
 	index := arr.IndexOf(elem)
 	old := arr.Get(index)
-	if arr.EList.Remove(elem) {
+	if arr.arrayEList.Remove(elem) {
 		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE, arr.featureID, old, nil, index))
 		return true
 	}
@@ -89,7 +89,7 @@ func (arr *ENotifyingListImpl) Remove(elem interface{}) bool {
 func (arr *ENotifyingListImpl) Clear() {
 	size := arr.Size()
 	oldArr := arr
-	arr.EList.Clear()
+	arr.arrayEList.Clear()
 	if size == 1 {
 		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE, arr.featureID, oldArr.Get(0), nil, NO_INDEX))
 	} else if size > 1 {
