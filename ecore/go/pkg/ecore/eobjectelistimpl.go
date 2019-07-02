@@ -1,15 +1,21 @@
 package ecore
 
 type eObjectEListImpl struct {
-	*arrayEList
-	internal interface{}
+	*ENotifyingListImpl
+	owner            EObject
+	featureID        int
+	inverseFeatureID int
+	internal         interface{}
 }
 
-func NewEObjectEList() *eObjectEListImpl {
-	factory := new(eObjectEListImpl)
-	factory.arrayEList = NewArrayEList([]interface{}{})
-	factory.internal = factory
-	return factory
+func NewEObjectEList(owner EObject, featureID int, inverseFeatureID int) *eObjectEListImpl {
+	list := &eObjectEListImpl{
+		owner:              owner,
+		featureID:          featureID,
+		inverseFeatureID:   inverseFeatureID,
+		ENotifyingListImpl: NewENotifyingListImpl(owner, featureID),
+	}
+	return list
 }
 
 func (arr *eObjectEListImpl) resolve() bool {

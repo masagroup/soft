@@ -7,11 +7,11 @@ import (
 )
 
 func TestNotificationListAdd(t *testing.T) {
-	arr := NewENotifyingListImpl(nil, -1)
+	arr := NewENotifyingListImpl(NewNotifier(), -1)
 	notif = NewArrayEList([]interface{}{})
 
 	adapter := &customTestAdapterMerge{Adapter: *NewAdapter()}
-	arr.notifier.EAdapters().Add(adapter)
+	arr.owner.EAdapters().Add(adapter)
 	arr.Add(3)
 	assert.Equal(t, notif.Size(), 1, "Notification count")
 	assert.Equal(t, notif.Get(0).(ENotification).GetNewValue(), 3)
@@ -19,12 +19,12 @@ func TestNotificationListAdd(t *testing.T) {
 }
 
 func TestNotificationListAddAll(t *testing.T) {
-	arr := NewENotifyingListImpl(nil, -1)
+	arr := NewENotifyingListImpl(NewNotifier(), -1)
 	arr2 := NewArrayEList([]interface{}{3, 2})
 	notif = NewArrayEList([]interface{}{})
 
 	adapter := &customTestAdapterMerge{Adapter: *NewAdapter()}
-	arr.notifier.EAdapters().Add(adapter)
+	arr.owner.EAdapters().Add(adapter)
 	arr.AddAll(arr2)
 	assert.Equal(t, notif.Size(), 1, "Notification count")
 	assert.Equal(t, notif.Get(0).(ENotification).GetNewValue(), []interface{}{3, 2})
@@ -32,12 +32,12 @@ func TestNotificationListAddAll(t *testing.T) {
 }
 
 func TestNotificationListAddAllOne(t *testing.T) {
-	arr := NewENotifyingListImpl(nil, -1)
+	arr := NewENotifyingListImpl(NewNotifier(), -1)
 	arr2 := NewArrayEList([]interface{}{2, 2})
 	notif = NewArrayEList([]interface{}{})
 
 	adapter := &customTestAdapterMerge{Adapter: *NewAdapter()}
-	arr.notifier.EAdapters().Add(adapter)
+	arr.owner.EAdapters().Add(adapter)
 	arr.AddAll(arr2)
 	assert.Equal(t, notif.Size(), 1, "Notification count")
 	assert.Equal(t, notif.Get(0).(ENotification).GetNewValue(), 2)

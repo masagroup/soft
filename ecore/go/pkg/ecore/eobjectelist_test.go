@@ -1,7 +1,6 @@
 package ecore
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -31,7 +30,6 @@ func (arr *testingObjectEList) unset() bool {
 
 func TestEObjectEList(t *testing.T) {
 	test := &testingObjectEList{}
-	test.eObjectEListImpl = NewEObjectEList()
+	test.eObjectEListImpl = NewEObjectEList(nil, -1, -1)
 	test.eObjectEListImpl.internal = test
-	fmt.Println(test.resolve())
 }
