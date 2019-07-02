@@ -174,3 +174,10 @@ func TestInsertAllUnique(t *testing.T) {
 	arr2.InsertAll(1, arr)
 	assert.Equal(t, arr2.ToArray(), []interface{}{-3, 3, 5, 7, -5, -7})
 }
+
+func TestInsertAllUniqueDupplicate(t *testing.T) {
+	arr := NewArrayEList([]interface{}{3, 5, -5, 7, 7})
+	arr2 := NewUniqueArrayEList([]interface{}{-3, -5, -7})
+	arr2.InsertAll(1, arr)
+	assert.Equal(t, arr2.ToArray(), []interface{}{-3, 3, 5, 7, -5, -7})
+}

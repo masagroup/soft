@@ -20,7 +20,6 @@ func NewEmptyArrayEList() *arrayEList {
 func NewArrayEList(data []interface{}) *arrayEList {
 	return &arrayEList{
 		data:     data,
-		internal: nil,
 		isUnique: false,
 	}
 }
@@ -29,7 +28,6 @@ func NewArrayEList(data []interface{}) *arrayEList {
 func NewUniqueArrayEList(data []interface{}) *arrayEList {
 	return &arrayEList{
 		data:     data,
-		internal: nil,
 		isUnique: true,
 	}
 }

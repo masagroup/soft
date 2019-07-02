@@ -15,7 +15,7 @@ func NewENotifyingListImpl(owner EObject, featureID int) *ENotifyingListImpl {
 		notifier:  NewNotifier(),
 		owner:     owner,
 		featureID: featureID,
-		EList:     NewArrayEList([]interface{}{}),
+		EList:     NewUniqueArrayEList([]interface{}{}),
 	}
 	return list
 }
@@ -32,11 +32,11 @@ func (arr *ENotifyingListImpl) Add(elem interface{}) bool {
 // AddAll elements of an array in the current one
 func (arr *ENotifyingListImpl) AddAll(list EList) bool {
 	if arr.EList.AddAll(list) {
-		size := list.Size()
+		size := arr.Size()
 		if size == 1 {
-			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, list, arr.Size()))
+			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, list.Get(0), arr.Size()))
 		} else if size > 1 {
-			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD_MANY, arr.featureID, nil, list, arr.Size()))
+			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD_MANY, arr.featureID, nil, list.ToArray(), arr.Size()))
 		}
 		return true
 	}
@@ -57,9 +57,9 @@ func (arr *ENotifyingListImpl) InsertAll(index int, list EList) bool {
 	if arr.EList.InsertAll(index, list) {
 		size := list.Size()
 		if size == 1 {
-			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, list, index))
+			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD, arr.featureID, nil, list.Get(0), index))
 		} else if size > 1 {
-			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD_MANY, arr.featureID, nil, list, index))
+			arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, ADD_MANY, arr.featureID, nil, list.ToArray(), index))
 		}
 		return true
 	}
@@ -90,11 +90,12 @@ func (arr *ENotifyingListImpl) Remove(elem interface{}) bool {
 // Clear remove all elements of the array
 func (arr *ENotifyingListImpl) Clear() {
 	size := arr.Size()
+	oldArr := arr
 	arr.EList.Clear()
 	if size == 1 {
-		arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE, arr.featureID, arr.Get(0), nil, NO_INDEX))
+		arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE, arr.featureID, oldArr.Get(0), nil, NO_INDEX))
 	} else if size > 1 {
-		arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE_MANY, arr.featureID, arr, nil, NO_INDEX))
+		arr.notifier.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE_MANY, arr.featureID, oldArr.ToArray(), nil, NO_INDEX))
 	}
 }
 
