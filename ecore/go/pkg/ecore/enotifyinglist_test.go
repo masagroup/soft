@@ -7,7 +7,7 @@ import (
 )
 
 func TestNotificationListAdd(t *testing.T) {
-	arr := NewENotifyingListImpl(NewNotifier(), -1)
+	arr := NewENotifyingListImpl(NewBasicEObject(), -1)
 	notif = NewArrayEList([]interface{}{})
 
 	adapter := &customTestAdapterMerge{Adapter: *NewAdapter()}
@@ -19,7 +19,7 @@ func TestNotificationListAdd(t *testing.T) {
 }
 
 func TestNotificationListAddAll(t *testing.T) {
-	arr := NewENotifyingListImpl(NewNotifier(), -1)
+	arr := NewENotifyingListImpl(NewBasicEObject(), -1)
 	arr2 := NewArrayEList([]interface{}{3, 2})
 	notif = NewArrayEList([]interface{}{})
 
@@ -32,7 +32,7 @@ func TestNotificationListAddAll(t *testing.T) {
 }
 
 func TestNotificationListAddAllOne(t *testing.T) {
-	arr := NewENotifyingListImpl(NewNotifier(), -1)
+	arr := NewENotifyingListImpl(NewBasicEObject(), -1)
 	arr2 := NewArrayEList([]interface{}{2, 2})
 	notif = NewArrayEList([]interface{}{})
 

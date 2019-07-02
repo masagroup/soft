@@ -1,7 +1,6 @@
 package ecore
 
 type Notifier struct {
-	EObject
 	eDeliver  bool
 	eAdapters EList
 }
