@@ -65,13 +65,11 @@ func (arr *ENotifyingListImpl) InsertAll(index int, list EList) bool {
 }
 
 // RemoveAt remove an element at a given position
-func (arr *ENotifyingListImpl) RemoveAt(index int) bool {
+func (arr *ENotifyingListImpl) RemoveAt(index int) interface{} {
 	old := arr.Get(index)
-	if arr.arrayEList.RemoveAt(index) {
-		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE, arr.featureID, old, nil, index))
-		return true
-	}
-	return false
+	elem := arr.arrayEList.RemoveAt(index)
+	arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE, arr.featureID, old, nil, index))
+	return elem
 }
 
 // Remove an element in an array
