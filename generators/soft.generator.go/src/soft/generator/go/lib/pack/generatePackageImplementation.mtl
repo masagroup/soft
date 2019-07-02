@@ -124,7 +124,7 @@ p.[anEOperation.getElementInstanceName()/].SetOrdered([anEOperation.ordered.toSt
 
 [for (anEParameter : EParameter | anEOperation.eParameters) separator ('\r\n')]
 {
-[let factoryName : String = if anEOperation.eContainingClass.ePackage.name = 'ecore' then '' else 'ecore.' endif + 'GetEcoreFactory']
+[let factoryName : String = if anEOperation.eContainingClass.ePackage.name = 'ecore' then '' else 'ecore.' endif + 'GetFactory']
     parameter := [factoryName/]().CreateEParameterFromContainer(p.[anEOperation.getElementInstanceName()/])
 [/let]
     parameter.SetName("[anEParameter.name/]")
@@ -181,7 +181,7 @@ func new[className.toUpperFirst()/]() *[className/] {
 [anEPackage.eAllContents(EDataType)->sortedBy(name).generateGetter(anEPackage)/]
 
 func (p *[className/])createPackageContents() {
-[let factoryName : String = if anEPackage.name = 'ecore' then '' else 'ecore.' endif + 'GetEcoreFactory']
+[let factoryName : String = if anEPackage.name = 'ecore' then '' else 'ecore.' endif + 'GetFactory']
     factory := [factoryName/]()
 [/let]
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name))]
@@ -191,11 +191,13 @@ func (p *[className/])createPackageContents() {
 }
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
-func (p *[className/])create[aClass.name.toUpperFirst()/]Content(factory EcoreFactory) {
+[let factoryName : String = if anEPackage.name = 'ecore' then '' else 'ecore.' endif + 'EcoreFactory']
+func (p *[className/])create[aClass.name.toUpperFirst()/]Content(factory [factoryName/]) {
     [aClass.generateCreation()/]
     [aClass.eStructuralFeatures.generateCreation()/]
     [aClass.eOperations.generateCreation()/]
 }
+[/let]
 [/for]
 
 func (p *[className/])createPackageEDataTypes(factory EcoreFactory) {
