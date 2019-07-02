@@ -24,12 +24,12 @@ type [anEPackage.getFactoryInternalName()/] interface {
 }
 
 type [className/] struct {
-    *EFactoryImpl
+    *EFactoryExt
 }
 
 func new[className.toUpperFirst()/]() *[className/] {
     factory := new([className/])
-    factory.EFactoryImpl = NewEFactoryImpl()
+    factory.EFactoryExt = NewEFactoryExt()
     factory.internal = factory
     return factory 
 }
@@ -49,7 +49,7 @@ func new[className.toUpperFirst()/]() *[className/] {
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
 [anEPackage.generateFactoryImplementationMember()/] Create[aClass.name/]() [aClass.getInterfaceName()/] {
-	return [aClass.getConstructorName()/]()
+	return [if aClass.hasExtension()][aClass.getConstructorExtensionName()/][else][aClass.getConstructorName()/][/if]()
 }
 [let ref : OrderedSet(EReference) = aClass.getAllContainers()]
 [for(aReference:EReference | ref->sortedBy(name))]
@@ -110,7 +110,7 @@ func new[className.toUpperFirst()/]() *[className/] {
 [/template]
 
 [template public generateCreateFunctionContent(aClass : EClass, aReference : EReference, addID : Boolean)]
-element := [aClass.getConstructorName()/]()
+element := [if aClass.hasExtension()][aClass.getConstructorExtensionName()/][else][aClass.getConstructorName()/][/if]()
 element.internal = element
 [if(addID)]
 element.Set[aClass.getElementIDAccessorName()/]ID(classID)

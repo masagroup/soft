@@ -12,7 +12,7 @@ type notification struct {
 }
 
 // NewNotificationByFeature ...
-func NewNotificationByFeature(notifier EObject, eType EventType, feature EStructuralFeature, oldValue interface{}, newValue interface{}, position int) ENotification {
+func NewNotificationByFeature(notifier EObject, eType EventType, feature EStructuralFeature, oldValue interface{}, newValue interface{}, position int) *notification {
 	return &notification{
 		eventType: eType,
 		oldValue:  oldValue,
@@ -25,7 +25,7 @@ func NewNotificationByFeature(notifier EObject, eType EventType, feature EStruct
 }
 
 // NewNotificationByFeatureID ...
-func NewNotificationByFeatureID(notifier EObject, eType EventType, featureID int, oldValue interface{}, newValue interface{}, position int) ENotification {
+func NewNotificationByFeatureID(notifier EObject, eType EventType, featureID int, oldValue interface{}, newValue interface{}, position int) *notification {
 	return &notification{
 		eventType: eType,
 		oldValue:  oldValue,
@@ -60,7 +60,7 @@ func (notif *notification) GetFeature() EStructuralFeature {
 	if notif.feature != nil {
 		return notif.feature
 	}
-	return notif.notifier.Class().GetEStructuralFeature(notif.featureID)
+	return notif.notifier.EClass().GetEStructuralFeature(notif.featureID)
 }
 
 func (notif *notification) GetFeatureID() int {

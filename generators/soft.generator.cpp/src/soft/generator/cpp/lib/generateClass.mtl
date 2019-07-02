@@ -29,7 +29,7 @@ static const unsigned int [aEClass.getClassifierIDName()/] = [aEClass.getClassif
 
 [/template]
 
-[template public generateClassInit(aEClass : EClass)]
+[template public generateInitialization(aEClass : EClass)]
 [aEClass.getElementInstanceName()/]->setName("[aEClass.name/]");
 [aEClass.getElementInstanceName()/]->setAbstract([aEClass.abstract.toString()/]);
 [aEClass.getElementInstanceName()/]->setInterface([aEClass.interface.toString()/]);

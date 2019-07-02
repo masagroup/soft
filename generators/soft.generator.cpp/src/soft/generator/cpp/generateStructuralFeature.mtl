@@ -524,15 +524,18 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( const st
 [template public generateBasicUnSetDefinition(aStructuralFeature : EStructuralFeature)]
 [let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
 [let methodName : String = 'basic' + aStructuralFeature.getUnSetterName().toUpperFirst()]
-[let newVarName : String = 'new' + aStructuralFeature.name.toUpperFirst()]
+[let oldVarName : String = 'old' + aStructuralFeature.name.toUpperFirst()]
+[let varName : String = aStructuralFeature.name + '_']    
 std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( const std::shared_ptr<ecore::ENotificationChain>& msgs) 
 {
     // [protected (className + '::' + methodName)]
 [if not isVolatile()]
+    auto [oldVarName/] = [varName/]
+    [varName/].reset()
     auto notifications = msgs;
     if ( eNotificationRequired())
     {
-        auto notification = std::make_shared<Notification>(getThisPtr() , Notification::UNSET, [aStructuralFeature.getQualifiedFeatureIDName()/], ecore::Any(), ecore::Any());
+        auto notification = std::make_shared<Notification>(getThisPtr() , Notification::UNSET, [aStructuralFeature.getQualifiedFeatureIDName()/], [oldVarName/], ecore::Any());
         if ( notifications )
             notifications->add( notification );
         else
@@ -547,6 +550,7 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( const st
 [/if] 
     // [/protected]
 }
+[/let]
 [/let]
 [/let]
 [/let]
