@@ -117,24 +117,8 @@ func (arr *arrayEList) doInsertAll(index int, list EList) {
 
 // InsertAll element of an array at a given position
 func (arr *arrayEList) InsertAll(index int, list EList) bool {
-	if arr.internal == nil {
-		if index < 0 || index > arr.Size() {
-			panic("Index out of bounds")
-		}
-		if arr.isUnique {
-			size := arr.Size()
-			for it := list.Iterate(); it.Next(); {
-				if !arr.Contains(it.Value()) {
-					arr.data = append(arr.data, nil)
-					copy(arr.data[index+1:], arr.data[index:])
-					arr.data[index] = it.Value()
-					index++
-				}
-			}
-			return arr.Size() > size
-		}
-		arr.data = append(arr.data[:index], append(list.ToArray(), arr.data[index:]...)...)
-		return true
+	if index < 0 || index > arr.Size() {
+		panic("Index out of bounds")
 	}
 	if arr.isUnique {
 		list = arr.removeDuplicated(list)
@@ -205,12 +189,9 @@ func (arr *arrayEList) RemoveAt(index int) interface{} {
 
 // Remove an element in an array
 func (arr *arrayEList) Remove(elem interface{}) bool {
-	if arr.internal == nil {
-		index := arr.IndexOf(elem)
-		if index == -1 {
-			return false
-		}
-		return arr.RemoveAt(index)
+	index := arr.IndexOf(elem)
+	if index == -1 {
+		return false
 	}
 	arr.RemoveAt(index)
 	return true
