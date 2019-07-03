@@ -23,9 +23,9 @@ func (arr *eObjectEListImpl) Add(elem interface{}) bool {
 	if arr.internal.(eObjectEListInternal).inverse() {
 		var notifications ENotificationChain
 		if arr.internal.(eObjectEListInternal).opposite() {
-			notifications = arr.owner.EInverseAdd(arr.owner, arr.inverseFeatureID, nil)
+			notifications = arr.owner.EInverseAdd(elem.(EObject), arr.inverseFeatureID, nil)
 		} else {
-			notifications = arr.owner.EInverseAdd(arr.owner, EOPPOSITE_FEATURE_BASE-arr.featureID, nil)
+			notifications = arr.owner.EInverseAdd(elem.(EObject), EOPPOSITE_FEATURE_BASE-arr.featureID, nil)
 		}
 		notifications.Dispatch()
 	}
@@ -38,12 +38,12 @@ func (arr *eObjectEListImpl) AddAll(list EList) bool {
 		var notifications ENotificationChain
 		notifications = NewNotificationChain()
 		if arr.internal.(eObjectEListInternal).opposite() {
-			for it := arr.Iterate(); it.Next(); {
-				notifications = arr.owner.EInverseAdd(arr.owner, arr.inverseFeatureID, notifications)
+			for it := list.Iterate(); it.Next(); {
+				notifications = arr.owner.EInverseAdd(it.Value().(EObject), arr.inverseFeatureID, notifications)
 			}
 		} else {
-			for it := arr.Iterate(); it.Next(); {
-				notifications = arr.owner.EInverseAdd(arr.owner, EOPPOSITE_FEATURE_BASE-arr.featureID, notifications)
+			for it := list.Iterate(); it.Next(); {
+				notifications = arr.owner.EInverseAdd(it.Value().(EObject), EOPPOSITE_FEATURE_BASE-arr.featureID, notifications)
 			}
 		}
 		notifications.Dispatch()
@@ -56,9 +56,9 @@ func (arr *eObjectEListImpl) Insert(index int, elem interface{}) bool {
 	if arr.internal.(eObjectEListInternal).inverse() {
 		var notifications ENotificationChain
 		if arr.internal.(eObjectEListInternal).opposite() {
-			notifications = arr.owner.EInverseAdd(arr.owner, arr.inverseFeatureID, nil)
+			notifications = arr.owner.EInverseAdd(elem.(EObject), arr.inverseFeatureID, nil)
 		} else {
-			notifications = arr.owner.EInverseAdd(arr.owner, EOPPOSITE_FEATURE_BASE-arr.featureID, nil)
+			notifications = arr.owner.EInverseAdd(elem.(EObject), EOPPOSITE_FEATURE_BASE-arr.featureID, nil)
 		}
 		notifications.Dispatch()
 	}
@@ -71,12 +71,12 @@ func (arr *eObjectEListImpl) InsertAll(index int, list EList) bool {
 		var notifications ENotificationChain
 		notifications = NewNotificationChain()
 		if arr.internal.(eObjectEListInternal).opposite() {
-			for it := arr.Iterate(); it.Next(); {
-				notifications = arr.owner.EInverseAdd(arr.owner, arr.inverseFeatureID, notifications)
+			for it := list.Iterate(); it.Next(); {
+				notifications = arr.owner.EInverseAdd(it.Value().(EObject), arr.inverseFeatureID, notifications)
 			}
 		} else {
-			for it := arr.Iterate(); it.Next(); {
-				notifications = arr.owner.EInverseAdd(arr.owner, EOPPOSITE_FEATURE_BASE-arr.featureID, notifications)
+			for it := list.Iterate(); it.Next(); {
+				notifications = arr.owner.EInverseAdd(it.Value().(EObject), EOPPOSITE_FEATURE_BASE-arr.featureID, notifications)
 			}
 		}
 		notifications.Dispatch()
@@ -89,9 +89,9 @@ func (arr *eObjectEListImpl) Remove(elem interface{}) bool {
 	if arr.internal.(eObjectEListInternal).inverse() {
 		var notifications ENotificationChain
 		if arr.internal.(eObjectEListInternal).opposite() {
-			notifications = arr.owner.EInverseRemove(arr.owner, arr.inverseFeatureID, nil)
+			notifications = arr.owner.EInverseRemove(elem.(EObject), arr.inverseFeatureID, nil)
 		} else {
-			notifications = arr.owner.EInverseRemove(arr.owner, EOPPOSITE_FEATURE_BASE-arr.featureID, nil)
+			notifications = arr.owner.EInverseRemove(elem.(EObject), EOPPOSITE_FEATURE_BASE-arr.featureID, nil)
 		}
 		notifications.Dispatch()
 	}
@@ -99,15 +99,46 @@ func (arr *eObjectEListImpl) Remove(elem interface{}) bool {
 }
 
 func (arr *eObjectEListImpl) RemoveAt(index int) interface{} {
-	ret := arr.ENotifyingListImpl.Remove(index)
+	ret := arr.ENotifyingListImpl.RemoveAt(index)
 	if arr.internal.(eObjectEListInternal).inverse() {
 		var notifications ENotificationChain
 		if arr.internal.(eObjectEListInternal).opposite() {
-			notifications = arr.owner.EInverseRemove(arr.owner, arr.inverseFeatureID, nil)
+			notifications = arr.owner.EInverseRemove(ret.(EObject), arr.inverseFeatureID, nil)
 		} else {
-			notifications = arr.owner.EInverseRemove(arr.owner, EOPPOSITE_FEATURE_BASE-arr.featureID, nil)
+			notifications = arr.owner.EInverseRemove(ret.(EObject), EOPPOSITE_FEATURE_BASE-arr.featureID, nil)
 		}
 		notifications.Dispatch()
 	}
 	return ret
+}
+
+func (arr *eObjectEListImpl) Clear() {
+	old := arr
+	arr.ENotifyingListImpl.Clear()
+	if arr.internal.(eObjectEListInternal).inverse() {
+		var notifications ENotificationChain
+		if arr.internal.(eObjectEListInternal).opposite() {
+			for it := old.Iterate(); it.Next(); {
+				notifications = arr.owner.EInverseRemove(it.Value().(EObject), arr.inverseFeatureID, notifications)
+			}
+		} else {
+			for it := old.Iterate(); it.Next(); {
+				notifications = arr.owner.EInverseRemove(it.Value().(EObject), EOPPOSITE_FEATURE_BASE-arr.featureID, notifications)
+			}
+		}
+		notifications.Dispatch()
+	}
+}
+
+func (arr *eObjectEListImpl) Set(index int, elem interface{}) {
+	old := arr.Get(index)
+	arr.ENotifyingListImpl.Set(index, elem)
+	var notifications ENotificationChain
+	if arr.internal.(eObjectEListInternal).opposite() {
+		notifications = arr.owner.EInverseRemove(old.(EObject), arr.inverseFeatureID, notifications)
+		notifications = arr.owner.EInverseAdd(elem.(EObject), arr.inverseFeatureID, notifications)
+	} else {
+		notifications = arr.owner.EInverseRemove(old.(EObject), EOPPOSITE_FEATURE_BASE-arr.featureID, notifications)
+		notifications = arr.owner.EInverseAdd(elem.(EObject), EOPPOSITE_FEATURE_BASE-arr.featureID, notifications)
+	}
 }
