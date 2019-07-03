@@ -90,12 +90,12 @@ func (arr *eObjectEListImpl) AddAll(list EList) bool {
 		var notifications ENotificationChain
 		notifications = NewNotificationChain()
 		if arr.internal.(eObjectEListInternal).opposite() {
-			for it := arr.Iterate(); it.Next(); {
-				notifications = arr.owner.EInverseAdd(arr.owner, arr.inverseFeatureID, notifications)
+			for it := list.Iterate(); it.Next(); {
+				notifications = arr.owner.EInverseAdd(it.Value().(EObject), arr.inverseFeatureID, notifications)
 			}
 		} else {
-			for it := arr.Iterate(); it.Next(); {
-				notifications = arr.owner.EInverseAdd(arr.owner, EOPPOSITE_FEATURE_BASE-arr.featureID, notifications)
+			for it := list.Iterate(); it.Next(); {
+				notifications = arr.owner.EInverseAdd(it.Value().(EObject), EOPPOSITE_FEATURE_BASE-arr.featureID, notifications)
 			}
 		}
 		notifications.Dispatch()
@@ -108,9 +108,9 @@ func (arr *eObjectEListImpl) Insert(index int, elem interface{}) bool {
 	if arr.internal.(eObjectEListInternal).inverse() {
 		var notifications ENotificationChain
 		if arr.internal.(eObjectEListInternal).opposite() {
-			notifications = arr.owner.EInverseAdd(arr.owner, arr.inverseFeatureID, nil)
+			notifications = arr.owner.EInverseAdd(elem.(EObject), arr.inverseFeatureID, nil)
 		} else {
-			notifications = arr.owner.EInverseAdd(arr.owner, EOPPOSITE_FEATURE_BASE-arr.featureID, nil)
+			notifications = arr.owner.EInverseAdd(elem.(EObject), EOPPOSITE_FEATURE_BASE-arr.featureID, nil)
 		}
 		notifications.Dispatch()
 	}
@@ -123,12 +123,12 @@ func (arr *eObjectEListImpl) InsertAll(index int, list EList) bool {
 		var notifications ENotificationChain
 		notifications = NewNotificationChain()
 		if arr.internal.(eObjectEListInternal).opposite() {
-			for it := arr.Iterate(); it.Next(); {
-				notifications = arr.owner.EInverseAdd(arr.owner, arr.inverseFeatureID, notifications)
+			for it := list.Iterate(); it.Next(); {
+				notifications = arr.owner.EInverseAdd(it.Value().(EObject), arr.inverseFeatureID, notifications)
 			}
 		} else {
-			for it := arr.Iterate(); it.Next(); {
-				notifications = arr.owner.EInverseAdd(arr.owner, EOPPOSITE_FEATURE_BASE-arr.featureID, notifications)
+			for it := list.Iterate(); it.Next(); {
+				notifications = arr.owner.EInverseAdd(it.Value().(EObject), EOPPOSITE_FEATURE_BASE-arr.featureID, notifications)
 			}
 		}
 		notifications.Dispatch()
