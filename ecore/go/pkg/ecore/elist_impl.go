@@ -55,15 +55,11 @@ func (it *iterator) Next() bool {
 
 // Remove all elements in list that already are in arr.data
 func (arr *arrayEList) removeDuplicated(list EList) *arrayEList {
-	m := make(map[interface{}]bool)
-	for it := list.Iterate(); it.Next(); {
-		if !m[it.Value()] && !arr.Contains(it.Value()) {
-			m[it.Value()] = true
-		}
-	}
 	newArr := NewArrayEList([]interface{}{})
-	for k := range m {
-		newArr.doAdd(k)
+	for it := list.Iterate(); it.Next(); {
+		if !newArr.Contains(it.Value()) && !arr.Contains(it.Value()) {
+			newArr.Add(it.Value())
+		}
 	}
 	return newArr
 }
