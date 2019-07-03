@@ -150,7 +150,7 @@ func TestAddAllUnique(t *testing.T) {
 	arr := NewUniqueArrayEList([]interface{}{3, 5, 7, 5})
 	arr2 := NewUniqueArrayEList([]interface{}{2})
 	arr2.AddAll(arr)
-	assert.Equal(t, arr2.ToArray(), []interface{}{2})
+	assert.Equal(t, arr2.ToArray(), []interface{}{2, 3, 5, 7})
 }
 
 func TestAddUnique(t *testing.T) {
@@ -172,5 +172,5 @@ func TestInsertAllUnique(t *testing.T) {
 	arr := NewUniqueArrayEList([]interface{}{3, 5, -5, 7})
 	arr2 := NewUniqueArrayEList([]interface{}{-3, -5, -7})
 	arr2.InsertAll(1, arr)
-	assert.Equal(t, arr2.ToArray(), []interface{}{-3, -5, -7})
+	assert.Equal(t, arr2.ToArray(), []interface{}{-3, 3, 5, 7, -5, -7})
 }
