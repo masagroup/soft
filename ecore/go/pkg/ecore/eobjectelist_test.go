@@ -29,7 +29,9 @@ func (arr *testingObjectEList) unset() bool {
 }
 
 func TestEObjectEList(t *testing.T) {
-	test := &testingObjectEList{}
-	test.eObjectEListImpl = NewEObjectEList(nil, -1, -1)
-	test.eObjectEListImpl.internal = test
+	arr := &testingObjectEList{}
+	arr.eObjectEListImpl = NewEObjectEList(NewBasicEObject(), -1, -1)
+
+	adapter := &customTestAdapterMerge{Adapter: *NewAdapter()}
+	arr.owner.EAdapters().Add(adapter)
 }

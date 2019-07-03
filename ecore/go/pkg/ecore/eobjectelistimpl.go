@@ -19,13 +19,29 @@ func NewEObjectEList(owner EObjectInternal, featureID int, inverseFeatureID int)
 }
 
 func (arr *eObjectEListImpl) Add(elem interface{}) bool {
-	inv := arr.internal.(eObjectEListInternal).inverse()
-	op := arr.internal.(eObjectEListInternal).opposite()
-	if arr.ENotifyingListImpl.Add(elem) {
-		if inv && !op {
-		} else if inv && op {
-
+	ret := arr.ENotifyingListImpl.Add(elem)
+	if arr.internal.(eObjectEListInternal).inverse() {
+		var notifications ENotificationChain
+		if arr.internal.(eObjectEListInternal).opposite() {
+			notifications = arr.owner.EInverseAdd(arr.owner, arr.inverseFeatureID, nil)
+		} else {
+			notifications = arr.owner.EInverseAdd(arr.owner, EOPPOSITE_FEATURE_BASE-arr.featureID, nil)
 		}
+		notifications.Dispatch()
 	}
-	return false
+	return ret
+}
+
+func (arr *eObjectEListImpl) Remove(elem interface{}) bool {
+	ret := arr.ENotifyingListImpl.Remove(elem)
+	if arr.internal.(eObjectEListInternal).inverse() {
+		var notifications ENotificationChain
+		if arr.internal.(eObjectEListInternal).opposite() {
+			notifications = arr.owner.EInverseRemove(arr.owner, arr.inverseFeatureID, nil)
+		} else {
+			notifications = arr.owner.EInverseRemove(arr.owner, EOPPOSITE_FEATURE_BASE-arr.featureID, nil)
+		}
+		notifications.Dispatch()
+	}
+	return ret
 }
