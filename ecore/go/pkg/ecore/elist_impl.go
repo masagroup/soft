@@ -53,6 +53,21 @@ func (it *iterator) Next() bool {
 	return it.curr != it.data.Size()
 }
 
+// Remove all elements in list that already are in arr.data
+func (arr *arrayEList) removeDuplicated(list EList) *arrayEList {
+	m := make(map[interface{}]bool)
+	for it := list.Iterate(); it.Next(); {
+		if !m[it.Value()] && !arr.Contains(it.Value()) {
+			m[it.Value()] = true
+		}
+	}
+	newArr := NewArrayEList([]interface{}{})
+	for k := range m {
+		newArr.doAdd(k)
+	}
+	return newArr
+}
+
 // Add a new element to the array
 func (arr *arrayEList) doAdd(elem interface{}) {
 	arr.data = append(arr.data, elem)
@@ -73,10 +88,9 @@ func (arr *arrayEList) doAddAll(list EList) {
 // AddAll elements of an array in the current one
 func (arr *arrayEList) AddAll(list EList) bool {
 	if arr.isUnique {
-		for it := list.Iterate(); it.Next(); {
-			if arr.Contains(it.Value()) {
-				return false
-			}
+		list = arr.removeDuplicated(list)
+		if list.Size() == 0 {
+			return false
 		}
 	}
 	arr.doAddAll(list)
@@ -111,10 +125,9 @@ func (arr *arrayEList) InsertAll(index int, list EList) bool {
 		panic("Index out of bounds")
 	}
 	if arr.isUnique {
-		for it := list.Iterate(); it.Next(); {
-			if arr.Contains(it.Value()) {
-				return false
-			}
+		list = arr.removeDuplicated(list)
+		if list.Size() == 0 {
+			return false
 		}
 	}
 	arr.doInsertAll(index, list)
