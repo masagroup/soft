@@ -297,9 +297,8 @@
     <macrodef name="mockery_exec">
         <attribute name="dir"/>
         <sequential>
-            <exec executable="${bin.dir}/mockery/mockery.exe" failonerror="true">
-                <arg value="-dir"/>
-                <arg value="@{dir}"/>
+            <exec executable="${bin.dir}/mockery/mockery.exe" dir="@{dir}" failonerror="true">
+                <arg value="-all"/>
             </exec>
         </sequential>
     </macrodef>
@@ -404,7 +403,7 @@
     -->
     <target name="ecore.go.generate">
         <generator langage="go" input="ecore/model/ecore.ecore" output="${root.dir}/ecore/go"/>
-        <mockery_exec dir="${root.dir}/ecore/go/pkg/ecore"
+        <mockery_exec dir="${root.dir}/ecore/go/pkg/ecore"/>
     </target>
 
     <target name="ecore.go.build">
