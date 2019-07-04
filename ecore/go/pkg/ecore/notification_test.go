@@ -11,39 +11,39 @@ func TestNotificationConstructor(t *testing.T) {
 	mockFeature := &MockEStructuralFeature{}
 	{
 		notification  := NewNotificationByFeature(mockObject, ADD, mockFeature, 1,2, NO_INDEX)
-		assert.Equal( t , notification.GetNotifier() , mockObject )
-		assert.Equal( t , notification.GetEventType() , ADD )
-		assert.Equal( t , notification.GetFeature() , mockFeature )
-		assert.Equal( t , notification.GetOldValue() , 1 )
-		assert.Equal( t , notification.GetNewValue() , 2 )
-		assert.Equal( t , notification.GetPosition() , NO_INDEX )
+		assert.Equal( t , mockObject , notification.GetNotifier() )
+		assert.Equal( t , ADD, notification.GetEventType() )
+		assert.Equal( t , mockFeature, notification.GetFeature() )
+		assert.Equal( t , 1 ,notification.GetOldValue() )
+		assert.Equal( t , 2 ,notification.GetNewValue() )
+		assert.Equal( t , NO_INDEX, notification.GetPosition() )
 	}
 	{
 		notification  := NewNotificationByFeature(mockObject, REMOVE, mockFeature, 1, 2, 3)
-		assert.Equal( t , notification.GetNotifier() , mockObject )
-		assert.Equal( t , notification.GetEventType() , REMOVE )
-		assert.Equal( t , notification.GetFeature() , mockFeature )
-		assert.Equal( t , notification.GetOldValue() , 1 )
-		assert.Equal( t , notification.GetNewValue() , 2 )
-		assert.Equal( t , notification.GetPosition() , 3 )
+		assert.Equal( t , mockObject , notification.GetNotifier() )
+		assert.Equal( t , REMOVE, notification.GetEventType() )
+		assert.Equal( t , mockFeature, notification.GetFeature() )
+		assert.Equal( t , 1 ,notification.GetOldValue() )
+		assert.Equal( t , 2 ,notification.GetNewValue() )
+		assert.Equal( t , 3, notification.GetPosition() )
 	}
 	{
 		notification  := NewNotificationByFeatureID(mockObject, ADD_MANY, 10, 1, 2, NO_INDEX)
-		assert.Equal( t , notification.GetNotifier() , mockObject )
-		assert.Equal( t , notification.GetEventType() , ADD_MANY )
-		assert.Equal( t , notification.GetFeatureID() , 10 )
-		assert.Equal( t , notification.GetOldValue() , 1 )
-		assert.Equal( t , notification.GetNewValue() , 2 )
-		assert.Equal( t , notification.GetPosition() , NO_INDEX )
+		assert.Equal( t , mockObject ,notification.GetNotifier() )
+		assert.Equal( t , ADD_MANY , notification.GetEventType() )
+		assert.Equal( t , 10 , notification.GetFeatureID() )
+		assert.Equal( t , 1, notification.GetOldValue() )
+		assert.Equal( t , 2, notification.GetNewValue() )
+		assert.Equal( t , NO_INDEX, notification.GetPosition() )
 	}
 	{
 		notification  := NewNotificationByFeatureID(mockObject, REMOVE_MANY, 10, 1, 2, 3)
-		assert.Equal( t , notification.GetNotifier() , mockObject )
-		assert.Equal( t , notification.GetEventType() , REMOVE_MANY )
-		assert.Equal( t , notification.GetFeatureID() , 10 )
-		assert.Equal( t , notification.GetOldValue() , 1 )
-		assert.Equal( t , notification.GetNewValue() , 2 )
-		assert.Equal( t , notification.GetPosition() , 3 )
+		assert.Equal( t , mockObject, notification.GetNotifier() )
+		assert.Equal( t , REMOVE_MANY, notification.GetEventType() )
+		assert.Equal( t , 10, notification.GetFeatureID() )
+		assert.Equal( t , 1, notification.GetOldValue() )
+		assert.Equal( t , 2, notification.GetNewValue() )
+		assert.Equal( t , 3, notification.GetPosition() )
 	}
 }
 
@@ -52,12 +52,12 @@ func TestNotificationGetFeatureID(t *testing.T) {
 	mockFeature := &MockEStructuralFeature{}
 	{
 		notification  := NewNotificationByFeatureID(mockObject, REMOVE, 10, 1, 2, 3)
-		assert.Equal( t , notification.GetFeatureID() , 10 )
+		assert.Equal( t , 10, notification.GetFeatureID() )
 	}
 	{
 		notification  := NewNotificationByFeature(mockObject, ADD, mockFeature, 1,2, NO_INDEX)
 		mockFeature.On("GetFeatureID").Return(5)
-		assert.Equal( t , notification.GetFeatureID() , 5 )
+		assert.Equal( t , 5, notification.GetFeatureID()  )
 	}
 	
 
@@ -69,13 +69,13 @@ func TestNotificationGetFeature(t *testing.T) {
 	mockClass := &MockEClass{}
 	{
 		notification  := NewNotificationByFeature(mockObject, ADD_MANY, mockFeature, 1, 2, NO_INDEX)
-		assert.Equal( t , notification.GetFeature() , mockFeature )
+		assert.Equal( t , mockFeature, notification.GetFeature() )
 	}
 	{
 		notification  := NewNotificationByFeatureID(mockObject, REMOVE_MANY, 10, 1, 2, 3)
 		mockObject.On("EClass").Return(mockClass)
 		mockClass.On("GetEStructuralFeature",10).Return(mockFeature)
-		assert.Equal( t , notification.GetFeature() , mockFeature )
+		assert.Equal( t , mockFeature ,notification.GetFeature() )
 	}
 }
 
