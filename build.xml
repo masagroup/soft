@@ -299,6 +299,7 @@
         <sequential>
             <exec executable="${bin.dir}/mockery/mockery.exe" dir="@{dir}" failonerror="true">
                 <arg value="-all"/>
+                <arg value="-inpkg"/>
             </exec>
         </sequential>
     </macrodef>
