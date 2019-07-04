@@ -79,29 +79,37 @@ func TestNotificationGetFeature(t *testing.T) {
 	}
 }
 
-
-type customTestAdapterMerge struct {
-	Adapter
+func TestNotificationDispatch( t *testing.T) {
+	mockObject := &MockEObject{}
+	mockFeature := &MockEStructuralFeature{}
+	notification  := NewNotificationByFeature(mockObject, ADD, mockFeature, 1, 2, NO_INDEX)
+	mockObject.On("ENotify",notification).Once()
+	notification.Dispatch()
 }
 
-var notif = NewArrayEList([]interface{}{})
-
-func (adapter *customTestAdapterMerge) NotifyChanged(notification ENotification) {
-	notif.Add(notification)
+func TestNotificationMerge( t *testing.T) {
+	mockObject := &MockEObject{}
+	mockFeature := &MockEStructuralFeature{}
+	mockFeature.On("GetFeatureID").Return(1)
+	{
+		notification  := NewNotificationByFeatureID(mockObject, SET, 1 , 1, 2, NO_INDEX)
+		other := NewNotificationByFeatureID(mockObject, SET, 1 , 2, 3, NO_INDEX)
+		assert.True( t,  notification.Merge( other ) )
+		assert.Equal( t, SET , notification.GetEventType() )
+		assert.Equal( t, 1 , notification.GetOldValue() )
+		assert.Equal( t, 3 , notification.GetNewValue() )
+	}
+	// {
+	// 	notification := NewNotificationByFeature( mockObject, SET, mockFeature, 1, 2 , NO_INDEX );
+    //     other := NewNotificationByFeature( mockObject, UNSET, mockFeature, 2, 0 , NO_INDEX );
+    //     assert.True( t,  notification.Merge( other ) )
+    //     assert.Equal( t, SET , notification.GetEventType() )
+	// 	assert.Equal( t, 1 , notification.GetOldValue() )
+	// 	assert.Equal( t, 0 , notification.GetNewValue() )
+	// }
 }
 
-func TestNotificationMerge(t *testing.T) {
-	testClassifier := newEClassifierImpl()
+func TestNotificationAdd( t *testing.T) {
 
-	adapter := &customTestAdapterMerge{Adapter: *NewAdapter()}
-	testClassifier.EAdapters().Add(adapter)
-	testClassifier.SetClassifierID(5)
-	assert.Equal(t, notif.Size(), 1, "Notification count")
-	assert.Equal(t, notif.Get(0).(ENotification).GetOldValue(), -1)
-	assert.Equal(t, notif.Get(0).(ENotification).GetNewValue(), 5)
-	testClassifier.SetClassifierID(9)
-	assert.Equal(t, notif.Size(), 2, "Notification count")
-	firstNotif := notif.Get(0).(ENotification)
-	assert.Equal(t, firstNotif.Merge(notif.Get(1).(ENotification)), true)
-	assert.Equal(t, firstNotif.GetNewValue(), 9)
 }
+
