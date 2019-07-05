@@ -95,19 +95,17 @@ func (notif *notification) Merge(eNotif ENotification) bool {
 				originalPosition := notif.GetPosition()
 				notificationPosition := eNotif.GetPosition()
 				notif.eventType = REMOVE_MANY
-				removedValues := NewArrayEList([]interface{}{})
+				var removedValues []interface{}
 				if originalPosition <= notificationPosition {
-					removedValues.Add(notif.oldValue)
-					removedValues.Add(eNotif.GetOldValue())
+					removedValues = []interface{}{notif.oldValue, eNotif.GetOldValue()}
 					notif.position = originalPosition
 					notif.newValue = []interface{}{originalPosition, notificationPosition + 1}
 				} else {
-					removedValues.Add(eNotif.GetOldValue())
-					removedValues.Add(notif.oldValue)
+					removedValues = []interface{}{eNotif.GetOldValue(), notif.oldValue}
 					notif.position = notificationPosition
 					notif.newValue = []interface{}{notificationPosition, originalPosition}
 				}
-				notif.oldValue = removedValues.ToArray()
+				notif.oldValue = removedValues
 				return true
 			}
 		}
@@ -117,14 +115,14 @@ func (notif *notification) Merge(eNotif ENotification) bool {
 			if notif.GetNotifier() == eNotif.GetNotifier() &&
 				notif.GetFeatureID() == eNotif.GetFeatureID() {
 				notificationPosition := eNotif.GetPosition()
-				positions := NewArrayEList(notif.newValue.([]interface{}))
-				newPositions := NewArrayEList([]interface{}{})
+				positions := notif.newValue.([]interface{})
+				newPositions := []interface{}{}
 
 				index := 0
-				for index < positions.Size() {
-					oldPosition := positions.Get(index)
+				for index < len(positions) {
+					oldPosition := positions[index]
 					if oldPosition.(int) <= notificationPosition {
-						newPositions.Add(oldPosition)
+						newPositions = append(newPositions, oldPosition)
 						index++
 						notificationPosition++
 					} else {
@@ -132,17 +130,20 @@ func (notif *notification) Merge(eNotif ENotification) bool {
 					}
 				}
 
-				oldValue := NewArrayEList(notif.oldValue.([]interface{}))
-				oldValue.Insert(index, eNotif.GetOldValue())
+				oldValue := notif.oldValue.([]interface{})
 
-				newPositions.Add(notificationPosition)
+				oldValue = append(oldValue, nil)
+				copy(oldValue[index+1:], oldValue[index:])
+				oldValue[index] = eNotif.GetOldValue()
+
+				newPositions = append(newPositions, notificationPosition)
 				index++
-				for index < positions.Size() {
-					newPositions.Add(positions.Get(index - 1))
+				for index < len(positions) {
+					newPositions = append(newPositions, positions[index-1])
 					index++
 				}
-				notif.oldValue = oldValue.ToArray()
-				notif.newValue = newPositions.ToArray()
+				notif.oldValue = oldValue
+				notif.newValue = newPositions
 				return true
 			}
 		}
