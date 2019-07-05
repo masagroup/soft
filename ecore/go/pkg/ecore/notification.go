@@ -138,7 +138,7 @@ func (notif *notification) Merge(eNotif ENotification) bool {
 				newPositions.Add(notificationPosition)
 				index++
 				for index < positions.Size() {
-					newPositions.Add(positions.Get(index-1))
+					newPositions.Add(positions.Get(index - 1))
 					index++
 				}
 				notif.oldValue = oldValue.ToArray()
@@ -163,7 +163,7 @@ func (notif *notification) Add(eNotif ENotification) bool {
 			notif.next = value
 			return true
 		} else {
-			notif.next = &NotificationChain{}
+			notif.next = NewNotificationChain()
 			return notif.next.Add(eNotif)
 		}
 	} else {

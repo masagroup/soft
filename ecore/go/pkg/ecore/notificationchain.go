@@ -2,7 +2,11 @@ package ecore
 
 // NotificationChain is an implementation of ENotificationChain interface
 type NotificationChain struct {
-	notifications EList
+	notifications *arrayEList
+}
+
+func NewNotificationChain() *NotificationChain {
+	return &NotificationChain{notifications: NewEmptyArrayEList()}
 }
 
 // Add Adds a notification to the chain.

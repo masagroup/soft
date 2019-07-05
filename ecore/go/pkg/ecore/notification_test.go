@@ -150,37 +150,27 @@ func TestNotificationAdd(t *testing.T) {
 		other := NewNotificationByFeature(mockObject, SET, mockFeature, 1, 2, NO_INDEX)
 		assert.False(t, notification.Add(other))
 	}
-	// {
-	// 	obj1 := &MockEObject{}
-	// 	obj2 := &MockEObject{}
-	// 	notification := NewNotificationByFeature( mockObject,  SET, mockFeature, nil, obj1 , NO_INDEX)
-	// 	other := NewNotificationByFeature( mockObject,  SET, mockFeature, nil, obj2 , NO_INDEX)
-	//     assert.True( t, notification.Add( other ) )
-	// 	mockObject.On("ENotify",notification).Once()
-	// 	mockObject.On("ENotify",other).Once()
-	//     notification.Dispatch()
-	// }
-	// {
-	// 	obj1 := &MockEObject{}
-	// 	obj2 := &MockEObject{}
-	// 	notification := NewNotificationByFeature( mockObject,  SET, mockFeature, nil, obj1 , NO_INDEX)
-	// 	other := NewNotificationByFeature( mockObject,  SET, mockFeature, nil, obj2 , NO_INDEX)
-	//     assert.True( t, notification.Add( other ) )
-	// 	mockObject.On("ENotify",notification).Once()
-	// 	mockObject.On("ENotify",other).Once()
-	//     notification.Dispatch()
-	// }
-	// {
-	// 	mockObj := &MockEObject{}
-	// 	notification := NewNotificationByFeature( mockObject,  ADD, mockFeature, nil, mockObj , NO_INDEX)
-	// 	mockOther := &MockENotification{}
-	// 	mockNotifier := &MockENotifier{}
-	// 	mockOther.On("getEventType").Return(SET)
-	// 	mockOther.On("GetNotifier").Return(mockNotifier)
-	// 	mockOther.On("GetFeature").Return(mockFeature)
-	// 	assert.True( t,  notification.Add( mockOther ) )
-	// 	mockObject.On("ENotify",notification).Once()
-	// 	mockNotifier.On("ENotify",mockOther).Once()
-	//     notification.Dispatch()
-	// }
+	{
+		obj1 := &MockEObject{}
+		obj2 := &MockEObject{}
+		notification := NewNotificationByFeature(mockObject, ADD, mockFeature, nil, obj1, NO_INDEX)
+		other := NewNotificationByFeature(mockObject, ADD, mockFeature, nil, obj2, NO_INDEX)
+		assert.True(t, notification.Add(other))
+		mockObject.On("ENotify", notification).Once()
+		mockObject.On("ENotify", other).Once()
+		notification.Dispatch()
+	}
+	{
+		mockObj := &MockEObject{}
+		notification := NewNotificationByFeature(mockObject, ADD, mockFeature, nil, mockObj, NO_INDEX)
+		mockOther := &MockENotification{}
+		mockNotifier := &MockENotifier{}
+		mockOther.On("GetEventType").Return(SET)
+		mockOther.On("GetNotifier").Return(mockNotifier)
+		mockOther.On("GetFeature").Return(mockFeature)
+		assert.True(t, notification.Add(mockOther))
+		mockObject.On("ENotify", notification).Once()
+		mockNotifier.On("ENotify", mockOther).Once()
+		notification.Dispatch()
+	}
 }
