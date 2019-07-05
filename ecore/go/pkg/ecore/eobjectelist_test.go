@@ -5,7 +5,7 @@ import (
 )
 
 type testingObjectEList struct {
-	*eObjectEListImpl
+	*eObjectEList
 }
 
 func (arr *testingObjectEList) containment() bool {
@@ -30,7 +30,7 @@ func (arr *testingObjectEList) unset() bool {
 
 func TestEObjectEList(t *testing.T) {
 	arr := &testingObjectEList{}
-	arr.eObjectEListImpl = NewEObjectEList(NewBasicEObject(), -1, -1)
+	arr.eObjectEList = NewEObjectEList(NewBasicEObject(), -1, -1)
 
 	adapter := &customTestAdapterMerge{Adapter: *NewAdapter()}
 	arr.owner.EAdapters().Add(adapter)

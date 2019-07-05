@@ -6,6 +6,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+type customTestAdapterMerge struct {
+	Adapter
+}
+
+var notif = NewArrayEList([]interface{}{})
+
+func (adapter *customTestAdapterMerge) NotifyChanged(notification ENotification) {
+	notif.Add(notification)
+}
+
 func TestNotificationListAdd(t *testing.T) {
 	arr := NewENotifyingListImpl(NewBasicEObject(), -1)
 	notif = NewArrayEList([]interface{}{})
