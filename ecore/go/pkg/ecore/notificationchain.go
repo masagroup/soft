@@ -6,11 +6,7 @@ type NotificationChain struct {
 }
 
 func NewNotificationChain() *NotificationChain {
-<<<<<<< HEAD
 	return &NotificationChain{notifications: NewEmptyArrayEList()}
-=======
-	return &NotificationChain{notifications: NewArrayEList([]interface{}{})}
->>>>>>> fc0273af33d07dd89397841c1ba1b199d8655a81
 }
 
 // Add Adds a notification to the chain.
