@@ -412,7 +412,8 @@
     </target>
 
     <target name="ecore.go.tests">
-        <go_exec command="test" dir="${root.dir}/ecore/go/pkg/ecore"/>
+        <go_exec command="test -coverprofile ${out.dir}/go/coverage" dir="${root.dir}/ecore/go/pkg/ecore"/>
+        <go_exec command="tool cover -html=${out.dir}/go/coverage -o ${out.dir}/go/coverage.html" dir="${root.dir}/ecore/go/pkg/ecore"/>
     </target>
 
     <target name="ecore.go" depends="ecore.go.generate,ecore.go.build,ecore.go.tests"/>
