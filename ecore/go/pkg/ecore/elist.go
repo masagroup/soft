@@ -59,9 +59,4 @@ type EListInternal interface {
 	Clear()
 
 	Set(int, interface{})
-<<<<<<< HEAD
-
-	Clear()
-=======
->>>>>>> [Go] Improve Notifying List
 }
