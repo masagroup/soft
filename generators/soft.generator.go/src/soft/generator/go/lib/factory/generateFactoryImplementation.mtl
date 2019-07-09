@@ -8,6 +8,8 @@
 
 [template public generateFactoryImplementation(anEPackage : EPackage) { className : String = anEPackage.getFactoryImplementationName() ; }]
 [file (anEPackage.getOutputDirectory() + '/' + anEPackage.getImplementationFileName(anEPackage.getFactoryName() ), false, 'UTF-8')]
+[fileComment()/]
+
 package [anEPackage.name/]
 
 import "log"

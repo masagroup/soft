@@ -14,6 +14,8 @@
 
 [template public generatePackageInterface(anEPackage : EPackage) { className : String = anEPackage.getInterfaceName(); packageName : String = anEPackage.name; } ]
 [file (anEPackage.getOutputDirectory() + '/'+  anEPackage.getInterfaceFileName(anEPackage.getPackageName() ) , false, 'UTF-8')]
+[fileComment()/]
+
 package [packageName/]
 
 const (

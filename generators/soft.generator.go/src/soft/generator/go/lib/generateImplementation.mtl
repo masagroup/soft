@@ -9,6 +9,8 @@
 
 [template public generateImplementation(aClass : EClass) { implementationName : String = aClass.getImplementationName(); aPackage : EPackage = aClass.ePackage } ]
 [file (aClass.ePackage.getOutputDirectory() + '/' + aClass.getImplementationFileName( aClass.name ), false, 'UTF-8')]
+[fileComment()/]
+
 package [aPackage.name/]
 
 // [implementationName/] is the implementation of the model object '[aClass.name/]'
