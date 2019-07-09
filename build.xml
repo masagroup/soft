@@ -296,10 +296,10 @@
     
     <macrodef name="mockery_exec">
         <attribute name="dir"/>
+        <element name="args" implicit="yes" optional="yes"/>
         <sequential>
             <exec executable="${bin.dir}/mockery/mockery.exe" dir="@{dir}" failonerror="true">
-                <arg value="-all"/>
-                <arg value="-inpkg"/>
+                <args/>
             </exec>
         </sequential>
     </macrodef>
@@ -404,7 +404,10 @@
     -->
     <target name="ecore.go.generate">
         <generator langage="go" input="ecore/model/ecore.ecore" output="${root.dir}/ecore/go"/>
-        <mockery_exec dir="${root.dir}/ecore/go/pkg/ecore"/>
+        <mockery_exec dir="${root.dir}/ecore/go/pkg/ecore">
+            <arg value="-all"/>
+            <arg value="-inpkg"/>
+        </mockery_exec>
     </target>
 
     <target name="ecore.go.build">
