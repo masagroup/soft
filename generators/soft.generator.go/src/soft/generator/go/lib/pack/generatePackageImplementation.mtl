@@ -150,7 +150,7 @@ p.[aDataType.getElementInstanceName()/].SetSerializable([aDataType.serializable.
 [/template]
 
 [template public generatePackageImplementation(anEPackage : EPackage){ className : String = anEPackage.getImplementationName(); } ]]
-[file (anEPackage.getOutputDirectory() + '/'+ anEPackage.getOutputFileName(className) , false, 'UTF-8')]
+[file (anEPackage.getOutputDirectory() + '/'+ anEPackage.getImplementationFileName(anEPackage.getPackageName() ) , false, 'UTF-8')]
 package [anEPackage.name/]
 
 // [className/] is the [anEPackage.getInterfaceName()/] implementation

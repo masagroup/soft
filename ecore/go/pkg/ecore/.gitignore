@@ -1,3 +1,4 @@
-*_gen.go
+e*.go
+*_impl.go
 mock_*.go
-mocks
+!*_ext.go

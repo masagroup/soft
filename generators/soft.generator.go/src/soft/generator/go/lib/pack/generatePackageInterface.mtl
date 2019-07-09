@@ -13,7 +13,7 @@
 [/template]
 
 [template public generatePackageInterface(anEPackage : EPackage) { className : String = anEPackage.getInterfaceName(); packageName : String = anEPackage.name; } ]
-[file (anEPackage.getOutputDirectory() + '/'+ anEPackage.getOutputFileName(className) , false, 'UTF-8')]
+[file (anEPackage.getOutputDirectory() + '/'+  anEPackage.getInterfaceFileName(anEPackage.getPackageName() ) , false, 'UTF-8')]
 package [packageName/]
 
 const (

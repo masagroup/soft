@@ -7,7 +7,7 @@
 [import soft::generator::go::lib::factory::generateCommon/]
 
 [template public generateFactoryImplementation(anEPackage : EPackage) { className : String = anEPackage.getFactoryImplementationName() ; }]
-[file (anEPackage.getOutputDirectory() + '/' + anEPackage.getOutputFileName(className), false, 'UTF-8')]
+[file (anEPackage.getOutputDirectory() + '/' + anEPackage.getImplementationFileName(anEPackage.getFactoryName() ), false, 'UTF-8')]
 package [anEPackage.name/]
 
 import "log"
