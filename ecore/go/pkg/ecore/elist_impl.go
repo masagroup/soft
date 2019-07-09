@@ -168,12 +168,12 @@ func (arr *arrayEList) doSet(index int, elem interface{}) {
 }
 
 // Set an element of the array
-func (arr *arrayEList) Set(index int, elem interface{}) { // TODO
+func (arr *arrayEList) Set(index int, elem interface{}) {
 	if index < 0 || index >= arr.Size() {
 		panic("Index out of bounds")
-		if !arr.Contains(elem) {
-			arr.doSet(index, elem)
-		}
+	}
+	if !arr.Contains(elem) {
+		arr.doSet(index, elem)
 	}
 }
 
