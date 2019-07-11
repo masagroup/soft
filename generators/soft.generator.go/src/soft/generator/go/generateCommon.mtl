@@ -149,3 +149,8 @@ endif endif endif
     ) in
     shortQualifiedNames->join('.')
 /]
+
+[query public getQualifiedFeatureIDName( aStructuralFeature : EStructuralFeature ) : String =
+    aStructuralFeature.eContainingClass.getFeatureIDName( aStructuralFeature )
+/]
+[query public getPackageName(aStructural : EStructuralFeature,aClass: EClass) : String = if( aStructural.eContainingClass.ePackage = aClass.ePackage  ) then aStructural.eContainingClass.ePackage.getInterfaceName() else aStructural.eContainingClass.ePackage.getQualifiedInterfaceName() endif/]

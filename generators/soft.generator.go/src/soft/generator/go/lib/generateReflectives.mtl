@@ -3,6 +3,7 @@
 
 [import soft::generator::common::generateReflectives/]
 [import soft::generator::common::generateCommon/]
+[import soft::generator::go::lib::generateCommon/]
 [import soft::generator::go::generateCommon/]
 
 [template public generateReflectivesDefinition(aClass : EClass)]
@@ -13,29 +14,25 @@
     aClass.eOperations->notEmpty() or
     aClass.getEInverseAddFeatures()->notEmpty() or
     aClass.getEInverseRemoveFeatures()->notEmpty()]
+
+[if aClass.getEGetFeatures()->notEmpty()]
+[aClass.generateEGetDefinition()/]
+
+[/if]
+
 [/if]
 [/template]
 
 [template private generateEGetDefinition(aClass : EClass)]
 [let className : String = aClass.getImplementationName()]
-ecore::Any [className/]::eGet(int featureID, bool resolve, bool coreType) const
-{
-    switch(featureID)
-    {
+[aClass.generateFunctionReceiver()/] EGet(featureID int, resolve, coreType bool) interface{} {
+    switch featureID {
     [for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
-        case [anStructFeature.getGetterName()/]:
-        [if anStructFeature.isListType()]
-        {
-            auto list = [anStructFeature.getGetterName()/]();
-            _ASSERTE( list );
-            return list->asEListOf<std::shared_ptr<EObject>>();
-        }
-        [else]
-            return [anStructFeature.getGetterName()/]();
-        [/if]
+        case [anStructFeature.getQualifiedFeatureIDName()/]:
+			return [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]()
     [/for]
     }
-    return [removeNamespace(aClass.getClassExtends())/]::eGet(featureID, resolve, coreType);
+    return [aClass.getClassExtends()/].EGet(featureID, resolve, coreType)
 }
 [/let]
 [/template]
