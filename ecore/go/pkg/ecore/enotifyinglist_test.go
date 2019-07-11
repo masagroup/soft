@@ -41,7 +41,7 @@ func TestENotifyingList(t *testing.T) {
 				notif.GetEventType() == ADD_MANY
 		})).Return()
 		arr := CreateTestNotifyingArray(mockOwner)
-		arr.AddAll(NewArrayEList([]interface{}{1, 2, 3}))
+		arr.InsertAll(0, NewArrayEList([]interface{}{1, 2, 3}))
 	}
 	{
 		mockOwner.On("ENotify", mock.MatchedBy(func(notif *notification) bool {
@@ -54,11 +54,47 @@ func TestENotifyingList(t *testing.T) {
 	}
 	{
 		mockOwner.On("ENotify", mock.MatchedBy(func(notif *notification) bool {
+			return reflect.DeepEqual(notif.GetNewValue(), 1) &&
+				notif.GetOldValue() == nil &&
+				notif.GetEventType() == ADD
+		})).Return()
+		arr := CreateTestNotifyingArray(mockOwner)
+		arr.InsertAll(0, NewArrayEList([]interface{}{1}))
+	}
+	{
+		mockOwner.On("ENotify", mock.MatchedBy(func(notif *notification) bool {
 			return reflect.DeepEqual(notif.GetNewValue(), []interface{}{1, 2, 3}) &&
 				notif.GetOldValue() == nil &&
 				notif.GetEventType() == ADD_MANY
 		})).Return()
 		arr := CreateTestNotifyingArray(mockOwner)
 		arr.InsertAll(0, NewArrayEList([]interface{}{1, 2, 3}))
+	}
+	{
+		mockOwner.On("ENotify", mock.MatchedBy(func(notif *notification) bool {
+			return notif.GetNewValue() == nil &&
+				notif.GetOldValue() == 10 &&
+				notif.GetEventType() == REMOVE
+		})).Return()
+		arr := CreateTestNotifyingArray(mockOwner)
+		arr.RemoveAt(0)
+	}
+	{
+		mockOwner.On("ENotify", mock.MatchedBy(func(notif *notification) bool {
+			return notif.GetNewValue() == nil &&
+				notif.GetOldValue() == 10 &&
+				notif.GetEventType() == REMOVE
+		})).Return()
+		arr := CreateTestNotifyingArray(mockOwner)
+		arr.Remove(10)
+	}
+	{
+		mockOwner.On("ENotify", mock.MatchedBy(func(notif *notification) bool {
+			return notif.GetNewValue() == nil &&
+				notif.GetOldValue() == 10 &&
+				notif.GetEventType() == REMOVE
+		})).Return()
+		arr := CreateTestNotifyingArray(mockOwner)
+		arr.Clear()
 	}
 }

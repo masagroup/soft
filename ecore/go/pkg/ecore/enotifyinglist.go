@@ -73,12 +73,12 @@ func (arr *ENotifyingListImpl) Remove(elem interface{}) bool {
 // Clear remove all elements of the array
 func (arr *ENotifyingListImpl) Clear() {
 	size := arr.Size()
-	oldArr := arr
+	oldArr := arr.ToArray()
 	arr.arrayEList.Clear()
 	if size == 1 {
-		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE, arr.featureID, oldArr.Get(0), nil, NO_INDEX))
+		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE, arr.featureID, oldArr[0], nil, NO_INDEX))
 	} else if size > 1 {
-		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE_MANY, arr.featureID, oldArr.ToArray(), nil, NO_INDEX))
+		arr.owner.ENotify(NewNotificationByFeatureID(arr.owner, REMOVE_MANY, arr.featureID, oldArr, nil, NO_INDEX))
 	}
 }
 
