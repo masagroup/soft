@@ -410,8 +410,26 @@
             <arg value="-inpkg"/>
         </mockery_exec>
         
+        <move todir="${root.dir}/ecore/go/ecore">
+            <fileset dir="${root.dir}/ecore/go/ecore" includes="*.go">
+                <filename regex="mock_[A-Z].*\.go"/>
+            </fileset>
+            <chainedmapper>
+                <regexpmapper from="mock_(.*)\.go" to="\1_mock.go"/>
+                <scriptmapper language="javascript">
+                 self.addMappedName(source.toLowerCase()); 
+                </scriptmapper>
+            </chainedmapper>
+        </move>
+        
+        <delete >
+            <fileset dir="${root.dir}/ecore/go/ecore" includes="*.go">
+                <filename regex="mock_[a-z].*\.go"/>
+            </fileset>
+        </delete>
+    
     </target>
-
+    
     <target name="ecore.go.build">
         <go_exec command="build" dir="${root.dir}/ecore/go/ecore"/>
     </target>
