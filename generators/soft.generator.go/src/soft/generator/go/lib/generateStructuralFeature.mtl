@@ -107,11 +107,37 @@ endif/]
 [/template]
 
 [template private getListConstructor( anEAttribute : EAttribute ) post(trim())]
-NewEmptyArrayEList()
+NewArrayEList([anEAttribute.unique/])
 [/template]
 
-[template private getListConstructor( anReference : EReference ) post(trim())]
-NewEmptyArrayEList()
+[template private getListConstructor( anEReference : EReference ) post(trim())]
+[let aClass : EClass = anEReference.eContainingClass]
+[let receiverName : String = anEReference.eContainingClass.getReceiverName()]
+[if (anEReference.containment)]
+    [if anEReference.eOpposite.oclIsUndefined() ]
+NewEObjectEList([receiverName/] , [aClass.getFeatureIDName(anEReference)/] , -1, true , true , false , [anEReference.isProxy()/] , [anEReference.isUnSettable()/] )
+    [else]
+        [let reverseFeature :EReference = anEReference.eOpposite ]
+        [let reverseClass :EClass = reverseFeature.eContainingClass ]
+NewEObjectEList([receiverName/] , [aClass.getFeatureIDName(anEReference)/] , [reverseClass.getFeatureIDName(reverseFeature)/], true , true , true , [anEReference.isProxy()/] , [anEReference.isUnSettable()/] )
+        [/let]
+        [/let]
+    [/if]
+[else]
+    [if anEReference.eOpposite.oclIsUndefined() ]
+        [let featureID : String = anEReference.eContainingClass.getFeatureIDName( anEReference )]
+NewEObjectEList([receiverName/] , [featureID/] , -1 , false , false , false , [anEReference.isProxy()/] , [anEReference.isUnSettable()/] )
+        [/let]
+    [else]
+        [let reverseFeature :EReference = anEReference.eOpposite ]
+        [let reverseClass :EClass = reverseFeature.eContainingClass ]
+NewEObjectEList([receiverName/] , [aClass.getFeatureIDName(anEReference)/] , [reverseClass.getFeatureIDName(reverseFeature)/] , false , true , true , [anEReference.isProxy()/] , [anEReference.isUnSettable()/]  )
+        [/let]
+        [/let]
+    [/if]
+[/if]
+[/let]
+[/let]
 [/template]
 
 [template public generateVariableDeclaration(aStructuralFeature : EStructuralFeature)]
