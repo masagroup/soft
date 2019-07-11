@@ -7,7 +7,7 @@
 [query public getOutputDirectory( anPackage : EPackage ) : String = 
     let property : OclAny = getProperty('library.output.dir') in 
     if property.oclIsUndefined() or property = '' then 
-        'pkg/'.concat(anPackage.name) 
+        anPackage.name 
     else 
         property 
     endif

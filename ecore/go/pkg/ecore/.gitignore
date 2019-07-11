@@ -1,4 +1,0 @@
-e*.go
-*_impl.go
-mock_*.go
-!*_ext.go

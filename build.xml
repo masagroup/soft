@@ -404,18 +404,20 @@
     -->
     <target name="ecore.go.generate">
         <generator langage="go" input="ecore/model/ecore.ecore" output="${root.dir}/ecore/go"/>
-        <mockery_exec dir="${root.dir}/ecore/go/pkg/ecore">
+        
+        <mockery_exec dir="${root.dir}/ecore/go/ecore">
             <arg value="-all"/>
             <arg value="-inpkg"/>
         </mockery_exec>
+        
     </target>
 
     <target name="ecore.go.build">
-        <go_exec command="build" dir="${root.dir}/ecore/go/pkg/ecore"/>
+        <go_exec command="build" dir="${root.dir}/ecore/go/ecore"/>
     </target>
 
     <target name="ecore.go.tests">
-        <go_exec command="test -coverprofile ${out.dir}/go/coverage" dir="${root.dir}/ecore/go/pkg/ecore"/>
+        <go_exec command="test -coverprofile ${out.dir}/go/coverage" dir="${root.dir}/ecore/go/ecore"/>
         <go_exec command="tool cover -html=${out.dir}/go/coverage -o ${out.dir}/go/coverage.html" dir="${root.dir}/ecore/go/pkg/ecore"/>
     </target>
 
