@@ -2,7 +2,9 @@ package ecore
 
 // arrayEList is an array of a dynamic size
 type arrayEList struct {
-	data []interface{}
+	abstractEList
+	data     []interface{}
+	isUnique bool
 }
 
 type immutableEList struct {
@@ -16,7 +18,18 @@ func NewEmptyArrayEList() *arrayEList {
 
 // NewArrayEList return a new ArrayEList
 func NewArrayEList(data []interface{}) *arrayEList {
-	return &arrayEList{data: data}
+	return &arrayEList{
+		data:     data,
+		isUnique: false,
+	}
+}
+
+// NewUniqueArrayEList return a new ArrayEList with isUnique set as true
+func NewUniqueArrayEList(data []interface{}) *arrayEList {
+	return &arrayEList{
+		data:     data,
+		isUnique: true,
+	}
 }
 
 // NewImmutableEList return a new ImmutableEList
@@ -40,28 +53,66 @@ func (it *iterator) Next() bool {
 	return it.curr != it.data.Size()
 }
 
+// Remove all elements in list that already are in arr.data
+func (arr *arrayEList) removeDuplicated(list EList) *arrayEList {
+	newArr := NewArrayEList([]interface{}{})
+	for it := list.Iterate(); it.Next(); {
+		if !newArr.Contains(it.Value()) && !arr.Contains(it.Value()) {
+			newArr.Add(it.Value())
+		}
+	}
+	return newArr
+}
+
 // Add a new element to the array
-func (arr *arrayEList) Add(elem interface{}) bool {
+func (arr *arrayEList) doAdd(elem interface{}) {
 	arr.data = append(arr.data, elem)
+}
+
+func (arr *arrayEList) Add(elem interface{}) bool {
+	if arr.isUnique && arr.Contains(elem) {
+		return false
+	}
+	arr.doAdd(elem)
 	return true
+}
+
+func (arr *arrayEList) doAddAll(list EList) {
+	arr.data = append(arr.data, list.ToArray()...)
 }
 
 // AddAll elements of an array in the current one
 func (arr *arrayEList) AddAll(list EList) bool {
-	arr.data = append(arr.data, list.ToArray()...)
+	if arr.isUnique {
+		list = arr.removeDuplicated(list)
+		if list.Size() == 0 {
+			return false
+		}
+	}
+	arr.doAddAll(list)
 	return true
+}
+
+func (arr *arrayEList) doInsert(index int, elem interface{}) {
+	arr.data = append(arr.data, nil)
+	copy(arr.data[index+1:], arr.data[index:])
+	arr.data[index] = elem
 }
 
 // Insert an element in the array
 func (arr *arrayEList) Insert(index int, elem interface{}) bool {
-
 	if index < 0 || index > arr.Size() {
 		panic("Index out of bounds")
 	}
-	arr.data = append(arr.data, nil)
-	copy(arr.data[index+1:], arr.data[index:])
-	arr.data[index] = elem
+	if arr.isUnique && arr.Contains(elem) {
+		return false
+	}
+	arr.doInsert(index, elem)
 	return true
+}
+
+func (arr *arrayEList) doInsertAll(index int, list EList) {
+	arr.data = append(arr.data[:index], append(list.ToArray(), arr.data[index:]...)...)
 }
 
 // InsertAll element of an array at a given position
@@ -69,7 +120,13 @@ func (arr *arrayEList) InsertAll(index int, list EList) bool {
 	if index < 0 || index > arr.Size() {
 		panic("Index out of bounds")
 	}
-	arr.data = append(arr.data[:index], append(list.ToArray(), arr.data[index:]...)...)
+	if arr.isUnique {
+		list = arr.removeDuplicated(list)
+		if list.Size() == 0 {
+			return false
+		}
+	}
+	arr.doInsertAll(index, list)
 	return true
 }
 
@@ -106,21 +163,28 @@ func (arr *arrayEList) Get(index int) interface{} {
 	return arr.data[index]
 }
 
+func (arr *arrayEList) doSet(index int, elem interface{}) {
+	arr.data[index] = elem
+}
+
 // Set an element of the array
 func (arr *arrayEList) Set(index int, elem interface{}) {
 	if index < 0 || index >= arr.Size() {
 		panic("Index out of bounds")
 	}
-	arr.data[index] = elem
+	if !arr.Contains(elem) {
+		arr.doSet(index, elem)
+	}
 }
 
 // RemoveAt remove an element at a given position
-func (arr *arrayEList) RemoveAt(index int) bool {
+func (arr *arrayEList) RemoveAt(index int) interface{} {
 	if index < 0 || index >= arr.Size() {
 		panic("Index out of bounds")
 	}
+	elem := arr.Get(index)
 	arr.data = append(arr.data[:index], arr.data[index+1:]...)
-	return true
+	return elem
 }
 
 // Remove an element in an array
@@ -129,7 +193,8 @@ func (arr *arrayEList) Remove(elem interface{}) bool {
 	if index == -1 {
 		return false
 	}
-	return arr.RemoveAt(index)
+	arr.RemoveAt(index)
+	return true
 }
 
 // Size count the number of element in the array
@@ -207,7 +272,7 @@ func (arr *immutableEList) Set(index int, elem interface{}) {
 	panic("Immutable list can't be modified")
 }
 
-func (arr *immutableEList) RemoveAt(index int) bool {
+func (arr *immutableEList) RemoveAt(index int) interface{} {
 	panic("Immutable list can't be modified")
 }
 
