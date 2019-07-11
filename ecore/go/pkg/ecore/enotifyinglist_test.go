@@ -7,6 +7,13 @@ import (
 	mock "github.com/stretchr/testify/mock"
 )
 
+func CreateTestNotifyingArray(mockOwner *MockEObjectInternal) *ENotifyingListImpl {
+	mockOwner.On("ENotify", mock.Anything).Return()
+	templateArr := NewENotifyingListImpl(mockOwner, -1)
+	templateArr.Add(10)
+	return templateArr
+}
+
 func TestENotifyingList(t *testing.T) {
 	mockOwner := &MockEObjectInternal{}
 	{
@@ -15,7 +22,7 @@ func TestENotifyingList(t *testing.T) {
 				notif.GetOldValue() == nil &&
 				notif.GetEventType() == ADD
 		})).Return()
-		arr := NewENotifyingListImpl(mockOwner, -1)
+		arr := CreateTestNotifyingArray(mockOwner)
 		arr.Add(3)
 	}
 	{
@@ -24,7 +31,7 @@ func TestENotifyingList(t *testing.T) {
 				notif.GetOldValue() == nil &&
 				notif.GetEventType() == ADD
 		})).Return()
-		arr := NewENotifyingListImpl(mockOwner, -1)
+		arr := CreateTestNotifyingArray(mockOwner)
 		arr.AddAll(NewArrayEList([]interface{}{1}))
 	}
 	{
@@ -33,7 +40,7 @@ func TestENotifyingList(t *testing.T) {
 				notif.GetOldValue() == nil &&
 				notif.GetEventType() == ADD_MANY
 		})).Return()
-		arr := NewENotifyingListImpl(mockOwner, -1)
+		arr := CreateTestNotifyingArray(mockOwner)
 		arr.AddAll(NewArrayEList([]interface{}{1, 2, 3}))
 	}
 	{
@@ -42,7 +49,7 @@ func TestENotifyingList(t *testing.T) {
 				notif.GetOldValue() == nil &&
 				notif.GetEventType() == ADD
 		})).Return()
-		arr := NewENotifyingListImpl(mockOwner, -1)
+		arr := CreateTestNotifyingArray(mockOwner)
 		arr.Insert(0, 3)
 	}
 	{
@@ -51,7 +58,7 @@ func TestENotifyingList(t *testing.T) {
 				notif.GetOldValue() == nil &&
 				notif.GetEventType() == ADD_MANY
 		})).Return()
-		arr := NewENotifyingListImpl(mockOwner, -1)
+		arr := CreateTestNotifyingArray(mockOwner)
 		arr.InsertAll(0, NewArrayEList([]interface{}{1, 2, 3}))
 	}
 }
