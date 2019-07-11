@@ -9,7 +9,9 @@
 [import soft::generator::go::lib::generateStructuralFeature/]
 
 [template public generateInterface(aClass : EClass) { interfaceName : String = aClass.getInterfaceName(); aPackage : EPackage = aClass.ePackage } ]
-[file (aClass.ePackage.getOutputDirectory() + '/' + aClass.ePackage.getOutputFileName( aClass.getInterfaceName() ), false, 'UTF-8')]
+[file (aClass.ePackage.getOutputDirectory() + '/' + aClass.getInterfaceFileName( aClass.name ), false, 'UTF-8')]
+[fileComment()/]
+
 package [aPackage.name/]
 
 // [interfaceName/] is the representation of the model object '[aClass.name/]'

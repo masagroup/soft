@@ -7,8 +7,10 @@
 [import soft::generator::go::generateCommon/]
 
 [template public generateFactoryInterface(anEPackage : EPackage) { className : String = anEPackage.getFactoryName() ; }]
-[file (anEPackage.getOutputDirectory() + '/' + anEPackage.getOutputFileName(className), false, 'UTF-8')]
-package ecore
+[file (anEPackage.getOutputDirectory() + '/' + anEPackage.getInterfaceFileName(anEPackage.getFactoryName() ), false, 'UTF-8')]
+[fileComment()/]
+
+package [anEPackage.name/]
 
 type [className/] interface {
 [for (aEClass : EClass | anEPackage.eAllContents(EClass)->sortedBy(name))]

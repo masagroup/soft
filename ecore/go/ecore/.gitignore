@@ -1,0 +1,8 @@
+*.go
+!*_ext.go
+!*_test.go
+!eresource*.go
+!elist*.go
+!enotif*.go
+!eadapt*.go
+*_mock.go
