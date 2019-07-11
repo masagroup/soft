@@ -435,8 +435,8 @@
     </target>
 
     <target name="ecore.go.tests">
-        <go_exec command="test -coverprofile ${out.dir}/go/coverage" dir="${root.dir}/ecore/go/ecore"/>
-        <go_exec command="tool cover -html=${out.dir}/go/coverage -o ${out.dir}/go/coverage.html" dir="${root.dir}/ecore/go/pkg/ecore"/>
+        <go_exec dir="${root.dir}/ecore/go/ecore" command="test -coverprofile ${out.dir}/go/coverage"/>
+        <go_exec dir="${root.dir}/ecore/go/ecore" command="tool cover -html=${out.dir}/go/coverage -o ${out.dir}/go/coverage.html" />
     </target>
 
     <target name="ecore.go" depends="ecore.go.generate,ecore.go.build,ecore.go.tests"/>
