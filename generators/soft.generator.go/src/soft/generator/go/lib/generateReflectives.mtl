@@ -2,6 +2,8 @@
 [module generateReflectives('http://www.eclipse.org/emf/2002/Ecore')/]
 
 [import soft::generator::common::generateReflectives/]
+[import soft::generator::common::generateCommon/]
+[import soft::generator::go::generateCommon/]
 
 [template public generateReflectivesDefinition(aClass : EClass)]
 [if aClass.getEGetFeatures()->notEmpty() or
@@ -12,4 +14,28 @@
     aClass.getEInverseAddFeatures()->notEmpty() or
     aClass.getEInverseRemoveFeatures()->notEmpty()]
 [/if]
+[/template]
+
+[template private generateEGetDefinition(aClass : EClass)]
+[let className : String = aClass.getImplementationName()]
+ecore::Any [className/]::eGet(int featureID, bool resolve, bool coreType) const
+{
+    switch(featureID)
+    {
+    [for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
+        case [anStructFeature.getGetterName()/]:
+        [if anStructFeature.isListType()]
+        {
+            auto list = [anStructFeature.getGetterName()/]();
+            _ASSERTE( list );
+            return list->asEListOf<std::shared_ptr<EObject>>();
+        }
+        [else]
+            return [anStructFeature.getGetterName()/]();
+        [/if]
+    [/for]
+    }
+    return [removeNamespace(aClass.getClassExtends())/]::eGet(featureID, resolve, coreType);
+}
+[/let]
 [/template]

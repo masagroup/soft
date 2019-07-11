@@ -149,6 +149,3 @@ endif endif endif
     ) in
     shortQualifiedNames->join('.')
 /]
-
-
-
