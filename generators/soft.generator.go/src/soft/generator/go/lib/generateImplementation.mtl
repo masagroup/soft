@@ -6,6 +6,7 @@
 [import soft::generator::go::lib::generateCommon/]
 [import soft::generator::go::lib::generateOperation/]
 [import soft::generator::go::lib::generateStructuralFeature/]
+[import soft::generator::go::lib::generateReflectives/]
 
 [template public generateImplementation(aClass : EClass) { implementationName : String = aClass.getImplementationName(); aPackage : EPackage = aClass.ePackage } ]
 [file (aClass.ePackage.getOutputDirectory() + '/' + aClass.getImplementationFileName( aClass.name ), false, 'UTF-8')]
@@ -49,5 +50,6 @@ func [aClass.getConstructorName()/]() *[aClass.getImplementationName()/] {
 [aClass.eOperations.generateImplementation()/]
 [aClass.eStructuralFeatures.generateImplementation()/]
 [aClass.getVariableInitializationFeatures().generateVariableInitializationMethodDefinition()/]
+[aClass.generateReflectivesDefinition()/]
 [/file]
 [/template]
