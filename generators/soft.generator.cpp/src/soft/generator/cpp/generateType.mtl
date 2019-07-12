@@ -5,6 +5,7 @@
 [import soft::generator::cpp::generateCommon/]
 
 [query public isDate(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else name = 'EDate' endif/]
+[query public isBackReference(aStructuralFeature:EStructuralFeature) : Boolean = aStructuralFeature.oclIsKindOf(EReference) and aStructuralFeature.oclAsType(EReference).isBackReference()/]
 [query private isShared(aReference : EReference) : Boolean = if (aReference.hasKey('aggregation')) then aReference.valueKey('aggregation')='shared' else false endif/]
 [query public isBackReference(aReference:EReference) : Boolean = aReference.container or isShared()/]
 [query public needReference(anEDataType : EGenericType) : Boolean = ( not anEDataType.oclIsUndefined() ) and needReference(anEDataType.eClassifier)/]

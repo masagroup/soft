@@ -5,6 +5,10 @@
 [import soft::generator::common::generateCommon/]
 [import soft::generator::go::generateCommon/]
 
+[query public isBackReference(aStructuralFeature:EStructuralFeature) : Boolean = aStructuralFeature.oclIsKindOf(EReference) and aStructuralFeature.oclAsType(EReference).isBackReference()/]
+[query public isBackReference(aReference:EReference) : Boolean = aReference.container or isShared()/]
+[query private isShared(aReference : EReference) : Boolean = if (aReference.hasKey('aggregation')) then aReference.valueKey('aggregation')='shared' else false endif/]
+
 [template public generateType(eElement : ETypedElement) post (trim())]
 [if eElement.oclIsUndefined() or eElement.eGenericType.oclIsUndefined()]
 [elseif eElement.isListType()]
