@@ -2,7 +2,7 @@
 !*_ext.go
 !*_test.go
 !eresource*.go
-!elist*.go
+!e*list*.go
 !enotif*.go
 !eadapt*.go
 *_mock.go
