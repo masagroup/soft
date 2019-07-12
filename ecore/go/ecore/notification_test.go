@@ -58,6 +58,7 @@ func TestNotificationGetFeatureID(t *testing.T) {
 		notification := NewNotificationByFeature(mockObject, ADD, mockFeature, 1, 2, NO_INDEX)
 		mockFeature.On("GetFeatureID").Return(5)
 		assert.Equal(t, 5, notification.GetFeatureID())
+		mockFeature.AssertExpectations(t)
 	}
 
 }
@@ -75,6 +76,8 @@ func TestNotificationGetFeature(t *testing.T) {
 		mockObject.On("EClass").Return(mockClass)
 		mockClass.On("GetEStructuralFeature", 10).Return(mockFeature)
 		assert.Equal(t, mockFeature, notification.GetFeature())
+		mockObject.AssertExpectations(t)
+		mockClass.AssertExpectations(t)
 	}
 }
 
@@ -84,6 +87,7 @@ func TestNotificationDispatch(t *testing.T) {
 	notification := NewNotificationByFeature(mockObject, ADD, mockFeature, 1, 2, NO_INDEX)
 	mockObject.On("ENotify", notification).Once()
 	notification.Dispatch()
+	mockObject.AssertExpectations(t)
 }
 
 func TestNotificationMerge(t *testing.T) {
@@ -135,6 +139,7 @@ func TestNotificationMerge(t *testing.T) {
 		assert.Equal(t, []interface{}{obj1, obj2, obj3}, notification.GetOldValue())
 		assert.Equal(t, []interface{}{2, 3, 4}, notification.GetNewValue())
 	}
+	mockFeature.AssertExpectations(t)
 }
 
 func TestNotificationAdd(t *testing.T) {
@@ -159,6 +164,7 @@ func TestNotificationAdd(t *testing.T) {
 		mockObject.On("ENotify", notification).Once()
 		mockObject.On("ENotify", other).Once()
 		notification.Dispatch()
+		mockObject.AssertExpectations(t)
 	}
 	{
 		mockObj := &MockEObject{}
@@ -167,10 +173,13 @@ func TestNotificationAdd(t *testing.T) {
 		mockNotifier := &MockENotifier{}
 		mockOther.On("GetEventType").Return(SET)
 		mockOther.On("GetNotifier").Return(mockNotifier)
-		mockOther.On("GetFeature").Return(mockFeature)
 		assert.True(t, notification.Add(mockOther))
 		mockObject.On("ENotify", notification).Once()
 		mockNotifier.On("ENotify", mockOther).Once()
 		notification.Dispatch()
+		mockObject.AssertExpectations(t)
+		mockOther.AssertExpectations(t)
+		mockNotifier.AssertExpectations(t)
 	}
+	mockFeature.AssertExpectations(t)
 }
