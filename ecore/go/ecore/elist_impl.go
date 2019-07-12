@@ -12,18 +12,30 @@ package ecore
 type abstractEList interface {
 	doAdd(elem interface{})
 
-	doAddAll(list EList)
+	doAddAll(list EList) bool
 
 	doInsert(index int, elem interface{})
 
-	doInsertAll(index int, list EList)
+	doInsertAll(index int, list EList) bool
 
-	doSet(index int, elem interface{})
+	doSet(index int, elem interface{}) interface{}
+
+	didAdd(index int, elem interface{})
+
+	didSet(index int, newElem interface{} , oldElem interface{})
+
+	didRemove(index int, old interface{})
+
+	didClear(oldObjects []interface{})
+
+	didMove( newIndex int  , movedObject interface{} , oldIndex int )
+
+	didChange()
 }
 
 // arrayEList is an array of a dynamic size
 type arrayEList struct {
-	abstractEList
+	internal interface{}
 	data     []interface{}
 	isUnique bool
 }
@@ -34,23 +46,29 @@ type immutableEList struct {
 
 // NewEmptyArrayEList return a new ArrayEList
 func NewEmptyArrayEList() *arrayEList {
-	return &arrayEList{data: []interface{}{}}
+	a := new(arrayEList)
+	a.internal = a
+	a.data =  []interface{}{}
+	a.isUnique = false
+	return a
 }
 
 // NewArrayEList return a new ArrayEList
 func NewArrayEList(data []interface{}) *arrayEList {
-	return &arrayEList{
-		data:     data,
-		isUnique: false,
-	}
+	a := new(arrayEList)
+	a.internal = a
+	a.data = data
+	a.isUnique = false
+	return a
 }
 
 // NewUniqueArrayEList return a new ArrayEList with isUnique set as true
 func NewUniqueArrayEList(data []interface{}) *arrayEList {
-	return &arrayEList{
-		data:     data,
-		isUnique: true,
-	}
+	a := new(arrayEList)
+	a.internal = a
+	a.data = data
+	a.isUnique = true
+	return a
 }
 
 // NewImmutableEList return a new ImmutableEList
@@ -85,21 +103,22 @@ func (arr *arrayEList) removeDuplicated(list EList) *arrayEList {
 	return newArr
 }
 
-// Add a new element to the array
-func (arr *arrayEList) doAdd(elem interface{}) {
-	arr.data = append(arr.data, elem)
-}
-
 func (arr *arrayEList) Add(elem interface{}) bool {
 	if arr.isUnique && arr.Contains(elem) {
 		return false
 	}
-	arr.doAdd(elem)
+	arr.internal.(abstractEList).doAdd(elem)
 	return true
 }
 
-func (arr *arrayEList) doAddAll(list EList) {
-	arr.data = append(arr.data, list.ToArray()...)
+// Add a new element to the array
+func (arr *arrayEList) doAdd(e interface{}) {
+	size := len(arr.data)
+	arr.data = append(arr.data, e)
+	// events
+	internal := arr.internal.(abstractEList)
+	internal.didAdd( size, e );
+    internal.didChange();
 }
 
 // AddAll elements of an array in the current one
@@ -110,14 +129,20 @@ func (arr *arrayEList) AddAll(list EList) bool {
 			return false
 		}
 	}
-	arr.doAddAll(list)
+	arr.internal.(abstractEList).doAddAll(list)
 	return true
 }
 
-func (arr *arrayEList) doInsert(index int, elem interface{}) {
-	arr.data = append(arr.data, nil)
-	copy(arr.data[index+1:], arr.data[index:])
-	arr.data[index] = elem
+func (arr *arrayEList) doAddAll(list EList) bool {
+	data := list.ToArray()
+	arr.data = append(arr.data, data...)
+	internal := arr.internal.(abstractEList)
+	// events
+	for i, element := range data {
+		internal.didAdd(i,element)
+		internal.didChange()
+	}
+	return len(data) != 0
 }
 
 // Insert an element in the array
@@ -128,12 +153,18 @@ func (arr *arrayEList) Insert(index int, elem interface{}) bool {
 	if arr.isUnique && arr.Contains(elem) {
 		return false
 	}
-	arr.doInsert(index, elem)
+	arr.internal.(abstractEList).doInsert(index, elem)
 	return true
 }
 
-func (arr *arrayEList) doInsertAll(index int, list EList) {
-	arr.data = append(arr.data[:index], append(list.ToArray(), arr.data[index:]...)...)
+func (arr *arrayEList) doInsert(index int, e interface{}) {
+	arr.data = append(arr.data, nil)
+	copy(arr.data[index+1:], arr.data[index:])
+	arr.data[index] = e
+	// events
+	internal := arr.internal.(abstractEList)
+	internal.didAdd( index, e );
+    internal.didChange();
 }
 
 // InsertAll element of an array at a given position
@@ -147,8 +178,20 @@ func (arr *arrayEList) InsertAll(index int, list EList) bool {
 			return false
 		}
 	}
-	arr.doInsertAll(index, list)
+	arr.internal.(abstractEList).doInsertAll(index, list)
 	return true
+}
+
+func (arr *arrayEList) doInsertAll(index int, list EList) bool {
+	data := list.ToArray()
+	arr.data = append(arr.data[:index], append(data, arr.data[index:]...)...)
+	// events
+	internal := arr.internal.(abstractEList)
+	for i, element := range data {
+		internal.didAdd(i + index ,element)
+		internal.didChange()
+	}
+	return len(data) != 0
 }
 
 // Move an element to the given index
@@ -166,36 +209,18 @@ func (arr *arrayEList) Move(oldIndex, newIndex int) interface{} {
 		newIndex < 0 || newIndex > arr.Size() {
 		panic("Index out of bounds")
 	}
-	val := arr.data[oldIndex]
+	object := arr.data[oldIndex]
 	copy(arr.data[oldIndex:], arr.data[oldIndex+1:])
 	if newIndex > oldIndex {
 		newIndex--
 	}
 	copy(arr.data[newIndex+1:], arr.data[newIndex:])
-	arr.data[newIndex] = val
-	return val
-}
-
-// Get an element of the array
-func (arr *arrayEList) Get(index int) interface{} {
-	if index < 0 || index >= arr.Size() {
-		panic("Index out of bounds")
-	}
-	return arr.data[index]
-}
-
-func (arr *arrayEList) doSet(index int, elem interface{}) {
-	arr.data[index] = elem
-}
-
-// Set an element of the array
-func (arr *arrayEList) Set(index int, elem interface{}) {
-	if index < 0 || index >= arr.Size() {
-		panic("Index out of bounds")
-	}
-	if !arr.Contains(elem) {
-		arr.doSet(index, elem)
-	}
+	arr.data[newIndex] = object
+	// events
+	internal := arr.internal.(abstractEList)
+	internal.didMove( newIndex, object, oldIndex );
+    internal.didChange();
+	return object
 }
 
 // RemoveAt remove an element at a given position
@@ -203,9 +228,13 @@ func (arr *arrayEList) RemoveAt(index int) interface{} {
 	if index < 0 || index >= arr.Size() {
 		panic("Index out of bounds")
 	}
-	elem := arr.Get(index)
+	object := arr.Get(index)
 	arr.data = append(arr.data[:index], arr.data[index+1:]...)
-	return elem
+	// events
+	internal := arr.internal.(abstractEList)
+	internal.didRemove( index, object );
+	internal.didChange();
+    return object
 }
 
 // Remove an element in an array
@@ -216,6 +245,34 @@ func (arr *arrayEList) Remove(elem interface{}) bool {
 	}
 	arr.RemoveAt(index)
 	return true
+}
+
+// Get an element of the array
+func (arr *arrayEList) Get(index int) interface{} {
+	if index < 0 || index >= arr.Size() {
+		panic("Index out of bounds")
+	}
+	return arr.data[index]
+}
+
+func (arr *arrayEList) doSet(index int, elem interface{}) interface{} {
+	old := arr.data[index]
+	arr.data[index] = elem
+	// events
+	internal := arr.internal.(abstractEList)
+	internal.didSet( index, elem , old );
+	internal.didChange();
+	return old
+}
+
+// Set an element of the array
+func (arr *arrayEList) Set(index int, elem interface{}) {
+	if index < 0 || index >= arr.Size() {
+		panic("Index out of bounds")
+	}
+	if !arr.Contains(elem) {
+		arr.internal.(abstractEList).doSet(index, elem)
+	}
 }
 
 // Size count the number of element in the array
@@ -255,6 +312,30 @@ func (arr *arrayEList) Iterate() EIterator {
 
 func (arr *arrayEList) ToArray() []interface{} {
 	return arr.data
+}
+
+func (arr *arrayEList) didAdd(index int, elem interface{}) {
+
+}
+
+func (arr *arrayEList) didSet(index int, newElem interface{} , oldElem interface{}) {
+
+}
+
+func (arr *arrayEList) didRemove(index int, old interface{} ) {
+
+}
+
+func (arr *arrayEList) didClear(oldObjects []interface{}) {
+
+}
+
+func (arr *arrayEList) didMove( newIndex int  , movedObject interface{} , oldIndex int ) {
+
+}
+
+func (arr *arrayEList) didChange() {
+
 }
 
 func (arr *immutableEList) Add(elem interface{}) bool {
