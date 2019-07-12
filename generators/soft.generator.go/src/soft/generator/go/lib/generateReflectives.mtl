@@ -5,6 +5,7 @@
 [import soft::generator::common::generateCommon/]
 [import soft::generator::go::lib::generateCommon/]
 [import soft::generator::go::generateCommon/]
+[import soft::generator::go::generateType/]
 
 [template public generateReflectivesDefinition(aClass : EClass)]
 [if aClass.getEGetFeatures()->notEmpty() or
@@ -17,7 +18,9 @@
 
 [if aClass.getEGetFeatures()->notEmpty()]
 [aClass.generateEGetDefinition()/]
-
+[/if]
+[if aClass.getEIsSetFeatures()->notEmpty()]
+[aClass.generateEIsSetDefinition()/]
 [/if]
 
 [/if]
@@ -35,4 +38,68 @@
     return [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].EGetFromID(featureID, resolve, coreType)
 }
 [/let]
+[/template]
+
+
+[template private generateEIsSetDefinition(aClass : EClass)]
+[aClass.generateFunctionReceiver()/] EIsSetFromID(featureID int) bool {
+    switch featureID {
+[for (anStructFeature : EStructuralFeature | aClass.getEIsSetFeatures()->sortedBy(name))]
+        case [anStructFeature.getQualifiedFeatureIDName()/]:
+            return [anStructFeature.generateComparison(aClass)/]
+[/for]
+    }
+    return [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].EIsSetFromID(featureID)
+}
+[/template]
+
+
+[template private generateDefaultValue(anEAttribute : EAttribute) post (trim())]
+[if (anEAttribute.eType.oclIsTypeOf(EEnum))]
+    [if (anEAttribute.defaultValueLiteral->notEmpty())]
+        [anEAttribute.defaultValueLiteral.toUpperCase()/]
+    [else]
+        [anEAttribute.eType.oclAsType(EEnum).eLiterals->first().name.toUpperCase()/] 
+    [/if]
+[else]
+    [anEAttribute.getDefaultValue()/]
+[/if]
+[/template]
+
+[template public generateComparison(anStructFeature : EStructuralFeature, aClass : EClass) ? (oclIsKindOf(EAttribute) and not eType.isAny()) post (trim())]
+[if isListType()]
+    [if isField()]
+        [aClass.getReceiverName()/].[anStructFeature.name/] && [aClass.getReceiverName()/].[anStructFeature.name/] != ""
+    [else]
+        [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]() != ""
+    [/if]
+[else]
+    [let accessor : String = if isField() then anStructFeature.name else anStructFeature.getGetterName()+'()' endif]
+    [if eType.oclIsKindOf(EEnum)]
+        [aClass.getReceiverName()/].[accessor/] != [anStructFeature.oclAsType(EAttribute).generateDefaultValue()/]
+    [else]
+        [aClass.getReceiverName()/].[accessor/] != [anStructFeature.oclAsType(EAttribute).getDefaultValue()/]
+    [/if]
+    [/let]
+[/if]
+[/template]
+
+[template public generateComparison(anStructFeature : EStructuralFeature, aClass : EClass) ? (oclIsKindOf(EReference) and not eType.isAny()) post (trim())]
+[if isListType()]
+    [if isField()]
+        [aClass.getReceiverName()/].[anStructFeature.name/] && [aClass.getReceiverName()/].[anStructFeature.name/] != ""
+    [else]
+        [anStructFeature.getGetterName()/]() != ""
+    [/if]
+[elseif anStructFeature.oclAsType(EReference).isBackReference() ]
+    [aClass.getReceiverName()/].[aClass.getReceiverName()/].[anStructFeature.getGetterName()/]()
+[else]
+    [let accessor : String = if isField() then anStructFeature.name + '_' else anStructFeature.getGetterName()+'()' endif]
+        [aClass.getReceiverName()/].[accessor/] != [aClass.getReceiverName()/].[anStructFeature.eType.getDefaultValue()/]
+    [/let]
+[/if]
+[/template]
+
+[template public generateComparison(anStructFeature : EStructuralFeature, aClass : EClass) ? (eType.isAny()) post (trim())]
+[aClass.getReceiverName()/].[anStructFeature.getGetterName()/]() != ""
 [/template]

@@ -4,11 +4,9 @@
 [import soft::generator::common::generateCommon/]
 [import soft::generator::cpp::generateCommon/]
 
-[query public isAny(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then true else (name = 'EEnumerator' or name = 'EDiagnosticChain' or name = 'EJavaObject') endif/]
 [query public isDate(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then false else name = 'EDate' endif/]
 [query private isShared(aReference : EReference) : Boolean = if (aReference.hasKey('aggregation')) then aReference.valueKey('aggregation')='shared' else false endif/]
 [query public isBackReference(aReference:EReference) : Boolean = aReference.container or isShared()/]
-[query public isBackReference(aStructuralFeature:EStructuralFeature) : Boolean = aStructuralFeature.oclIsKindOf(EReference) and aStructuralFeature.oclAsType(EReference).isBackReference()/]
 [query public needReference(anEDataType : EGenericType) : Boolean = ( not anEDataType.oclIsUndefined() ) and needReference(anEDataType.eClassifier)/]
 [query public needReference(anEClassifier : EClassifier) : Boolean = not oclIsUndefined() and( 
                                                                 (not oclIsKindOf(EDataType)) or 
