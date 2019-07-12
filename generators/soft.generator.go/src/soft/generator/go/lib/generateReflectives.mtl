@@ -32,7 +32,7 @@
 			return [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]()
     [/for]
     }
-    return [aClass.getClassExtends()/].EGet(featureID, resolve, coreType)
+    return [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].EGet(featureID, resolve, coreType)
 }
 [/let]
 [/template]

@@ -11,7 +11,7 @@ package ecore
 
 // eModelElementExt is the extension of the model object 'EFactory'
 type eModelElementExt struct {
-    *eModelElementImpl
+	*eModelElementImpl
 }
 
 func newEModelElementExt() *eModelElementExt {
@@ -22,13 +22,13 @@ func newEModelElementExt() *eModelElementExt {
 }
 
 func (eModelElement *eModelElementExt) GetEAnnotation(source string) EAnnotation {
-	if ( eModelElement.eAnnotations != nil ) {
+	if eModelElement.eAnnotations != nil {
 		for itAnnotation := eModelElement.eAnnotations.Iterate(); itAnnotation.Next(); {
 			annotation := itAnnotation.Value().(EAnnotation)
-			if ( annotation.GetSource() == source ) {
+			if annotation.GetSource() == source {
 				return annotation
 			}
 		}
 	}
-	return nil	
+	return nil
 }
