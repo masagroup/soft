@@ -25,14 +25,14 @@
 
 [template private generateEGetDefinition(aClass : EClass)]
 [let className : String = aClass.getImplementationName()]
-[aClass.generateFunctionReceiver()/] EGet(featureID int, resolve, coreType bool) interface{} {
+[aClass.generateFunctionReceiver()/] EGetFromID(featureID int, resolve, coreType bool) interface{} {
     switch featureID {
     [for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
         case [anStructFeature.getQualifiedFeatureIDName()/]:
 			return [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]()
     [/for]
     }
-    return [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].EGet(featureID, resolve, coreType)
+    return [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].EGetFromID(featureID, resolve, coreType)
 }
 [/let]
 [/template]
