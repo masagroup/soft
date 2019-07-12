@@ -14,7 +14,7 @@ type ENotifyingListImpl struct {
 }
 
 // NewENotifyingListImpl ...
-func NewENotifyingListImpl(owner EObject, featureID int) *ENotifyingListImpl {
+func NewENotifyingListImpl() *ENotifyingListImpl {
 	l := new(ENotifyingListImpl)
 	l.arrayEList = NewUniqueArrayEList([]interface{}{})
 	l.internal = l
@@ -35,19 +35,19 @@ func (list *ENotifyingListImpl) GetFeatureID() int {
 
 type notifyingListNotification struct {
 	*abstractNotification
-	list ENotifyingList
+	list *ENotifyingListImpl
 }
 
 func (notif *notifyingListNotification) GetNotifier() ENotifier {
-	return notif.list.GetNotifier()
+	return notif.list.internal.(ENotifyingList).GetNotifier()
 }
 
 func (notif *notifyingListNotification) GetFeature() EStructuralFeature {
-	return notif.list.GetFeature()
+	return notif.list.internal.(ENotifyingList).GetFeature()
 }
 
 func (notif *notifyingListNotification) GetFeatureID() int {
-	return notif.list.GetFeatureID()
+	return notif.list.internal.(ENotifyingList).GetFeatureID()
 }
 
 func (list *ENotifyingListImpl) createNotification( eventType EventType , oldValue interface{}, newValue interface{}, position int) ENotification {
@@ -59,7 +59,7 @@ func (list *ENotifyingListImpl) createNotification( eventType EventType , oldVal
 }
 
 func (list *ENotifyingListImpl) isNotificationRequired() bool {
-	notifier := list.GetNotifier();
+	notifier := list.internal.(ENotifyingList).GetNotifier();
 	if ( notifier != nil ) {
 		return notifier.EDeliver() && !notifier.EAdapters().Empty()
 	}
@@ -94,7 +94,7 @@ func (list *ENotifyingListImpl) createAndDispatchNotificationFn( notifications E
 			notifications.Add( notification )
 			notifications.Dispatch()
 		}
-		notifier := list.GetNotifier()
+		notifier := list.internal.(ENotifyingList).GetNotifier()
 		if notifier != nil  {
 			notifier.ENotify( notification );
 		}

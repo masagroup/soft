@@ -7,9 +7,83 @@ import (
 	mock "github.com/stretchr/testify/mock"
 )
 
+type eNotifyingListTest struct {
+	*ENotifyingListImpl
+	mockNotifier *MockENotifier
+	mockFeature *MockEStructuralFeature
+	mockAdapter *MockEAdapter
+}
+
+func newNotifyingListTest() *eNotifyingListTest {
+	l := new(eNotifyingListTest)
+	l.ENotifyingListImpl = NewENotifyingListImpl()
+	l.mockNotifier = new(MockENotifier) 
+	l.mockFeature = new(MockEStructuralFeature) 
+	l.mockAdapter = new(MockEAdapter) 
+	l.internal = l
+	l.mockNotifier.On("EDeliver").Return( true )
+	l.mockNotifier.On("EAdapters").Return( NewImmutableEList([]interface{}{l.mockAdapter}) )
+	return l
+}
+
+func (list *eNotifyingListTest) GetNotifier() ENotifier {
+	return list.mockNotifier
+}
+	
+func (list *eNotifyingListTest) GetFeature() EStructuralFeature {
+	return list.mockFeature
+}
+	
+func (list *eNotifyingListTest) GetFeatureID() int {
+	return list.mockFeature.GetFeatureID()
+}
+
+func (list *eNotifyingListTest) assertExpectations(t *testing.T) {
+	list.mockNotifier.AssertExpectations(t)
+	list.mockFeature.AssertExpectations(t)
+	list.mockAdapter.AssertExpectations(t)
+}
+
+
+func TestNotifyingListAdd(t *testing.T) {
+	l := newNotifyingListTest()
+	l.mockNotifier.On("ENotify", mock.MatchedBy(func(n ENotification) bool {
+		return n.GetNotifier() == l.mockNotifier &&
+			n.GetNewValue() == 3 &&
+			n.GetOldValue() == nil &&
+			n.GetEventType() == ADD &&
+			n.GetPosition() == 0
+	}))
+	l.Add(3)
+
+	l.mockNotifier.On("ENotify", mock.MatchedBy(func(n ENotification) bool {
+		return n.GetNotifier() == l.mockNotifier &&
+			n.GetNewValue() == 4 &&
+			n.GetOldValue() == nil &&
+			n.GetEventType() == ADD &&
+			n.GetPosition() == 1
+	}))
+	l.Add(4)
+	l.assertExpectations(t)
+}
+
+func TestNotifyingListAddAll(t *testing.T) {
+	l := newNotifyingListTest()
+	l.mockNotifier.On("ENotify", mock.MatchedBy(func(n ENotification) bool {
+		return n.GetNotifier() == l.mockNotifier &&
+		    reflect.DeepEqual(n.GetNewValue(), []interface{}{2, 3}) &&
+			n.GetOldValue() == nil &&
+			n.GetEventType() == ADD_MANY &&
+			n.GetPosition() == 0
+	}))
+	l.AddAll( NewImmutableEList([]interface{}{2,3}) )
+	l.assertExpectations(t)
+}
+
+
 func CreateTestNotifyingArray(mockOwner *MockEObjectInternal) *ENotifyingListImpl {
 	mockOwner.On("ENotify", mock.Anything).Return()
-	templateArr := NewENotifyingListImpl(mockOwner, -1)
+	templateArr := NewENotifyingListImpl()
 	templateArr.Add(10)
 	return templateArr
 }
