@@ -69,9 +69,9 @@
 [template public generateComparison(anStructFeature : EStructuralFeature, aClass : EClass) ? (oclIsKindOf(EAttribute) and not eType.isAny()) post (trim())]
 [if isListType()]
     [if isField()]
-        [aClass.getReceiverName()/].[anStructFeature.name/] && [aClass.getReceiverName()/].[anStructFeature.name/] != ""
+        [aClass.getReceiverName()/].[anStructFeature.name/] != nil && [aClass.getReceiverName()/].[anStructFeature.name/].Size() != 0
     [else]
-        [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]() != ""
+        [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]().Size() != 0
     [/if]
 [else]
     [let accessor : String = if isField() then anStructFeature.name else anStructFeature.getGetterName()+'()' endif]
@@ -87,15 +87,15 @@
 [template public generateComparison(anStructFeature : EStructuralFeature, aClass : EClass) ? (oclIsKindOf(EReference) and not eType.isAny()) post (trim())]
 [if isListType()]
     [if isField()]
-        [aClass.getReceiverName()/].[anStructFeature.name/] && [aClass.getReceiverName()/].[anStructFeature.name/] != ""
+        [aClass.getReceiverName()/].[anStructFeature.name/] != nil && [aClass.getReceiverName()/].[anStructFeature.name/].Size() != 0
     [else]
-        [anStructFeature.getGetterName()/]() != ""
+        [anStructFeature.getGetterName()/]().Size() != 0
     [/if]
 [elseif anStructFeature.oclAsType(EReference).isBackReference() ]
     [aClass.getReceiverName()/].[aClass.getReceiverName()/].[anStructFeature.getGetterName()/]()
 [else]
-    [let accessor : String = if isField() then anStructFeature.name + '_' else anStructFeature.getGetterName()+'()' endif]
-        [aClass.getReceiverName()/].[accessor/] != [aClass.getReceiverName()/].[anStructFeature.eType.getDefaultValue()/]
+    [let accessor : String = if isField() then anStructFeature.name else anStructFeature.getGetterName()+'()' endif]
+        [aClass.getReceiverName()/].[accessor/] != [anStructFeature.eType.getDefaultValue()/]
     [/let]
 [/if]
 [/template]
