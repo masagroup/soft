@@ -131,6 +131,31 @@ func TestNotifyingListInsert(t *testing.T) {
 	assert.Equal( t , []interface{}{2, 3, 1} , l.ToArray() )
 }
 
+func TestNotifyingListInsertAll(t *testing.T) {
+	l := newNotifyingListTest()
+	l.mockNotifier.On("ENotify", mock.MatchedBy(func(n ENotification) bool {
+		return n.GetNotifier() == l.mockNotifier &&
+			reflect.DeepEqual(n.GetNewValue(), []interface{}{1, 2, 3}) &&
+			n.GetOldValue() == nil &&
+			n.GetEventType() == ADD_MANY &&
+			n.GetPosition() == 0
+	}))
+	l.InsertAll( 0 , NewImmutableEList([]interface{}{1,2,3}) )
+	l.assertExpectations(t)
+	assert.Equal( t , []interface{}{1, 2, 3} , l.ToArray() )
+
+	l.mockNotifier.On("ENotify", mock.MatchedBy(func(n ENotification) bool {
+		return n.GetNotifier() == l.mockNotifier &&
+			reflect.DeepEqual(n.GetNewValue(), []interface{}{4,5}) &&
+			n.GetOldValue() == nil &&
+			n.GetEventType() == ADD_MANY &&
+			n.GetPosition() == 1
+	}))
+	l.InsertAll( 1 , NewImmutableEList([]interface{}{4,5}) )
+	l.assertExpectations(t)
+	assert.Equal( t , []interface{}{1, 4, 5, 2, 3} , l.ToArray() )
+}
+
 
 func CreateTestNotifyingArray(mockOwner *MockEObjectInternal) *ENotifyingListImpl {
 	mockOwner.On("ENotify", mock.Anything).Return()
