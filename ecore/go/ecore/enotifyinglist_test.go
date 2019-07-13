@@ -4,7 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	mock "github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/assert"
 )
 
 type eNotifyingListTest struct {
@@ -65,6 +66,8 @@ func TestNotifyingListAdd(t *testing.T) {
 	}))
 	l.Add(4)
 	l.assertExpectations(t)
+	assert.Equal( t , []interface{}{3,4} , l.ToArray() )
+	
 }
 
 func TestNotifyingListAddAll(t *testing.T) {
@@ -78,6 +81,54 @@ func TestNotifyingListAddAll(t *testing.T) {
 	}))
 	l.AddAll( NewImmutableEList([]interface{}{2,3}) )
 	l.assertExpectations(t)
+	assert.Equal( t , []interface{}{2,3} , l.ToArray() )
+	
+	l.mockNotifier.On("ENotify", mock.MatchedBy(func(n ENotification) bool {
+		return n.GetNotifier() == l.mockNotifier &&
+		    n.GetNewValue() == 4 &&
+			n.GetOldValue() == nil &&
+			n.GetEventType() == ADD &&
+			n.GetPosition() == 2
+	}))
+	l.AddAll( NewImmutableEList([]interface{}{4}) )
+	l.assertExpectations(t)
+	assert.Equal( t , []interface{}{2,3,4} , l.ToArray() )	
+}
+
+func TestNotifyingListInsert(t *testing.T) {
+	l := newNotifyingListTest()
+	l.mockNotifier.On("ENotify", mock.MatchedBy(func(n ENotification) bool {
+		return n.GetNotifier() == l.mockNotifier &&
+		    n.GetNewValue() == 1 &&
+			n.GetOldValue() == nil &&
+			n.GetEventType() == ADD &&
+			n.GetPosition() == 0
+	}))
+	l.Insert( 0 , 1 )
+	l.assertExpectations(t)
+	assert.Equal( t , []interface{}{1} , l.ToArray() )
+	
+	l.mockNotifier.On("ENotify", mock.MatchedBy(func(n ENotification) bool {
+		return n.GetNotifier() == l.mockNotifier &&
+		    n.GetNewValue() == 2 &&
+			n.GetOldValue() == nil &&
+			n.GetEventType() == ADD &&
+			n.GetPosition() == 0
+	}))
+	l.Insert( 0 , 2 )
+	l.assertExpectations(t)
+	assert.Equal( t , []interface{}{2, 1} , l.ToArray() )
+
+	l.mockNotifier.On("ENotify", mock.MatchedBy(func(n ENotification) bool {
+		return n.GetNotifier() == l.mockNotifier &&
+		    n.GetNewValue() == 3 &&
+			n.GetOldValue() == nil &&
+			n.GetEventType() == ADD &&
+			n.GetPosition() == 1
+	}))
+	l.Insert( 1 , 3 )
+	l.assertExpectations(t)
+	assert.Equal( t , []interface{}{2, 3, 1} , l.ToArray() )
 }
 
 
