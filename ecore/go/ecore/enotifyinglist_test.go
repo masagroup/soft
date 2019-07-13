@@ -15,9 +15,9 @@ type eNotifyingListTest struct {
 	mockAdapter *MockEAdapter
 }
 
-func newNotifyingListTest() *eNotifyingListTest {
+func newNotifyingListTestFn( factory func () *ENotifyingListImpl ) *eNotifyingListTest {
 	l := new(eNotifyingListTest)
-	l.ENotifyingListImpl = NewENotifyingListImpl()
+	l.ENotifyingListImpl = factory()
 	l.mockNotifier = new(MockENotifier) 
 	l.mockFeature = new(MockEStructuralFeature) 
 	l.mockAdapter = new(MockEAdapter) 
@@ -25,6 +25,14 @@ func newNotifyingListTest() *eNotifyingListTest {
 	l.mockNotifier.On("EDeliver").Return( true )
 	l.mockNotifier.On("EAdapters").Return( NewImmutableEList([]interface{}{l.mockAdapter}) )
 	return l
+}
+
+func newNotifyingListTest() *eNotifyingListTest {
+	return newNotifyingListTestFn( NewENotifyingListImpl )
+}
+
+func newNotifyingListTestFromData( data []interface{}) *eNotifyingListTest {
+	return newNotifyingListTestFn( func () *ENotifyingListImpl { return newENotifyingListImplFromData(data) }  )
 }
 
 func (list *eNotifyingListTest) GetNotifier() ENotifier {
@@ -156,6 +164,22 @@ func TestNotifyingListInsertAll(t *testing.T) {
 	assert.Equal( t , []interface{}{1, 4, 5, 2, 3} , l.ToArray() )
 }
 
+func TestNotifyingListSet(t *testing.T) {
+	l := newNotifyingListTestFromData([]interface{}{1,2})
+	l.mockNotifier.On("ENotify", mock.MatchedBy(func(n ENotification) bool {
+		return n.GetNotifier() == l.mockNotifier &&
+			n.GetNewValue() == 3 &&
+			n.GetOldValue() == 2 &&
+			n.GetEventType() == SET &&
+			n.GetPosition() == 1
+	}))
+	l.Set( 1 , 3 )
+	l.assertExpectations(t)
+	assert.Equal( t , []interface{}{1, 3} , l.ToArray() )
+}
+
+
+
 
 func CreateTestNotifyingArray(mockOwner *MockEObjectInternal) *ENotifyingListImpl {
 	mockOwner.On("ENotify", mock.Anything).Return()
@@ -163,6 +187,8 @@ func CreateTestNotifyingArray(mockOwner *MockEObjectInternal) *ENotifyingListImp
 	templateArr.Add(10)
 	return templateArr
 }
+
+
 
 func TestENotifyingList(t *testing.T) {
 	mockOwner := &MockEObjectInternal{}

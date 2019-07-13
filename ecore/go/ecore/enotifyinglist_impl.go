@@ -21,14 +21,24 @@ func NewENotifyingListImpl() *ENotifyingListImpl {
 	return l
 }
 
+func newENotifyingListImplFromData(data []interface{}) *ENotifyingListImpl {
+	l := new(ENotifyingListImpl)
+	l.arrayEList = NewUniqueArrayEList(data)
+	l.internal = l
+	return l
+}
+
+// GetNotifier ...
 func (list *ENotifyingListImpl) GetNotifier() ENotifier {
 	return nil
 }
 	
+// GetFeature ...
 func (list *ENotifyingListImpl) GetFeature() EStructuralFeature {
 	return nil
 }
 	
+// GetFeatureID ...
 func (list *ENotifyingListImpl) GetFeatureID() int {
 	return -1
 }
@@ -85,9 +95,7 @@ func (list *ENotifyingListImpl) createAndDispatchNotification( notifications ENo
 	} )
 }
 
-type notificationFactory func() ENotification
-
-func (list *ENotifyingListImpl) createAndDispatchNotificationFn( notifications ENotificationChain, createNotification notificationFactory ) {
+func (list *ENotifyingListImpl) createAndDispatchNotificationFn( notifications ENotificationChain, createNotification func() ENotification ) {
 	if list.isNotificationRequired() {
 		notification := createNotification()
 		if notifications != nil {
