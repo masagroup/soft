@@ -121,12 +121,14 @@ func (list *ENotifyingListImpl) inverseRemove( object interface{}, notifications
 	return notifications
 }
 
+// AddWithNotification ...
 func (list *ENotifyingListImpl) AddWithNotification( object interface{} , notifications ENotificationChain ) ENotificationChain {
 	index := list.Size();
 	list.arrayEList.doAdd( object )
     return list.createAndAddNotification( notifications, ADD, nil, object, index )
 }
 
+// RemoveWithNotification ...
 func (list *ENotifyingListImpl) RemoveWithNotification( object interface{} , notifications ENotificationChain ) ENotificationChain {
 	index := list.IndexOf( object );
 	if( index != -1 ) {
@@ -135,7 +137,8 @@ func (list *ENotifyingListImpl) RemoveWithNotification( object interface{} , not
 	}
 	return notifications
 }
-	
+
+// SetWithNotification ...
 func (list *ENotifyingListImpl) SetWithNotification( index int, object interface{} , notifications ENotificationChain ) ENotificationChain {
 	oldObject := list.arrayEList.doSet( index, object )
     return list.createAndAddNotification( notifications, SET, oldObject, object, index )
@@ -187,4 +190,13 @@ func (list *ENotifyingListImpl) doSet(index int, newObject interface{}) interfac
 		list.createAndDispatchNotification( notifications, SET, oldObject, newObject, index );
 	}
 	return oldObject;
+}
+
+// RemoveAt ...
+func (list *ENotifyingListImpl) RemoveAt( index int ) interface{} {
+	oldObject := list.arrayEList.RemoveAt( index )
+	var notifications ENotificationChain
+	notifications = list.interfaces.(eNotifyingListInternal).inverseRemove( oldObject, notifications );
+	list.createAndDispatchNotification( notifications, REMOVE, oldObject, nil, index );
+	return oldObject
 }

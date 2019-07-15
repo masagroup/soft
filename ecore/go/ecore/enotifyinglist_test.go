@@ -177,3 +177,17 @@ func TestNotifyingListSet(t *testing.T) {
 	l.assertExpectations(t)
 	assert.Equal( t , []interface{}{1, 3} , l.ToArray() )
 }
+
+func TestNotifyingListRemoveAt(t *testing.T) {
+	l := newNotifyingListTestFromData([]interface{}{1,2,3})
+	l.mockNotifier.On("ENotify", mock.MatchedBy(func(n ENotification) bool {
+		return n.GetNotifier() == l.mockNotifier &&
+			n.GetNewValue() == nil &&
+			n.GetOldValue() == 2 &&
+			n.GetEventType() == REMOVE &&
+			n.GetPosition() == 1
+	}))
+	l.RemoveAt( 1 )
+	l.assertExpectations(t)
+	assert.Equal( t , []interface{}{1, 3} , l.ToArray() )
+}
