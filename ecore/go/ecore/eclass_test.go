@@ -21,6 +21,31 @@ func TestEClassInstance(t *testing.T) {
 	assert.Equal(t, eClass.GetName(), "eClass")
 }
 
+func containsSubClass( eSuper *eClassExt , eClass *eClassExt ) bool {
+	for _ , s := range eSuper.adapter.subClasses {
+		if ( s == eClass ) {
+			return true
+		}
+	}
+	return false
+}
+
+
+func TestEClassSuperTypes(t *testing.T) {
+	eClass := newEClassExt()
+	eClass.SetName("MyClass")
+
+	eSuperClass := newEClassExt()
+	eSuperClass.SetName("MySuperClass")
+	
+	eClass.GetESuperTypes().Add(eSuperClass)
+	assert.True( t, containsSubClass( eSuperClass,eClass) )
+
+	eClass.GetESuperTypes().Remove(eSuperClass)
+	assert.False( t, containsSubClass( eSuperClass,eClass) )
+
+}
+
 func TestEClassFeatures(t *testing.T) {
 	eClass := newEClassExt()
 	
@@ -34,6 +59,7 @@ func TestEClassFeatures(t *testing.T) {
 
 	assert.Equal(t, eClass.GetEAttributes().ToArray(), []interface{}{eAttribute1, eAttribute2})
 	assert.Equal(t, eClass.GetEReferences().ToArray(), []interface{}{eReference1, eReference2})
-
 }
+
+
 

@@ -24,7 +24,7 @@ type eSuperAdapter struct {
 func (adapter *eSuperAdapter) NotifyChanged(notification ENotification) {
 	eventType := notification.GetEventType()
 	eNotifier := notification.GetNotifier().(*eClassExt)
-	if( eventType != REMOVING_ADAPTER ) {
+	if eventType != REMOVING_ADAPTER {
 		featureID := notification.GetFeatureID()
         if  featureID == ECLASS__ESUPER_TYPES {
 			switch eventType {
@@ -32,7 +32,7 @@ func (adapter *eSuperAdapter) NotifyChanged(notification ENotification) {
 			case RESOLVE:
 				oldValue := notification.GetOldValue()
 				if oldValue != nil {
-					class := oldValue.(eClassExt)
+					class := oldValue.(*eClassExt)
 					for i, s := range class.adapter.subClasses {
 						if s == eNotifier {
 							class.adapter.subClasses = append(class.adapter.subClasses[:i], class.adapter.subClasses[i+1:]...)
@@ -42,13 +42,13 @@ func (adapter *eSuperAdapter) NotifyChanged(notification ENotification) {
 				}
 				newValue := notification.GetNewValue()
 				if newValue != nil {
-					class := oldValue.(eClassExt)
+					class := oldValue.(*eClassExt)
 					class.adapter.subClasses = append( class.adapter.subClasses , eNotifier )
 				}
 			case ADD:
 				newValue := notification.GetNewValue()
 				if newValue != nil {
-					class := newValue.(eClassExt)
+					class := newValue.(*eClassExt)
 					class.adapter.subClasses = append( class.adapter.subClasses , eNotifier )
 				}
 			case ADD_MANY:
@@ -56,14 +56,14 @@ func (adapter *eSuperAdapter) NotifyChanged(notification ENotification) {
 				if newValue != nil {
 					collection := newValue.([]interface{})
 					for _, s := range collection { 
-						class := s.(eClassExt)
+						class := s.(*eClassExt)
 						class.adapter.subClasses = append( class.adapter.subClasses , eNotifier )
 					}
 				}
 			case REMOVE:
 				oldValue := notification.GetOldValue()
 				if oldValue != nil {
-					class := oldValue.(eClassExt)
+					class := oldValue.(*eClassExt)
 					for i, s := range class.adapter.subClasses {
 						if s == eNotifier {
 							class.adapter.subClasses = append(class.adapter.subClasses[:i], class.adapter.subClasses[i+1:]...)
@@ -76,7 +76,7 @@ func (adapter *eSuperAdapter) NotifyChanged(notification ENotification) {
 				if oldValue != nil {
 					collection := oldValue.([]interface{})
 					for _, s := range collection { 
-						class := s.(eClassExt)
+						class := s.(*eClassExt)
 						for i, s := range class.adapter.subClasses {
 							if s == eNotifier {
 								class.adapter.subClasses = append(class.adapter.subClasses[:i], class.adapter.subClasses[i+1:]...)
