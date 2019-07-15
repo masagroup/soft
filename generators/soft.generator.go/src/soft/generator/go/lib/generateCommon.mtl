@@ -98,4 +98,5 @@ func ([aClass.getReceiverName()/] *[aClass.getImplementationName()/])
     endif
 /]
 
-
+[query public getVariableName( aFeature : EStructuralFeature ) : String = 
+if aFeature.eType.name = 'EBoolean' then 'is' + aFeature.name.toUpperFirst() else aFeature.name endif/]

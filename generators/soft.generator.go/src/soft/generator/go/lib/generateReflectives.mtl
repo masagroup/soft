@@ -74,7 +74,7 @@
         [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]().Size() != 0
     [/if]
 [else]
-    [let accessor : String = if isField() then anStructFeature.name else anStructFeature.getGetterName()+'()' endif]
+    [let accessor : String = if isField() then anStructFeature.getVariableName() else anStructFeature.getGetterName()+'()' endif]
     [if eType.oclIsKindOf(EEnum)]
         [aClass.getReceiverName()/].[accessor/] != [anStructFeature.oclAsType(EAttribute).generateDefaultValue()/]
     [else]
@@ -92,9 +92,9 @@
         [anStructFeature.getGetterName()/]().Size() != 0
     [/if]
 [elseif anStructFeature.oclAsType(EReference).isBackReference() ]
-    [aClass.getReceiverName()/].[aClass.getReceiverName()/].[anStructFeature.getGetterName()/]()
+    [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]()
 [else]
-    [let accessor : String = if isField() then anStructFeature.name else anStructFeature.getGetterName()+'()' endif]
+    [let accessor : String = if isField() then anStructFeature.getVariableName() else anStructFeature.getGetterName()+'()' endif]
         [aClass.getReceiverName()/].[accessor/] != [anStructFeature.eType.getDefaultValue()/]
     [/let]
 [/if]
