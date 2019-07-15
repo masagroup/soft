@@ -326,7 +326,7 @@ NewEObjectEList([receiverName/] , [aClass.getFeatureIDName(anEReference)/] , [re
     [oldVarName/] := [aClass.getReceiverName()/].[varName/]
     [aClass.getReceiverName()/].[varName/] = [newVarName/]
     if [aClass.getReceiverName()/].ENotificationRequired() {
-        [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureID([receiverName/], SET, [aClass.getFeatureIDName(aStructuralFeature)/], [oldVarName/], [newVarName/], NO_INDEX))
+        [aClass.getReceiverName()/].ENotify(NewNotificationByFeatureID([receiverName/].interfaces.(EObject), SET, [aClass.getFeatureIDName(aStructuralFeature)/], [oldVarName/], [newVarName/], NO_INDEX))
     }
     [/if]
 [elseif hasKey('setterBody')]
@@ -358,7 +358,7 @@ NewEObjectEList([receiverName/] , [aClass.getFeatureIDName(anEReference)/] , [re
     [receiverName/].[varName/] = [newVarName/]
     notifications := msgs
     if ( [receiverName/].ENotificationRequired() ) {
-        notification := NewNotificationByFeatureID([receiverName/], SET, [aClass.getFeatureIDName(aStructuralFeature)/], [oldVarName/], [newVarName/], NO_INDEX)
+        notification := NewNotificationByFeatureID([receiverName/].interfaces.(EObject), SET, [aClass.getFeatureIDName(aStructuralFeature)/], [oldVarName/], [newVarName/], NO_INDEX)
         if (notifications != nil ) {
             notifications.Add( notification );
         } else {
@@ -435,7 +435,7 @@ NewEObjectEList([receiverName/] , [aClass.getFeatureIDName(anEReference)/] , [re
     [receiverName/].[varName/] = nil
     notifications := msgs;
     if [receiverName/].ENotificationRequired() {
-        notification := NewNotificationByFeatureID([aClass.getReceiverName()/], UNSET, [aClass.getFeatureIDName(aStructuralFeature)/], [oldVarName/], nil, NO_INDEX)
+        notification := NewNotificationByFeatureID([receiverName/].interfaces.(EObject), UNSET, [aClass.getFeatureIDName(aStructuralFeature)/], [oldVarName/], nil, NO_INDEX)
         if ( notifications != nil ) {
             notifications.Add( notification )
         } else {
