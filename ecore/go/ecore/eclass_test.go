@@ -77,6 +77,7 @@ func TestEClassFeaturesGetters(t *testing.T) {
 	assert.Equal(t, eReference1, eClass.GetEStructuralFeature(1) )
 	assert.Equal(t, eAttribute2, eClass.GetEStructuralFeature(2) )
 	assert.Equal(t, eReference2, eClass.GetEStructuralFeature(3) )
+	assert.Equal(t, nil, eClass.GetEStructuralFeature(4) )
 	assert.Equal(t, 0, eAttribute1.GetFeatureID() )
 	assert.Equal(t, 2, eAttribute2.GetFeatureID() )
 	assert.Equal(t, 1, eReference1.GetFeatureID() )
@@ -136,6 +137,7 @@ func TestEClassOperationsGetters(t *testing.T) {
 	assert.Equal(t, 2, eClass.GetOperationCount() )
 	assert.Equal(t, eOperation1, eClass.GetEOperation(0) )
 	assert.Equal(t, eOperation2, eClass.GetEOperation(1) )
+	assert.Equal(t, nil, eClass.GetEOperation(2) )
 	assert.Equal(t, 0, eOperation1.GetOperationID() )
 	assert.Equal(t, 1, eOperation2.GetOperationID() )
 
