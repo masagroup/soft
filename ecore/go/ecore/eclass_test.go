@@ -60,7 +60,6 @@ func TestEClassFeaturesAdd(t *testing.T) {
 	assert.Equal(t , 0 , eAttribute.GetFeatureID() )
 }
 
-
 func TestEClassFeaturesGetters(t *testing.T) {
 	eClass := newEClassExt()
 	
@@ -78,7 +77,6 @@ func TestEClassFeaturesGetters(t *testing.T) {
 	assert.Equal(t, eReference1, eClass.GetEStructuralFeature(1) )
 	assert.Equal(t, eAttribute2, eClass.GetEStructuralFeature(2) )
 	assert.Equal(t, eReference2, eClass.GetEStructuralFeature(3) )
-	
 	assert.Equal(t, 0, eAttribute1.GetFeatureID() )
 	assert.Equal(t, 2, eAttribute2.GetFeatureID() )
 	assert.Equal(t, 1, eReference1.GetFeatureID() )
@@ -91,20 +89,35 @@ func TestEClassFeaturesGetters(t *testing.T) {
 	assert.Equal(t, eClass.GetEAttributes().ToArray(), []interface{}{eAttribute1, eAttribute2})
 	assert.Equal(t, eClass.GetEReferences().ToArray(), []interface{}{eReference1, eReference2})
 	
+	// insert another attribute front
 	eAttribute3 := newEAttributeExt()
-	eFeatures.Add( eAttribute3 )
-	assert.Equal(t, eClass.GetEAllAttributes().ToArray(), []interface{}{eAttribute1, eAttribute2,eAttribute3})
-	assert.Equal(t, eClass.GetEAttributes().ToArray(), []interface{}{eAttribute1, eAttribute2,eAttribute3})
+	eFeatures.Insert( 0, eAttribute3 )
+	assert.Equal(t, eClass.GetEAllAttributes().ToArray(), []interface{}{eAttribute3,eAttribute1, eAttribute2})
+	assert.Equal(t, eClass.GetEAttributes().ToArray(), []interface{}{eAttribute3,eAttribute1, eAttribute2})
+
+	// feature ids
+	assert.Equal(t, 5, eClass.GetFeatureCount() )
+	assert.Equal(t, eAttribute3, eClass.GetEStructuralFeature(0) )
+	assert.Equal(t, eAttribute1, eClass.GetEStructuralFeature(1) )
+	assert.Equal(t, eReference1, eClass.GetEStructuralFeature(2) )
+	assert.Equal(t, eAttribute2, eClass.GetEStructuralFeature(3) )
+	assert.Equal(t, eReference2, eClass.GetEStructuralFeature(4) )
+	assert.Equal(t, 0, eAttribute3.GetFeatureID() )
+	assert.Equal(t, 1, eAttribute1.GetFeatureID() )
+	assert.Equal(t, 3, eAttribute2.GetFeatureID() )
+	assert.Equal(t, 2, eReference1.GetFeatureID() )
+	assert.Equal(t, 4, eReference2.GetFeatureID() )
+
 }
+
 
 
 func TestEClassOperationsGetters(t *testing.T) {
 	eClass := newEClassExt()
-	
+
+	// add two operations
 	eOperation1 := newEOperationExt()
 	eOperation2 := newEOperationExt()
-	
-
 	eOperations := eClass.GetEOperations()
 	eOperations.AddAll( NewImmutableEList([]interface{}{eOperation1, eOperation2 } ) )
 
@@ -112,7 +125,6 @@ func TestEClassOperationsGetters(t *testing.T) {
 	assert.Equal(t, 2, eClass.GetOperationCount() )
 	assert.Equal(t, eOperation1, eClass.GetEOperation(0) )
 	assert.Equal(t, eOperation2, eClass.GetEOperation(1) )
-
 	assert.Equal(t, 0, eOperation1.GetOperationID() )
 	assert.Equal(t, 1, eOperation2.GetOperationID() )
 
@@ -120,8 +132,18 @@ func TestEClassOperationsGetters(t *testing.T) {
 	assert.Equal(t, eClass.GetEAllOperations().ToArray(), []interface{}{eOperation1, eOperation2})
 	assert.Equal(t, eClass.GetEOperations().ToArray(), []interface{}{eOperation1, eOperation2})
 	
+	// insert another one
 	eOperation3 := newEOperationExt()
-	eOperations.Add( eOperation3 )
-	assert.Equal(t, eClass.GetEAllOperations().ToArray(), []interface{}{eOperation1, eOperation2, eOperation3 })
-	assert.Equal(t, eClass.GetEOperations().ToArray(), []interface{}{eOperation1, eOperation2, eOperation3 })
+	eOperations.Insert( 0 , eOperation3 )
+	assert.Equal(t, eClass.GetEAllOperations().ToArray(), []interface{}{eOperation3 , eOperation1, eOperation2 })
+	assert.Equal(t, eClass.GetEOperations().ToArray(), []interface{}{eOperation3, eOperation1, eOperation2 })
+
+	// feature ids
+	assert.Equal(t, 3, eClass.GetOperationCount() )
+	assert.Equal(t, eOperation3, eClass.GetEOperation(0) )
+	assert.Equal(t, eOperation1, eClass.GetEOperation(1) )
+	assert.Equal(t, eOperation2, eClass.GetEOperation(2) )
+	assert.Equal(t, 0, eOperation3.GetOperationID() )
+	assert.Equal(t, 1, eOperation1.GetOperationID() )
+	assert.Equal(t, 2, eOperation2.GetOperationID() )
 }
