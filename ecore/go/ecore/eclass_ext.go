@@ -232,7 +232,17 @@ func (eClass *eClassExt) initEAllStructuralFeatures() {
 }
 
 func (eClass *eClassExt) initEAllSuperTypes() {
-    eClass.eAllSuperTypes = NewEmptyArrayEList();
+	if( eClass.eAllSuperTypes != nil ) {
+		return
+	}
+	allSuperTypes := []interface{}{}
+	for itClass := eClass.GetESuperTypes().Iterate(); itClass.Next(); {
+		superClass := itClass.Value().(EClass)
+		superTypes := superClass.GetEAllSuperTypes()
+		allSuperTypes = append( allSuperTypes , superTypes.ToArray()... )
+		allSuperTypes = append( allSuperTypes , superClass)
+	}
+    eClass.eAllSuperTypes = NewImmutableEList(allSuperTypes);
 }
 
 func (eClass *eClassExt) initEIDAttribute() {
@@ -264,5 +274,7 @@ func (eClass *eClassExt) setModified( featureID int ) {
         eClass.eAllReferences = nil
         eClass.eAllContainments = nil
 	}
-
+	for _ , s := range eClass.adapter.subClasses {
+		s.setModified( featureID )
+	}
 }
