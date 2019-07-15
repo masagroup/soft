@@ -13,6 +13,8 @@ package ecore
 type eClassExt struct {
 	*eClassImpl
 	adapter *eSuperAdapter
+	nameToFeatureMap map[string]EStructuralFeature
+	operationToOverrideMap map[EOperation]EOperation
 }
 
 type eSuperAdapter struct {
@@ -98,6 +100,103 @@ func newEClassExt() *eClassExt {
 	eClass.adapter = &eSuperAdapter{ Adapter : NewAdapter(),  class : eClass , subClasses : []*eClassExt{}}
 	eClass.EAdapters().Add( eClass.adapter )
 	return eClass
+}
+
+func (eClass *eClassExt) IsSuperTypeOf(someClass EClass) bool {
+	return someClass == eClass || someClass.GetEAllSuperTypes().Contains( eClass )
+}
+
+func (eClass *eClassExt) GetFeatureCount() int {
+	return eClass.GetEAllStructuralFeatures().Size()
+}
+
+func (eClass *eClassExt) GetEStructuralFeature(featureID int) EStructuralFeature {
+	features := eClass.GetEAllStructuralFeatures()
+	if featureID >= 0 && featureID < features.Size() {
+		return features.Get(featureID).(EStructuralFeature)
+	}
+	return nil
+}
+
+func (eClass *eClassExt) GetEStructuralFeatureFromString( featureName string ) EStructuralFeature {
+	eClass.initNameToFeatureMap()
+	return eClass.nameToFeatureMap[featureName]
+}
+
+func (eClass *eClassExt) initNameToFeatureMap() {
+	eClass.initEAllStructuralFeatures()
+
+    if( eClass.nameToFeatureMap != nil ) {
+		return
+	}
+	eClass.nameToFeatureMap = make( map[string]EStructuralFeature )
+	for itFeature := eClass.eAllStructuralFeatures.Iterate(); itFeature.Next(); {
+		feature := itFeature.Value().(EStructuralFeature)
+		eClass.nameToFeatureMap[ feature.GetName() ] = feature
+	}
+}
+
+func (eClass *eClassExt) GetFeatureID(feature EStructuralFeature) int {
+	features := eClass.GetEAllStructuralFeatures();
+    featureID := feature.GetFeatureID();
+    if featureID != -1  {
+        for ; featureID < features.Size(); featureID++ {
+            if features.Get( featureID ) == feature {
+				return featureID
+			}
+        }
+    }
+    return -1;
+}
+
+func (eClass *eClassExt) GetOperationCount() int {
+	return eClass.GetEAllOperations().Size()
+}
+
+func (eClass *eClassExt) GetEOperation(operationID int) EOperation {
+	operations := eClass.GetEAllOperations();
+	if operationID >= 0 && operationID < operations.Size() {
+		return operations.Get(operationID).(EOperation)
+	}
+	return nil
+}
+
+func (eClass *eClassExt) GetOperationID(operation EOperation) int {
+	operations := eClass.GetEAllOperations()
+    operationID := operation.GetOperationID()
+    if operationID != -1  {
+        for ; operationID < operations.Size(); operationID++ {
+            if operations.Get( operationID ) == operation {
+				return operationID
+			}
+        }
+    }
+    return -1;
+}
+
+func (eClass *eClassExt) GetOverride(operation EOperation) EOperation {
+	eClass.initOperationToOverrideMap()
+	return eClass.operationToOverrideMap[operation]
+}
+
+func (eClass *eClassExt) initOperationToOverrideMap() {
+	eClass.initEAllOperations();
+
+    if( eClass.operationToOverrideMap != nil ) {
+		return
+	}
+
+    eClass.operationToOverrideMap = make(map[EOperation]EOperation)
+    size := eClass.eAllOperations.Size()
+    for i := 0; i < size; i++  {
+        for j := size - 1; j > i; j-- {
+			oi := eClass.eAllOperations.Get(i).(EOperation)
+			oj := eClass.eAllOperations.Get(j).(EOperation)
+			if oj.IsOverrideOf(oi) {
+				eClass.operationToOverrideMap[oi] = oj
+			}
+        }
+    }
 }
 
 func (eClass *eClassExt) initEAttributes() {
@@ -187,6 +286,8 @@ func (eClass *eClassExt) initEAllOperations() {
 		return
 	}
 	
+	eClass.operationToOverrideMap = nil
+
 	allOperations :=  []interface{}{}
 	operations := []interface{}{}
 	for itClass := eClass.GetESuperTypes().Iterate(); itClass.Next(); {
@@ -214,7 +315,8 @@ func (eClass *eClassExt) initEAllStructuralFeatures() {
     
     eClass.eCrossReferences = nil
     eClass.eContainments = nil
-    
+	eClass.nameToFeatureMap = nil
+	
 	allFeatures := []interface{}{}
 	for itClass := eClass.GetESuperTypes().Iterate(); itClass.Next(); {
 		superFeatures := itClass.Value().(EClass).GetEAllStructuralFeatures()
