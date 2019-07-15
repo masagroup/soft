@@ -289,23 +289,21 @@ func (eClass *eClassExt) initEAllOperations() {
 	eClass.operationToOverrideMap = nil
 
 	allOperations :=  []interface{}{}
-	operations := []interface{}{}
 	for itClass := eClass.GetESuperTypes().Iterate(); itClass.Next(); {
 		superOperations := itClass.Value().(EClass).GetEAllOperations()
 		allOperations = append( allOperations , superOperations.ToArray()... )
 	}
 
+	operationID := len(allOperations)
 	for itFeature := eClass.GetEOperations().Iterate(); itFeature.Next(); {
 		operation , isOperation := itFeature.Value().(EOperation)
 		if isOperation {
-			operations = append( operations , operation )
+			operation.SetOperationID(operationID)
+			operationID++
 			allOperations = append(allOperations , operation )
 		}
 	}
-
-    eClass.eOperations = NewImmutableEList(operations)
     eClass.eAllOperations = NewImmutableEList(allOperations)
-
 }
 
 func (eClass *eClassExt) initEAllStructuralFeatures() {
