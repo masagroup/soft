@@ -110,6 +110,17 @@ func TestEClassFeaturesGetters(t *testing.T) {
 
 }
 
+func TestEClassFeaturesGetFromName(t *testing.T) {
+	eClass := newEClassExt()
+	eAttribute1 := newEAttributeExt()
+	eAttribute1.SetName("MyAttribute1")
+	eAttribute2 := newEAttributeExt()
+	eAttribute2.SetName("MyAttribute2")
+	eClass.GetEStructuralFeatures().AddAll( NewImmutableEList([]interface{}{eAttribute1,eAttribute2} ) )
+	assert.Equal(t , eAttribute1 , eClass.GetEStructuralFeatureFromString("MyAttribute1") )
+	assert.Equal(t , eAttribute2 , eClass.GetEStructuralFeatureFromString("MyAttribute2") )
+	assert.Equal(t , nil , eClass.GetEStructuralFeatureFromString("MyAttributeUnknown") )
+}
 
 
 func TestEClassOperationsGetters(t *testing.T) {
@@ -147,3 +158,4 @@ func TestEClassOperationsGetters(t *testing.T) {
 	assert.Equal(t, 1, eOperation1.GetOperationID() )
 	assert.Equal(t, 2, eOperation2.GetOperationID() )
 }
+
