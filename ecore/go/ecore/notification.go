@@ -1,7 +1,7 @@
 package ecore
 
 type abstractNotification struct {
-	internal  interface{}
+	interfaces  interface{}
 	eventType EventType
 	oldValue  interface{}
 	newValue  interface{}
@@ -12,7 +12,7 @@ type abstractNotification struct {
 // NewAbstractNotification ...
 func NewAbstractNotification(eventType EventType, oldValue interface{}, newValue interface{}, position int) *abstractNotification {
 	n := new (abstractNotification)
-	n.internal = n
+	n.interfaces = n
 	n.eventType = eventType
 	n.oldValue = oldValue
 	n.newValue = newValue
@@ -37,7 +37,7 @@ func (notif *abstractNotification) GetPosition() int {
 }
 
 func (notif *abstractNotification) Merge(eOther ENotification) bool {
-	eNotif := notif.internal.(ENotification)
+	eNotif := notif.interfaces.(ENotification)
 	switch ev := notif.eventType; ev {
 	case SET, UNSET:
 		switch notifEv := eOther.GetEventType(); notifEv {
@@ -137,7 +137,7 @@ func (notif *abstractNotification) Add(eOther ENotification) bool {
 }
 
 func (notif *abstractNotification) Dispatch() {
-	notification := notif.internal.(ENotification)
+	notification := notif.interfaces.(ENotification)
 	notifier := notification.GetNotifier()
 	if notifier != nil && notif.eventType != -1 {
 		notifier.ENotify(notification)
@@ -158,7 +158,7 @@ type notification struct {
 func NewNotificationByFeature(object EObject, eventType EventType, feature EStructuralFeature, oldValue interface{}, newValue interface{}, position int) *notification {
 	n := new(notification)
 	n.abstractNotification = NewAbstractNotification( eventType , oldValue, newValue, position )
-	n.internal = n
+	n.interfaces = n
 	n.object = object
 	n.feature = feature
 	n.featureID = -1
@@ -169,7 +169,7 @@ func NewNotificationByFeature(object EObject, eventType EventType, feature EStru
 func NewNotificationByFeatureID(object EObject, eventType EventType, featureID int, oldValue interface{}, newValue interface{}, position int) *notification {
 	n := new(notification)
 	n.abstractNotification = NewAbstractNotification( eventType , oldValue, newValue, position )
-	n.internal = n
+	n.interfaces = n
 	n.object = object
 	n.feature = nil
 	n.featureID = featureID

@@ -22,7 +22,7 @@ type ecoreFactoryExt struct {
 func newEcoreFactoryExt() *ecoreFactoryExt {
 	factory := new(ecoreFactoryExt)
 	factory.ecoreFactoryImpl = newEcoreFactoryImpl()
-	factory.internal = factory
+	factory.interfaces = factory
 	return factory
 }
 

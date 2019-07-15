@@ -17,14 +17,14 @@ type ENotifyingListImpl struct {
 func NewENotifyingListImpl() *ENotifyingListImpl {
 	l := new(ENotifyingListImpl)
 	l.arrayEList = NewUniqueArrayEList([]interface{}{})
-	l.internal = l
+	l.interfaces = l
 	return l
 }
 
 func newENotifyingListImplFromData(data []interface{}) *ENotifyingListImpl {
 	l := new(ENotifyingListImpl)
 	l.arrayEList = NewUniqueArrayEList(data)
-	l.internal = l
+	l.interfaces = l
 	return l
 }
 
@@ -49,27 +49,27 @@ type notifyingListNotification struct {
 }
 
 func (notif *notifyingListNotification) GetNotifier() ENotifier {
-	return notif.list.internal.(ENotifyingList).GetNotifier()
+	return notif.list.interfaces.(ENotifyingList).GetNotifier()
 }
 
 func (notif *notifyingListNotification) GetFeature() EStructuralFeature {
-	return notif.list.internal.(ENotifyingList).GetFeature()
+	return notif.list.interfaces.(ENotifyingList).GetFeature()
 }
 
 func (notif *notifyingListNotification) GetFeatureID() int {
-	return notif.list.internal.(ENotifyingList).GetFeatureID()
+	return notif.list.interfaces.(ENotifyingList).GetFeatureID()
 }
 
 func (list *ENotifyingListImpl) createNotification( eventType EventType , oldValue interface{}, newValue interface{}, position int) ENotification {
 	n := new( notifyingListNotification )
 	n.abstractNotification = NewAbstractNotification( eventType , oldValue , newValue , position )
-	n.internal = n
+	n.interfaces = n
 	n.list = list
 	return n
 }
 
 func (list *ENotifyingListImpl) isNotificationRequired() bool {
-	notifier := list.internal.(ENotifyingList).GetNotifier();
+	notifier := list.interfaces.(ENotifyingList).GetNotifier();
 	if ( notifier != nil ) {
 		return notifier.EDeliver() && !notifier.EAdapters().Empty()
 	}
@@ -102,7 +102,7 @@ func (list *ENotifyingListImpl) createAndDispatchNotificationFn( notifications E
 			notifications.Add( notification )
 			notifications.Dispatch()
 		}
-		notifier := list.internal.(ENotifyingList).GetNotifier()
+		notifier := list.interfaces.(ENotifyingList).GetNotifier()
 		if notifier != nil  {
 			notifier.ENotify( notification );
 		}
@@ -144,7 +144,7 @@ func (list *ENotifyingListImpl) SetWithNotification( index int, object interface
 func (list *ENotifyingListImpl) doAdd(object interface{}) {
 	index := list.Size()
 	list.arrayEList.doAdd( object )
-	notifications := list.internal.(eNotifyingListInternal).inverseAdd( object, nil )
+	notifications := list.interfaces.(eNotifyingListInternal).inverseAdd( object, nil )
 	list.createAndDispatchNotification( notifications, ADD, nil, object, index )
 }
 
@@ -154,7 +154,7 @@ func (list *ENotifyingListImpl) doAddAll(l EList) bool {
 
 func (list *ENotifyingListImpl) doInsert(index int, object interface{}) {
 	list.arrayEList.doInsert(index, object)
-	notifications := list.internal.(eNotifyingListInternal).inverseAdd( object, nil )
+	notifications := list.interfaces.(eNotifyingListInternal).inverseAdd( object, nil )
 	list.createAndDispatchNotification( notifications, ADD, nil, object, index )
 }
 
@@ -166,7 +166,7 @@ func (list *ENotifyingListImpl) doInsertAll(index int, l EList) bool {
 	result := list.arrayEList.doInsertAll( index, l )
 	var notifications ENotificationChain = NewNotificationChain()
 	for it := l.Iterate(); it.Next(); {
-		notifications = list.internal.(eNotifyingListInternal).inverseAdd( it.Value(), notifications )
+		notifications = list.interfaces.(eNotifyingListInternal).inverseAdd( it.Value(), notifications )
 	}
 	list.createAndDispatchNotificationFn( notifications, func () ENotification {
 		if l.Size() == 1 {
@@ -182,8 +182,8 @@ func (list *ENotifyingListImpl) doSet(index int, newObject interface{}) interfac
 	oldObject := list.arrayEList.doSet( index, newObject )
 	if newObject != oldObject {
 		var notifications ENotificationChain
-		notifications = list.internal.(eNotifyingListInternal).inverseRemove( oldObject, notifications );
-		notifications = list.internal.(eNotifyingListInternal).inverseAdd( newObject, notifications );
+		notifications = list.interfaces.(eNotifyingListInternal).inverseRemove( oldObject, notifications );
+		notifications = list.interfaces.(eNotifyingListInternal).inverseAdd( newObject, notifications );
 		list.createAndDispatchNotification( notifications, SET, oldObject, newObject, index );
 	}
 	return oldObject;

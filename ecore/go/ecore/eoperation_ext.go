@@ -17,6 +17,6 @@ type eOperationExt struct {
 func newEOperationExt() *eOperationExt {
 	eOperation := new(eOperationExt)
 	eOperation.eOperationImpl = newEOperationImpl()
-	eOperation.internal = eOperation
+	eOperation.interfaces = eOperation
 	return eOperation
 }

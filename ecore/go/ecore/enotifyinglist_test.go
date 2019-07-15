@@ -21,7 +21,7 @@ func newNotifyingListTestFn( factory func () *ENotifyingListImpl ) *eNotifyingLi
 	l.mockNotifier = new(MockENotifier) 
 	l.mockFeature = new(MockEStructuralFeature) 
 	l.mockAdapter = new(MockEAdapter) 
-	l.internal = l
+	l.interfaces = l
 	l.mockNotifier.On("EDeliver").Return( true )
 	l.mockNotifier.On("EAdapters").Return( NewImmutableEList([]interface{}{l.mockAdapter}) )
 	return l
