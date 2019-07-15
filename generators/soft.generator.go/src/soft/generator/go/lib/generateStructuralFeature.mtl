@@ -225,9 +225,9 @@ NewEmptyArrayEList()
     if [receiverName/].[varName/] == nil {
         [/if]
         [if  lazy = 'function']
-        [receiverName/].[varName/] = [receiverName/].internal.([aClass.getVariableInitializersInterface()/]).[aStructuralFeature.getMethodInitializationName()/]()
+        [receiverName/].[varName/] = [receiverName/].interfaces.([aClass.getVariableInitializersInterface()/]).[aStructuralFeature.getMethodInitializationName()/]()
         [elseif lazy = 'action']
-        [receiverName/].internal.([aClass.getVariableInitializersInterface()/]).[aStructuralFeature.getMethodInitializationName()/]()
+        [receiverName/].interfaces.([aClass.getVariableInitializersInterface()/]).[aStructuralFeature.getMethodInitializationName()/]()
         [/if]
     }
     [/if]

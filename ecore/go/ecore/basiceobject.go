@@ -17,7 +17,7 @@ import (
 // BasicEObject is a basic implementation of an EObject
 type BasicEObject struct {
 	*Notifier
-	internal interface{}
+	interfaces interface{}
 	resource EResource
 	container EObject
 	containerFeatureID int
@@ -52,13 +52,13 @@ type EObjectInternal interface {
 func NewBasicEObject() *BasicEObject {
 	o := new(BasicEObject)
 	o.Notifier = NewNotifier()
-	o.internal = o
+	o.interfaces = o
 	o.containerFeatureID = -1
 	return o
 }
 
 func ( o *BasicEObject) EClass() EClass {
-	return o.internal.(EObjectInternal).EStaticClass()
+	return o.interfaces.(EObjectInternal).EStaticClass()
 }
 
 func ( o *BasicEObject) EIsProxy() bool {
@@ -154,7 +154,7 @@ func ( o *BasicEObject) EGetResolve( feature EStructuralFeature, resolve bool) i
 func ( o *BasicEObject) eGetFromFeature(feature EStructuralFeature , resolve bool , core bool ) interface{} {
 	featureID := o.eDerivedStructuralFeatureID( feature )
     if featureID >= 0 {
-		return o.internal.(EObjectInternal).EGetFromID( featureID, resolve, core )
+		return o.interfaces.(EObjectInternal).EGetFromID( featureID, resolve, core )
 	}
     panic("The feature '" + feature.GetName() + "' is not a valid feature")
 }
@@ -170,7 +170,7 @@ func ( o *BasicEObject) EGetFromID(featureID int , resolve bool , core bool ) in
 func ( o *BasicEObject) ESet( feature EStructuralFeature, newValue interface{}) {
 	featureID := o.eDerivedStructuralFeatureID( feature );
     if( featureID >= 0 ) {
-		o.internal.(EObjectInternal).ESetFromID( featureID, newValue );
+		o.interfaces.(EObjectInternal).ESetFromID( featureID, newValue );
 	} else {
 		panic("The feature '" + feature.GetName() + "' is not a valid feature")
 	}
@@ -186,7 +186,7 @@ func ( o *BasicEObject) ESetFromID( featureID int, newValue interface{}) {
 func ( o *BasicEObject) EIsSet( feature EStructuralFeature) bool {
 	featureID := o.eDerivedStructuralFeatureID( feature )
     if( featureID >= 0 ) {
-		return o.internal.(EObjectInternal).EIsSetFromID( featureID )
+		return o.interfaces.(EObjectInternal).EIsSetFromID( featureID )
 	}
 	panic( "The feature '" + feature.GetName() + "' is not a valid feature" )
 }
@@ -202,7 +202,7 @@ func ( o *BasicEObject) EIsSetFromID(featureID int ) bool {
 func ( o *BasicEObject) EUnset(feature EStructuralFeature)  {
 	featureID := o.eDerivedStructuralFeatureID( feature )
     if( featureID >= 0 ) {
-		o.internal.(EObjectInternal).EUnsetFromID( featureID  )
+		o.interfaces.(EObjectInternal).EUnsetFromID( featureID  )
 	} else {
 		panic("The feature '" + feature.GetName() + "' is not a valid feature")
 	}
@@ -218,7 +218,7 @@ func ( o *BasicEObject) EUnsetFromID(featureID int ) {
 func ( o *BasicEObject) EInvoke(operation EOperation, arguments EList) interface{}  {
 	operationID := o.eDerivedOperationID( operation );
     if( operationID >= 0 ) {
-		return o.internal.(EObjectInternal).EInvokeFromID( operationID, arguments )
+		return o.interfaces.(EObjectInternal).EInvokeFromID( operationID, arguments )
 	}
     panic("The operation '" + operation.GetName() + "' is not a valid operation");
 }
@@ -243,7 +243,7 @@ func ( o *BasicEObject) ESetResource( resource EResource , n ENotificationChain 
 func ( o *BasicEObject) EInverseAdd( otherEnd EObject, featureID int, n ENotificationChain ) ENotificationChain {
 	notifications := n;
     if( featureID >= 0 ) {
-        return o.internal.(EObjectInternal).EBasicInverseAdd( otherEnd, featureID, notifications )
+        return o.interfaces.(EObjectInternal).EBasicInverseAdd( otherEnd, featureID, notifications )
 	} else {
         notifications = o.EBasicRemoveFromContainer( notifications );
         return o.EBasicSetContainer( otherEnd, featureID, notifications )
@@ -253,7 +253,7 @@ func ( o *BasicEObject) EInverseAdd( otherEnd EObject, featureID int, n ENotific
 
 func ( o *BasicEObject) EInverseRemove( otherEnd EObject, featureID int, n ENotificationChain ) ENotificationChain {
 	if( featureID >= 0 ) {
-		return o.internal.(EObjectInternal).EBasicInverseRemove( otherEnd, featureID, n )
+		return o.interfaces.(EObjectInternal).EBasicInverseRemove( otherEnd, featureID, n )
 	} else {
 		return o.EBasicSetContainer( nil, featureID, n )
 	}

@@ -17,5 +17,6 @@ type eReferenceExt struct {
 func newEReferenceExt() *eReferenceExt {
 	eReference := new(eReferenceExt)
 	eReference.eReferenceImpl = newEReferenceImpl()
+	eReference.interfaces = eReference
 	return eReference
 }

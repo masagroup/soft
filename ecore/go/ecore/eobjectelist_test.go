@@ -4,26 +4,38 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	mock "github.com/stretchr/testify/mock"
+	
 )
 
-func TestEObjectEList(t *testing.T) {
+func TestEObjectEListInverseNoOpposite(t *testing.T) {
 	mockOwner := &MockEObjectInternal{}
-	mockObject := &MockEObject{}
-	mockOwner.On("ENotify", mock.Anything).Return()
-	{
-		list := NewEObjectEList(mockOwner, 1, 2, false, false, false, false, false)
-		assert.True(t, list.Add(mockObject))
-		assert.Equal(t, list.Size(), 1)
-		assert.Equal(t, list.Get(0), mockObject)
-		assert.True(t, !list.Add(mockObject))
-	}
-	{
-		mockOwner.On("EInverseAdd", mockObject, 2, nil).Return(NewNotificationChain())
-		list := NewEObjectEList(mockOwner, 1, 2, false, true, true, false, false)
-		assert.True(t, list.Add(mockObject))
-		assert.Equal(t, list.Size(), 1)
-		assert.Equal(t, list.Get(0), mockObject)
-		assert.True(t, !list.Add(mockObject))
-	}
+	mockOwner.On("EDeliver").Return( false )
+
+	mockObject := &MockEObjectInternal{}
+	list := NewEObjectEList(mockOwner, 1, -1, false, true, false, false, false)
+	mockObject.On("EInverseAdd",mockOwner,-2,nil).Return(nil)
+	
+	assert.True(t, list.Add(mockObject))
+	
+	mockObject.On("EInverseRemove",mockOwner,-2,nil).Return(nil)
+	assert.True(t, list.Remove(mockObject))
+
+	mockObject.AssertExpectations(t)
+}
+
+func TestEObjectEListInverseOpposite(t *testing.T) {
+	mockOwner := &MockEObjectInternal{}
+	mockOwner.On("EDeliver").Return( false )
+	
+	mockObject := &MockEObjectInternal{}
+	list := NewEObjectEList(mockOwner, 1, 2, false, true, true, false, false)
+	
+	mockObject.On("EInverseAdd",mockOwner,2,nil).Return(nil)
+	assert.True(t, list.Add(mockObject))
+	
+	mockObject.On("EInverseRemove",mockOwner,2,nil).Return(nil)
+	assert.True(t, list.Remove(mockObject))
+	
+	
+	mockObject.AssertExpectations(t)
 }

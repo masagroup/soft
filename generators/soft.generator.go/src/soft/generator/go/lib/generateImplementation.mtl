@@ -37,7 +37,7 @@ func [aClass.getConstructorName()/]() *[aClass.getImplementationName()/] {
 [for ( qualifiedExtend : String | aClass.getClassExtends() )]
     [aClass.getReceiverName()/].[getShortQualifiedName(qualifiedExtend,aClass.ePackage.name)/] = [getShortQualifiedName(getConstructorName(qualifiedExtend), aClass.ePackage.name)/]()
 [/for]
-    [aClass.getReceiverName()/].internal = [aClass.getReceiverName()/] 
+    [aClass.getReceiverName()/].interfaces = [aClass.getReceiverName()/] 
 [let features : OrderedSet(EAttribute) = aClass.eStructuralFeatures->select( isField() )]
 [if features->notEmpty()]
     [features.generateVariableInitialization()/]

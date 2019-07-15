@@ -17,6 +17,7 @@ type eModelElementExt struct {
 func newEModelElementExt() *eModelElementExt {
 	eElement := new(eModelElementExt)
 	eElement.eModelElementImpl = newEModelElementImpl()
+	eElement.interfaces = eElement
 	return eElement
 }
 
