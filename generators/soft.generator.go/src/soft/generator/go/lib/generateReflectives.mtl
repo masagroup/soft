@@ -24,6 +24,10 @@
 [aClass.generateESetDefinition()/]
 
 [/if]
+[if aClass.getEUnSetFeatures()->notEmpty()]
+[aClass.generateEUnSetDefinition()/]
+
+[/if]
 [if aClass.getEIsSetFeatures()->notEmpty()]
 [aClass.generateEIsSetDefinition()/]
 
@@ -59,7 +63,7 @@
 [/template]
 
 [template private generateESetDefinition(aClass : EClass)]
-[aClass.generateFunctionReceiver()/]  ESetFromID(featureID int, newValue interface{}) {
+[aClass.generateFunctionReceiver()/] ESetFromID(featureID int, newValue interface{}) {
     switch featureID {
 [for (anStructFeature : EStructuralFeature | aClass.getESetFeatures()->sortedBy(name))]
         case [anStructFeature.getQualifiedFeatureIDName()/]:
@@ -67,10 +71,10 @@
     [let varName : String = anStructFeature.name.first(1)]
             var [varName/] [anStructFeature.eGenericType.generateType()/] = newValue.([anStructFeature.eGenericType.generateType()/])
     [if anStructFeature.isListType()]
-            [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]().Clear();
-            [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]().Add([varName/]);
+            [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]().Clear()
+            [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]().Add([varName/])
     [else]
-            [aClass.getReceiverName()/].[anStructFeature.getSetterName()/]([varName/]);
+            [aClass.getReceiverName()/].[anStructFeature.getSetterName()/]([varName/])
     [/if]
             return;
     [/let]
@@ -79,6 +83,33 @@
     }
    	[aClass.getReceiverName()/].[aClass.getRawClassExtends()/].ESetFromID(featureID, newValue);
 }
+[/template]
+
+
+
+[template private generateEUnSetDefinition(aClass : EClass)]
+[let className : String = aClass.getImplementationName()]
+[aClass.generateFunctionReceiver()/] EUnsetFromID(featureID int) {
+    switch featureID {
+[for (aStructFeature : EStructuralFeature | aClass.getEUnSetFeatures()->sortedBy(name))]
+        case [aStructFeature.getQualifiedFeatureIDName()/]:
+        {
+    [if aStructFeature.isListType() and not aStructFeature.isUnSettable()]
+            [aClass.getReceiverName()/].[aStructFeature.getGetterName()/]().Clear()
+    [elseif aStructFeature.isUnSet() ]
+            [aClass.getReceiverName()/].[aStructFeature.getUnSetterName()/]()
+    [elseif aStructFeature.oclIsKindOf(EReference)]
+            [aClass.getReceiverName()/].[aStructFeature.getSetterName()/](nil)
+    [else]
+            [aClass.getReceiverName()/].[aStructFeature.getSetterName()/]([aStructFeature.oclAsType(EAttribute).getDefaultValue()/])
+    [/if]
+            return
+        }
+[/for]
+    }
+    [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].EUnsetFromID(featureID);
+}
+[/let]
 [/template]
 
 [template private generateDefaultValue(anEAttribute : EAttribute) post (trim())]
