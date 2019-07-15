@@ -18,11 +18,16 @@
 
 [if aClass.getEGetFeatures()->notEmpty()]
 [aClass.generateEGetDefinition()/]
+
+[/if]
+[if aClass.getESetFeatures()->notEmpty()]
+[aClass.generateESetDefinition()/]
+
 [/if]
 [if aClass.getEIsSetFeatures()->notEmpty()]
 [aClass.generateEIsSetDefinition()/]
-[/if]
 
+[/if]
 [/if]
 [/template]
 
@@ -53,6 +58,28 @@
 }
 [/template]
 
+[template private generateESetDefinition(aClass : EClass)]
+[aClass.generateFunctionReceiver()/]  ESetFromID(featureID int, newValue interface{}) {
+    switch featureID {
+[for (anStructFeature : EStructuralFeature | aClass.getESetFeatures()->sortedBy(name))]
+        case [anStructFeature.getQualifiedFeatureIDName()/]:
+        {
+    [let varName : String = anStructFeature.name.first(1)]
+            var [varName/] [anStructFeature.eGenericType.generateType()/] = newValue.([anStructFeature.eGenericType.generateType()/])
+    [if anStructFeature.isListType()]
+            [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]().Clear();
+            [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]().Add([varName/]);
+    [else]
+            [aClass.getReceiverName()/].[anStructFeature.getSetterName()/]([varName/]);
+    [/if]
+            return;
+    [/let]
+        }
+[/for]
+    }
+   	[aClass.getReceiverName()/].[aClass.getRawClassExtends()/].ESetFromID(featureID, newValue);
+}
+[/template]
 
 [template private generateDefaultValue(anEAttribute : EAttribute) post (trim())]
 [if (anEAttribute.eType.oclIsTypeOf(EEnum))]
