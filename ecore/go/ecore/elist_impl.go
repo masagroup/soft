@@ -243,7 +243,7 @@ func (arr *arrayEList) Remove(elem interface{}) bool {
 	if index == -1 {
 		return false
 	}
-	arr.RemoveAt(index)
+	arr.interfaces.(EList).RemoveAt(index)
 	return true
 }
 

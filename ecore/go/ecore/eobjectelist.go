@@ -48,9 +48,9 @@ func (list *eObjectEList) GetFeatureID() int {
 func (list *eObjectEList) inverseAdd( object interface{}, notifications ENotificationChain ) ENotificationChain {
 	if ( object != nil && list.inverse ) {
 		if ( list.opposite ) {
-			return object.(EObjectInternal).EInverseAdd( list.interfaces.(EObject) , list.inverseFeatureID , notifications )
+			return object.(EObjectInternal).EInverseAdd( list.owner , list.inverseFeatureID , notifications )
 		} else {
-			return object.(EObjectInternal).EInverseAdd( list.interfaces.(EObject) , EOPPOSITE_FEATURE_BASE - list.featureID , notifications)
+			return object.(EObjectInternal).EInverseAdd( list.owner , EOPPOSITE_FEATURE_BASE - list.featureID , notifications)
 		}
 	} 
 	return notifications
@@ -59,9 +59,9 @@ func (list *eObjectEList) inverseAdd( object interface{}, notifications ENotific
 func (list *eObjectEList) inverseRemove( object interface{}, notifications ENotificationChain ) ENotificationChain {
 	if ( object != nil && list.inverse ) {
 		if ( list.opposite ) {
-			return object.(EObjectInternal).EInverseRemove( list.interfaces.(EObject) , list.inverseFeatureID , notifications)
+			return object.(EObjectInternal).EInverseRemove( list.owner , list.inverseFeatureID , notifications)
 		} else {
-			return object.(EObjectInternal).EInverseRemove( list.interfaces.(EObject) , EOPPOSITE_FEATURE_BASE - list.featureID , notifications)
+			return object.(EObjectInternal).EInverseRemove( list.owner , EOPPOSITE_FEATURE_BASE - list.featureID , notifications)
 		}
 	} 
 	return notifications
