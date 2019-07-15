@@ -81,6 +81,7 @@ BOOST_AUTO_TEST_CASE( StructuralFeatures_Getters )
     BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 1 ), eReference1 );
     BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 2 ), eAttribute1 );
     BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 3 ), eAttribute2 );
+    BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 4 ), nullptr );
 
     BOOST_CHECK_EQUAL( eAttribute1->getFeatureID(), 2 );
     BOOST_CHECK_EQUAL( eAttribute2->getFeatureID(), 3 );
@@ -148,6 +149,9 @@ BOOST_AUTO_TEST_CASE( Operations )
     eClass->getEOperations()->add( eOperation2 );
 
     BOOST_CHECK_EQUAL( eClass->getOperationCount(), 2 );
+    BOOST_CHECK_EQUAL( eClass->getEOperation( 0 ), eOperation1 );
+    BOOST_CHECK_EQUAL( eClass->getEOperation( 1 ), eOperation2 );
+    BOOST_CHECK_EQUAL( eClass->getEOperation( 2 ), nullptr );
 
     BOOST_CHECK_EQUAL( eOperation1->getOperationID(), 0 );
     BOOST_CHECK_EQUAL( eOperation2->getOperationID(), 1 );
