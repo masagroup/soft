@@ -92,7 +92,11 @@
         [anStructFeature.getGetterName()/]().Size() != 0
     [/if]
 [elseif anStructFeature.oclAsType(EReference).isBackReference() ]
+	[if anStructFeature.eType.name <> 'EBoolean']
+    [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]() != nil
+	[else]
     [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]()
+	[/if]
 [else]
     [let accessor : String = if isField() then anStructFeature.getVariableName() else anStructFeature.getGetterName()+'()' endif]
         [aClass.getReceiverName()/].[accessor/] != [anStructFeature.eType.getDefaultValue()/]
