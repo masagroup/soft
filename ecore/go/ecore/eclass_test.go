@@ -33,17 +33,19 @@ func containsSubClass( eSuper *eClassExt , eClass *eClassExt ) bool {
 
 func TestEClassSuperTypes(t *testing.T) {
 	eClass := newEClassExt()
-	eClass.SetName("MyClass")
-
 	eSuperClass := newEClassExt()
-	eSuperClass.SetName("MySuperClass")
+	eSuperClass2 := newEClassExt()
 	
+
 	eClass.GetESuperTypes().Add(eSuperClass)
 	assert.True( t, containsSubClass( eSuperClass,eClass) )
 
 	eClass.GetESuperTypes().Remove(eSuperClass)
 	assert.False( t, containsSubClass( eSuperClass,eClass) )
 
+	eClass.GetESuperTypes().AddAll( NewImmutableEList([]interface{}{eSuperClass,eSuperClass2}) )
+	assert.True( t, containsSubClass( eSuperClass,eClass) )
+	assert.True( t, containsSubClass( eSuperClass2,eClass) )
 }
 
 func TestEClassFeatures(t *testing.T) {
