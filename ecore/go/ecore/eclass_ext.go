@@ -11,13 +11,92 @@ package ecore
 
 // eClassExt is the extension of the model object 'EClass'
 type eClassExt struct {
-    *eClassImpl
+	*eClassImpl
+	adapter *eSuperAdapter
+}
+
+type eSuperAdapter struct {
+	*Adapter
+	class *eClassExt
+	subClasses []*eClassExt
+}
+
+func (adapter *eSuperAdapter) NotifyChanged(notification ENotification) {
+	eventType := notification.GetEventType()
+	eNotifier := notification.GetNotifier().(*eClassExt)
+	if( eventType != REMOVING_ADAPTER ) {
+		featureID := notification.GetFeatureID()
+        if  featureID == ECLASS__ESUPER_TYPES {
+			switch eventType {
+			case SET:
+			case RESOLVE:
+				oldValue := notification.GetOldValue()
+				if oldValue != nil {
+					class := oldValue.(eClassExt)
+					for i, s := range class.adapter.subClasses {
+						if s == eNotifier {
+							class.adapter.subClasses = append(class.adapter.subClasses[:i], class.adapter.subClasses[i+1:]...)
+							break
+						}
+					}
+				}
+				newValue := notification.GetNewValue()
+				if newValue != nil {
+					class := oldValue.(eClassExt)
+					class.adapter.subClasses = append( class.adapter.subClasses , eNotifier )
+				}
+			case ADD:
+				newValue := notification.GetNewValue()
+				if newValue != nil {
+					class := newValue.(eClassExt)
+					class.adapter.subClasses = append( class.adapter.subClasses , eNotifier )
+				}
+			case ADD_MANY:
+				newValue := notification.GetNewValue()
+				if newValue != nil {
+					collection := newValue.([]interface{})
+					for _, s := range collection { 
+						class := s.(eClassExt)
+						class.adapter.subClasses = append( class.adapter.subClasses , eNotifier )
+					}
+				}
+			case REMOVE:
+				oldValue := notification.GetOldValue()
+				if oldValue != nil {
+					class := oldValue.(eClassExt)
+					for i, s := range class.adapter.subClasses {
+						if s == eNotifier {
+							class.adapter.subClasses = append(class.adapter.subClasses[:i], class.adapter.subClasses[i+1:]...)
+							break
+						}
+					}
+				}
+			case REMOVE_MANY:
+				oldValue := notification.GetOldValue()
+				if oldValue != nil {
+					collection := oldValue.([]interface{})
+					for _, s := range collection { 
+						class := s.(eClassExt)
+						for i, s := range class.adapter.subClasses {
+							if s == eNotifier {
+								class.adapter.subClasses = append(class.adapter.subClasses[:i], class.adapter.subClasses[i+1:]...)
+								break
+							}
+						}
+					}
+				}
+			}
+		}
+        adapter.class.setModified( featureID )
+    }
 }
 
 func newEClassExt() *eClassExt {
 	eClass := new(eClassExt)
 	eClass.eClassImpl = newEClassImpl()
 	eClass.interfaces = eClass
+	eClass.adapter = &eSuperAdapter{ Adapter : NewAdapter(),  class : eClass , subClasses : []*eClassExt{}}
+	eClass.EAdapters().Add( eClass.adapter )
 	return eClass
 }
 
