@@ -111,6 +111,44 @@ func TestEClassFeaturesGetters(t *testing.T) {
 
 }
 
+
+func TestEClassFeaturesGettersWithSuperType(t *testing.T) {
+	eClass := newEClassExt()
+	eSuperClass := newEClassExt()
+	eClass.GetESuperTypes().Add(eSuperClass)
+
+	eAttribute1 := newEAttributeExt()
+	eReference1 := newEReferenceExt()
+	eAttribute2 := newEAttributeExt()
+	eReference2 := newEReferenceExt()
+	eClass.GetEStructuralFeatures().AddAll(NewImmutableEList([]interface{}{eAttribute1, eReference1}))
+	eSuperClass.GetEStructuralFeatures().AddAll(NewImmutableEList([]interface{}{eAttribute2, eReference2}))
+	
+	// collections
+	assert.Equal(t, eSuperClass.GetEAllStructuralFeatures().ToArray(), []interface{}{eAttribute2, eReference2})
+	assert.Equal(t, eSuperClass.GetEAllAttributes().ToArray(), []interface{}{eAttribute2})
+	assert.Equal(t, eSuperClass.GetEAllReferences().ToArray(), []interface{}{eReference2})
+	assert.Equal(t, eSuperClass.GetEAttributes().ToArray(), []interface{}{eAttribute2})
+	assert.Equal(t, eSuperClass.GetEReferences().ToArray(), []interface{}{eReference2})
+
+	assert.Equal(t, eClass.GetEAllStructuralFeatures().ToArray(), []interface{}{eAttribute2, eReference2, eAttribute1, eReference1})
+	assert.Equal(t, eClass.GetEAllAttributes().ToArray(), []interface{}{eAttribute2, eAttribute1})
+	assert.Equal(t, eClass.GetEAllReferences().ToArray(), []interface{}{eReference2, eReference1})
+	assert.Equal(t, eClass.GetEAttributes().ToArray(), []interface{}{eAttribute1})
+	assert.Equal(t, eClass.GetEReferences().ToArray(), []interface{}{eReference1})
+
+	// now remove super type
+	eClass.GetESuperTypes().Remove(eSuperClass)
+
+	assert.Equal(t, eClass.GetEAllStructuralFeatures().ToArray(), []interface{}{eAttribute1, eReference1})
+	assert.Equal(t, eClass.GetEAllAttributes().ToArray(), []interface{}{eAttribute1})
+	assert.Equal(t, eClass.GetEAllReferences().ToArray(), []interface{}{eReference1})
+	assert.Equal(t, eClass.GetEAttributes().ToArray(), []interface{}{eAttribute1})
+	assert.Equal(t, eClass.GetEReferences().ToArray(), []interface{}{eReference1})
+
+
+}
+
 func TestEClassFeaturesGetFromName(t *testing.T) {
 	eClass := newEClassExt()
 	eAttribute1 := newEAttributeExt()
