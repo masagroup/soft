@@ -20,3 +20,8 @@ func newEReferenceExt() *eReferenceExt {
 	eReference.interfaces = eReference
 	return eReference
 }
+
+func (eReference *eReferenceExt) IsContainer() bool {
+	opposite := eReference.interfaces.(EReference).GetEOpposite()
+	return opposite != nil && opposite.IsContainment()
+}
