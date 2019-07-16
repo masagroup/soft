@@ -235,3 +235,19 @@ func TestNotifyingListRemoveWithNotification(t *testing.T) {
 	l.assertExpectations(t)
 	mockChain.AssertExpectations(t)
 }
+
+func TestNotifyingListSetWithNotification(t *testing.T) {
+	l := newNotifyingListTestFromData([]interface{}{1})
+	mockChain := new(MockENotificationChain)
+	mockChain.On("Add", mock.MatchedBy(func(n ENotification) bool {
+		return n.GetNotifier() == l.mockNotifier &&
+			n.GetFeature() == l.mockFeature &&
+			n.GetNewValue() == 2 &&
+			n.GetOldValue() == 1 &&
+			n.GetEventType() == SET &&
+			n.GetPosition() == 0
+	})).Return(true)
+	l.SetWithNotification( 0 , 2, mockChain )
+	l.assertExpectations(t)
+	mockChain.AssertExpectations(t)
+}
