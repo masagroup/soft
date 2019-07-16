@@ -199,3 +199,28 @@ func TestEClassOperationsGetters(t *testing.T) {
 	assert.Equal(t, 2, eOperation2.GetOperationID() )
 }
 
+func TestEClassOperationsGettersWithSuperType(t *testing.T) {
+	eClass := newEClassExt()
+	eSuperClass := newEClassExt()
+	eClass.GetESuperTypes().Add(eSuperClass)
+
+	eOperation1 := newEOperationExt()
+	eOperation2 := newEOperationExt()
+	eClass.GetEOperations().Add(eOperation1)
+	eSuperClass.GetEOperations().Add(eOperation2)
+	
+	// collections
+	assert.Equal(t, eSuperClass.GetEAllOperations().ToArray(), []interface{}{eOperation2})
+	assert.Equal(t, eSuperClass.GetEOperations().ToArray(), []interface{}{eOperation2})
+
+	assert.Equal(t, eClass.GetEAllOperations().ToArray(), []interface{}{eOperation2, eOperation1})
+	assert.Equal(t, eClass.GetEOperations().ToArray(), []interface{}{eOperation1})
+	
+	// now remove super type
+	eClass.GetESuperTypes().Remove(eSuperClass)
+
+	assert.Equal(t, eClass.GetEAllOperations().ToArray(), []interface{}{eOperation1})
+	assert.Equal(t, eClass.GetEOperations().ToArray(), []interface{}{eOperation1})
+
+
+}

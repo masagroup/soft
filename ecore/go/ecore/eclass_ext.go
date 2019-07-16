@@ -403,7 +403,8 @@ func (eClass *eClassExt) setModified( featureID int ) {
         eClass.eAllContainments = nil
 	case ECLASS__ESUPER_TYPES:
 		eClass.eAllSuperTypes = nil
-        eClass.eAllAttributes = nil
+		eClass.eAllAttributes = nil
+		eClass.eAllOperations = nil
         eClass.eAllStructuralFeatures = nil
         eClass.eAllReferences = nil
         eClass.eAllContainments = nil
