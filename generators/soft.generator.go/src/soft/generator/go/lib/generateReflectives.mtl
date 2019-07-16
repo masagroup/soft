@@ -32,6 +32,10 @@
 [aClass.generateEIsSetDefinition()/]
 
 [/if]
+[if aClass.eOperations->notEmpty()]
+[aClass.generateEInvokeDefinition()/]
+
+[/if]
 [/if]
 [/template]
 
@@ -110,6 +114,31 @@
     [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].EUnsetFromID(featureID);
 }
 [/let]
+[/template]
+
+[template private generateEInvokeDefinition(aClass : EClass)]
+[let className : String = aClass.getImplementationName()]
+[aClass.generateFunctionReceiver()/] EInvokeFromID(operationID int, arguments EList) interface{} {
+    switch operationID {
+    [for ( eOperation : EOperation | aClass.eOperations->sortedBy(name) )]
+        case [eOperation.eContainingClass.getOperationIDName(eOperation)/]:
+        {
+            [if eOperation.isVoid() ]
+            [aClass.getReceiverName()/].[eOperation.generateOperationInvoke()/]
+            return nil
+            [else]
+            return [aClass.getReceiverName()/].[eOperation.generateOperationInvoke()/] 
+            [/if]
+        }
+    [/for]
+    }
+    return nil
+}
+[/let]
+[/template]
+
+[template private generateOperationInvoke(eOperation : EOperation )]
+[eOperation.getFunctionName()/]([for (eParameter : EParameter | eOperation.eParameters) separator (',')][let needCast : Boolean = not(not eParameter.oclIsUndefined() and eParameter.upperBound = 1 and not eParameter.eGenericType.oclIsUndefined() and eParameter.eGenericType.eClassifier.isAny())]arguments.Get([i-1/])[if needCast].([eParameter.generateEffectiveType()/])[/if][/let][/for]);
 [/template]
 
 [template private generateDefaultValue(anEAttribute : EAttribute) post (trim())]

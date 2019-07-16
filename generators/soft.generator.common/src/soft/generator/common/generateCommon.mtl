@@ -2,6 +2,7 @@
 [module generateCommon('http://www.eclipse.org/emf/2002/Ecore')]
 
 [query public isAny(anEClassifier : EClassifier) : Boolean = if (oclIsUndefined()) then true else (name = 'EEnumerator' or name = 'EDiagnosticChain' or name = 'EJavaObject') endif/]
+[query public isVoid(aOperation : EOperation) : Boolean = aOperation.eType.oclIsUndefined() /]
 
 [query public join( aSequence : Sequence(String) , aDelimiter : String ) : String = 
     aSequence->iterate(s ; res: String ='' | ( res.concat( if ( aSequence->first() = s ) then '' else aDelimiter endif ).concat(s)))

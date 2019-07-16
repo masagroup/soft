@@ -239,8 +239,6 @@
 
 [query public isPublic( anEOperation : EOperation, aImplementation: Boolean ) : Boolean = anEOperation.getVisibilityType(aImplementation) = 'public'/]
 
-[query public isVoid(aOperation : EOperation) : Boolean = aOperation.eType.oclIsUndefined() /]
-
 [**
  * Classes Onthology
 */]
