@@ -412,10 +412,10 @@
         
         <move todir="${root.dir}/ecore/go/ecore">
             <fileset dir="${root.dir}/ecore/go/ecore" includes="*.go">
-                <filename regex="mock_[A-Z].*\.go"/>
+                <filename regex="^mock_[A-Z].*\.go$"/>
             </fileset>
             <chainedmapper>
-                <regexpmapper from="mock_(.*)\.go" to="\1_mock.go"/>
+                <regexpmapper from="^mock_(.*)\.go$" to="\1_mock_test.go"/>
                 <scriptmapper language="javascript">
                  self.addMappedName(source.toLowerCase()); 
                 </scriptmapper>
@@ -424,7 +424,7 @@
         
         <delete >
             <fileset dir="${root.dir}/ecore/go/ecore" includes="*.go">
-                <filename regex="mock_[a-z].*\.go"/>
+                <filename regex="^mock_[a-z].*\.go$"/>
             </fileset>
         </delete>
     
