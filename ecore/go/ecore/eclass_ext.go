@@ -104,7 +104,7 @@ func newEClassExt() *eClassExt {
 }
 
 func (eClass *eClassExt) IsSuperTypeOf(someClass EClass) bool {
-	return someClass == eClass || someClass.GetEAllSuperTypes().Contains( eClass )
+	return someClass == eClass || ( someClass != nil && someClass.GetEAllSuperTypes().Contains( eClass ) )
 }
 
 func (eClass *eClassExt) GetFeatureCount() int {
