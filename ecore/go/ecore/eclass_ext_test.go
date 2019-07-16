@@ -98,6 +98,10 @@ func TestEClassFeaturesGetters(t *testing.T) {
 	assert.Equal(t, 2, eAttribute2.GetFeatureID() )
 	assert.Equal(t, 1, eReference1.GetFeatureID() )
 	assert.Equal(t, 3, eReference2.GetFeatureID() )
+	assert.Equal(t, 0, eClass.GetFeatureID(eAttribute1) )
+	assert.Equal(t, 2, eClass.GetFeatureID(eAttribute2) )
+	assert.Equal(t, 1, eClass.GetFeatureID(eReference1) )
+	assert.Equal(t, 3, eClass.GetFeatureID(eReference2) )
 
 	// collections
 	assert.Equal(t, eClass.GetEAllStructuralFeatures().ToArray(), []interface{}{eAttribute1, eReference1, eAttribute2, eReference2})
@@ -194,6 +198,8 @@ func TestEClassOperationsGetters(t *testing.T) {
 	assert.Equal(t, nil, eClass.GetEOperation(2) )
 	assert.Equal(t, 0, eOperation1.GetOperationID() )
 	assert.Equal(t, 1, eOperation2.GetOperationID() )
+	assert.Equal(t, 0, eClass.GetOperationID(eOperation1) )
+	assert.Equal(t, 1, eClass.GetOperationID(eOperation2) )
 
 	// collections
 	assert.Equal(t, eClass.GetEAllOperations().ToArray(), []interface{}{eOperation1, eOperation2})
