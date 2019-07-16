@@ -208,15 +208,39 @@ func (eClass *eClassExt) initEReferences() {
 }
 
 func (eClass *eClassExt) initEContainments() {
-    eClass.eContainments = NewEmptyArrayEList();
+    eClass.initFeaturesSubSet()
 }
 
 func (eClass *eClassExt) initECrossReferences() {
-    eClass.eCrossReferences = NewEmptyArrayEList();
+    eClass.initFeaturesSubSet()
 }
 
 func (eClass *eClassExt) initFeaturesSubSet() {
+	eClass.initEAllStructuralFeatures();
 
+    if eClass.eContainments != nil {
+		return
+	}
+	
+	containments := []interface{}{}
+	crossReferences := []interface{}{}
+	for itFeature := eClass.GetEStructuralFeatures().Iterate(); itFeature.Next(); {
+		ref , isRef := itFeature.Value().(EReference)
+		if ( isRef ) {
+			if ref.IsContainment() {
+                if !ref.IsDerived() {
+					containments = append( containments , ref )	
+				}
+            } else if !ref.IsContainer() {
+                if !ref.IsDerived() {
+					crossReferences = append( crossReferences , ref )
+				}
+            }
+		}
+
+	}
+	eClass.eContainments = NewImmutableEList( containments )
+	eClass.eCrossReferences = NewImmutableEList( crossReferences )
 }
 
 func (eClass *eClassExt) initEAllAttributes() {
@@ -278,7 +302,17 @@ func (eClass *eClassExt) initEAllReferences() {
 }
 
 func (eClass *eClassExt) initEAllContainments() {
-    eClass.eAllContainments = NewEmptyArrayEList();
+	if eClass.eAllContainments != nil {
+		return
+	}
+	allContainments := []interface{}{}
+	for itReference := eClass.GetEAllReferences().Iterate(); itReference.Next(); {
+		reference := itReference.Value().(EReference)
+		if reference.IsContainment() {
+			allContainments = append( allContainments , reference )
+		}
+	}	
+    eClass.eAllContainments = NewImmutableEList( allContainments )
 }
 
 func (eClass *eClassExt) initEAllOperations() {
