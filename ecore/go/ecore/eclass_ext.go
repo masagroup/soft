@@ -31,6 +31,7 @@ func (adapter *eSuperAdapter) NotifyChanged(notification ENotification) {
         if  featureID == ECLASS__ESUPER_TYPES {
 			switch eventType {
 			case SET:
+				fallthrough
 			case RESOLVE:
 				oldValue := notification.GetOldValue()
 				if oldValue != nil {
@@ -44,7 +45,7 @@ func (adapter *eSuperAdapter) NotifyChanged(notification ENotification) {
 				}
 				newValue := notification.GetNewValue()
 				if newValue != nil {
-					class := oldValue.(*eClassExt)
+					class := newValue.(*eClassExt)
 					class.adapter.subClasses = append( class.adapter.subClasses , eNotifier )
 				}
 			case ADD:

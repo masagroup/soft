@@ -35,17 +35,33 @@ func TestEClassSuperTypes(t *testing.T) {
 	eClass := newEClassExt()
 	eSuperClass := newEClassExt()
 	eSuperClass2 := newEClassExt()
-	
+	eSuperClass3 := newEClassExt()
+	eSuperSuperClass := newEClassExt()
 
+	// build class hierarchy
 	eClass.GetESuperTypes().Add(eSuperClass)
+	eSuperClass.GetESuperTypes().Add(eSuperSuperClass)
+
+	// test super types getters
+	assert.Equal(t, eClass.GetESuperTypes().ToArray(), []interface{}{eSuperClass})
+	assert.Equal(t, eClass.GetEAllSuperTypes().ToArray(), []interface{}{eSuperSuperClass,eSuperClass})
 	assert.True( t, containsSubClass( eSuperClass,eClass) )
 
+	// remove super class
 	eClass.GetESuperTypes().Remove(eSuperClass)
 	assert.False( t, containsSubClass( eSuperClass,eClass) )
 
+	// add many super classes
 	eClass.GetESuperTypes().AddAll( NewImmutableEList([]interface{}{eSuperClass,eSuperClass2}) )
 	assert.True( t, containsSubClass( eSuperClass,eClass) )
 	assert.True( t, containsSubClass( eSuperClass2,eClass) )
+
+	// set super classes
+	eClass.GetESuperTypes().Set(1, eSuperClass3)
+	assert.True( t, containsSubClass( eSuperClass,eClass) )
+	assert.True( t, containsSubClass( eSuperClass3,eClass) )
+
+	// remove many
 }
 
 func TestEClassFeaturesAdd(t *testing.T) {
@@ -221,6 +237,4 @@ func TestEClassOperationsGettersWithSuperType(t *testing.T) {
 
 	assert.Equal(t, eClass.GetEAllOperations().ToArray(), []interface{}{eOperation1})
 	assert.Equal(t, eClass.GetEOperations().ToArray(), []interface{}{eOperation1})
-
-
 }
