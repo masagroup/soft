@@ -132,7 +132,7 @@ func (list *ENotifyingListImpl) AddWithNotification( object interface{} , notifi
 func (list *ENotifyingListImpl) RemoveWithNotification( object interface{} , notifications ENotificationChain ) ENotificationChain {
 	index := list.IndexOf( object );
 	if( index != -1 ) {
-		oldObject := list.arrayEList.Remove( index )
+		oldObject := list.arrayEList.RemoveAt( index )
 		return list.createAndAddNotification( notifications, REMOVE, oldObject, nil, index )
 	}
 	return notifications
