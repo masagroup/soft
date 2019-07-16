@@ -77,7 +77,6 @@ func new[className.toUpperFirst()/]() *[className/] {
     default:
         panic("The datatype '" + eDataType.GetName() + "' is not a valid classifier")
 	}
-	return nil
 }
 
 [anEPackage.generateFactoryImplementationMember()/] ConvertToString(eDataType EDataType, instanceValue interface{}) string {
@@ -90,19 +89,16 @@ func new[className.toUpperFirst()/]() *[className/] {
     default:
         panic("The datatype '" + eDataType.GetName() + "' is not a valid classifier")
     }
-	return ""
 }
 [for (aDataType : EDataType | dataTypes)]
 [let createMethodName : String = 'create' + aDataType.name + 'FromString']
 [anEPackage.generateFactoryImplementationMember()/] [createMethodName/](eDataType EDataType, literalValue string) interface{} {
 	panic("NotImplementedException")
-	return nil
 }
 [/let]
 [let convertMethodName : String = 'convert' + aDataType.name + 'ToString']
 [anEPackage.generateFactoryImplementationMember()/] [convertMethodName/](eDataType EDataType, literalValue interface{}) string {
 	panic("NotImplementedException")
-	return ""
 }
 [/let]
 [/for]
