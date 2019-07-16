@@ -57,9 +57,6 @@ else
 endif
 /]
 
-[query private getVariableName( aFeature : EStructuralFeature ) : String = 
-if aFeature.eType.name = 'EBoolean' then 'is' + aFeature.name.toUpperFirst() else aFeature.name endif/]
-
 [query public isLazy( aStructuralFeature : EStructuralFeature ) : Boolean = aStructuralFeature.getLazy() <> 'no'/] 
 
 [query public isVariableInitializationDefered( aStructuralFeature : EStructuralFeature ) : Boolean = isListType() or isProxy()/]
