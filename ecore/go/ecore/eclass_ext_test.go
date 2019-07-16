@@ -275,3 +275,21 @@ func TestEClassAllContainments(t *testing.T) {
 	assert.Equal(t, eClass.GetEAllContainments().ToArray(), []interface{}{eReference2,eReference1})
 
 }
+
+func TestEClassContainments(t *testing.T) {
+	eClass := newEClassExt()
+	// standard ref	
+	eReference0 := newEReferenceExt()
+	// containment ref
+	eReference1 := newEReferenceExt()
+	eReference1.SetContainment(true)
+	// no containment and derived
+	eReference2 := newEReferenceExt()
+	
+	eClass.GetEStructuralFeatures().AddAll(NewImmutableEList([]interface{}{eReference0, eReference1, eReference2} ) )
+	
+	assert.Equal(t, eClass.GetEContainments().ToArray(), []interface{}{eReference1})
+	assert.Equal(t, eClass.GetECrossReferences().ToArray(), []interface{}{eReference0, eReference2})
+	
+
+}
