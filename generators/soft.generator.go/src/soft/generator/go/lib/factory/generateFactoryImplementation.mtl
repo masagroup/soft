@@ -46,7 +46,6 @@ func new[className.toUpperFirst()/]() *[className/] {
     default:
         panic("Create: " + strconv.Itoa( classID ) + " not found")
 	}
-	return nil
 }
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
