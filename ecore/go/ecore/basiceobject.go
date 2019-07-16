@@ -25,6 +25,7 @@ type BasicEObject struct {
 
 }
 
+// EObjectInternal ...
 type EObjectInternal interface {
 	EObject
 
@@ -43,7 +44,7 @@ type EObjectInternal interface {
 	EBasicInverseAdd( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain
 	EBasicInverseRemove( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain
 	
-	EProxyUri() *url.URL
+	EProxyURI() *url.URL
 	ESetProxyURI( uri *url.URL)
 	EResolveProxy( proxy EObject) EObject
 }
@@ -57,14 +58,17 @@ func NewBasicEObject() *BasicEObject {
 	return o
 }
 
+// EClass ...
 func ( o *BasicEObject) EClass() EClass {
 	return o.interfaces.(EObjectInternal).EStaticClass()
 }
 
+// EIsProxy ...
 func ( o *BasicEObject) EIsProxy() bool {
 	return o.proxyURI != nil
 }
 
+// EResource ...
 func ( o *BasicEObject) EResource() EResource {
 	if ( o.resource == nil) {
 		if ( o.container != nil ) {
@@ -74,6 +78,7 @@ func ( o *BasicEObject) EResource() EResource {
 	return o.resource
 }
 
+// EContainer ...
 func ( o *BasicEObject) EContainer() EObject {
 	return o.container
 }
@@ -82,6 +87,7 @@ func ( o *BasicEObject) eContainerFeatureID() int {
 	return o.containerFeatureID
 }
 
+// EContainingFeature ...
 func ( o *BasicEObject) EContainingFeature() EStructuralFeature {
 	if o.container != nil {
 		if o.containerFeatureID <= EOPPOSITE_FEATURE_BASE {
@@ -93,6 +99,7 @@ func ( o *BasicEObject) EContainingFeature() EStructuralFeature {
 	return nil
 }
 
+// EContainmentFeature ...
 func ( o *BasicEObject) EContainmentFeature() EReference {
 	return eContainmentFeature( o , o.container, o.containerFeatureID)
 }
@@ -117,14 +124,17 @@ func eContainmentFeature( o EObject, container EObject, containerFeatureID int )
 	return nil
 }
 
+// EContents ...
 func ( o *BasicEObject) EContents() EList {
 	return nil
 }
 
+// EAllContents ...
 func ( o *BasicEObject) EAllContents() EList {
 	return nil
 }
 
+// ECrossReferences ...
 func ( o *BasicEObject) ECrossReferences() EList {
 	return nil
 }
@@ -143,10 +153,12 @@ func ( o *BasicEObject) eDerivedOperationID( operation EOperation ) int {
     return operation.GetOperationID()
 }
 
+// EGet ...
 func ( o *BasicEObject) EGet(feature EStructuralFeature) interface{} {
 	return o.eGetFromFeature( feature, true, true )
 }
 
+// EGetResolve ...
 func ( o *BasicEObject) EGetResolve( feature EStructuralFeature, resolve bool) interface{} {
 	return o.eGetFromFeature( feature, resolve, true )
 }
@@ -159,6 +171,7 @@ func ( o *BasicEObject) eGetFromFeature(feature EStructuralFeature , resolve boo
     panic("The feature '" + feature.GetName() + "' is not a valid feature")
 }
 
+// EGetFromID ...
 func ( o *BasicEObject) EGetFromID(featureID int , resolve bool , core bool ) interface{} {
 	feature := o.EClass().GetEStructuralFeature( featureID );
 	if feature == nil {
@@ -167,6 +180,7 @@ func ( o *BasicEObject) EGetFromID(featureID int , resolve bool , core bool ) in
 	return nil
 }
 
+// ESet ...
 func ( o *BasicEObject) ESet( feature EStructuralFeature, newValue interface{}) {
 	featureID := o.eDerivedStructuralFeatureID( feature );
     if( featureID >= 0 ) {
@@ -176,6 +190,7 @@ func ( o *BasicEObject) ESet( feature EStructuralFeature, newValue interface{}) 
 	}
 }
 
+// ESetFromID ...
 func ( o *BasicEObject) ESetFromID( featureID int, newValue interface{}) {
 	feature := o.EClass().GetEStructuralFeature( featureID );
 	if ( feature == nil ) {
@@ -183,6 +198,7 @@ func ( o *BasicEObject) ESetFromID( featureID int, newValue interface{}) {
 	}
 }
 
+// EIsSet ...
 func ( o *BasicEObject) EIsSet( feature EStructuralFeature) bool {
 	featureID := o.eDerivedStructuralFeatureID( feature )
     if( featureID >= 0 ) {
@@ -191,6 +207,7 @@ func ( o *BasicEObject) EIsSet( feature EStructuralFeature) bool {
 	panic( "The feature '" + feature.GetName() + "' is not a valid feature" )
 }
 
+// EIsSetFromID ...
 func ( o *BasicEObject) EIsSetFromID(featureID int ) bool {
 	feature := o.EClass().GetEStructuralFeature( featureID )
 	if feature == nil {
@@ -199,6 +216,7 @@ func ( o *BasicEObject) EIsSetFromID(featureID int ) bool {
     return false;
 }
 
+// EUnset ...
 func ( o *BasicEObject) EUnset(feature EStructuralFeature)  {
 	featureID := o.eDerivedStructuralFeatureID( feature )
     if( featureID >= 0 ) {
@@ -208,6 +226,7 @@ func ( o *BasicEObject) EUnset(feature EStructuralFeature)  {
 	}
 }
 
+// EUnsetFromID ...
 func ( o *BasicEObject) EUnsetFromID(featureID int ) {
 	feature := o.EClass().GetEStructuralFeature( featureID )
 	if feature == nil {
@@ -215,6 +234,7 @@ func ( o *BasicEObject) EUnsetFromID(featureID int ) {
 	}
 }
 
+// EInvoke ...
 func ( o *BasicEObject) EInvoke(operation EOperation, arguments EList) interface{}  {
 	operationID := o.eDerivedOperationID( operation );
     if( operationID >= 0 ) {
@@ -223,6 +243,7 @@ func ( o *BasicEObject) EInvoke(operation EOperation, arguments EList) interface
     panic("The operation '" + operation.GetName() + "' is not a valid operation");
 }
 
+// EInvokeFromID ...
 func ( o *BasicEObject) EInvokeFromID(operationID int, arguments EList) interface{}  {
 	operation := o.EClass().GetEOperation( operationID )
 	if operation == nil {
@@ -231,15 +252,18 @@ func ( o *BasicEObject) EInvokeFromID(operationID int, arguments EList) interfac
 	return nil
 }
 
+// EStaticClass ...
 func ( o *BasicEObject) EStaticClass() EClass {
 	return GetPackage().GetEObject();
 }
 
 
+// ESetResource ...
 func ( o *BasicEObject) ESetResource( resource EResource , n ENotificationChain ) ENotificationChain {
 	return n
 }
 
+// EInverseAdd ...
 func ( o *BasicEObject) EInverseAdd( otherEnd EObject, featureID int, n ENotificationChain ) ENotificationChain {
 	notifications := n;
     if( featureID >= 0 ) {
@@ -251,6 +275,7 @@ func ( o *BasicEObject) EInverseAdd( otherEnd EObject, featureID int, n ENotific
 	return notifications
 }
 
+// EInverseRemove ...
 func ( o *BasicEObject) EInverseRemove( otherEnd EObject, featureID int, n ENotificationChain ) ENotificationChain {
 	if( featureID >= 0 ) {
 		return o.interfaces.(EObjectInternal).EBasicInverseRemove( otherEnd, featureID, n )
@@ -259,27 +284,32 @@ func ( o *BasicEObject) EInverseRemove( otherEnd EObject, featureID int, n ENoti
 	}
 }
 
-func ( o *BasicEObject) EProxyUri() *url.URL {
+// EProxyURI ...
+func ( o *BasicEObject) EProxyURI() *url.URL {
 	return o.proxyURI
 }
 
+// ESetProxyURI ...
 func ( o *BasicEObject) ESetProxyURI( uri *url.URL) {
 	o.proxyURI = uri
 }
 
+// EResolveProxy ...
 func ( o *BasicEObject) EResolveProxy( proxy EObject) EObject {
 	return nil
 }
 
-
+// EBasicInverseAdd ...
 func ( o *BasicEObject) EBasicInverseAdd( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain {
 	return nil
 }
 
+// EBasicInverseRemove ...
 func ( o *BasicEObject) EBasicInverseRemove( otherEnd EObject, featureID int, notifications ENotificationChain ) ENotificationChain {
 	return nil
 }
 
+// EBasicSetContainer ...
 func ( o *BasicEObject) EBasicSetContainer( newContainer EObject, newContainerFeatureID int , n ENotificationChain ) ENotificationChain {
     notifications := n;
 	oldResource := o.resource
@@ -290,9 +320,8 @@ func ( o *BasicEObject) EBasicSetContainer( newContainer EObject, newContainerFe
     var newResource EResource
     if( oldResource != nil ) {
         if( newContainer != nil  && eContainmentFeature( o, newContainer, newContainerFeatureID ) == nil ) {
-            //auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
-            //notifications = list->remove( thisPtr, notifications );
-
+			list := oldResource.GetContents().(ENotifyingList)
+			notifications = list.RemoveWithNotification( o.interfaces.(EObject), notifications )
             o.resource = nil
             newResource = newContainer.EResource()
         } else {
@@ -324,7 +353,7 @@ func ( o *BasicEObject) EBasicSetContainer( newContainer EObject, newContainerFe
     // notification
     if( o.ENotificationRequired() ) {
         if( oldContainer != nil  && oldContainerFeatureID >= 0 && oldContainerFeatureID != newContainerFeatureID ) {
-			notification := NewNotificationByFeatureID( o, SET, oldContainerFeatureID, oldContainer, nil, -1 )
+			notification := NewNotificationByFeatureID( o.interfaces.(EObject), SET, oldContainerFeatureID, oldContainer, nil, -1 )
             if( notifications != nil ) {
                 notifications.Add( notification );
 			} else {
@@ -336,7 +365,7 @@ func ( o *BasicEObject) EBasicSetContainer( newContainer EObject, newContainerFe
 			if oldContainerFeatureID == newContainerFeatureID {
 				c = oldContainer
 			} 
-			notification := NewNotificationByFeatureID( o, SET, newContainerFeatureID, c , newContainer, -1 )
+			notification := NewNotificationByFeatureID( o.interfaces.(EObject), SET, newContainerFeatureID, c , newContainer, -1 )
             if( notifications != nil ) {
                 notifications.Add( notification )
 			} else {
@@ -347,23 +376,25 @@ func ( o *BasicEObject) EBasicSetContainer( newContainer EObject, newContainerFe
     return notifications
 }
 
+// EBasicRemoveFromContainer ...
 func ( o *BasicEObject) EBasicRemoveFromContainer( notifications ENotificationChain ) ENotificationChain {
     if( o.containerFeatureID >= 0 ) {
 		return o.EBasicRemoveFromContainerFeature( notifications )
 	} else {
         if( o.container != nil ) {
-			return o.container.(EObjectInternal).EInverseRemove( o, EOPPOSITE_FEATURE_BASE - o.containerFeatureID, notifications )
+			return o.container.(EObjectInternal).EInverseRemove( o.interfaces.(EObject), EOPPOSITE_FEATURE_BASE - o.containerFeatureID, notifications )
 		}
     }
     return notifications
 }
 
+// EBasicRemoveFromContainerFeature ...
 func ( o *BasicEObject) EBasicRemoveFromContainerFeature( notifications ENotificationChain ) ENotificationChain {
     reference , isReference := o.EClass().GetEStructuralFeature( o.containerFeatureID ).(EReference);
     if( isReference ) {
         inverseFeature := reference.GetEOpposite()
         if( o.container != nil && inverseFeature != nil ) {
-			return o.container.(EObjectInternal).EInverseRemove( o, inverseFeature.GetFeatureID(), notifications )
+			return o.container.(EObjectInternal).EInverseRemove( o.interfaces.(EObject), inverseFeature.GetFeatureID(), notifications )
 		}
     }
     return notifications;
