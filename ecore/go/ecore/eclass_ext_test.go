@@ -290,6 +290,16 @@ func TestEClassContainments(t *testing.T) {
 	
 	assert.Equal(t, eClass.GetEContainments().ToArray(), []interface{}{eReference1})
 	assert.Equal(t, eClass.GetECrossReferences().ToArray(), []interface{}{eReference0, eReference2})
-	
+}
 
+func TestEClassIsSuperTypeOf(t *testing.T) {
+	eClass := newEClassExt()
+	eOther := newEClassExt()
+	eSuperClass := newEClassExt()
+	eClass.GetESuperTypes().Add(eSuperClass)
+
+	assert.True( t , eClass.IsSuperTypeOf(eClass) )
+	assert.True( t , eSuperClass.IsSuperTypeOf(eClass) )
+	assert.False( t , eClass.IsSuperTypeOf(eSuperClass) )
+	assert.False( t , eOther.IsSuperTypeOf(eClass) )
 }
