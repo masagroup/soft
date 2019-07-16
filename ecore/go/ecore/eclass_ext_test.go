@@ -74,6 +74,7 @@ func TestEClassFeaturesAdd(t *testing.T) {
 
 	assert.Equal(t , 1 , eClass.GetFeatureCount() )
 	assert.Equal(t , 0 , eAttribute.GetFeatureID() )
+	assert.Equal(t , eClass , eAttribute.GetEContainingClass())
 }
 
 func TestEClassFeaturesGetters(t *testing.T) {
@@ -181,6 +182,17 @@ func TestEClassFeaturesGetFromName(t *testing.T) {
 	assert.Equal(t , nil , eClass.GetEStructuralFeatureFromString("MyAttributeUnknown") )
 }
 
+func TestEClassAttributeID(t *testing.T) {
+	eClass := newEClassExt()
+	eAttribute := newEAttributeExt()
+	eClass.GetEStructuralFeatures().Add( eAttribute )
+
+	eAttribute.SetID( true )
+	assert.Equal( t , eAttribute , eClass.GetEIDAttribute() )
+
+	eAttribute.SetID( false )
+	assert.Equal( t , nil , eClass.GetEIDAttribute() )
+}
 
 func TestEClassOperationsGetters(t *testing.T) {
 	eClass := newEClassExt()
