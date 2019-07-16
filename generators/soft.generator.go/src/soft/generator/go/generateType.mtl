@@ -11,7 +11,7 @@
 
 [template public generateEffectiveType(eElement : ETypedElement) post(trim())]
 [if (isListType())]
-EList<[eElement.eGenericType.generateType()/]>
+EList
 [else]
 [eElement.eGenericType.generateType()/]
 [/if]

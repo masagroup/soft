@@ -36,6 +36,10 @@
 [aClass.generateEInvokeDefinition()/]
 
 [/if]
+[if aClass.getEInverseAddFeatures()->notEmpty()]
+[aClass.generateEInverseAddDefinition()/]
+
+[/if]
 [/if]
 [/template]
 
@@ -193,4 +197,50 @@
 
 [template public generateComparison(anStructFeature : EStructuralFeature, aClass : EClass) ? (eType.isAny()) post (trim())]
 [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]() != ""
+[/template]
+
+[template public generateEInverseAddDefinition(aClass : EClass) ]
+[let className : String = aClass.getImplementationName()]
+[aClass.generateFunctionReceiver()/] EBasicInverseAddFromID(otherEnd EObject, featureID int, notifications NotificationChain) ENotificationChain {
+    switch featureID {
+[for ( aFeature : EStructuralFeature | aClass.getEInverseAddFeatures()->sortedBy(name) )]
+        case [aFeature.getQualifiedFeatureIDName()/]:
+        {
+    [if aFeature.isListType()]
+            list := [aClass.getReceiverName()/].[aFeature.getGetterName()/]().(ENotifyingList)
+            return list.Add(otherEnd, notifications)
+    [elseif aFeature.isContainer()]
+            msgs := notifications
+            if eContainer() {
+                msgs = eBasicRemoveFromContainer(msgs);
+			}
+        [if aFeature.isBasicSet()]
+            return [aClass.getReceiverName()/].Basic[aFeature.getSetterName().toUpperFirst()/](otherEnd.([aFeature.eGenericType.generateType()/]), msgs)
+        [else]
+            return [aClass.getReceiverName()/].EBasicSetContainer(otherEnd, [aFeature.getQualifiedFeatureIDName()/], msgs)
+        [/if]
+    [else]
+        [if aFeature.isVolatile() or aFeature.isBackReference()]
+            [aFeature.name/] := [if aFeature.isProxy()][aClass.getReceiverName()/].Basic[aFeature.getGetterName().toUpperFirst()/][else][aFeature.getGetterName()/][/if]()
+        [/if]
+        [let varName : String = aFeature.name + (if aFeature.isVolatile() or aFeature.isBackReference() then '' else '_' endif)]
+            msgs := notifications
+            if [varName/] {
+            [if aFeature.isContains()]
+                msgs = [varName/].EInverseRemove([aClass.getReceiverName()/], EOPPOSITE_FEATURE_BASE - [aFeature.getQualifiedFeatureIDName()/], msgs)
+            [else]
+                [let reverseFeature : EStructuralFeature = aFeature.oclAsType(EReference).eOpposite]
+                msgs = [varName/].EInverseRemove([aClass.getReceiverName()/], [reverseFeature.getQualifiedFeatureIDName()/], msgs)
+                [/let]
+            [/if]
+			}
+            return [aClass.getReceiverName()/].Basic[aFeature.getSetterName().toUpperFirst()/](otherEnd.([aFeature.eGenericType.generateType()/]) ,msgs)
+        [/let]
+    [/if]
+        }
+[/for]
+    }
+    return [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].EBasicInverseAddFromID(otherEnd, featureID, notifications)
+}
+[/let]
 [/template]
