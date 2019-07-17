@@ -74,7 +74,7 @@ func TestEClassFeaturesAdd(t *testing.T) {
 
 	assert.Equal(t , 1 , eClass.GetFeatureCount() )
 	assert.Equal(t , 0 , eAttribute.GetFeatureID() )
-	//assert.Equal(t , eClass , eAttribute.GetEContainingClass())
+	assert.Equal(t , eClass , eAttribute.GetEContainingClass())
 }
 
 func TestEClassFeaturesGetters(t *testing.T) {
@@ -191,7 +191,7 @@ func TestEClassAttributeID(t *testing.T) {
 	assert.Equal( t , eAttribute , eClass.GetEIDAttribute() )
 
 	eAttribute.SetID( false )
-	//assert.Equal( t , nil , eClass.GetEIDAttribute() )
+	assert.Equal( t , nil , eClass.GetEIDAttribute() )
 }
 
 func TestEClassOperationsGetters(t *testing.T) {
