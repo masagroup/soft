@@ -1,7 +1,7 @@
 [comment encoding = UTF-8 /]
 [module generateType('http://www.eclipse.org/emf/2002/Ecore')/]
 
-[query public getTestValue(anEAttribute : EAttribute) : String = if (defaultValueLiteral->notEmpty()) then defaultValueLiteral else eType.getDefaultValue() endif/]
+[query public getTestValue(anEClassifier : EClassifier) : String = anEClassifier.getDefaultValue()/]
 
 
 [query public getDefaultValue(anEClassifier : EClassifier) : String = 
@@ -62,6 +62,6 @@
 [query private getDefaultBooleanValue(anEClassifier : EClassifier) : String = 'true'/]
 [query private getDefaultCharValue(anEClassifier : EClassifier) : String = '\'a\''/]
 [query private getDefaultNumberValue(anEClassifier : EClassifier) : String = '64'/]
-[query private getDefaultPointerValue(anEClassifier : EClassifier) : String = '[placeholder]'/]
+[query private getDefaultPointerValue(anEClassifier : EClassifier) : String = 'NewEmptyArrayEList()'/]
 [query private getDefaultAnyValue(anEClassifier : EClassifier) : String = '[placeholder]'/]
 [query private getDefaultStringValue(anEClassifier : EClassifier) : String = '"Test String"'/]

@@ -44,8 +44,8 @@ func [implementationName/]Test(t *testing.T) {
 [let varName : String = aStructuralFeature.getVariableName() ]
 {
 	obj := new[aClass.getImplementationName().toUpperFirst()/]()
-	obj.[varName/] = [aStructuralFeature.oclAsType(EAttribute).getTestValue()/]
-	assert.Equal(t, [aStructuralFeature.oclAsType(EAttribute).getTestValue()/], obj.[varName/])
+	obj.[varName/] = [aStructuralFeature.eType.getTestValue()/]
+	assert.Equal(t, [aStructuralFeature.eType.getTestValue()/], obj.[varName/])
 }
 [/let]
 [/template]
