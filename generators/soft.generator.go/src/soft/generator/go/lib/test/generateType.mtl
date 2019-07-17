@@ -63,5 +63,5 @@
 [query private getDefaultCharValue(anEClassifier : EClassifier) : String = '\'a\''/]
 [query private getDefaultNumberValue(anEClassifier : EClassifier) : String = '64'/]
 [query private getDefaultPointerValue(anEClassifier : EClassifier) : String = 'NewEmptyArrayEList()'/]
-[query private getDefaultAnyValue(anEClassifier : EClassifier) : String = '[placeholder]'/]
+[query private getDefaultAnyValue(anEClassifier : EClassifier) : String = '5'/]
 [query private getDefaultStringValue(anEClassifier : EClassifier) : String = '"Test String"'/]

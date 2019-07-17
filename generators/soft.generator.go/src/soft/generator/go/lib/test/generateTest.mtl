@@ -25,7 +25,7 @@ func [implementationName/]Test(t *testing.T) {
 [/template]
 
 [template private generateTestImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
-[if isGet()]
+[if isGet() and isField() ]
 	[aStructuralFeature.generateGetTestImplementation(aClass)/]
 [/if]
 [if isBasicGet()]
