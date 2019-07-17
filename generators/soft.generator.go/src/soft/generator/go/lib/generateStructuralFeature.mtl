@@ -242,17 +242,17 @@ NewEObjectEList([receiverName/].interfaces.(EObjectInternal) , [aClass.getFeatur
 [elseif not isVolatile()]
     [let lazy : String = aStructuralFeature.getLazy()]
     [if lazy <> 'no']
-        [if aStructuralFeature.oclIsKindOf(EAttribute)]
-    if [receiverName/].[varName/] == [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/] {
-        [else]
-    if [receiverName/].[varName/] == nil {
-        [/if]
         [if  lazy = 'function']
+            [if aStructuralFeature.oclIsKindOf(EAttribute)]
+    if [receiverName/].[varName/] == [aStructuralFeature.oclAsType(EAttribute).getDefaultValue()/] {
+            [else]
+    if [receiverName/].[varName/] == nil {
+            [/if]
         [receiverName/].[varName/] = [receiverName/].interfaces.([aClass.getVariableInitializersInterface()/]).[aStructuralFeature.getMethodInitializationName()/]()
-        [elseif lazy = 'action']
-        [receiverName/].interfaces.([aClass.getVariableInitializersInterface()/]).[aStructuralFeature.getMethodInitializationName()/]()
-        [/if]
     }
+        [elseif lazy = 'action']
+    [receiverName/].interfaces.([aClass.getVariableInitializersInterface()/]).[aStructuralFeature.getMethodInitializationName()/]()
+        [/if]
     [/if]
     [/let]
     return [receiverName/].[varName/]
