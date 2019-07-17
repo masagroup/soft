@@ -1,6 +1,7 @@
 *.go
 !*_ext.go
 !*_test.go
+*_impl_test.go
 !eresource*.go
 !e*list*.go
 !enotif*.go

@@ -1,0 +1,23 @@
+[comment encoding = UTF-8 /]
+[module generateTest('http://www.eclipse.org/emf/2002/Ecore')/]
+
+[import soft::generator::go::lib::generateCommon/]
+[import soft::generator::go::generateCommon/]
+
+[template public generateTest(aClass : EClass) { implementationName : String = aClass.getImplementationName(); aPackage : EPackage = aClass.ePackage } ]
+[file (aClass.ePackage.getOutputDirectory() + '/' + aClass.getImplementationTestFileName( aClass.name ), false, 'UTF-8')]
+[fileComment()/]
+
+package [aPackage.name/]
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func [implementationName/]Test(t *testing.T) {
+
+}
+[/file]
+[/template]
