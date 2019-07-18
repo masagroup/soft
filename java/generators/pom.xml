@@ -32,7 +32,7 @@
     <profile>
         <id>ant</id>
         <properties>
-            <project.target>../../out/maven/${project.artifactId}</project.target>
+            <project.target>../../../out/maven/${project.artifactId}</project.target>
         </properties>
     </profile>
     <profile>
