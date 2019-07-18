@@ -11,7 +11,7 @@ package ecore
 
 // EPackageExt is the extension of the model object 'EFactory'
 type EPackageExt struct {
-    *ePackageImpl
+	*ePackageImpl
 }
 
 func NewEPackageExt() *EPackageExt {

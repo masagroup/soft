@@ -1,17 +1,17 @@
 package ecore
 
 type abstractNotification struct {
-	interfaces  interface{}
-	eventType EventType
-	oldValue  interface{}
-	newValue  interface{}
-	position  int
-	next      ENotificationChain
+	interfaces interface{}
+	eventType  EventType
+	oldValue   interface{}
+	newValue   interface{}
+	position   int
+	next       ENotificationChain
 }
 
 // NewAbstractNotification ...
 func NewAbstractNotification(eventType EventType, oldValue interface{}, newValue interface{}, position int) *abstractNotification {
-	n := new (abstractNotification)
+	n := new(abstractNotification)
 	n.interfaces = n
 	n.eventType = eventType
 	n.oldValue = oldValue
@@ -77,7 +77,7 @@ func (notif *abstractNotification) Merge(eOther ENotification) bool {
 		switch notifEv := eOther.GetEventType(); notifEv {
 		case REMOVE:
 			if eNotif.GetNotifier() == eOther.GetNotifier() &&
-			 	eNotif.GetFeatureID() == eOther.GetFeatureID() {
+				eNotif.GetFeatureID() == eOther.GetFeatureID() {
 				notificationPosition := eOther.GetPosition()
 				positions := notif.newValue.([]interface{})
 				newPositions := []interface{}{}
@@ -149,15 +149,15 @@ func (notif *abstractNotification) Dispatch() {
 
 type notification struct {
 	*abstractNotification
-	object EObject
-	feature EStructuralFeature
+	object    EObject
+	feature   EStructuralFeature
 	featureID int
 }
 
 // NewNotificationByFeature ...
 func NewNotificationByFeature(object EObject, eventType EventType, feature EStructuralFeature, oldValue interface{}, newValue interface{}, position int) *notification {
 	n := new(notification)
-	n.abstractNotification = NewAbstractNotification( eventType , oldValue, newValue, position )
+	n.abstractNotification = NewAbstractNotification(eventType, oldValue, newValue, position)
 	n.interfaces = n
 	n.object = object
 	n.feature = feature
@@ -168,7 +168,7 @@ func NewNotificationByFeature(object EObject, eventType EventType, feature EStru
 // NewNotificationByFeatureID ...
 func NewNotificationByFeatureID(object EObject, eventType EventType, featureID int, oldValue interface{}, newValue interface{}, position int) *notification {
 	n := new(notification)
-	n.abstractNotification = NewAbstractNotification( eventType , oldValue, newValue, position )
+	n.abstractNotification = NewAbstractNotification(eventType, oldValue, newValue, position)
 	n.interfaces = n
 	n.object = object
 	n.feature = nil

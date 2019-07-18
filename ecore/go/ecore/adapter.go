@@ -7,7 +7,6 @@
 //
 // *****************************************************************************
 
-
 package ecore
 
 // Adapter is basic implementation of EAdapter interface

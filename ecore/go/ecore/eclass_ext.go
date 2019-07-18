@@ -12,14 +12,14 @@ package ecore
 // eClassExt is the extension of the model object 'EClass'
 type eClassExt struct {
 	*eClassImpl
-	adapter *eSuperAdapter
-	nameToFeatureMap map[string]EStructuralFeature
+	adapter                *eSuperAdapter
+	nameToFeatureMap       map[string]EStructuralFeature
 	operationToOverrideMap map[EOperation]EOperation
 }
 
 type eSuperAdapter struct {
 	*Adapter
-	class *eClassExt
+	class      *eClassExt
 	subClasses []*eClassExt
 }
 
@@ -28,7 +28,7 @@ func (adapter *eSuperAdapter) NotifyChanged(notification ENotification) {
 	eNotifier := notification.GetNotifier().(*eClassExt)
 	if eventType != REMOVING_ADAPTER {
 		featureID := notification.GetFeatureID()
-        if  featureID == ECLASS__ESUPER_TYPES {
+		if featureID == ECLASS__ESUPER_TYPES {
 			switch eventType {
 			case SET:
 				fallthrough
@@ -46,21 +46,21 @@ func (adapter *eSuperAdapter) NotifyChanged(notification ENotification) {
 				newValue := notification.GetNewValue()
 				if newValue != nil {
 					class := newValue.(*eClassExt)
-					class.adapter.subClasses = append( class.adapter.subClasses , eNotifier )
+					class.adapter.subClasses = append(class.adapter.subClasses, eNotifier)
 				}
 			case ADD:
 				newValue := notification.GetNewValue()
 				if newValue != nil {
 					class := newValue.(*eClassExt)
-					class.adapter.subClasses = append( class.adapter.subClasses , eNotifier )
+					class.adapter.subClasses = append(class.adapter.subClasses, eNotifier)
 				}
 			case ADD_MANY:
 				newValue := notification.GetNewValue()
 				if newValue != nil {
 					collection := newValue.([]interface{})
-					for _, s := range collection { 
+					for _, s := range collection {
 						class := s.(*eClassExt)
-						class.adapter.subClasses = append( class.adapter.subClasses , eNotifier )
+						class.adapter.subClasses = append(class.adapter.subClasses, eNotifier)
 					}
 				}
 			case REMOVE:
@@ -78,7 +78,7 @@ func (adapter *eSuperAdapter) NotifyChanged(notification ENotification) {
 				oldValue := notification.GetOldValue()
 				if oldValue != nil {
 					collection := oldValue.([]interface{})
-					for _, s := range collection { 
+					for _, s := range collection {
 						class := s.(*eClassExt)
 						for i, s := range class.adapter.subClasses {
 							if s == eNotifier {
@@ -90,21 +90,21 @@ func (adapter *eSuperAdapter) NotifyChanged(notification ENotification) {
 				}
 			}
 		}
-        adapter.class.setModified( featureID )
-    }
+		adapter.class.setModified(featureID)
+	}
 }
 
 func newEClassExt() *eClassExt {
 	eClass := new(eClassExt)
 	eClass.eClassImpl = newEClassImpl()
 	eClass.interfaces = eClass
-	eClass.adapter = &eSuperAdapter{ Adapter : NewAdapter(),  class : eClass , subClasses : []*eClassExt{}}
-	eClass.EAdapters().Add( eClass.adapter )
+	eClass.adapter = &eSuperAdapter{Adapter: NewAdapter(), class: eClass, subClasses: []*eClassExt{}}
+	eClass.EAdapters().Add(eClass.adapter)
 	return eClass
 }
 
 func (eClass *eClassExt) IsSuperTypeOf(someClass EClass) bool {
-	return someClass == eClass || ( someClass != nil && someClass.GetEAllSuperTypes().Contains( eClass ) )
+	return someClass == eClass || (someClass != nil && someClass.GetEAllSuperTypes().Contains(eClass))
 }
 
 func (eClass *eClassExt) GetFeatureCount() int {
@@ -119,7 +119,7 @@ func (eClass *eClassExt) GetEStructuralFeature(featureID int) EStructuralFeature
 	return nil
 }
 
-func (eClass *eClassExt) GetEStructuralFeatureFromString( featureName string ) EStructuralFeature {
+func (eClass *eClassExt) GetEStructuralFeatureFromString(featureName string) EStructuralFeature {
 	eClass.initNameToFeatureMap()
 	return eClass.nameToFeatureMap[featureName]
 }
@@ -127,27 +127,27 @@ func (eClass *eClassExt) GetEStructuralFeatureFromString( featureName string ) E
 func (eClass *eClassExt) initNameToFeatureMap() {
 	eClass.initEAllStructuralFeatures()
 
-    if( eClass.nameToFeatureMap != nil ) {
+	if eClass.nameToFeatureMap != nil {
 		return
 	}
-	eClass.nameToFeatureMap = make( map[string]EStructuralFeature )
+	eClass.nameToFeatureMap = make(map[string]EStructuralFeature)
 	for itFeature := eClass.eAllStructuralFeatures.Iterate(); itFeature.Next(); {
 		feature := itFeature.Value().(EStructuralFeature)
-		eClass.nameToFeatureMap[ feature.GetName() ] = feature
+		eClass.nameToFeatureMap[feature.GetName()] = feature
 	}
 }
 
 func (eClass *eClassExt) GetFeatureID(feature EStructuralFeature) int {
-	features := eClass.GetEAllStructuralFeatures();
-    featureID := feature.GetFeatureID();
-    if featureID != -1  {
-        for ; featureID < features.Size(); featureID++ {
-            if features.Get( featureID ) == feature {
+	features := eClass.GetEAllStructuralFeatures()
+	featureID := feature.GetFeatureID()
+	if featureID != -1 {
+		for ; featureID < features.Size(); featureID++ {
+			if features.Get(featureID) == feature {
 				return featureID
 			}
-        }
-    }
-    return -1;
+		}
+	}
+	return -1
 }
 
 func (eClass *eClassExt) GetOperationCount() int {
@@ -155,7 +155,7 @@ func (eClass *eClassExt) GetOperationCount() int {
 }
 
 func (eClass *eClassExt) GetEOperation(operationID int) EOperation {
-	operations := eClass.GetEAllOperations();
+	operations := eClass.GetEAllOperations()
 	if operationID >= 0 && operationID < operations.Size() {
 		return operations.Get(operationID).(EOperation)
 	}
@@ -164,15 +164,15 @@ func (eClass *eClassExt) GetEOperation(operationID int) EOperation {
 
 func (eClass *eClassExt) GetOperationID(operation EOperation) int {
 	operations := eClass.GetEAllOperations()
-    operationID := operation.GetOperationID()
-    if operationID != -1  {
-        for ; operationID < operations.Size(); operationID++ {
-            if operations.Get( operationID ) == operation {
+	operationID := operation.GetOperationID()
+	if operationID != -1 {
+		for ; operationID < operations.Size(); operationID++ {
+			if operations.Get(operationID) == operation {
 				return operationID
 			}
-        }
-    }
-    return -1;
+		}
+	}
+	return -1
 }
 
 func (eClass *eClassExt) GetOverride(operation EOperation) EOperation {
@@ -181,72 +181,72 @@ func (eClass *eClassExt) GetOverride(operation EOperation) EOperation {
 }
 
 func (eClass *eClassExt) initOperationToOverrideMap() {
-	eClass.initEAllOperations();
+	eClass.initEAllOperations()
 
-    if( eClass.operationToOverrideMap != nil ) {
+	if eClass.operationToOverrideMap != nil {
 		return
 	}
 
-    eClass.operationToOverrideMap = make(map[EOperation]EOperation)
-    size := eClass.eAllOperations.Size()
-    for i := 0; i < size; i++  {
-        for j := size - 1; j > i; j-- {
+	eClass.operationToOverrideMap = make(map[EOperation]EOperation)
+	size := eClass.eAllOperations.Size()
+	for i := 0; i < size; i++ {
+		for j := size - 1; j > i; j-- {
 			oi := eClass.eAllOperations.Get(i).(EOperation)
 			oj := eClass.eAllOperations.Get(j).(EOperation)
 			if oj.IsOverrideOf(oi) {
 				eClass.operationToOverrideMap[oi] = oj
 			}
-        }
-    }
+		}
+	}
 }
 
 func (eClass *eClassExt) initEAttributes() {
-    eClass.initEAllAttributes()
+	eClass.initEAllAttributes()
 }
 
 func (eClass *eClassExt) initEReferences() {
-    eClass.initEAllReferences();
+	eClass.initEAllReferences()
 }
 
 func (eClass *eClassExt) initEContainments() {
-    eClass.initFeaturesSubSet()
+	eClass.initFeaturesSubSet()
 }
 
 func (eClass *eClassExt) initECrossReferences() {
-    eClass.initFeaturesSubSet()
+	eClass.initFeaturesSubSet()
 }
 
 func (eClass *eClassExt) initFeaturesSubSet() {
-	eClass.initEAllStructuralFeatures();
+	eClass.initEAllStructuralFeatures()
 
-    if eClass.eContainments != nil {
+	if eClass.eContainments != nil {
 		return
 	}
-	
+
 	containments := []interface{}{}
 	crossReferences := []interface{}{}
 	for itFeature := eClass.GetEStructuralFeatures().Iterate(); itFeature.Next(); {
-		ref , isRef := itFeature.Value().(EReference)
-		if ( isRef ) {
+		ref, isRef := itFeature.Value().(EReference)
+		if isRef {
 			if ref.IsContainment() {
-                if !ref.IsDerived() {
-					containments = append( containments , ref )	
+				if !ref.IsDerived() {
+					containments = append(containments, ref)
 				}
-            } else if !ref.IsContainer() {
-                if !ref.IsDerived() {
-					crossReferences = append( crossReferences , ref )
+			} else if !ref.IsContainer() {
+				if !ref.IsDerived() {
+					crossReferences = append(crossReferences, ref)
 				}
-            }
+			}
 		}
 
 	}
-	eClass.eContainments = NewImmutableEList( containments )
-	eClass.eCrossReferences = NewImmutableEList( crossReferences )
+	eClass.eContainments = NewImmutableEList(containments)
+	eClass.eCrossReferences = NewImmutableEList(crossReferences)
 }
 
 func (eClass *eClassExt) initEAllAttributes() {
 	if eClass.eAllAttributes != nil {
-        return
+		return
 	}
 
 	attributes := []interface{}{}
@@ -256,50 +256,50 @@ func (eClass *eClassExt) initEAllAttributes() {
 		superAttributes := itClass.Value().(EClass).GetEAllAttributes()
 		for itAttribute := superAttributes.Iterate(); itAttribute.Next(); {
 			attribute := itAttribute.Value().(EAttribute)
-			allAttributes = append(allAttributes , attribute )
-			if ( attribute.IsID() && eClass.eIDAttribute == nil ) {
+			allAttributes = append(allAttributes, attribute)
+			if attribute.IsID() && eClass.eIDAttribute == nil {
 				eIDAttribute = attribute
 			}
 		}
 	}
 
 	for itFeature := eClass.GetEStructuralFeatures().Iterate(); itFeature.Next(); {
-		attribute , isAttribute := itFeature.Value().(EAttribute)
+		attribute, isAttribute := itFeature.Value().(EAttribute)
 		if isAttribute {
-			attributes = append( attributes , attribute )
-			allAttributes = append(allAttributes , attribute )
-			if ( attribute.IsID() && eClass.eIDAttribute == nil ) {
+			attributes = append(attributes, attribute)
+			allAttributes = append(allAttributes, attribute)
+			if attribute.IsID() && eClass.eIDAttribute == nil {
 				eIDAttribute = attribute
 			}
 		}
 	}
-	eClass.eIDAttribute = eIDAttribute;
+	eClass.eIDAttribute = eIDAttribute
 	eClass.eAttributes = NewImmutableEList(attributes)
 	eClass.eAllAttributes = NewImmutableEList(allAttributes)
 }
 
 func (eClass *eClassExt) initEAllReferences() {
-    if eClass.eAllReferences != nil {
+	if eClass.eAllReferences != nil {
 		return
 	}
 
-	allReferences :=  []interface{}{}
+	allReferences := []interface{}{}
 	references := []interface{}{}
 	for itClass := eClass.GetESuperTypes().Iterate(); itClass.Next(); {
 		superReferences := itClass.Value().(EClass).GetEAllReferences()
-		allReferences = append( allReferences , superReferences.ToArray()... )
+		allReferences = append(allReferences, superReferences.ToArray()...)
 	}
 
 	for itFeature := eClass.GetEStructuralFeatures().Iterate(); itFeature.Next(); {
-		reference , isReference := itFeature.Value().(EReference)
+		reference, isReference := itFeature.Value().(EReference)
 		if isReference {
-			references = append( references , reference )
-			allReferences = append(allReferences , reference )
+			references = append(references, reference)
+			allReferences = append(allReferences, reference)
 		}
 	}
 
-    eClass.eReferences = NewImmutableEList(references)
-    eClass.eAllReferences = NewImmutableEList(allReferences)
+	eClass.eReferences = NewImmutableEList(references)
+	eClass.eAllReferences = NewImmutableEList(allReferences)
 }
 
 func (eClass *eClassExt) initEAllContainments() {
@@ -310,107 +310,107 @@ func (eClass *eClassExt) initEAllContainments() {
 	for itReference := eClass.GetEAllReferences().Iterate(); itReference.Next(); {
 		reference := itReference.Value().(EReference)
 		if reference.IsContainment() {
-			allContainments = append( allContainments , reference )
+			allContainments = append(allContainments, reference)
 		}
-	}	
-    eClass.eAllContainments = NewImmutableEList( allContainments )
+	}
+	eClass.eAllContainments = NewImmutableEList(allContainments)
 }
 
 func (eClass *eClassExt) initEAllOperations() {
-    if eClass.eAllOperations != nil {
+	if eClass.eAllOperations != nil {
 		return
 	}
-	
+
 	eClass.operationToOverrideMap = nil
 
-	allOperations :=  []interface{}{}
+	allOperations := []interface{}{}
 	for itClass := eClass.GetESuperTypes().Iterate(); itClass.Next(); {
 		superOperations := itClass.Value().(EClass).GetEAllOperations()
-		allOperations = append( allOperations , superOperations.ToArray()... )
+		allOperations = append(allOperations, superOperations.ToArray()...)
 	}
 
 	operationID := len(allOperations)
 	for itFeature := eClass.GetEOperations().Iterate(); itFeature.Next(); {
-		operation , isOperation := itFeature.Value().(EOperation)
+		operation, isOperation := itFeature.Value().(EOperation)
 		if isOperation {
 			operation.SetOperationID(operationID)
 			operationID++
-			allOperations = append(allOperations , operation )
+			allOperations = append(allOperations, operation)
 		}
 	}
-    eClass.eAllOperations = NewImmutableEList(allOperations)
+	eClass.eAllOperations = NewImmutableEList(allOperations)
 }
 
 func (eClass *eClassExt) initEAllStructuralFeatures() {
-	if( eClass.eAllStructuralFeatures != nil ) {
+	if eClass.eAllStructuralFeatures != nil {
 		return
 	}
-    
-    eClass.eCrossReferences = nil
-    eClass.eContainments = nil
+
+	eClass.eCrossReferences = nil
+	eClass.eContainments = nil
 	eClass.nameToFeatureMap = nil
-	
+
 	allFeatures := []interface{}{}
 	for itClass := eClass.GetESuperTypes().Iterate(); itClass.Next(); {
 		superFeatures := itClass.Value().(EClass).GetEAllStructuralFeatures()
-		allFeatures = append( allFeatures , superFeatures.ToArray()... )
+		allFeatures = append(allFeatures, superFeatures.ToArray()...)
 	}
 
 	featureID := len(allFeatures)
-	for itFeature := eClass.GetEStructuralFeatures().Iterate() ; itFeature.Next();  {
+	for itFeature := eClass.GetEStructuralFeatures().Iterate(); itFeature.Next(); {
 		feature := itFeature.Value().(EStructuralFeature)
-		feature.SetFeatureID( featureID )
+		feature.SetFeatureID(featureID)
 		featureID++
-		allFeatures = append( allFeatures , feature )
+		allFeatures = append(allFeatures, feature)
 	}
-    eClass.eAllStructuralFeatures = NewImmutableEList(allFeatures);
+	eClass.eAllStructuralFeatures = NewImmutableEList(allFeatures)
 }
 
 func (eClass *eClassExt) initEAllSuperTypes() {
-	if( eClass.eAllSuperTypes != nil ) {
+	if eClass.eAllSuperTypes != nil {
 		return
 	}
 	allSuperTypes := []interface{}{}
 	for itClass := eClass.GetESuperTypes().Iterate(); itClass.Next(); {
 		superClass := itClass.Value().(EClass)
 		superTypes := superClass.GetEAllSuperTypes()
-		allSuperTypes = append( allSuperTypes , superTypes.ToArray()... )
-		allSuperTypes = append( allSuperTypes , superClass)
+		allSuperTypes = append(allSuperTypes, superTypes.ToArray()...)
+		allSuperTypes = append(allSuperTypes, superClass)
 	}
-    eClass.eAllSuperTypes = NewImmutableEList(allSuperTypes);
+	eClass.eAllSuperTypes = NewImmutableEList(allSuperTypes)
 }
 
 func (eClass *eClassExt) initEIDAttribute() {
-    eClass.initEAllAttributes()
+	eClass.initEAllAttributes()
 }
 
-func (eClass *eClassExt) setModified( featureID int ) {
-	switch( featureID ) {
+func (eClass *eClassExt) setModified(featureID int) {
+	switch featureID {
 	case ECLASS__ESTRUCTURAL_FEATURES:
 		eClass.eAllAttributes = nil
-        eClass.eAllStructuralFeatures = nil
-        eClass.eAllReferences = nil
-        eClass.eAllContainments = nil
+		eClass.eAllStructuralFeatures = nil
+		eClass.eAllReferences = nil
+		eClass.eAllContainments = nil
 	case ECLASS__EATTRIBUTES:
 		eClass.eAllAttributes = nil
-        eClass.eAllStructuralFeatures = nil
-        eClass.eAllContainments = nil
+		eClass.eAllStructuralFeatures = nil
+		eClass.eAllContainments = nil
 	case ECLASS__EREFERENCES:
 		eClass.eAllReferences = nil
-        eClass.eAllStructuralFeatures = nil
-        eClass.eAllContainments = nil
+		eClass.eAllStructuralFeatures = nil
+		eClass.eAllContainments = nil
 	case ECLASS__EOPERATIONS:
 		eClass.eAllOperations = nil
-        eClass.eAllContainments = nil
+		eClass.eAllContainments = nil
 	case ECLASS__ESUPER_TYPES:
 		eClass.eAllSuperTypes = nil
 		eClass.eAllAttributes = nil
 		eClass.eAllOperations = nil
-        eClass.eAllStructuralFeatures = nil
-        eClass.eAllReferences = nil
-        eClass.eAllContainments = nil
+		eClass.eAllStructuralFeatures = nil
+		eClass.eAllReferences = nil
+		eClass.eAllContainments = nil
 	}
-	for _ , s := range eClass.adapter.subClasses {
-		s.setModified( featureID )
+	for _, s := range eClass.adapter.subClasses {
+		s.setModified(featureID)
 	}
 }
