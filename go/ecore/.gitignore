@@ -5,4 +5,5 @@
 !e*list*.go
 !enotif*.go
 !eadapt*.go
+![^e]*.go
 *_mock_test.go
