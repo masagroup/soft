@@ -19,13 +19,15 @@ import (
 )
 
 func [implementationName/]Test(t *testing.T) {
+	_ = assert.Equal
 	[aClass.eStructuralFeatures.generateTestImplementation(aClass)/]
 }
 [/file]
 [/template]
 
 [template private generateTestImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
-[if isGet() and isField() ]
+[if isField()]
+[if isGet()]
 	[aStructuralFeature.generateGetTestImplementation(aClass)/]
 [/if]
 [if isBasicGet()]
@@ -38,14 +40,17 @@ func [implementationName/]Test(t *testing.T) {
 [/if]
 [if isBasicUnSet()]
 [/if]
+[/if]
 [/template]
 
 [template private generateGetTestImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
 [let varName : String = aStructuralFeature.getVariableName() ]
+[let varAssigned : String = if aStructuralFeature.isListType() then 'NewEmptyArrayEList()' else aStructuralFeature.eType.getTestValue() endif ]
 {
 	obj := new[aClass.getImplementationName().toUpperFirst()/]()
-	obj.[varName/] = [aStructuralFeature.eType.getTestValue()/]
-	assert.Equal(t, [aStructuralFeature.eType.getTestValue()/], obj.[varName/])
+	obj.[varName/] = [varAssigned/]
+	assert.Equal(t, [varAssigned/], obj.[varName/])
 }
+[/let]
 [/let]
 [/template]

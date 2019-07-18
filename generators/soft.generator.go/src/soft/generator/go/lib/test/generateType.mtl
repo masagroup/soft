@@ -51,17 +51,24 @@
 /]
 
 [query private getDefaultValueCheckAny(anEClassifier : EClassifier) : String = 
-        if ((name = 'EJavaObject') or
-            (name = 'EEnumerator') or
-            (name = 'EDiagnosticChain') ) 
-        then getDefaultAnyValue() 
-        else getDefaultPointerValue()
+        if ((name = 'EEnumerator') or
+            (name = 'EDiagnosticChain') or
+			(name = 'EJavaObject')) 
+        then getDefaultAnyValue()
+		else getDefaultValueCheckInterface()
+        endif
+/]
+
+[query private getDefaultValueCheckInterface(anEClassifier : EClassifier) : String = 
+        if ((name = 'EJavaClass')) 
+        then getDefaultNumberValue()
+		else getDefaultPointerValue()
         endif
 /]
 
 [query private getDefaultBooleanValue(anEClassifier : EClassifier) : String = 'true'/]
 [query private getDefaultCharValue(anEClassifier : EClassifier) : String = '\'a\''/]
 [query private getDefaultNumberValue(anEClassifier : EClassifier) : String = '64'/]
-[query private getDefaultPointerValue(anEClassifier : EClassifier) : String = 'NewEmptyArrayEList()'/]
+[query private getDefaultPointerValue(anEClassifier : EClassifier) : String = 'new' + anEClassifier.name + 'Impl()'/]
 [query private getDefaultAnyValue(anEClassifier : EClassifier) : String = '5'/]
 [query private getDefaultStringValue(anEClassifier : EClassifier) : String = '"Test String"'/]
