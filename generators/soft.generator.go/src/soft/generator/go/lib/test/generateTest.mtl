@@ -20,13 +20,12 @@ import (
 
 func [implementationName/]Test(t *testing.T) {
 	_ = assert.Equal
-	[aClass.eStructuralFeatures.generateTestImplementation()/]
+	[aClass.eStructuralFeatures->select(isField()).generateTestImplementation()/]
 }
 [/file]
 [/template]
 
 [template private generateTestImplementation(aStructuralFeature : EStructuralFeature)]
-[if isField()]
 [if isGet()]
 [aStructuralFeature.generateGetTestImplementation()/]
 [/if]
@@ -41,7 +40,6 @@ func [implementationName/]Test(t *testing.T) {
 [aStructuralFeature.generateUnsetTestImplementation()/]
 [/if]
 [if isBasicUnSet()]
-[/if]
 [/if]
 [/template]
 
@@ -74,7 +72,7 @@ func [implementationName/]Test(t *testing.T) {
 [let varAssigned : String = if aStructuralFeature.isListType() then 'NewEmptyArrayEList()' else aStructuralFeature.eType.getTestValue() endif ]
 {
 	obj := new[aStructuralFeature.eContainingClass.getImplementationName().toUpperFirst()/]()
-	obj.[aStructuralFeature.getSetterName()/]([varAssigned/])
+	obj.[varName/] = [varAssigned/]
 	obj.[aStructuralFeature.getUnSetterName()/]()
 	assert.Equal(t, [aStructuralFeature.eType.getDefaultValue()/], obj.[varName/])
 }
