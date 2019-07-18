@@ -28,7 +28,7 @@ func [implementationName/]Test(t *testing.T) {
 
 [template private generateTestOperation(anEOperation : EOperation)]
 {
-	obj := new[anEOperation.eContainingClass.getImplementationName().toUpperFirst()/]()
+	obj := [anEOperation.eContainingClass.getConstructorName()/]()
 	assert.Panics(t, func() { obj.[anEOperation.getFunctionName()/]([anEOperation.generateParameterListNames()/]) })
 }
 
@@ -56,7 +56,7 @@ func [implementationName/]Test(t *testing.T) {
 [let varName : String = aStructuralFeature.getVariableName() ]
 [let varAssigned : String = if aStructuralFeature.isListType() then 'NewEmptyArrayEList()' else aStructuralFeature.eType.getTestValue() endif ]
 {
-	obj := new[aStructuralFeature.eContainingClass.getImplementationName().toUpperFirst()/]()
+	obj := [aStructuralFeature.eContainingClass.getConstructorName()/]()
 	obj.[varName/] = [varAssigned/]
 	assert.Equal(t, [varAssigned/], obj.[aStructuralFeature.getGetterName()/]())
 }
@@ -68,7 +68,7 @@ func [implementationName/]Test(t *testing.T) {
 [let varName : String = aStructuralFeature.getVariableName() ]
 [let varAssigned : String = if aStructuralFeature.isListType() then 'NewEmptyArrayEList()' else aStructuralFeature.eType.getTestValue() endif ]
 {
-	obj := new[aStructuralFeature.eContainingClass.getImplementationName().toUpperFirst()/]()
+	obj := [aStructuralFeature.eContainingClass.getConstructorName()/]()
 	obj.[aStructuralFeature.getSetterName()/]([varAssigned/])
 	assert.Equal(t, [varAssigned/], obj.[varName/])
 }
@@ -80,7 +80,7 @@ func [implementationName/]Test(t *testing.T) {
 [let varName : String = aStructuralFeature.getVariableName() ]
 [let varAssigned : String = if aStructuralFeature.isListType() then 'NewEmptyArrayEList()' else aStructuralFeature.eType.getTestValue() endif ]
 {
-	obj := new[aStructuralFeature.eContainingClass.getImplementationName().toUpperFirst()/]()
+	obj := [aStructuralFeature.eContainingClass.getConstructorName()/]()
 	obj.[varName/] = [varAssigned/]
 	obj.[aStructuralFeature.getUnSetterName()/]()
 	assert.Equal(t, [aStructuralFeature.eType.getDefaultValue()/], obj.[varName/])
