@@ -11,7 +11,7 @@ package ecore
 
 // eClassifierExt is the extesnion of the model object 'EClassifier'
 type eClassifierExt struct {
-    *eClassifierImpl
+	*eClassifierImpl
 }
 
 func newEClassifierExt() *eClassifierExt {

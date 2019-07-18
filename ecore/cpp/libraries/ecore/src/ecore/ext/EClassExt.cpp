@@ -434,6 +434,7 @@ void EClassExt::setModified( int featureID )
         {
             eAllSuperTypes_.reset();
             eAllAttributes_.reset();
+            eAllOperations_.reset();
             eAllStructuralFeatures_.reset();
             eAllReferences_.reset();
             eAllContainments_.reset();

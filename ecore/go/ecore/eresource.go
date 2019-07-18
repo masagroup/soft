@@ -1,6 +1,9 @@
 package ecore
 
+//EResource ...
 type EResource interface {
-	Attached( object EObject)
-	Detached( object EObject)
+	GetContents() EList
+
+	Attached(object EObject)
+	Detached(object EObject)
 }

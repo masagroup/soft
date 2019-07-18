@@ -1,38 +1,38 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
 
-#include "ecore/Stream.hpp"
-#include "ecore/EClass.hpp"
 #include "ecore/EAttribute.hpp"
+#include "ecore/EClass.hpp"
+#include "ecore/EList.hpp"
 #include "ecore/EOperation.hpp"
 #include "ecore/EReference.hpp"
-#include "ecore/EList.hpp"
 #include "ecore/EcoreFactory.hpp"
 #include "ecore/EcorePackage.hpp"
+#include "ecore/Stream.hpp"
 
 using namespace ecore;
 
 namespace std
 {
     template <typename T>
-    bool operator ==( const std::shared_ptr<EList<T>>& lhs, const std::vector<T>& rhs )
+    bool operator==( const std::shared_ptr<EList<T>>& lhs, const std::vector<T>& rhs )
     {
         return lhs->size() == rhs.size() && std::equal( lhs->begin(), lhs->end(), rhs.begin() );
     }
 
     template <typename T>
-    bool operator ==( const std::shared_ptr<const EList<T>>& lhs, const std::vector<T>& rhs )
+    bool operator==( const std::shared_ptr<const EList<T>>& lhs, const std::vector<T>& rhs )
     {
         return lhs->size() == rhs.size() && std::equal( lhs->begin(), lhs->end(), rhs.begin() );
     }
 
     template <typename T>
-    ostream& operator <<( ostream& os, const std::shared_ptr<EList<T>>& v )
+    ostream& operator<<( ostream& os, const std::shared_ptr<EList<T>>& v )
     {
-        return print_container(os,*v);
+        return print_container( os, *v );
     }
 
-}
+} // namespace std
 
 BOOST_AUTO_TEST_SUITE( EClassTests )
 
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE( StructuralFeatures_Add )
     auto eAttribute = EcoreFactory::eInstance()->createEAttribute();
     BOOST_CHECK_EQUAL( eAttribute->getFeatureID(), -1 );
     eClass->getEStructuralFeatures()->add( eAttribute );
-    BOOST_CHECK_EQUAL( eClass->getFeatureCount() , 1);
+    BOOST_CHECK_EQUAL( eClass->getFeatureCount(), 1 );
     BOOST_CHECK_EQUAL( eAttribute->getFeatureID(), 0 );
 }
 
@@ -81,25 +81,44 @@ BOOST_AUTO_TEST_CASE( StructuralFeatures_Getters )
     BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 1 ), eReference1 );
     BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 2 ), eAttribute1 );
     BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 3 ), eAttribute2 );
+    BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 4 ), nullptr );
 
     BOOST_CHECK_EQUAL( eAttribute1->getFeatureID(), 2 );
     BOOST_CHECK_EQUAL( eAttribute2->getFeatureID(), 3 );
     BOOST_CHECK_EQUAL( eReference1->getFeatureID(), 1 );
     BOOST_CHECK_EQUAL( eReference2->getFeatureID(), 0 );
 
-    BOOST_CHECK_EQUAL( eClass->getEStructuralFeatures(), std::vector<std::shared_ptr<EStructuralFeature>>( { eReference2, eReference1, eAttribute1, eAttribute2 } ) );
-    BOOST_CHECK_EQUAL( eClass->getEAllStructuralFeatures(), std::vector<std::shared_ptr<EStructuralFeature>>( { eReference2, eReference1, eAttribute1, eAttribute2 } ) );
-    BOOST_CHECK_EQUAL( eClass->getEAttributes(), std::vector<std::shared_ptr<EAttribute>>( { eAttribute1, eAttribute2 } ) );
-    BOOST_CHECK_EQUAL( eClass->getEAllAttributes(), std::vector<std::shared_ptr<EAttribute>>( { eAttribute1, eAttribute2 } ) );
-    BOOST_CHECK_EQUAL( eClass->getEReferences(), std::vector<std::shared_ptr<EReference>>( { eReference2 , eReference1  } ) );
-    BOOST_CHECK_EQUAL( eClass->getEAllReferences(), std::vector<std::shared_ptr<EReference>>( { eReference2 , eReference1 } ) );
+    BOOST_CHECK_EQUAL( eClass->getEStructuralFeatures(),
+                       std::vector<std::shared_ptr<EStructuralFeature>>( {eReference2, eReference1, eAttribute1, eAttribute2} ) );
+    BOOST_CHECK_EQUAL( eClass->getEAllStructuralFeatures(),
+                       std::vector<std::shared_ptr<EStructuralFeature>>( {eReference2, eReference1, eAttribute1, eAttribute2} ) );
+    BOOST_CHECK_EQUAL( eClass->getEAttributes(), std::vector<std::shared_ptr<EAttribute>>( {eAttribute1, eAttribute2} ) );
+    BOOST_CHECK_EQUAL( eClass->getEAllAttributes(), std::vector<std::shared_ptr<EAttribute>>( {eAttribute1, eAttribute2} ) );
+    BOOST_CHECK_EQUAL( eClass->getEReferences(), std::vector<std::shared_ptr<EReference>>( {eReference2, eReference1} ) );
+    BOOST_CHECK_EQUAL( eClass->getEAllReferences(), std::vector<std::shared_ptr<EReference>>( {eReference2, eReference1} ) );
 
     eClass->getEStructuralFeatures()->add( eAttribute3 );
-    BOOST_CHECK_EQUAL( eClass->getEAttributes(), std::vector<std::shared_ptr<EAttribute>>( { eAttribute1, eAttribute2 , eAttribute3 } ) );
-    BOOST_CHECK_EQUAL( eClass->getEAllAttributes(), std::vector<std::shared_ptr<EAttribute>>( { eAttribute1, eAttribute2 , eAttribute3 } ) );
+    BOOST_CHECK_EQUAL( eClass->getEAttributes(), std::vector<std::shared_ptr<EAttribute>>( {eAttribute1, eAttribute2, eAttribute3} ) );
+    BOOST_CHECK_EQUAL( eClass->getEAllAttributes(), std::vector<std::shared_ptr<EAttribute>>( {eAttribute1, eAttribute2, eAttribute3} ) );
 }
 
+BOOST_AUTO_TEST_CASE( StructuralFeatures_GetFromString)
+{
 
+    auto eClass = EcoreFactory::eInstance()->createEClass();
+    auto eAttribute1 = EcoreFactory::eInstance()->createEAttribute();
+    eAttribute1->setName( "MyAttribute1" );
+    auto eAttribute2 = EcoreFactory::eInstance()->createEAttribute();
+    eAttribute2->setName( "MyAttribute2" );
+    
+    eClass->getEStructuralFeatures()->add( eAttribute1 );
+    eClass->getEStructuralFeatures()->add( eAttribute2 );
+
+    BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( "MyAttribute1" ), eAttribute1 );
+    BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( "MyAttribute2" ), eAttribute2 );
+    BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( "MyAttributeUnknown" ), nullptr );
+
+}
 
 BOOST_AUTO_TEST_CASE( AttributeID )
 {
@@ -130,12 +149,15 @@ BOOST_AUTO_TEST_CASE( Operations )
     eClass->getEOperations()->add( eOperation2 );
 
     BOOST_CHECK_EQUAL( eClass->getOperationCount(), 2 );
+    BOOST_CHECK_EQUAL( eClass->getEOperation( 0 ), eOperation1 );
+    BOOST_CHECK_EQUAL( eClass->getEOperation( 1 ), eOperation2 );
+    BOOST_CHECK_EQUAL( eClass->getEOperation( 2 ), nullptr );
 
     BOOST_CHECK_EQUAL( eOperation1->getOperationID(), 0 );
     BOOST_CHECK_EQUAL( eOperation2->getOperationID(), 1 );
 
-    BOOST_CHECK_EQUAL( eClass->getEOperations(), std::vector<std::shared_ptr<EOperation>>( { eOperation1, eOperation2 } ) );
-    BOOST_CHECK_EQUAL( eClass->getEAllOperations(), std::vector<std::shared_ptr<EOperation>>( { eOperation1, eOperation2 } ) );
+    BOOST_CHECK_EQUAL( eClass->getEOperations(), std::vector<std::shared_ptr<EOperation>>( {eOperation1, eOperation2} ) );
+    BOOST_CHECK_EQUAL( eClass->getEAllOperations(), std::vector<std::shared_ptr<EOperation>>( {eOperation1, eOperation2} ) );
 }
 
 BOOST_AUTO_TEST_CASE( StructuralFeatures_With_SuperType )
@@ -155,8 +177,10 @@ BOOST_AUTO_TEST_CASE( StructuralFeatures_With_SuperType )
     eClass->getEStructuralFeatures()->add( eReference2 );
 
     // test features
-    BOOST_CHECK_EQUAL( eClass->getEStructuralFeatures(), std::vector<std::shared_ptr<EStructuralFeature>>( { eAttribute1, eAttribute2, eReference1, eReference2 } ) );
-    BOOST_CHECK_EQUAL( eClass->getEAllStructuralFeatures(), std::vector<std::shared_ptr<EStructuralFeature>>( { eAttribute1, eAttribute2,eReference1, eReference2 } ) );
+    BOOST_CHECK_EQUAL( eClass->getEStructuralFeatures(),
+                       std::vector<std::shared_ptr<EStructuralFeature>>( {eAttribute1, eAttribute2, eReference1, eReference2} ) );
+    BOOST_CHECK_EQUAL( eClass->getEAllStructuralFeatures(),
+                       std::vector<std::shared_ptr<EStructuralFeature>>( {eAttribute1, eAttribute2, eReference1, eReference2} ) );
     BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 0 ), eAttribute1 );
     BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 1 ), eAttribute2 );
     BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 2 ), eReference1 );
@@ -172,8 +196,11 @@ BOOST_AUTO_TEST_CASE( StructuralFeatures_With_SuperType )
 
     // test features
     BOOST_CHECK_EQUAL( eClass->getFeatureCount(), 7 );
-    BOOST_CHECK_EQUAL( eClass->getEStructuralFeatures(), std::vector<std::shared_ptr<EStructuralFeature>>( { eAttribute1, eAttribute2, eReference1, eReference2 } ) );
-    BOOST_CHECK_EQUAL( eClass->getEAllStructuralFeatures(), std::vector<std::shared_ptr<EStructuralFeature>>( { eAttribute3, eAttribute4, eReference3 , eAttribute1,eAttribute2,eReference1,eReference2 } ) );
+    BOOST_CHECK_EQUAL( eClass->getEStructuralFeatures(),
+                       std::vector<std::shared_ptr<EStructuralFeature>>( {eAttribute1, eAttribute2, eReference1, eReference2} ) );
+    BOOST_CHECK_EQUAL( eClass->getEAllStructuralFeatures(),
+                       std::vector<std::shared_ptr<EStructuralFeature>>(
+                           {eAttribute3, eAttribute4, eReference3, eAttribute1, eAttribute2, eReference1, eReference2} ) );
     BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 0 ), eAttribute3 );
     BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 1 ), eAttribute4 );
     BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 2 ), eReference3 );
@@ -182,11 +209,12 @@ BOOST_AUTO_TEST_CASE( StructuralFeatures_With_SuperType )
     BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 5 ), eReference1 );
     BOOST_CHECK_EQUAL( eClass->getEStructuralFeature( 6 ), eReference2 );
 
-    BOOST_CHECK_EQUAL( eClass->getEAttributes(), std::vector<std::shared_ptr<EAttribute>>( { eAttribute1, eAttribute2 } ) );
-    BOOST_CHECK_EQUAL( eClass->getEAllAttributes(), std::vector<std::shared_ptr<EAttribute>>( { eAttribute3, eAttribute4, eAttribute1,eAttribute2 } ) );
+    BOOST_CHECK_EQUAL( eClass->getEAttributes(), std::vector<std::shared_ptr<EAttribute>>( {eAttribute1, eAttribute2} ) );
+    BOOST_CHECK_EQUAL( eClass->getEAllAttributes(),
+                       std::vector<std::shared_ptr<EAttribute>>( {eAttribute3, eAttribute4, eAttribute1, eAttribute2} ) );
 
-    BOOST_CHECK_EQUAL( eClass->getEReferences(), std::vector<std::shared_ptr<EReference>>( { eReference1, eReference2 } ) );
-    BOOST_CHECK_EQUAL( eClass->getEAllReferences(), std::vector<std::shared_ptr<EReference>>( { eReference3, eReference1, eReference2 } ) );
+    BOOST_CHECK_EQUAL( eClass->getEReferences(), std::vector<std::shared_ptr<EReference>>( {eReference1, eReference2} ) );
+    BOOST_CHECK_EQUAL( eClass->getEAllReferences(), std::vector<std::shared_ptr<EReference>>( {eReference3, eReference1, eReference2} ) );
 }
 
 BOOST_AUTO_TEST_CASE( Operations_With_SuperType )
@@ -204,8 +232,8 @@ BOOST_AUTO_TEST_CASE( Operations_With_SuperType )
     BOOST_CHECK_EQUAL( eClass->getOperationCount(), 2 );
     BOOST_CHECK_EQUAL( eOperation1->getOperationID(), 0 );
     BOOST_CHECK_EQUAL( eOperation2->getOperationID(), 1 );
-    BOOST_CHECK_EQUAL( eClass->getEOperations(), std::vector<std::shared_ptr<EOperation>>( { eOperation1, eOperation2 } ) );
-    BOOST_CHECK_EQUAL( eClass->getEAllOperations(), std::vector<std::shared_ptr<EOperation>>( { eOperation1, eOperation2 } ) );
+    BOOST_CHECK_EQUAL( eClass->getEOperations(), std::vector<std::shared_ptr<EOperation>>( {eOperation1, eOperation2} ) );
+    BOOST_CHECK_EQUAL( eClass->getEAllOperations(), std::vector<std::shared_ptr<EOperation>>( {eOperation1, eOperation2} ) );
 
     // add operations to the superclass
     auto eOperation3 = EcoreFactory::eInstance()->createEOperation();
@@ -215,8 +243,9 @@ BOOST_AUTO_TEST_CASE( Operations_With_SuperType )
 
     // test operations
     BOOST_CHECK_EQUAL( eClass->getOperationCount(), 4 );
-    BOOST_CHECK_EQUAL( eClass->getEOperations(), std::vector<std::shared_ptr<EOperation>>( { eOperation1, eOperation2 } ) );
-    BOOST_CHECK_EQUAL( eClass->getEAllOperations(), std::vector<std::shared_ptr<EOperation>>( { eOperation3, eOperation4, eOperation1 , eOperation2 } ) );
+    BOOST_CHECK_EQUAL( eClass->getEOperations(), std::vector<std::shared_ptr<EOperation>>( {eOperation1, eOperation2} ) );
+    BOOST_CHECK_EQUAL( eClass->getEAllOperations(),
+                       std::vector<std::shared_ptr<EOperation>>( {eOperation3, eOperation4, eOperation1, eOperation2} ) );
     BOOST_CHECK_EQUAL( eClass->getEOperation( 0 ), eOperation3 );
     BOOST_CHECK_EQUAL( eClass->getEOperation( 1 ), eOperation4 );
     BOOST_CHECK_EQUAL( eClass->getEOperation( 2 ), eOperation1 );

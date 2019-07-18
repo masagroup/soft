@@ -5,4 +5,4 @@
 !e*list*.go
 !enotif*.go
 !eadapt*.go
-*_mock.go
+*_mock_test.go

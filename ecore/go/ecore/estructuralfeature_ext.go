@@ -11,7 +11,7 @@ package ecore
 
 // eStructuralFeatureExt is the extension of the model object 'EStructuralFeature'
 type eStructuralFeatureExt struct {
-    *eStructuralFeatureImpl
+	*eStructuralFeatureImpl
 }
 
 func newEStructuralFeatureExt() *eStructuralFeatureExt {

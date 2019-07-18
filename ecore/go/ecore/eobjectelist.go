@@ -31,38 +31,40 @@ func NewEObjectEList(owner EObjectInternal, featureID int, inverseFeatureID int,
 func (list *eObjectEList) GetNotifier() ENotifier {
 	return list.owner
 }
-	
+
 // GetFeature ...
 func (list *eObjectEList) GetFeature() EStructuralFeature {
-	if ( list.owner != nil ) {
+	if list.owner != nil {
 		return list.owner.EClass().GetEStructuralFeature(list.featureID)
 	}
 	return nil
 }
-	
+
 // GetFeatureID ...
 func (list *eObjectEList) GetFeatureID() int {
 	return list.featureID
 }
 
-func (list *eObjectEList) inverseAdd( object interface{}, notifications ENotificationChain ) ENotificationChain {
-	if ( object != nil && list.inverse ) {
-		if ( list.opposite ) {
-			return object.(EObjectInternal).EInverseAdd( list.owner , list.inverseFeatureID , notifications )
+func (list *eObjectEList) inverseAdd(object interface{}, notifications ENotificationChain) ENotificationChain {
+	internal, _ := object.(EObjectInternal)
+	if internal != nil && list.inverse {
+		if list.opposite {
+			return internal.EInverseAdd(list.owner, list.inverseFeatureID, notifications)
 		} else {
-			return object.(EObjectInternal).EInverseAdd( list.owner , EOPPOSITE_FEATURE_BASE - list.featureID , notifications)
+			return internal.EInverseAdd(list.owner, EOPPOSITE_FEATURE_BASE-list.featureID, notifications)
 		}
-	} 
+	}
 	return notifications
 }
 
-func (list *eObjectEList) inverseRemove( object interface{}, notifications ENotificationChain ) ENotificationChain {
-	if ( object != nil && list.inverse ) {
-		if ( list.opposite ) {
-			return object.(EObjectInternal).EInverseRemove( list.owner , list.inverseFeatureID , notifications)
+func (list *eObjectEList) inverseRemove(object interface{}, notifications ENotificationChain) ENotificationChain {
+	internal, _ := object.(EObjectInternal)
+	if internal != nil && list.inverse {
+		if list.opposite {
+			return internal.EInverseRemove(list.owner, list.inverseFeatureID, notifications)
 		} else {
-			return object.(EObjectInternal).EInverseRemove( list.owner , EOPPOSITE_FEATURE_BASE - list.featureID , notifications)
+			return internal.EInverseRemove(list.owner, EOPPOSITE_FEATURE_BASE-list.featureID, notifications)
 		}
-	} 
+	}
 	return notifications
 }

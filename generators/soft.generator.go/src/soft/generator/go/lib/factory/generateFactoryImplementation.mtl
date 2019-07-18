@@ -12,7 +12,7 @@
 
 package [anEPackage.name/]
 
-import "log"
+import "strconv"
 
 type [anEPackage.getFactoryInternalName()/] interface {
 [let dataTypes : Sequence(EDataType) = anEPackage.eAllContents(EDataType)->select( serializable )->sortedBy(name)]
@@ -44,9 +44,8 @@ func new[className.toUpperFirst()/]() *[className/] {
         return [anEPackage.getFactoryReceiverName()/].Create[aClass.name/]()
     [/for]
     default:
-        log.Fatalln("Create: ", classID, " not found")
+        panic("Create: " + strconv.Itoa( classID ) + " not found")
 	}
-	return nil
 }
 
 [for (aClass : EClass | anEPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) ? (aClass.abstract=false)]
@@ -68,41 +67,39 @@ func new[className.toUpperFirst()/]() *[className/] {
 [/for]
 [let dataTypes : Sequence(EDataType) = anEPackage.eAllContents(EDataType)->select( serializable )->sortedBy(name)]
 [anEPackage.generateFactoryImplementationMember()/] CreateFromString(eDataType EDataType, literalValue string) interface{} {
-	classID := eDataType.GetClassifierID()
+	classID  := eDataType.GetClassifierID()
+    internal := [anEPackage.getFactoryReceiverName()/].interfaces.([anEPackage.getFactoryInternalName()/]) 
 	switch classID {
     [for (aDataType : EDataType | dataTypes)]
     case [aDataType.getClassifierIDName()/]:
-        return [anEPackage.getFactoryReceiverName()/].interfaces.([anEPackage.getFactoryInternalName()/]).create[aDataType.name/]FromString(eDataType, literalValue)
+        return internal.create[aDataType.name/]FromString(eDataType, literalValue)
     [/for]
     default:
-        log.Fatalln("The datatype '", eDataType.GetName(), "' is not a valid classifier")
+        panic("The datatype '" + eDataType.GetName() + "' is not a valid classifier")
 	}
-	return nil
 }
 
 [anEPackage.generateFactoryImplementationMember()/] ConvertToString(eDataType EDataType, instanceValue interface{}) string {
     classID := eDataType.GetClassifierID()
+    internal := [anEPackage.getFactoryReceiverName()/].interfaces.([anEPackage.getFactoryInternalName()/])
     switch classID {
 [for (aDataType : EDataType | dataTypes)]
     case [aDataType.getClassifierIDName()/]:
-        return [anEPackage.getFactoryReceiverName()/].interfaces.([anEPackage.getFactoryInternalName()/]).convert[aDataType.name/]ToString(eDataType, instanceValue)
+        return internal.convert[aDataType.name/]ToString(eDataType, instanceValue)
 [/for]
     default:
-        log.Fatalln("The datatype '", eDataType.GetName(), "' is not a valid classifier")
+        panic("The datatype '" + eDataType.GetName() + "' is not a valid classifier")
     }
-	return ""
 }
 [for (aDataType : EDataType | dataTypes)]
 [let createMethodName : String = 'create' + aDataType.name + 'FromString']
 [anEPackage.generateFactoryImplementationMember()/] [createMethodName/](eDataType EDataType, literalValue string) interface{} {
-	log.Fatal("NotImplementedException")
-	return nil
+	panic("NotImplementedException")
 }
 [/let]
 [let convertMethodName : String = 'convert' + aDataType.name + 'ToString']
 [anEPackage.generateFactoryImplementationMember()/] [convertMethodName/](eDataType EDataType, literalValue interface{}) string {
-	log.Fatal("NotImplementedException")
-	return ""
+	panic("NotImplementedException")
 }
 [/let]
 [/for]

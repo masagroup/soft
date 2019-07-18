@@ -22,13 +22,13 @@ type abstractEList interface {
 
 	didAdd(index int, elem interface{})
 
-	didSet(index int, newElem interface{} , oldElem interface{})
+	didSet(index int, newElem interface{}, oldElem interface{})
 
 	didRemove(index int, old interface{})
 
 	didClear(oldObjects []interface{})
 
-	didMove( newIndex int  , movedObject interface{} , oldIndex int )
+	didMove(newIndex int, movedObject interface{}, oldIndex int)
 
 	didChange()
 }
@@ -36,8 +36,8 @@ type abstractEList interface {
 // arrayEList is an array of a dynamic size
 type arrayEList struct {
 	interfaces interface{}
-	data     []interface{}
-	isUnique bool
+	data       []interface{}
+	isUnique   bool
 }
 
 type immutableEList struct {
@@ -48,7 +48,7 @@ type immutableEList struct {
 func NewEmptyArrayEList() *arrayEList {
 	a := new(arrayEList)
 	a.interfaces = a
-	a.data =  []interface{}{}
+	a.data = []interface{}{}
 	a.isUnique = false
 	return a
 }
@@ -117,8 +117,8 @@ func (arr *arrayEList) doAdd(e interface{}) {
 	arr.data = append(arr.data, e)
 	// events
 	interfaces := arr.interfaces.(abstractEList)
-	interfaces.didAdd( size, e );
-    interfaces.didChange();
+	interfaces.didAdd(size, e)
+	interfaces.didChange()
 }
 
 // AddAll elements of an array in the current one
@@ -139,7 +139,7 @@ func (arr *arrayEList) doAddAll(list EList) bool {
 	interfaces := arr.interfaces.(abstractEList)
 	// events
 	for i, element := range data {
-		interfaces.didAdd(i,element)
+		interfaces.didAdd(i, element)
 		interfaces.didChange()
 	}
 	return len(data) != 0
@@ -163,8 +163,8 @@ func (arr *arrayEList) doInsert(index int, e interface{}) {
 	arr.data[index] = e
 	// events
 	interfaces := arr.interfaces.(abstractEList)
-	interfaces.didAdd( index, e );
-    interfaces.didChange();
+	interfaces.didAdd(index, e)
+	interfaces.didChange()
 }
 
 // InsertAll element of an array at a given position
@@ -188,7 +188,7 @@ func (arr *arrayEList) doInsertAll(index int, list EList) bool {
 	// events
 	interfaces := arr.interfaces.(abstractEList)
 	for i, element := range data {
-		interfaces.didAdd(i + index ,element)
+		interfaces.didAdd(i+index, element)
 		interfaces.didChange()
 	}
 	return len(data) != 0
@@ -218,8 +218,8 @@ func (arr *arrayEList) Move(oldIndex, newIndex int) interface{} {
 	arr.data[newIndex] = object
 	// events
 	interfaces := arr.interfaces.(abstractEList)
-	interfaces.didMove( newIndex, object, oldIndex );
-    interfaces.didChange();
+	interfaces.didMove(newIndex, object, oldIndex)
+	interfaces.didChange()
 	return object
 }
 
@@ -232,9 +232,9 @@ func (arr *arrayEList) RemoveAt(index int) interface{} {
 	arr.data = append(arr.data[:index], arr.data[index+1:]...)
 	// events
 	interfaces := arr.interfaces.(abstractEList)
-	interfaces.didRemove( index, object );
-	interfaces.didChange();
-    return object
+	interfaces.didRemove(index, object)
+	interfaces.didChange()
+	return object
 }
 
 // Remove an element in an array
@@ -260,8 +260,8 @@ func (arr *arrayEList) doSet(index int, elem interface{}) interface{} {
 	arr.data[index] = elem
 	// events
 	interfaces := arr.interfaces.(abstractEList)
-	interfaces.didSet( index, elem , old );
-	interfaces.didChange();
+	interfaces.didSet(index, elem, old)
+	interfaces.didChange()
 	return old
 }
 
@@ -318,11 +318,11 @@ func (arr *arrayEList) didAdd(index int, elem interface{}) {
 
 }
 
-func (arr *arrayEList) didSet(index int, newElem interface{} , oldElem interface{}) {
+func (arr *arrayEList) didSet(index int, newElem interface{}, oldElem interface{}) {
 
 }
 
-func (arr *arrayEList) didRemove(index int, old interface{} ) {
+func (arr *arrayEList) didRemove(index int, old interface{}) {
 
 }
 
@@ -330,7 +330,7 @@ func (arr *arrayEList) didClear(oldObjects []interface{}) {
 
 }
 
-func (arr *arrayEList) didMove( newIndex int  , movedObject interface{} , oldIndex int ) {
+func (arr *arrayEList) didMove(newIndex int, movedObject interface{}, oldIndex int) {
 
 }
 
