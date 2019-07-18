@@ -20,36 +20,63 @@ import (
 
 func [implementationName/]Test(t *testing.T) {
 	_ = assert.Equal
-	[aClass.eStructuralFeatures.generateTestImplementation(aClass)/]
+	[aClass.eStructuralFeatures.generateTestImplementation()/]
 }
 [/file]
 [/template]
 
-[template private generateTestImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
+[template private generateTestImplementation(aStructuralFeature : EStructuralFeature)]
 [if isField()]
 [if isGet()]
-	[aStructuralFeature.generateGetTestImplementation(aClass)/]
+[aStructuralFeature.generateGetTestImplementation()/]
 [/if]
 [if isBasicGet()]
 [/if]
 [if isSet()]
+[aStructuralFeature.generateSetTestImplementation()/]
 [/if]
 [if isBasicSet()]
 [/if]
 [if isUnSet()]
+[aStructuralFeature.generateUnsetTestImplementation()/]
 [/if]
 [if isBasicUnSet()]
 [/if]
 [/if]
 [/template]
 
-[template private generateGetTestImplementation(aStructuralFeature : EStructuralFeature, aClass : EClass)]
+[template private generateGetTestImplementation(aStructuralFeature : EStructuralFeature)]
 [let varName : String = aStructuralFeature.getVariableName() ]
 [let varAssigned : String = if aStructuralFeature.isListType() then 'NewEmptyArrayEList()' else aStructuralFeature.eType.getTestValue() endif ]
 {
-	obj := new[aClass.getImplementationName().toUpperFirst()/]()
+	obj := new[aStructuralFeature.eContainingClass.getImplementationName().toUpperFirst()/]()
 	obj.[varName/] = [varAssigned/]
+	assert.Equal(t, [varAssigned/], obj.[aStructuralFeature.getGetterName()/]())
+}
+[/let]
+[/let]
+[/template]
+
+[template private generateSetTestImplementation(aStructuralFeature : EStructuralFeature)]
+[let varName : String = aStructuralFeature.getVariableName() ]
+[let varAssigned : String = if aStructuralFeature.isListType() then 'NewEmptyArrayEList()' else aStructuralFeature.eType.getTestValue() endif ]
+{
+	obj := new[aStructuralFeature.eContainingClass.getImplementationName().toUpperFirst()/]()
+	obj.[aStructuralFeature.getSetterName()/]([varAssigned/])
 	assert.Equal(t, [varAssigned/], obj.[varName/])
+}
+[/let]
+[/let]
+[/template]
+
+[template private generateUnsetTestImplementation(aStructuralFeature : EStructuralFeature)]
+[let varName : String = aStructuralFeature.getVariableName() ]
+[let varAssigned : String = if aStructuralFeature.isListType() then 'NewEmptyArrayEList()' else aStructuralFeature.eType.getTestValue() endif ]
+{
+	obj := new[aStructuralFeature.eContainingClass.getImplementationName().toUpperFirst()/]()
+	obj.[aStructuralFeature.getSetterName()/]([varAssigned/])
+	obj.[aStructuralFeature.getUnSetterName()/]()
+	assert.Equal(t, [aStructuralFeature.eType.getDefaultValue()/], obj.[varName/])
 }
 [/let]
 [/let]
