@@ -1,6 +1,5 @@
 .vscode
 bin
-deps
 dist
 out
 vcpkg
