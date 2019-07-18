@@ -154,14 +154,14 @@
         <attribute name="project" default= "${ant.project.name}"/>
         <attribute name="configuration" default=""/>
         <attribute name="input"/>
-        <attribute name="output" default="${out.dir}/@{generator}/@{project}/@{configuration}"/>
+        <attribute name="output" default="${out.dir}/cpp/@{generator}/@{project}/@{configuration}"/>
         <element name="elements" implicit="true" optional="true"/>
         <sequential>
             <mkdir dir="@{output}"/>
             <exec taskname="cmake" executable="${bin.dir}/cmake/bin/cmake.exe" dir="@{output}" failonerror="true">
                 <arg value="-G"/>
                 <arg value="${cmake.generator.@{generator}}"/>
-                <arg value="-DCMAKE_INSTALL_PREFIX=${root.dir}/cpp/deps"/>
+                <arg value="-DCMAKE_INSTALL_PREFIX=${out.dir}/cpp/deps"/>
                 <arg value="-DVCPKG_ROOT=${vcpkg.dir}"/>
                 <elements/>
                 <arg value="@{input}"/>
@@ -480,39 +480,50 @@
     
     <target name="ecore.cpp.configure.ninja" depends="ecore.cpp.configure.ninja.release,ecore.cpp.configure.ninja.debug"/>
     
-    <target name="ecore.cpp.configure" depends="ecore.cpp.configure.vs2017,ecore.cpp.configure.vs2015,ecore.cpp.configure.ninja"/>
+    <target name="ecore.cpp.configure" depends="ecore.cpp.configure.vs2015,ecore.cpp.configure.vs2017,ecore.cpp.configure.ninja"/>
     
     <target name="ecore.cpp.build.debug">
-        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/debug"/>
+        <ninja_exec dir="${out.dir}/cpp/ninja/${ant.project.name}/debug"/>
     </target>
     
     <target name="ecore.cpp.build.release">
-        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/release"/>
+        <ninja_exec dir="${out.dir}/cpp/ninja/${ant.project.name}/release"/>
     </target>
     
     <target name="ecore.cpp.build" depends="ecore.cpp.build.debug,ecore.cpp.build.release"/>
     
     <target name="ecore.cpp.tests.debug">
-        <ctest_exec dir="${out.dir}/ninja/${ant.project.name}/debug"/>
+        <ctest_exec dir="${out.dir}/cpp/ninja/${ant.project.name}/debug"/>
     </target>
     
     <target name="ecore.cpp.tests.release">
-        <ctest_exec dir="${out.dir}/ninja/${ant.project.name}/release"/>
+        <ctest_exec dir="${out.dir}/cpp/ninja/${ant.project.name}/release"/>
     </target>
     
     <target name="ecore.cpp.tests" depends="ecore.cpp.tests.debug,ecore.cpp.tests.release"/>
     
     <target name="ecore.cpp.install">
-        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/release" target="install"/>
-        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/debug" target="install"/>
+        <ninja_exec dir="${out.dir}/cpp/ninja/${ant.project.name}/release" target="install"/>
+        <ninja_exec dir="${out.dir}/cpp/ninja/${ant.project.name}/debug" target="install"/>
     </target>
     
     <target name="ecore.cpp.package">
-        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/release" target="package"/>
-        <ninja_exec dir="${out.dir}/ninja/${ant.project.name}/debug" target="package"/>
+        <ninja_exec dir="${out.dir}/cpp/ninja/${ant.project.name}/release" target="package"/>
+        <ninja_exec dir="${out.dir}/cpp/ninja/${ant.project.name}/debug" target="package"/>
     </target>
     
-    <target name="ecore.cpp" depends="ecore.cpp.generate,ecore.cpp.configure,ecore.cpp.build,ecore.cpp.tests,ecore.cpp.install,ecore.cpp.package"/>
+    <target name="ecore.cpp.dist">
+        <copy todir="${dist.dir}" flatten="true">
+            <fileset dir="${out.dir}/cpp/ninja/soft/debug" includes="*.zip"/>
+            <globmapper from="*.zip" to="*-debug.zip"/>
+        </copy>
+        <copy todir="${dist.dir}" flatten="true">
+            <fileset dir="${out.dir}/cpp/ninja/soft/release" includes="*.zip"/>
+            <globmapper from="*.zip" to="*-release.zip"/>
+        </copy>
+    </target>
+    
+    <target name="ecore.cpp" depends="ecore.cpp.generate,ecore.cpp.configure,ecore.cpp.build,ecore.cpp.tests,ecore.cpp.install,ecore.cpp.package,ecore.cpp.dist"/>
     
     <!--
     ============================================================================
