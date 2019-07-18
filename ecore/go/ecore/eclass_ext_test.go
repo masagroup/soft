@@ -300,3 +300,18 @@ func TestEClassIsSuperTypeOf(t *testing.T) {
 	assert.False(t, eClass.IsSuperTypeOf(eSuperClass))
 	assert.False(t, eOther.IsSuperTypeOf(eClass))
 }
+
+func TestEClassGetOverride(t *testing.T) {
+	eClass := newEClassExt()
+	eSuperClass := newEClassExt()
+	mockOperation1 := &MockEOperation{}
+	mockOperation2 := &MockEOperation{}
+	mockOperation1.On("SetOperationID", 1)
+	mockOperation2.On("SetOperationID", 0)
+	eClass.GetESuperTypes().Add(eSuperClass)
+	eClass.GetEOperations().Add(mockOperation1)
+	eSuperClass.GetEOperations().Add(mockOperation2)
+
+	mockOperation1.On("IsOverrideOf", mockOperation2).Return(true)
+	assert.Equal(t, mockOperation1, eClass.GetOverride(mockOperation2))
+}
