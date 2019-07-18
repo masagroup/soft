@@ -21,8 +21,17 @@ import (
 func [implementationName/]Test(t *testing.T) {
 	_ = assert.Equal
 	[aClass.eStructuralFeatures->select(isField()).generateTestImplementation()/]
+	[aClass.eOperations.generateTestOperation()/]
 }
 [/file]
+[/template]
+
+[template private generateTestOperation(anEOperation : EOperation)]
+{
+	obj := new[anEOperation.eContainingClass.getImplementationName().toUpperFirst()/]()
+	assert.Panics(t, func() { obj.[anEOperation.getFunctionName()/]([anEOperation.generateParameterListNames()/]) })
+}
+
 [/template]
 
 [template private generateTestImplementation(aStructuralFeature : EStructuralFeature)]

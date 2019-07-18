@@ -1,6 +1,10 @@
 [comment encoding = UTF-8 /]
 [module generateType('http://www.eclipse.org/emf/2002/Ecore')/]
 
+[template public generateParameterListNames(aOperation:EOperation ) post(trim())]
+[for (sParameter : EParameter | aOperation.eParameters) separator (', ')][sParameter.eType.getTestValue()/][/for]
+[/template]
+
 [query public getTestValue(anEClassifier : EClassifier) : String = anEClassifier.getDefaultValue()/]
 
 
