@@ -17,12 +17,9 @@
 
 #include "ecore/Exports.hpp"
 #include "ecore/ENotifier.hpp"
-
-#include <list>
-#include <memory>
-#include <string>
 #include "ecore/Any.hpp"
 
+#include <memory>
 
 //forward declarations
 namespace ecore 
@@ -37,27 +34,22 @@ namespace ecore
 {
     class EResource;
 }
-
 namespace ecore 
 {
     class EClass;
 }
-
 namespace ecore 
 {
     class EObject;
 }
-
 namespace ecore 
 {
     class EOperation;
 }
-
 namespace ecore 
 {
     class EReference;
 }
-
 namespace ecore 
 {
     class EStructuralFeature;
@@ -94,11 +86,11 @@ namespace ecore
         
         virtual std::shared_ptr<ecore::EReference> eContainmentFeature() const = 0;
         
-        virtual std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> eContents() const = 0;
+        virtual std::shared_ptr<const ecore::EList<std::shared_ptr<ecore::EObject>>> eContents() const = 0;
         
-        virtual std::shared_ptr<const ECollectionView<std::shared_ptr<ecore::EObject>>> eAllContents() const = 0;
+        virtual std::shared_ptr<const ecore::ECollectionView<std::shared_ptr<ecore::EObject>>> eAllContents() const = 0;
         
-        virtual std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> eCrossReferences() const = 0;
+        virtual std::shared_ptr<const ecore::EList<std::shared_ptr<ecore::EObject>>> eCrossReferences() const = 0;
         
         virtual ecore::Any eGet(const std::shared_ptr<ecore::EStructuralFeature>& feature) const = 0;
         
@@ -110,7 +102,7 @@ namespace ecore
         
         virtual void eUnset(const std::shared_ptr<ecore::EStructuralFeature>& feature) = 0;
         
-        virtual ecore::Any eInvoke(const std::shared_ptr<ecore::EOperation>& operation,const std::shared_ptr<EList<ecore::Any>>& arguments) = 0;
+        virtual ecore::Any eInvoke(const std::shared_ptr<ecore::EOperation>& operation,const std::shared_ptr<ecore::EList<ecore::Any>>& arguments) = 0;
         
         
         // Start of user code EObject
