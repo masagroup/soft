@@ -129,7 +129,7 @@ func (o *BasicEObject) EContents() EList {
 }
 
 // EAllContents ...
-func (o *BasicEObject) EAllContents() EList {
+func (o *BasicEObject) EAllContents() EIterator {
 	return nil
 }
 
