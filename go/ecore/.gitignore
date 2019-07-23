@@ -8,4 +8,3 @@
 !eadapt*.go
 ![^e]*.go
 *_mock_test.go
-efactory_test.go
