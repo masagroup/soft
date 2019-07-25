@@ -17,6 +17,6 @@ type EPackageExt struct {
 func NewEPackageExt() *EPackageExt {
 	ePackage := new(EPackageExt)
 	ePackage.ePackageImpl = newEPackageImpl()
-	ePackage.interfaces = ePackage
+	ePackage.SetInterfaces(ePackage)
 	return ePackage
 }
