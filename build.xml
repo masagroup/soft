@@ -552,22 +552,13 @@
         <go_exec command="build" dir="${root.dir}/go/library"/>
     </target>
     
-    <target name="library.go.module.check">
-        <available file="${root.dir}/go/library/go.mod" property="library.module.exists"/>
-    </target>
-    
-    <target name="library.go.module" depends="library.go.module.check" unless="library.module.exists">
-        <go_exec command="mod init github.com/soft/go/library" dir="${root.dir}/go/library"/>
-    </target>
-    
     <target name="library.go.format">
         <go_exec command="fmt" dir="${root.dir}/go/library"/>
     </target>
    
-    <target name="library.go" depends="library.go.generate,library.go.module,library.go.format,library.go.build"/>
+    <target name="library.go" depends="library.go.generate,library.go.format,library.go.build"/>
     
     <target name="library" depends="library.go"/>
-    
     
     <target name="all" depends="configure,generators,ecore,library"/>
     
