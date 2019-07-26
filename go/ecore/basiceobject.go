@@ -97,7 +97,8 @@ func (o *BasicEObject) EContainer() EObject {
 	return o.container
 }
 
-func (o *BasicEObject) eContainerFeatureID() int {
+// EContainerFeatureID ...
+func (o *BasicEObject) EContainerFeatureID() int {
 	return o.containerFeatureID
 }
 
