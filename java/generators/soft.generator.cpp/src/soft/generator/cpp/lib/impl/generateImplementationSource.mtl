@@ -2,6 +2,7 @@
 [module generateImplementationSource('http://www.eclipse.org/emf/2002/Ecore')]
 
 [import soft::generator::common::generateCommon/]
+[import soft::generator::common::generateElement/]
 [import soft::generator::cpp::generateCommon /]
 [import soft::generator::cpp::generateOperation/]
 [import soft::generator::cpp::generateType/]
@@ -15,34 +16,26 @@
 [file (aClass.ePackage.getOutputDirectory() + '/src-gen/' + aClass.ePackage.getImplementationFolder() + '/' + className + '.cpp', false, 'UTF-8')]
 [fileComment()/]
 #include "[namespaceToFolder(aClass.getQualifiedImplementationName())/].hpp"
-[let includes : OrderedSet(String) = Set{ aClass.getClassIncludes()->selectByKind(EClass)->collect( c | c.getQualifiedInterfaceName())->asSet()
-                                        , Set {
-                                                    aClass.ePackage.getQualifiedInterfaceName(),
-                                                    aClass.ePackage.getFactoryQualifiedInterfaceName(),
-                                                    aClass.eClass().ePackage.getQualifiedInterfaceName(),
-                                                    aClass.eClass().ePackage.getFactoryQualifiedInterfaceName(),
-                                                    'ecore::EAnnotation',
-                                                    'ecore::EClass',
-                                                    'ecore::EAttribute',
-                                                    'ecore::EStructuralFeature',
-                                                    'ecore::impl::EObjectEList'
+[let includes : OrderedSet(String) = Set{ aClass.getReferencedTypes()->selectByKind(EClass)->collect( c | c.getInclude())->asSet()
+                                        , Set { 
+                                                '"ecore/EClass.hpp"' ,
+                                                '"ecore/impl/EObjectEList.hpp"' 
                                               }
+                                        , Set {
+                                                aClass.ePackage.getQualifiedInterfaceName(),
+                                                aClass.ePackage.getFactoryQualifiedInterfaceName(),
+                                                aClass.eClass().ePackage.getQualifiedInterfaceName(),
+                                                aClass.eClass().ePackage.getFactoryQualifiedInterfaceName()
+                                              }-> collect( c | '"' + namespaceToFolder(c) + '.hpp"' ) 
                                         }->flatten()->asOrderedSet()->sortedBy( s | s)]
 [for ( include : String | includes )]
-#include "[namespaceToFolder(include)/].hpp"
+#include [include/]
 [/for]
 [/let]
-[if (aClass.eReferences->exists(upperBound <> 1) or aClass.eOperations.eParameters->exists((eType.requiresList()  or upperBound <> 1)))]
-#include "ecore/EList.hpp"
-[/if]
 
 #include <cassert>
 #include <iostream>
 #include <sstream>
-[if (aClass.eAttributes.eType->select(isAny())->size() = 0 and aClass.eOperations.eParameters.eType->select(isAny())->size() > 0)]
-#include "ecore/Any.hpp"
-#include "ecore/Stream.hpp"
-[/if]
 
 //[protected (className + ' [definition-includes]')]
 //[/protected]

@@ -1,8 +1,8 @@
 [comment encoding = UTF-8 /]
 [module generateReflectives('http://www.eclipse.org/emf/2002/Ecore')/]
 
-[import soft::generator::common::generateReflectives/]
 [import soft::generator::common::generateCommon/]
+[import soft::generator::common::generateReflectives/]
 [import soft::generator::go::lib::generateCommon/]
 [import soft::generator::go::generateCommon/]
 [import soft::generator::go::generateType/]
@@ -12,7 +12,7 @@
     aClass.getESetFeatures()->notEmpty() or
     aClass.getEUnSetFeatures()->notEmpty() or
     aClass.getEIsSetFeatures()->notEmpty() or
-    aClass.eOperations->notEmpty() or
+    aClass.getEInvokeOperations()->notEmpty() or
     aClass.getEInverseAddFeatures()->notEmpty() or
     aClass.getEInverseRemoveFeatures()->notEmpty()]
 
@@ -32,7 +32,7 @@
 [aClass.generateEIsSetDefinition()/]
 
 [/if]
-[if aClass.eOperations->notEmpty()]
+[if aClass.getEInvokeOperations()->notEmpty()]
 [aClass.generateEInvokeDefinition()/]
 
 [/if]
@@ -50,12 +50,12 @@
 [let className : String = aClass.getImplementationName()]
 [aClass.generateFunctionReceiver()/] EGetFromID(featureID int, resolve, coreType bool) interface{} {
     switch featureID {
-    [for (anStructFeature : EStructuralFeature | aClass.eStructuralFeatures->asOrderedSet()->sortedBy(name))]
+    [for (anStructFeature : EStructuralFeature | aClass.getEGetFeatures()->sortedBy(name))]
     case [anStructFeature.getQualifiedFeatureIDName()/]:
         return [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]()
     [/for]
     default:
-        return [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].EGetFromID(featureID, resolve, coreType)
+        return [aClass.getReceiverName()/].[getUnQualifiedName(aClass.getClassExtends())/].EGetFromID(featureID, resolve, coreType)
     }
 }
 [/let]
@@ -70,7 +70,7 @@
         return [anStructFeature.generateComparison(aClass)/]
 [/for]
     default:
-        return [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].EIsSetFromID(featureID)
+        return [aClass.getReceiverName()/].[getUnQualifiedName(aClass.getClassExtends())/].EIsSetFromID(featureID)
     }
 }
 [/template]
@@ -81,7 +81,7 @@
 [for (anStructFeature : EStructuralFeature | aClass.getESetFeatures()->sortedBy(name))]
     case [anStructFeature.getQualifiedFeatureIDName()/]:
     [let varName : String = anStructFeature.name.first(1)]
-        var [varName/] [anStructFeature.eGenericType.generateType()/] = newValue.([anStructFeature.eGenericType.generateType()/])
+        [varName/] := newValue.([anStructFeature.generateType()/])
     [if anStructFeature.isListType()]
         [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]().Clear()
         [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]().Add([varName/])
@@ -91,7 +91,7 @@
     [/let]
 [/for]
     default:
-        [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].ESetFromID(featureID, newValue)
+        [aClass.getReceiverName()/].[getUnQualifiedName(aClass.getClassExtends())/].ESetFromID(featureID, newValue)
     }
 }
 [/template]
@@ -111,21 +111,30 @@
     [elseif aStructFeature.oclIsKindOf(EReference)]
         [aClass.getReceiverName()/].[aStructFeature.getSetterName()/](nil)
     [else]
-        [aClass.getReceiverName()/].[aStructFeature.getSetterName()/]([aStructFeature.oclAsType(EAttribute).getDefaultValue()/])
+		[let aAttribute : EAttribute = aStructFeature.oclAsType(EAttribute)]
+		[let defaultValue : String = aAttribute.getDefaultValue()]
+		[if defaultValue <> '']
+        [aClass.getReceiverName()/].[aStructFeature.getSetterName()/]([defaultValue/])
+		[else]
+		[aClass.getReceiverName()/].[aStructFeature.getSetterName()/]([aAttribute.eType.getType()/]{})
+		[/if]
+		[/let]
+		[/let]
     [/if]
 [/for]
     default:
-        [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].EUnsetFromID(featureID)
+        [aClass.getReceiverName()/].[getUnQualifiedName(aClass.getClassExtends())/].EUnsetFromID(featureID)
     }
 }
 [/let]
 [/template]
 
 [template private generateEInvokeDefinition(aClass : EClass)]
+[let aPackage : EPackage = aClass.ePackage]
 [let className : String = aClass.getImplementationName()]
-[aClass.generateFunctionReceiver()/] EInvokeFromID(operationID int, arguments EList) interface{} {
+[aClass.generateFunctionReceiver()/] EInvokeFromID(operationID int, arguments [if not aPackage.isEcorePackage()]ecore.[/if]EList) interface{} {
     switch operationID {
-    [for ( eOperation : EOperation | aClass.eOperations->sortedBy(name) )]
+    [for ( eOperation : EOperation | aClass.getEInvokeOperations()->sortedBy(name) )]
     case [eOperation.eContainingClass.getOperationIDName(eOperation)/]:
         [if eOperation.isVoid() ]
         [aClass.getReceiverName()/].[eOperation.generateOperationInvoke()/]
@@ -135,9 +144,10 @@
         [/if]
     [/for]
     default:
-        return [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].EInvokeFromID(operationID,arguments)
+        return [aClass.getReceiverName()/].[getUnQualifiedName(aClass.getClassExtends())/].EInvokeFromID(operationID,arguments)
     }
 }
+[/let]
 [/let]
 [/template]
 
@@ -158,21 +168,31 @@
 [/template]
 
 [template public generateComparison(anStructFeature : EStructuralFeature, aClass : EClass) ? (oclIsKindOf(EAttribute) and not eType.isAny()) post (trim())]
+[let aAttribute : EAttribute = anStructFeature.oclAsType(EAttribute)]
 [if isListType()]
     [if isField()]
-        [aClass.getReceiverName()/].[anStructFeature.name/] != nil && [aClass.getReceiverName()/].[anStructFeature.name/].Size() != 0
+        [aClass.getReceiverName()/].[aAttribute.name/] != nil && [aClass.getReceiverName()/].[aAttribute.name/].Size() != 0
     [else]
-        [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]().Size() != 0
+        [aClass.getReceiverName()/].[aAttribute.getGetterName()/]().Size() != 0
     [/if]
 [else]
-    [let accessor : String = if isField() then anStructFeature.getVariableName() else anStructFeature.getGetterName()+'()' endif]
+    [let accessor : String = if isField() then aAttribute.getVariableName() else aAttribute.getGetterName()+'()' endif]
     [if eType.oclIsKindOf(EEnum)]
-        [aClass.getReceiverName()/].[accessor/] != [anStructFeature.oclAsType(EAttribute).generateDefaultValue()/]
-    [else]
-        [aClass.getReceiverName()/].[accessor/] != [anStructFeature.oclAsType(EAttribute).getDefaultValue()/]
+        [aClass.getReceiverName()/].[accessor/] != [aAttribute.generateDefaultValue()/]
+    [elseif eType.oclIsKindOf(EDataType)]
+		[let comparisonFunction : String = eType.oclAsType(EDataType).getComparisonFunction()]
+		[if comparisonFunction <> '']
+        [aClass.getReceiverName()/].[accessor/].[comparisonFunction/]()
+		[else]
+		[aClass.getReceiverName()/].[accessor/] != [aAttribute.getDefaultValue()/]
+		[/if]
+		[/let]
+	[else]
+		[aClass.getReceiverName()/].[accessor/] != [aAttribute.getDefaultValue()/]
     [/if]
     [/let]
 [/if]
+[/let]
 [/template]
 
 [template public generateComparison(anStructFeature : EStructuralFeature, aClass : EClass) ? (oclIsKindOf(EReference) and not eType.isAny()) post (trim())]
@@ -180,7 +200,7 @@
     [if isField()]
         [aClass.getReceiverName()/].[anStructFeature.name/] != nil && [aClass.getReceiverName()/].[anStructFeature.name/].Size() != 0
     [else]
-        [anStructFeature.getGetterName()/]().Size() != 0
+        [aClass.getReceiverName()/].[anStructFeature.getGetterName()/]().Size() != 0
     [/if]
 [elseif anStructFeature.oclAsType(EReference).isBackReference() ]
     [if anStructFeature.eType.name <> 'EBoolean']
@@ -200,13 +220,14 @@
 [/template]
 
 [template public generateEInverseAddDefinition(aClass : EClass) ]
+[let aPackage : EPackage = aClass.ePackage]
 [let className : String = aClass.getImplementationName()]
-[aClass.generateFunctionReceiver()/] EBasicInverseAdd(otherEnd EObject, featureID int, notifications ENotificationChain) ENotificationChain {
+[aClass.generateFunctionReceiver()/] EBasicInverseAdd(otherEnd [if not aPackage.isEcorePackage()]ecore.[/if]EObject, featureID int, notifications [if not aPackage.isEcorePackage()]ecore.[/if]ENotificationChain)  [if not aPackage.isEcorePackage()]ecore.[/if]ENotificationChain {
     switch featureID {
 [for ( aFeature : EStructuralFeature | aClass.getEInverseAddFeatures()->sortedBy(name) )]
     case [aFeature.getQualifiedFeatureIDName()/]:
     [if aFeature.isListType()]
-        list := [aClass.getReceiverName()/].[aFeature.getGetterName()/]().(ENotifyingList)
+        list := [aClass.getReceiverName()/].[aFeature.getGetterName()/]().([if not aPackage.isEcorePackage()]ecore.[/if]ENotifyingList)
         return list.AddWithNotification(otherEnd, notifications)
     [elseif aFeature.isContainer()]
         msgs := notifications
@@ -214,7 +235,7 @@
             msgs = [aClass.getReceiverName()/].EBasicRemoveFromContainer(msgs)
         }
         [if aFeature.isBasicSet()]
-        return [aClass.getReceiverName()/].basic[aFeature.getSetterName().toUpperFirst()/](otherEnd.([aFeature.eGenericType.generateType()/]), msgs)
+        return [aClass.getReceiverName()/].basic[aFeature.getSetterName().toUpperFirst()/](otherEnd.([aFeature.generateType()/]), msgs)
         [else]
         return [aClass.getReceiverName()/].EBasicSetContainer(otherEnd, [aFeature.getQualifiedFeatureIDName()/], msgs)
         [/if]
@@ -225,31 +246,33 @@
         msgs := notifications
         if [aClass.getReceiverName()/].[aFeature.name/] != nil {
             [if aFeature.isContains()]
-            msgs = [aClass.getReceiverName()/].[aFeature.name/].(EObjectInternal).EInverseRemove([aClass.getReceiverName()/], EOPPOSITE_FEATURE_BASE - [aFeature.getQualifiedFeatureIDName()/], msgs)
+            msgs = [aClass.getReceiverName()/].[aFeature.name/].([if not aPackage.isEcorePackage()]ecore.[/if]EObjectInternal).EInverseRemove([aClass.getReceiverName()/], [if not aPackage.isEcorePackage()]ecore.[/if]EOPPOSITE_FEATURE_BASE - [aFeature.getQualifiedFeatureIDName()/], msgs)
             [else]
                 [let reverseFeature : EStructuralFeature = aFeature.oclAsType(EReference).eOpposite]
-            msgs = [aClass.getReceiverName()/].[aFeature.name/].(EObjectInternal).EInverseRemove([aClass.getReceiverName()/], [reverseFeature.getQualifiedFeatureIDName()/], msgs)
+            msgs = [aClass.getReceiverName()/].[aFeature.name/].([if not aPackage.isEcorePackage()]ecore.[/if]EObjectInternal).EInverseRemove([aClass.getReceiverName()/], [reverseFeature.getQualifiedFeatureIDName()/], msgs)
                 [/let]
             [/if]
         }
-        return [aClass.getReceiverName()/].basic[aFeature.getSetterName().toUpperFirst()/](otherEnd.([aFeature.eGenericType.generateType()/]) ,msgs)
+        return [aClass.getReceiverName()/].basic[aFeature.getSetterName().toUpperFirst()/](otherEnd.([aFeature.generateType()/]) ,msgs)
     [/if]
 [/for]
     default:
-        return [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].EBasicInverseAdd(otherEnd, featureID, notifications)
+        return [aClass.getReceiverName()/].[getUnQualifiedName(aClass.getClassExtends())/].EBasicInverseAdd(otherEnd, featureID, notifications)
     }
 }
+[/let]
 [/let]
 [/template]
 
 [template public generateEInverseRemoveDefinition(aClass : EClass) ? (aClass.getEInverseRemoveFeatures()->notEmpty()) ]
+[let aPackage : EPackage = aClass.ePackage]
 [let className : String = aClass.getImplementationName()]
-[aClass.generateFunctionReceiver()/] EBasicInverseRemove(otherEnd EObject, featureID int, notifications ENotificationChain) ENotificationChain {
+[aClass.generateFunctionReceiver()/] EBasicInverseRemove(otherEnd  [if not aPackage.isEcorePackage()]ecore.[/if]EObject, featureID int, notifications [if not aPackage.isEcorePackage()]ecore.[/if]ENotificationChain)  [if not aPackage.isEcorePackage()]ecore.[/if]ENotificationChain {
     switch featureID {
 [for ( aFeature : EStructuralFeature | aClass.getEInverseRemoveFeatures()->sortedBy(name) )]
     case [aFeature.getQualifiedFeatureIDName()/]:
     [if aFeature.isListType()]
-        list := [aClass.getReceiverName()/].[aFeature.getGetterName()/]().(ENotifyingList)
+        list := [aClass.getReceiverName()/].[aFeature.getGetterName()/]().([if not aPackage.isEcorePackage()]ecore.[/if]ENotifyingList)
         return list.RemoveWithNotification(otherEnd, notifications)
     [elseif aFeature.isContainer() and not aFeature.isBasicSet()]
         return [aClass.getReceiverName()/].EBasicSetContainer(nil, [aFeature.getQualifiedFeatureIDName()/], notifications)
@@ -260,8 +283,9 @@
     [/if]
 [/for]
     default:
-        return [aClass.getReceiverName()/].[aClass.getRawClassExtends()/].EBasicInverseRemove(otherEnd, featureID, notifications)
+        return [aClass.getReceiverName()/].[getUnQualifiedName(aClass.getClassExtends())/].EBasicInverseRemove(otherEnd, featureID, notifications)
     }
 }
+[/let]
 [/let]
 [/template]

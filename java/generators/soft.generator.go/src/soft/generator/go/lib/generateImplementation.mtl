@@ -2,54 +2,69 @@
 [module generateImplementation('http://www.eclipse.org/emf/2002/Ecore')/]
 
 [import soft::generator::common::generateCommon/]
+[import soft::generator::common::generateElement/]
 [import soft::generator::go::generateCommon/]
+[import soft::generator::go::generateType/]
 [import soft::generator::go::lib::generateCommon/]
 [import soft::generator::go::lib::generateOperation/]
 [import soft::generator::go::lib::generateStructuralFeature/]
 [import soft::generator::go::lib::generateReflectives/]
 
-[template public generateImplementation(aClass : EClass) { implementationName : String = aClass.getImplementationName(); aPackage : EPackage = aClass.ePackage } ]
-[file (aClass.ePackage.getOutputDirectory() + '/' + aClass.getImplementationFileName( aClass.name ), false, 'UTF-8')]
+[template public generateImplementation(aClass : EClass) { 
+	implementationName : String = aClass.getImplementationName(); 
+	aPackage : EPackage = aClass.ePackage; 
+	classExtend : String = aClass.getClassExtends();
+	features : Collection(EStructuralFeature) = aClass.getImplementedFeatures();
+	fieldFeatures : Collection(EStructuralFeature) = features->select(isField());
+	initializerFeatures : Collection(EStructuralFeature) = features->select(hasInitializationMethod());
+	operations : Collection(EOperation) = aClass.getImplementedOperations();
+}]
+[file (aPackage.getOutputDirectory() + '/' + aClass.getImplementationFileName( aClass.name ), false, 'UTF-8')]
 [fileComment()/]
 
 package [aPackage.name/]
 
+[let ecorePackage : Set(String) = if not aPackage.isEcorePackage() and ( aClass.eStructuralFeatures->notEmpty() or aClass.requiresList() ) then Set{ getImportForPackage('ecore') } else Set{} endif]
+[let imports : OrderedSet(String) = Set { ecorePackage
+										, Set { aPackage.getImport(classExtend) }
+									    , aClass.getInterfaceExtends()->collect( extend | aPackage.getImport( extend ) )->asSet()
+                                        , aClass.getReferencedTypes()->collect( cls | aPackage.getImport(cls) )->asSet()
+                                        }->flatten()->select( s | s <> '')->asOrderedSet()->sortedBy( s | s) ]
+[for ( i : String | imports )]
+import "[i/]"
+[/for]
+[/let]
+[/let]
+
+
 // [implementationName/] is the implementation of the model object '[aClass.name/]'
 type [implementationName/] struct {
-[for ( qualifiedExtend : String | aClass.getClassExtends() )]
-    *[getShortQualifiedName(qualifiedExtend,aPackage.name)/]
-[/for]
-[let features : OrderedSet(EStructuralFeature) = aClass.eStructuralFeatures->select( isField() )]
-    [features.generateVariableDeclaration()/]
-[/let]
+    *[getShortQualifiedName( classExtend ,aPackage.name)/]
+    [ aClass.getImplementedFeatures().generateVariableDeclaration()/]
 }
-
-[let initializerFeatures : OrderedSet(EStructuralFeature) = aClass.getVariableInitializationFeatures()]
-[if initializerFeatures->notEmpty()]
-type [aClass.getVariableInitializersInterface()/] interface {
-    [initializerFeatures.generateVariableInitializationMethodDeclaration()/]
-}
-[/if]
-[/let]
 
 // [aClass.getConstructorName()/] is the constructor of a [aClass.getImplementationName()/]
 func [aClass.getConstructorName()/]() *[aClass.getImplementationName()/] {
     [aClass.getReceiverName()/] := new([aClass.getImplementationName()/])
-[for ( qualifiedExtend : String | aClass.getClassExtends() )]
-    [aClass.getReceiverName()/].[getShortQualifiedName(qualifiedExtend,aClass.ePackage.name)/] = [getShortQualifiedName(getConstructorName(qualifiedExtend), aClass.ePackage.name)/]()
-[/for]
-    [aClass.getReceiverName()/].interfaces = [aClass.getReceiverName()/] 
-[let features : OrderedSet(EAttribute) = aClass.eStructuralFeatures->select( isField() )]
-[if features->notEmpty()]
-    [features.generateVariableInitialization()/]
-[/if]
-[/let]
+    [aClass.getReceiverName()/].[getUnQualifiedName(classExtend)/] = [getShortQualifiedName(getConstructorName(classExtend), aPackage.name)/]()
+    [aClass.getReceiverName()/].SetInterfaces([aClass.getReceiverName()/]) 
+	[fieldFeatures.generateVariableInitialization(aClass)/]
     return [aClass.getReceiverName()/]
 }
 
-[aClass.eOperations.generateImplementation()/]
-[aClass.eStructuralFeatures.generateImplementation()/]
-[aClass.getVariableInitializationFeatures().generateVariableInitializationMethodDefinition()/]
+[if initializerFeatures->notEmpty()]
+type [aClass.getInitializersInterface()/] interface {
+    [initializerFeatures.generateVariableInitializationMethodDeclaration()/]
+}
+
+[aClass.generateFunctionReceiver()/] getInitializers() [aClass.getInitializersInterface()/] {
+    return [aClass.getReceiverName()/].GetEObject().([aClass.getInitializersInterface()/])
+}
+[/if]
+
+[operations.generateImplementation(aClass)/]
+[features.generateImplementation(aClass)/]
+[initializerFeatures.generateVariableInitializationMethodDefinition(aClass)/]
 [aClass.generateReflectivesDefinition()/]
 [/file]
 [/template]

@@ -15,6 +15,7 @@
 #include <memory>
 #include <stack>
 #include <type_traits>
+#include <functional>
 
 namespace ecore
 {

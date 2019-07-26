@@ -28,6 +28,8 @@
 
 [query public hasKey(aModelElement : EModelElement, aKey:String) : Boolean = if aModelElement.hasGenModel() then aModelElement.getGenModelAnnotation().details->select(key = aKey)->notEmpty() else false endif /]
 [query public valueKey(aModelElement : EModelElement, aKey:String) : String = aModelElement.getGenModelAnnotation().details->select(key = aKey)->first().value /]
+[query public valuesKey(aModelElement : EModelElement, aKey:String) : Collection(String) = aModelElement.getGenModelAnnotation().details->select(key = aKey).value /]
+
 
 [query public hasExtension( aModelElement : EModelElement ) : Boolean = hasKey('extension') and valueKey('extension' )='true'/]
 [query public isExported( aNamedElement : ENamedElement ) : Boolean = if ( hasKey('exported') ) then valueKey('exported') = 'true' else false endif/]
@@ -146,7 +148,7 @@ endif endif endif
 
 [query public getFunctionName(aOperation : EOperation ) : String = aOperation.getElementName( aOperation.name , 'operationName' ).toUpperFirst()/]
 
-[query public getMetaType(anENamedElement : ENamedElement) : String = if anENamedElement.eClass().ePackage.name ='ecore' then anENamedElement.eClass().getInterfaceName() else anENamedElement.eClass().getQualifiedInterfaceName() endif /]
+[query public getMetaType(aPackage : EPackage , anENamedElement : ENamedElement) : String = getShortQualifiedName( anENamedElement.eClass().getQualifiedInterfaceName(), aPackage.name ) /]
 
 [query public getShortQualifiedName( aQualifiedName : String , aNamespaceName : String ) : String =
     let aQualifiedNames : Sequence(String) = aQualifiedName.tokenize('.') in
@@ -160,6 +162,25 @@ endif endif endif
         endif
     ) in
     shortQualifiedNames->join('.')
+/]
+
+[query public getUnQualifiedName( aQualifiedName : String ) : String =
+    let index : Integer = aQualifiedName.lastIndex('.') in
+    if index = -1 then
+        aQualifiedName
+    else
+        aQualifiedName.substring(index+1)
+    endif
+/]
+
+
+[query public getQualification( any : OclAny , aQualifiedName : String ) : String = 
+    let index : Integer = aQualifiedName.lastIndex('.') in
+    if index = -1 then
+        ''
+    else
+        aQualifiedName.substring(1,index-1)
+    endif 
 /]
 
 [query public getQualifiedFeatureIDName( aStructuralFeature : EStructuralFeature ) : String =

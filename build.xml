@@ -538,6 +538,28 @@
         </exec>
     </target>
     
-    <target name="all" depends="configure,generators,ecore"/>
+    
+    <!--
+    ============================================================================
+      Library
+    ============================================================================
+    -->
+    <target name="library.go.generate">
+        <generator langage="go" input="models/library.ecore" output="${root.dir}/go"/>
+    </target>
+    
+    <target name="library.go.build">
+        <go_exec command="build" dir="${root.dir}/go/library"/>
+    </target>
+    
+    <target name="library.go.format">
+        <go_exec command="fmt" dir="${root.dir}/go/library"/>
+    </target>
+   
+    <target name="library.go" depends="library.go.generate,library.go.format,library.go.build"/>
+    
+    <target name="library" depends="library.go"/>
+    
+    <target name="all" depends="configure,generators,ecore,library"/>
     
 </project>

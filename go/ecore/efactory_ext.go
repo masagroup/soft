@@ -17,6 +17,6 @@ type EFactoryExt struct {
 func NewEFactoryExt() *EFactoryExt {
 	eFactory := new(EFactoryExt)
 	eFactory.eFactoryImpl = newEFactoryImpl()
-	eFactory.interfaces = eFactory
+	eFactory.SetInterfaces(eFactory)
 	return eFactory
 }
