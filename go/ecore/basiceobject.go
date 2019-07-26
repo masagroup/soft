@@ -62,6 +62,11 @@ func (o *BasicEObject) SetInterfaces(interfaces interface{}) {
 	o.interfaces = interfaces
 }
 
+// GetInterfaces ...
+func (o *BasicEObject) GetInterfaces() interface{} {
+	return o.interfaces
+}
+
 // GetEObject ...
 func (o *BasicEObject) GetEObject() EObject {
 	return o.interfaces.(EObject)
