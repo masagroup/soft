@@ -41,7 +41,7 @@ type EList interface {
 
 	IndexOf(interface{}) int
 
-	Iterate() EIterator
+	Iterator() EIterator
 
 	ToArray() []interface{}
 }

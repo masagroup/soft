@@ -156,8 +156,8 @@ func (o *BasicEObject) ECrossReferences() EList {
 
 func (o *BasicEObject) eContentsList(refs EList) EList {
 	data := []interface{}{}
-	for it := refs.Iterate(); it.Next(); {
-		ref := it.Value().(EStructuralFeature)
+	for it := refs.Iterator(); it.HasNext(); {
+		ref := it.Next().(EStructuralFeature)
 		if o.EIsSet(ref) {
 			value := o.EGet(ref)
 			if ref.IsMany() {
@@ -173,13 +173,7 @@ func (o *BasicEObject) eContentsList(refs EList) EList {
 
 // EAllContents ...
 func (o *BasicEObject) EAllContents() EIterator {
-	return newTreeIterator( o , false, func ( i interface{} ) EIterator {
-		o, _ := i.(EObject)
-		if o != nil {
-			return o.EContents().Iterate()
-		}
-		return nil
-	})
+	return newEAllContentsIterator( o )
 }
 
 func (o *BasicEObject) eDerivedStructuralFeatureID(feature EStructuralFeature) int {

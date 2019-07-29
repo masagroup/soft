@@ -168,8 +168,8 @@ func (list *ENotifyingListImpl) doInsertAll(index int, l EList) bool {
 
 	result := list.arrayEList.doInsertAll(index, l)
 	var notifications ENotificationChain = NewNotificationChain()
-	for it := l.Iterate(); it.Next(); {
-		notifications = list.interfaces.(eNotifyingListInternal).inverseAdd(it.Value(), notifications)
+	for it := l.Iterator(); it.HasNext(); {
+		notifications = list.interfaces.(eNotifyingListInternal).inverseAdd(it.Next(), notifications)
 	}
 	list.createAndDispatchNotificationFn(notifications, func() ENotification {
 		if l.Size() == 1 {

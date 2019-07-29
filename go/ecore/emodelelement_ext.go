@@ -23,8 +23,8 @@ func newEModelElementExt() *eModelElementExt {
 
 func (eModelElement *eModelElementExt) GetEAnnotation(source string) EAnnotation {
 	if eModelElement.eAnnotations != nil {
-		for itAnnotation := eModelElement.eAnnotations.Iterate(); itAnnotation.Next(); {
-			annotation := itAnnotation.Value().(EAnnotation)
+		for itAnnotation := eModelElement.eAnnotations.Iterator(); itAnnotation.HasNext(); {
+			annotation := itAnnotation.Next().(EAnnotation)
 			if annotation.GetSource() == source {
 				return annotation
 			}
