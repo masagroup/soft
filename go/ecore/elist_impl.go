@@ -205,7 +205,7 @@ func (arr *arrayEList) doInsertAll(index int, list EList) bool {
 func (arr *arrayEList) MoveObject(newIndex int, elem interface{}) {
 	oldIndex := arr.IndexOf(elem)
 	if oldIndex == -1 {
-		panic("Index out of bounds")
+		panic("Object not found")
 	}
 	arr.Move(oldIndex, newIndex)
 }

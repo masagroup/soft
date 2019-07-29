@@ -38,12 +38,14 @@ func TestListInsertPrepend(t *testing.T) {
 	arr := NewArrayEList([]interface{}{3})
 	assert.Equal(t, arr.Insert(0, 2), true)
 	assert.Equal(t, arr.ToArray(), []interface{}{2, 3})
+	assert.Panics(t, func(){ arr.Insert(-1,1) } )
 }
 
 func TestListInsertAppend(t *testing.T) {
 	arr := NewArrayEList([]interface{}{3})
 	assert.Equal(t, arr.Insert(1, 2), true)
 	assert.Equal(t, arr.ToArray(), []interface{}{3, 2})
+	assert.Panics(t, func(){ arr.Insert(3,1) } )
 }
 
 func TestListInsertMiddle(t *testing.T) {
@@ -58,6 +60,8 @@ func TestListInsertAll(t *testing.T) {
 	arr2 := NewArrayEList([]interface{}{-3, -5, -7})
 	arr2.InsertAll(1, arr)
 	assert.Equal(t, arr2.ToArray(), []interface{}{-3, 3, 5, 7, -5, -7})
+	assert.Panics(t, func(){ arr.InsertAll(-1,arr) } )
+	assert.Panics(t, func(){ arr.InsertAll(6,arr) } )
 }
 
 func TestListMoveAfter(t *testing.T) {
@@ -83,6 +87,12 @@ func TestListMoveSame(t *testing.T) {
 	arr.MoveObject(1, 4)
 	assert.Equal(t, arr.ToArray(), []interface{}{2, 4, 6, 8, 10})
 }
+
+func TestListMoveInvalid(t *testing.T) {
+	arr := NewArrayEList([]interface{}{2, 4, 6, 8, 10})
+	assert.Panics(t, func(){ arr.MoveObject(1,3) } )
+}
+
 
 func TestListRemoveBegin(t *testing.T) {
 	arr := NewArrayEList([]interface{}{2, 4, 6})
