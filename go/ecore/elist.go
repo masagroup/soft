@@ -45,9 +45,3 @@ type EList interface {
 
 	ToArray() []interface{}
 }
-
-// EIterator is an interator used by EList::Iterate()
-type EIterator interface {
-	Value() interface{}
-	Next() bool
-}
