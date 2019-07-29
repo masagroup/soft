@@ -34,14 +34,37 @@ std::shared_ptr<const ECollectionView<std::shared_ptr<ecore::EObject>>> BasicEOb
     return std::make_shared<ECollectionView<std::shared_ptr<ecore::EObject>>>( eContents() );
 }
 
-std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eContents() const
-{
-    return eClass()->getEContainments()->asEListOf<std::shared_ptr<EObject>>();
+std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eContents() const {
+    return eContentsList( eClass()->getEContainments() );
 }
 
 std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eCrossReferences() const
 {
-    return eClass()->getECrossReferences()->asEListOf<std::shared_ptr<EObject>>();
+    return eContentsList( eClass()->getECrossReferences() );
+}
+
+std::shared_ptr<const EList<std::shared_ptr<EObject>>> ecore::impl::BasicEObject::eContentsList(const std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>>& refs ) const
+{
+    std::vector<std::shared_ptr<EObject>> contents;
+    for( auto ref : *refs )
+    {
+        if( eIsSet( ref ) )
+        {
+            auto value = eGet( ref );
+            if( ref->isMany() )
+            {
+                std::shared_ptr<EList<std::shared_ptr<EObject>>> l = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( value );
+                std::copy( l->begin(), l->end(), std::back_inserter( contents ) );
+            }
+            else if( !value.empty() )
+            {
+                std::shared_ptr<EObject> object = anyCast<std::shared_ptr<EObject>>( value );
+                if( object )
+                    contents.push_back( object );
+            }
+        }
+    }
+    return std::make_shared<ImmutableEList<std::shared_ptr<EObject>>>( std::move( contents ) );
 }
 
 std::shared_ptr<ecore::EClass> BasicEObject::eClass() const

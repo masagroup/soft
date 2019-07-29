@@ -252,4 +252,12 @@ BOOST_AUTO_TEST_CASE( Operations_With_SuperType )
     BOOST_CHECK_EQUAL( eClass->getEOperation( 3 ), eOperation2 );
 }
 
+BOOST_AUTO_TEST_CASE( EClass )
+{
+    auto p = EcorePackage::eInstance();
+    auto f = EcoreFactory::eInstance();
+    BOOST_CHECK_EQUAL( f->createEClass()->eClass(), p->getEClass() );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

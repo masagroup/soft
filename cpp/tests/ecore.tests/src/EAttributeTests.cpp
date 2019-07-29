@@ -153,4 +153,11 @@ BOOST_AUTO_TEST_CASE( Accessors_EAttribute )
     BOOST_CHECK_EQUAL( eAttribute->isID(), false );
 }
 
+BOOST_AUTO_TEST_CASE( EClass )
+{
+    auto p = EcorePackage::eInstance();
+    auto f = EcoreFactory::eInstance();
+    BOOST_CHECK_EQUAL( f->createEAttribute()->eClass(), p->getEAttribute() );
+}
+
 BOOST_AUTO_TEST_SUITE_END()
