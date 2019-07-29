@@ -15,14 +15,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEObjectContents(t *testing.T) {
-	ecorePackage := GetPackage()
-	eClass := ecorePackage.GetEClass()
-	assert.Equal(t, eClass.GetName(), "EClass")
-	eClassAbstract := ecorePackage.GetEClass_Abstract()
-	assert.Equal(t, eClassAbstract.GetName(), "abstract")
-	assert.Equal(t, eClassAbstract.GetEAttributeType().GetName(), "EBoolean")
-
-	eFeatures := eClass.GetEStructuralFeatures()
-	assert.True(t, eFeatures.Contains(eClassAbstract))
+func TestEObjectEContents(t *testing.T) {
+	f := GetFactory()
+	c := f.CreateEClass()
+	f1 := f.CreateEAttribute()
+	f2 := f.CreateEAttribute()
+	o1 := f.CreateEOperation()
+	c.GetEStructuralFeatures().AddAll(NewImmutableEList([]interface{}{f1, f2}))
+	c.GetEOperations().Add(o1)
+	assert.Equal(t, []interface{}{f1, f2, o1}, c.EContents().ToArray())
 }
