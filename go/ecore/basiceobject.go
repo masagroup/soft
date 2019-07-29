@@ -173,7 +173,7 @@ func (o *BasicEObject) eContentsList(refs EList) EList {
 
 // EAllContents ...
 func (o *BasicEObject) EAllContents() EIterator {
-	return newEAllContentsIterator( o )
+	return newEAllContentsIterator(o)
 }
 
 func (o *BasicEObject) eDerivedStructuralFeatureID(feature EStructuralFeature) int {

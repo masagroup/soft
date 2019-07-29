@@ -12,8 +12,8 @@ func TestEModelElementGetAnnotation(t *testing.T) {
 	a1.On("GetSource").Return("a1")
 	a2 := new(MockEAnnotation)
 	a2.On("GetSource").Return("a2")
-	m.GetEAnnotations().Add( a1 )
-	m.GetEAnnotations().Add( a2 )
-	assert.Equal(t, a2, m.GetEAnnotation("a2") )
-	assert.Equal(t, nil, m.GetEAnnotation("a") )
+	m.GetEAnnotations().Add(a1)
+	m.GetEAnnotations().Add(a2)
+	assert.Equal(t, a2, m.GetEAnnotation("a2"))
+	assert.Equal(t, nil, m.GetEAnnotation("a"))
 }

@@ -33,7 +33,6 @@ func TestEObjectEContainingFeature(t *testing.T) {
 	o := factory.CreateEOperation()
 	c.GetEStructuralFeatures().Add(f)
 	c.GetEOperations().Add(o)
-	assert.Equal(t, GetPackage().GetEClass_EStructuralFeatures() , f.EContainingFeature() )
-	assert.Equal(t, GetPackage().GetEClass_EOperations() , o.EContainingFeature() )
+	assert.Equal(t, GetPackage().GetEClass_EStructuralFeatures(), f.EContainingFeature())
+	assert.Equal(t, GetPackage().GetEClass_EOperations(), o.EContainingFeature())
 }
-
