@@ -146,13 +146,21 @@ func eContainmentFeature(o EObject, container EObject, containerFeatureID int) E
 
 // EContents ...
 func (o *BasicEObject) EContents() EList {
+	return o.eContentsList(o.EClass().GetEContainments())
+}
+
+// ECrossReferences ...
+func (o *BasicEObject) ECrossReferences() EList {
+	return o.eContentsList(o.EClass().GetECrossReferences())
+}
+
+func (o *BasicEObject) eContentsList(refs EList) EList {
 	data := []interface{}{}
-	features := o.EClass().GetEContainments()
-	for it := features.Iterate(); it.Next(); {
-		feature := it.Value().(EStructuralFeature)
-		if o.EIsSet(feature) {
-			value := o.EGet(feature)
-			if feature.IsMany() {
+	for it := refs.Iterate(); it.Next(); {
+		ref := it.Value().(EStructuralFeature)
+		if o.EIsSet(ref) {
+			value := o.EGet(ref)
+			if ref.IsMany() {
 				l := value.(EList)
 				data = append(data, l.ToArray()...)
 			} else if value != nil {
@@ -165,11 +173,6 @@ func (o *BasicEObject) EContents() EList {
 
 // EAllContents ...
 func (o *BasicEObject) EAllContents() EIterator {
-	return nil
-}
-
-// ECrossReferences ...
-func (o *BasicEObject) ECrossReferences() EList {
 	return nil
 }
 

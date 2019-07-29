@@ -315,3 +315,7 @@ func TestEClassGetOverride(t *testing.T) {
 	mockOperation1.On("IsOverrideOf", mockOperation2).Return(true)
 	assert.Equal(t, mockOperation1, eClass.GetOverride(mockOperation2))
 }
+
+func TestEClassEClass(t *testing.T) {
+	assert.Equal(t, GetPackage().GetEClass(), GetFactory().CreateEClass().EClass())
+}
