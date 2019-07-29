@@ -148,19 +148,19 @@ func eContainmentFeature(o EObject, container EObject, containerFeatureID int) E
 func (o *BasicEObject) EContents() EList {
 	data := []interface{}{}
 	features := o.EClass().GetEContainments()
-	for it := features.Iterate() ; it.Next() ; {
+	for it := features.Iterate(); it.Next(); {
 		feature := it.Value().(EStructuralFeature)
-		if o.EIsSet( feature ) {
-			value := o.EGet( feature )
+		if o.EIsSet(feature) {
+			value := o.EGet(feature)
 			if feature.IsMany() {
 				l := value.(EList)
-				data = append( data , l.ToArray()... )
+				data = append(data, l.ToArray()...)
 			} else if value != nil {
-				data = append( data , value )
+				data = append(data, value)
 			}
 		}
 	}
-	return NewImmutableEList( data )
+	return NewImmutableEList(data)
 }
 
 // EAllContents ...
