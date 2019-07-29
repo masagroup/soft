@@ -20,3 +20,15 @@ func newETypedElementExt() *eTypedElementExt {
 	eTypedElement.interfaces = eTypedElement
 	return eTypedElement
 }
+
+// IsMany get the value of isMany
+func (eTypedElement *eTypedElementExt) IsMany() bool {
+    upper := eTypedElement.GetUpperBound()
+    return upper > 1 || upper == UNBOUNDED_MULTIPLICITY
+}
+
+// IsRequired get the value of isRequired
+func (eTypedElement *eTypedElementExt) IsRequired() bool {
+    lower := eTypedElement.GetLowerBound()
+    return lower >= 1
+}
