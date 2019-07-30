@@ -20,7 +20,7 @@ func TestArrayEListSet(t *testing.T) {
 	arr.Set(1, 6)
 	arr.Set(2, 8)
 	assert.Equal(t, []interface{}{4, 6, 8}, arr.ToArray())
-	assert.Panics(t, func() { arr.Set(3,1) })
+	assert.Panics(t, func() { arr.Set(3, 1) })
 }
 
 func TestArrayEListSize(t *testing.T) {
@@ -123,7 +123,7 @@ func TestArrayEListRemoveMiddle(t *testing.T) {
 
 func TestArrayEListRemoveInvalid(t *testing.T) {
 	arr := NewArrayEList([]interface{}{2, 4, 6, 8, 10})
-	assert.False(t, arr.Remove(7) )
+	assert.False(t, arr.Remove(7))
 }
 
 func TestArrayEListRemoveAtInvalid(t *testing.T) {

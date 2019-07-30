@@ -1,31 +1,31 @@
 package ecore
 
 import (
-	"testing"
-	"net/url"
 	"github.com/stretchr/testify/assert"
+	"net/url"
+	"testing"
 )
 
 func TestBasicEObjectGetInterfaces(t *testing.T) {
 	o := NewBasicEObject()
-	assert.Equal(t , o , o.GetInterfaces() )
+	assert.Equal(t, o, o.GetInterfaces())
 }
 
 func TestBasicEObjectGetEObject(t *testing.T) {
 	o := NewBasicEObject()
-	assert.Equal(t , o , o.GetEObject() )
+	assert.Equal(t, o, o.GetEObject())
 }
 
 func TestBasicEObjectEClass(t *testing.T) {
 	o := NewBasicEObject()
-	assert.Equal(t , GetPackage().GetEObject() , o.EClass() )
+	assert.Equal(t, GetPackage().GetEObject(), o.EClass())
 }
 
 func TestBasicEObjectEIsProxy(t *testing.T) {
 	o := NewBasicEObject()
-	assert.False(t , o.EIsProxy() )
-	o.ESetProxyURI( &url.URL{} )
-	assert.True(t , o.EIsProxy() )
+	assert.False(t, o.EIsProxy())
+	o.ESetProxyURI(&url.URL{})
+	assert.True(t, o.EIsProxy())
 }
 
 func TestBasicEObjectContainer(t *testing.T) {
@@ -34,9 +34,9 @@ func TestBasicEObjectContainer(t *testing.T) {
 	mockObject := new(MockEObject)
 	mockResource := new(MockEResource)
 	mockObject.On("EResource").Return(mockResource)
-	mockResource.On("Attached",o)
+	mockResource.On("Attached", o)
 	mockNotifications := new(MockENotificationChain)
-	assert.Equal( t , mockNotifications, o.EBasicSetContainer( mockObject , 1, mockNotifications ) )
-	assert.Equal( t , mockObject, o.EContainer() )
-	assert.Equal( t , 1, o.EContainerFeatureID() )
+	assert.Equal(t, mockNotifications, o.EBasicSetContainer(mockObject, 1, mockNotifications))
+	assert.Equal(t, mockObject, o.EContainer())
+	assert.Equal(t, 1, o.EContainerFeatureID())
 }

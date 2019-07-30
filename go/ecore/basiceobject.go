@@ -337,12 +337,12 @@ func (o *BasicEObject) EResolveProxy(proxy EObject) EObject {
 
 // EBasicInverseAdd ...
 func (o *BasicEObject) EBasicInverseAdd(otherEnd EObject, featureID int, notifications ENotificationChain) ENotificationChain {
-	return nil
+	return notifications
 }
 
 // EBasicInverseRemove ...
 func (o *BasicEObject) EBasicInverseRemove(otherEnd EObject, featureID int, notifications ENotificationChain) ENotificationChain {
-	return nil
+	return notifications
 }
 
 // EBasicSetContainer ...

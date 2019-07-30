@@ -9,12 +9,12 @@ import (
 func TestETreeIteratorWithRoot(t *testing.T) {
 	emptyList := NewImmutableEList(nil)
 	mockObject := new(MockEObject)
-	it := newTreeIterator(mockObject,true,func(i interface{}) EIterator {
+	it := newTreeIterator(mockObject, true, func(i interface{}) EIterator {
 		return emptyList.Iterator()
 	})
-	assert.True( t , it.HasNext() )
-	assert.Equal( t , mockObject, it.Next() )
-	assert.False( t , it.HasNext() )
+	assert.True(t, it.HasNext())
+	assert.Equal(t, mockObject, it.Next())
+	assert.False(t, it.HasNext())
 }
 
 func TestEAllContentsIteratorEmpty(t *testing.T) {
