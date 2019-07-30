@@ -21,12 +21,8 @@ func newTreeIterator(object interface{}, root bool, getChildren func(interface{}
 }
 
 func newEAllContentsIterator(object EObject) *treeIterator {
-	return &treeIterator{object: object, root: false, getChildren: func(i interface{}) EIterator {
-		o, _ := i.(EObject)
-		if o != nil {
-			return o.EContents().Iterator()
-		}
-		return nil
+	return &treeIterator{object: object, root: false, getChildren: func(o interface{}) EIterator {
+		return o.(EObject).EContents().Iterator()
 	}}
 }
 
