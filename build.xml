@@ -404,30 +404,7 @@
     -->
     <target name="ecore.go.generate">
         <generator langage="go" input="models/ecore.ecore" output="${root.dir}/go"/>
-        
-        <mockery_exec dir="${root.dir}/go/ecore">
-            <arg value="-all"/>
-            <arg value="-inpkg"/>
-        </mockery_exec>
-        
-        <move todir="${root.dir}/go/ecore">
-            <fileset dir="${root.dir}/go/ecore" includes="*.go">
-                <filename regex="^mock_[A-Z].*\.go$"/>
-            </fileset>
-            <chainedmapper>
-                <regexpmapper from="^mock_(.*)\.go$" to="\1_mock_test.go"/>
-                <scriptmapper language="javascript">
-                 self.addMappedName(source.toLowerCase()); 
-                </scriptmapper>
-            </chainedmapper>
-        </move>
-        
-        <delete >
-            <fileset dir="${root.dir}/go/ecore" includes="*.go">
-                <filename regex="^mock_[a-z].*\.go$"/>
-            </fileset>
-        </delete>
-    
+        <mock dir="ecore"/>
     </target>
     
     <target name="ecore.go.build">
@@ -546,6 +523,7 @@
     -->
     <target name="library.go.generate">
         <generator langage="go" input="models/library.ecore" output="${root.dir}/go"/>
+        <mock dir="library"/>
     </target>
     
     <target name="library.go.build">
@@ -555,11 +533,50 @@
     <target name="library.go.format">
         <go_exec command="fmt" dir="${root.dir}/go/library"/>
     </target>
+
+    <target name="library.go.tests">
+        <go_exec dir="${root.dir}/go/library" command="test -coverprofile ${out.dir}/go/library-coverage"/>
+        <go_exec dir="${root.dir}/go/library" command="tool cover -html=${out.dir}/go/library-coverage -o ${out.dir}/go/library-coverage.html" />
+    </target>
    
-    <target name="library.go" depends="library.go.generate,library.go.format,library.go.build"/>
+    <target name="library.go" depends="library.go.generate,library.go.format,library.go.build,library.go.tests"/>
     
     <target name="library" depends="library.go"/>
     
     <target name="all" depends="configure,generators,ecore,library"/>
-    
+
+
+    <!--
+    ============================================================================
+      Mock
+    ============================================================================
+    -->
+	<macrodef name="mock">
+        <attribute name="dir"/>
+        <sequential>
+            <mockery_exec dir="${root.dir}/go/@{dir}">
+            <arg value="-all"/>
+            <arg value="-inpkg"/>
+        </mockery_exec>
+
+        <move todir="${root.dir}/go/@{dir}">
+            <fileset dir="${root.dir}/go/@{dir}" includes="*.go">
+                <filename regex="^mock_[A-Z].*\.go$"/>
+            </fileset>
+            <chainedmapper>
+                <regexpmapper from="^mock_(.*)\.go$" to="\1_mock_test.go"/>
+                <scriptmapper language="javascript">
+                 self.addMappedName(source.toLowerCase());
+                </scriptmapper>
+            </chainedmapper>
+        </move>
+
+        <delete >
+            <fileset dir="${root.dir}/go/@{dir}" includes="*.go">
+                <filename regex="^mock_[a-z].*\.go$"/>
+            </fileset>
+        </delete>
+        </sequential>
+    </macrodef>
+
 </project>
