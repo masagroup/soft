@@ -8,3 +8,4 @@
 !eadapt*.go
 ![^e]*.go
 *_mock_test.go
+mock*

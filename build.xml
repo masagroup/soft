@@ -535,7 +535,7 @@
     </target>
 
     <target name="library.go.tests">
-        <go_exec dir="${root.dir}/go/library" command="test -coverprofile ${out.dir}/go/library-coverage"/>
+        <go_exec dir="${root.dir}/go/library" command="test -coverprofile ${out.dir}/go/library-coverage +build ignore mock*"/>
         <go_exec dir="${root.dir}/go/library" command="tool cover -html=${out.dir}/go/library-coverage -o ${out.dir}/go/library-coverage.html" />
     </target>
    
@@ -557,25 +557,7 @@
             <mockery_exec dir="${root.dir}/go/@{dir}">
             <arg value="-all"/>
             <arg value="-inpkg"/>
-        </mockery_exec>
-
-        <move todir="${root.dir}/go/@{dir}">
-            <fileset dir="${root.dir}/go/@{dir}" includes="*.go">
-                <filename regex="^mock_[A-Z].*\.go$"/>
-            </fileset>
-            <chainedmapper>
-                <regexpmapper from="^mock_(.*)\.go$" to="\1_mock_test.go"/>
-                <scriptmapper language="javascript">
-                 self.addMappedName(source.toLowerCase());
-                </scriptmapper>
-            </chainedmapper>
-        </move>
-
-        <delete >
-            <fileset dir="${root.dir}/go/@{dir}" includes="*.go">
-                <filename regex="^mock_[a-z].*\.go$"/>
-            </fileset>
-        </delete>
+			</mockery_exec>
         </sequential>
     </macrodef>
 
