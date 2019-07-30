@@ -315,4 +315,3 @@ func (arr *arrayEList) didMove(newIndex int, movedObject interface{}, oldIndex i
 func (arr *arrayEList) didChange() {
 
 }
-
