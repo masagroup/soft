@@ -416,8 +416,7 @@
     </target>
     
     <target name="ecore.go.tests">
-        <go_exec dir="${root.dir}/go/ecore" command="test -coverprofile ${out.dir}/go/coverage"/>
-        <go_exec dir="${root.dir}/go/ecore" command="tool cover -html=${out.dir}/go/coverage -o ${out.dir}/go/coverage.html" />
+        <tests dir="ecore"/>
     </target>
 
     <target name="ecore.go" depends="ecore.go.generate,ecore.go.format,ecore.go.build,ecore.go.tests"/>
@@ -535,8 +534,7 @@
     </target>
 
     <target name="library.go.tests">
-        <go_exec dir="${root.dir}/go/library" command="test -coverprofile ${out.dir}/go/library-coverage"/>
-        <go_exec dir="${root.dir}/go/library" command="tool cover -html=${out.dir}/go/library-coverage -o ${out.dir}/go/library-coverage.html" />
+        <tests dir="library"/>
     </target>
    
     <target name="library.go" depends="library.go.generate,library.go.format,library.go.build,library.go.tests"/>
@@ -558,6 +556,17 @@
             <arg value="-all"/>
             <arg value="-inpkg"/>
 			</mockery_exec>
+        </sequential>
+    </macrodef>
+
+	<macrodef name="tests">
+        <attribute name="dir"/>
+        <sequential>
+			<go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage-tmp"/>
+			<exec dir="${out.dir}\go\" executable="cmd" >
+				<arg line="/c type @{dir}-coverage-tmp | Findstr -v mock > @{dir}-coverage"/>
+			</exec>
+			<go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/@{dir}-coverage -o ${out.dir}/go/@{dir}-coverage.html" />
         </sequential>
     </macrodef>
 
