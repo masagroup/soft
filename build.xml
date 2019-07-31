@@ -535,7 +535,7 @@
     </target>
 
     <target name="library.go.tests">
-        <go_exec dir="${root.dir}/go/library" command="test -coverprofile ${out.dir}/go/library-coverage +build ignore mock*"/>
+        <go_exec dir="${root.dir}/go/library" command="test -coverprofile ${out.dir}/go/library-coverage"/>
         <go_exec dir="${root.dir}/go/library" command="tool cover -html=${out.dir}/go/library-coverage -o ${out.dir}/go/library-coverage.html" />
     </target>
    
