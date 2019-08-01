@@ -7,5 +7,4 @@
 !enotif*.go
 !eadapt*.go
 ![^e]*.go
-*_mock_test.go
-mock*
+*_mock.go
