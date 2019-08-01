@@ -146,17 +146,34 @@ func eContainmentFeature(o EObject, container EObject, containerFeatureID int) E
 
 // EContents ...
 func (o *BasicEObject) EContents() EList {
-	return nil
-}
-
-// EAllContents ...
-func (o *BasicEObject) EAllContents() EIterator {
-	return nil
+	return o.eContentsList(o.EClass().GetEContainments())
 }
 
 // ECrossReferences ...
 func (o *BasicEObject) ECrossReferences() EList {
-	return nil
+	return o.eContentsList(o.EClass().GetECrossReferences())
+}
+
+func (o *BasicEObject) eContentsList(refs EList) EList {
+	data := []interface{}{}
+	for it := refs.Iterator(); it.HasNext(); {
+		ref := it.Next().(EStructuralFeature)
+		if o.EIsSet(ref) {
+			value := o.EGet(ref)
+			if ref.IsMany() {
+				l := value.(EList)
+				data = append(data, l.ToArray()...)
+			} else if value != nil {
+				data = append(data, value)
+			}
+		}
+	}
+	return NewImmutableEList(data)
+}
+
+// EAllContents ...
+func (o *BasicEObject) EAllContents() EIterator {
+	return newEAllContentsIterator(o)
 }
 
 func (o *BasicEObject) eDerivedStructuralFeatureID(feature EStructuralFeature) int {
@@ -320,12 +337,12 @@ func (o *BasicEObject) EResolveProxy(proxy EObject) EObject {
 
 // EBasicInverseAdd ...
 func (o *BasicEObject) EBasicInverseAdd(otherEnd EObject, featureID int, notifications ENotificationChain) ENotificationChain {
-	return nil
+	return notifications
 }
 
 // EBasicInverseRemove ...
 func (o *BasicEObject) EBasicInverseRemove(otherEnd EObject, featureID int, notifications ENotificationChain) ENotificationChain {
-	return nil
+	return notifications
 }
 
 // EBasicSetContainer ...

@@ -93,6 +93,9 @@ namespace ecore::impl
                                                                 const std::shared_ptr<EObject>& eContainer,
                                                                 int eContainerFeatureID );
 
+    private:
+        std::shared_ptr<const EList<std::shared_ptr<EObject>>> eContentsList( const std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>>& refs ) const;
+
     protected:
         std::weak_ptr<EResource> eResource_;
         std::weak_ptr<EObject> eContainer_;

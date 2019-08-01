@@ -38,3 +38,7 @@ func TestOperationIsOverrideOf(t *testing.T) {
 	mockParameter2.SetEType(mockType)
 	assert.True(t, operation1.IsOverrideOf(operation2))
 }
+
+func TestEOperationEClass(t *testing.T) {
+	assert.Equal(t, GetPackage().GetEOperation(), GetFactory().CreateEOperation().EClass())
+}
