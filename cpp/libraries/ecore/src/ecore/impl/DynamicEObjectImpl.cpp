@@ -1,4 +1,4 @@
-#include "ecore/impl/DynamicEObject.hpp"
+#include "ecore/impl/DynamicEObjectImpl.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/EAdapter.hpp"
 #include "ecore/ENotification.hpp"
@@ -30,10 +30,10 @@ namespace std
     }
 }
 
-class DynamicEObject::FeaturesAdapter : public AbstractAdapter
+class DynamicEObjectImpl::FeaturesAdapter : public AbstractAdapter
 {
 public:
-    FeaturesAdapter( DynamicEObject& eObject )
+    FeaturesAdapter( DynamicEObjectImpl& eObject )
         : eObject_( eObject )
     {
     }
@@ -46,7 +46,7 @@ public:
     virtual void notifyChanged( const std::shared_ptr<ENotification>& notification )
     {
         int eventType = notification->getEventType();
-        auto eNotifier = std::dynamic_pointer_cast<DynamicEObject>( notification->getNotifier() );
+        auto eNotifier = std::dynamic_pointer_cast<DynamicEObjectImpl>( notification->getNotifier() );
         if( eventType != ENotification::REMOVING_ADAPTER )
         {
             int featureID = notification->getFeatureID();
@@ -56,31 +56,31 @@ public:
     }
 
 private:
-    DynamicEObject& eObject_;
+    DynamicEObjectImpl& eObject_;
 };
 
-DynamicEObject::DynamicEObject()
+DynamicEObjectImpl::DynamicEObjectImpl()
     : featuresAdapter_( new FeaturesAdapter( *this ) )
 {
 }
 
-DynamicEObject::DynamicEObject( const std::shared_ptr<EClass>& eClass )
+DynamicEObjectImpl::DynamicEObjectImpl( const std::shared_ptr<EClass>& eClass )
     : featuresAdapter_( new FeaturesAdapter( *this ) )
 {
     setEClass( eClass );
 }
 
-DynamicEObject::~DynamicEObject()
+DynamicEObjectImpl::~DynamicEObjectImpl()
 {
     setEClass( nullptr );
 }
 
-std::shared_ptr<ecore::EClass> DynamicEObject::eClass() const
+std::shared_ptr<ecore::EClass> DynamicEObjectImpl::eClass() const
 {
     return is_uninitialized( eClass_ ) ? eStaticClass() : eClass_.lock();
 }
 
-void DynamicEObject::setEClass( const std::shared_ptr<EClass>& newClass )
+void DynamicEObjectImpl::setEClass( const std::shared_ptr<EClass>& newClass )
 {
     if( auto eClass = eClass_.lock() )
         eClass->eAdapters().remove( featuresAdapter_.get() );
@@ -92,7 +92,17 @@ void DynamicEObject::setEClass( const std::shared_ptr<EClass>& newClass )
         eClass->eAdapters().add( featuresAdapter_.get() );
 }
 
-Any DynamicEObject::eGet( int featureID, bool resolve, bool coreType ) const
+std::shared_ptr<DynamicEObjectImpl> DynamicEObjectImpl::getThisPtr() const
+{
+    return std::static_pointer_cast<DynamicEObjectImpl>( EObjectImpl::getThisPtr() );
+}
+
+void DynamicEObjectImpl::setThisPtr( const std::shared_ptr<DynamicEObjectImpl>& thisPtr )
+{
+    EObjectImpl::setThisPtr( thisPtr );
+}
+
+Any DynamicEObjectImpl::eGet( int featureID, bool resolve, bool coreType ) const
 {
     int dynamicFeatureID = featureID - eStaticFeatureCount();
     if( dynamicFeatureID >= 0 )
@@ -128,7 +138,7 @@ Any DynamicEObject::eGet( int featureID, bool resolve, bool coreType ) const
     return BasicEObject::eGet( featureID, resolve , coreType );
 }
 
-bool DynamicEObject::eIsSet( int featureID ) const
+bool DynamicEObjectImpl::eIsSet( int featureID ) const
 {
     int dynamicFeatureID = featureID - eStaticFeatureCount();
     if( dynamicFeatureID >= 0 )
@@ -137,7 +147,7 @@ bool DynamicEObject::eIsSet( int featureID ) const
         return BasicEObject::eIsSet( featureID );
 }
 
-void DynamicEObject::eSet( int featureID, const Any & newValue )
+void DynamicEObjectImpl::eSet( int featureID, const Any & newValue )
 {
     int dynamicFeatureID = featureID - eStaticFeatureCount();
     if( dynamicFeatureID >= 0 )
@@ -263,7 +273,7 @@ void DynamicEObject::eSet( int featureID, const Any & newValue )
         BasicEObject::eSet( featureID, newValue );
 }
 
-void DynamicEObject::eUnset( int featureID )
+void DynamicEObjectImpl::eUnset( int featureID )
 {
     int dynamicFeatureID = featureID - eStaticFeatureCount();
     if( dynamicFeatureID >= 0 )
@@ -279,39 +289,39 @@ void DynamicEObject::eUnset( int featureID )
         BasicEObject::eUnset( featureID );
 }
 
-Any DynamicEObject::eInvoke( int operationID, const std::shared_ptr<EList<Any>>& arguments )
+Any DynamicEObjectImpl::eInvoke( int operationID, const std::shared_ptr<EList<Any>>& arguments )
 {
     return Any();
 }
 
-int DynamicEObject::eStaticFeatureCount() const
+int DynamicEObjectImpl::eStaticFeatureCount() const
 {
     return eStaticClass()->getFeatureCount();
 }
 
-int DynamicEObject::eStaticOperationCount() const
+int DynamicEObjectImpl::eStaticOperationCount() const
 {
     return eStaticClass()->getOperationCount();
 }
 
-int DynamicEObject::eDynamicFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+int DynamicEObjectImpl::eDynamicFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
 {
     return eClass()->getFeatureID( eStructuralFeature ) - eStaticFeatureCount();
 }
 
-std::shared_ptr<EStructuralFeature> DynamicEObject::eDynamicFeature( int dynamicFeatureID ) const
+std::shared_ptr<EStructuralFeature> DynamicEObjectImpl::eDynamicFeature( int dynamicFeatureID ) const
 {
     return eClass()->getEStructuralFeature( dynamicFeatureID + eStaticFeatureCount() );
 }
 
-bool DynamicEObject::isBidirectional( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+bool DynamicEObjectImpl::isBidirectional( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
 {
     if( auto eReference = std::dynamic_pointer_cast<EReference>( eStructuralFeature ) )
         return static_cast<bool>(eReference->getEOpposite());
     return false;
 }
 
-bool DynamicEObject::isContainer( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+bool DynamicEObjectImpl::isContainer( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
 {
     if( auto eReference = std::dynamic_pointer_cast<EReference>( eStructuralFeature ) )
     {
@@ -321,21 +331,21 @@ bool DynamicEObject::isContainer( const std::shared_ptr<EStructuralFeature>& eSt
     return false;
 }
 
-bool DynamicEObject::isContains( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+bool DynamicEObjectImpl::isContains( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
 {
     if( auto eReference = std::dynamic_pointer_cast<EReference>( eStructuralFeature ) )
         return eReference->isContainment();
     return false;
 }
 
-bool DynamicEObject::isBackReference( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+bool DynamicEObjectImpl::isBackReference( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
 {
     if( auto eReference = std::dynamic_pointer_cast<EReference>( eStructuralFeature ) )
         return eReference->isContainer();
     return false;
 }
 
-bool DynamicEObject::isProxy( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+bool DynamicEObjectImpl::isProxy( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
 {
     if( isContainer( eStructuralFeature ) || isContains( eStructuralFeature ) )
         return false;
@@ -344,12 +354,12 @@ bool DynamicEObject::isProxy( const std::shared_ptr<EStructuralFeature>& eStruct
     return false;
 }
 
-void DynamicEObject::resizeProperties()
+void DynamicEObjectImpl::resizeProperties()
 {
     properties_.resize( eClass()->getFeatureCount() - eStaticFeatureCount() );
 }
 
-std::shared_ptr<EList<std::shared_ptr<EObject>>> DynamicEObject::createList( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+std::shared_ptr<EList<std::shared_ptr<EObject>>> DynamicEObjectImpl::createList( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
 {
     if( auto eAttribute = std::dynamic_pointer_cast<EAttribute>( eStructuralFeature ) )
     {

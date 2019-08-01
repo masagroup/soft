@@ -10,23 +10,26 @@
 #ifndef ECORE_DYNAMIC_EOBJECT_HPP_
 #define ECORE_DYNAMIC_EOBJECT_HPP_
 
-#include "ecore/impl/BasicEObject.hpp"
+#include "ecore/impl/EObjectImpl.hpp"
 
 #include <vector>
 
 namespace ecore::impl
 {
 
-    class ECORE_API DynamicEObject : public BasicEObject
+    class ECORE_API DynamicEObjectImpl : public EObjectImpl
     {
     public:
-        DynamicEObject();
-        DynamicEObject( const std::shared_ptr<EClass>& eClass );
-        virtual ~DynamicEObject();
+        DynamicEObjectImpl();
+        DynamicEObjectImpl( const std::shared_ptr<EClass>& eClass );
+        virtual ~DynamicEObjectImpl();
         
         virtual std::shared_ptr<ecore::EClass> eClass() const;
 
         void setEClass( const std::shared_ptr<EClass>& eClass );
+
+        std::shared_ptr<DynamicEObjectImpl> getThisPtr() const;
+        void setThisPtr( const std::shared_ptr<DynamicEObjectImpl>& thisPtr );
 
     public:
         using EObject::eGet;

@@ -43,7 +43,7 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/AbstractResource.hpp
     src/ecore/impl/BasicEObject.hpp
     src/ecore/impl/Diagnostic.hpp
-    src/ecore/impl/DynamicEObject.hpp
+    src/ecore/impl/DynamicEObjectImpl.hpp
     src/ecore/impl/EcoreUtils.hpp
     src/ecore/impl/EObjectEList.hpp
     src/ecore/impl/FileUriHandler.hpp
@@ -72,7 +72,7 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/AbstractNotification.cpp
     src/ecore/impl/AbstractResource.cpp
     src/ecore/impl/BasicEObject.cpp
-    src/ecore/impl/DynamicEObject.cpp
+    src/ecore/impl/DynamicEObjectImpl.cpp
     src/ecore/impl/EcoreUtils.cpp
     src/ecore/impl/FileUriHandler.cpp
     src/ecore/impl/Notification.cpp

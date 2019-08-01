@@ -4,7 +4,7 @@
 #include "ecore/EcoreFactory.hpp"
 #include "ecore/EList.hpp"
 #include "ecore/EAttribute.hpp"
-#include "ecore/impl/DynamicEObject.hpp"
+#include "ecore/impl/DynamicEObjectImpl.hpp"
 #include "ecore/tests/MockClass.hpp"
 #include "ecore/tests/MockList.hpp"
 
@@ -16,14 +16,14 @@ BOOST_AUTO_TEST_SUITE( DynamicEObjectTests )
 
 BOOST_AUTO_TEST_CASE( Constructor )
 {
-    auto eObject = std::make_shared<DynamicEObject>();
+    auto eObject = std::make_shared<DynamicEObjectImpl>();
     eObject->setThisPtr( eObject );
     BOOST_CHECK_EQUAL( eObject, eObject->getThisPtr() );
 }
 
 BOOST_AUTO_TEST_CASE( EClass_Mock )
 {
-    auto eObject = std::make_shared<DynamicEObject>();
+    auto eObject = std::make_shared<DynamicEObjectImpl>();
     eObject->setThisPtr( eObject );
     BOOST_CHECK_EQUAL( EcorePackage::eInstance()->getEObject(), eObject->eClass() );
 
@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE( EClass_Mock )
 
 BOOST_AUTO_TEST_CASE( EClass )
 {
-    auto eObject = std::make_shared<DynamicEObject>();
+    auto eObject = std::make_shared<DynamicEObjectImpl>();
     eObject->setThisPtr( eObject );
     
     auto eClass = EcoreFactory::eInstance()->createEClass();
@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE( EClass )
 
 BOOST_AUTO_TEST_CASE( Attribute )
 {
-    auto eObject = std::make_shared<DynamicEObject>();
+    auto eObject = std::make_shared<DynamicEObjectImpl>();
     eObject->setThisPtr( eObject );
 
     auto eClass = EcoreFactory::eInstance()->createEClass();
