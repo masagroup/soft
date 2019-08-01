@@ -404,30 +404,7 @@
     -->
     <target name="ecore.go.generate">
         <generator langage="go" input="models/ecore.ecore" output="${root.dir}/go"/>
-        
-        <mockery_exec dir="${root.dir}/go/ecore">
-            <arg value="-all"/>
-            <arg value="-inpkg"/>
-        </mockery_exec>
-        
-        <move todir="${root.dir}/go/ecore">
-            <fileset dir="${root.dir}/go/ecore" includes="*.go">
-                <filename regex="^mock_[A-Z].*\.go$"/>
-            </fileset>
-            <chainedmapper>
-                <regexpmapper from="^mock_(.*)\.go$" to="\1_mock_test.go"/>
-                <scriptmapper language="javascript">
-                 self.addMappedName(source.toLowerCase()); 
-                </scriptmapper>
-            </chainedmapper>
-        </move>
-        
-        <delete >
-            <fileset dir="${root.dir}/go/ecore" includes="*.go">
-                <filename regex="^mock_[a-z].*\.go$"/>
-            </fileset>
-        </delete>
-    
+        <mock dir="ecore"/>
     </target>
     
     <target name="ecore.go.build">
@@ -439,8 +416,7 @@
     </target>
     
     <target name="ecore.go.tests">
-        <go_exec dir="${root.dir}/go/ecore" command="test -coverprofile ${out.dir}/go/coverage"/>
-        <go_exec dir="${root.dir}/go/ecore" command="tool cover -html=${out.dir}/go/coverage -o ${out.dir}/go/coverage.html" />
+        <tests dir="ecore"/>
     </target>
 
     <target name="ecore.go" depends="ecore.go.generate,ecore.go.format,ecore.go.build,ecore.go.tests"/>
@@ -546,6 +522,7 @@
     -->
     <target name="library.go.generate">
         <generator langage="go" input="models/library.ecore" output="${root.dir}/go"/>
+        <mock dir="library"/>
     </target>
     
     <target name="library.go.build">
@@ -555,11 +532,60 @@
     <target name="library.go.format">
         <go_exec command="fmt" dir="${root.dir}/go/library"/>
     </target>
+
+    <target name="library.go.tests">
+        <tests dir="library"/>
+    </target>
    
-    <target name="library.go" depends="library.go.generate,library.go.format,library.go.build"/>
+    <target name="library.go" depends="library.go.generate,library.go.format,library.go.build,library.go.tests"/>
     
     <target name="library" depends="library.go"/>
     
     <target name="all" depends="configure,generators,ecore,library"/>
-    
+
+
+    <!--
+    ============================================================================
+      Mock
+    ============================================================================
+    -->
+	<macrodef name="mock">
+        <attribute name="dir"/>
+        <sequential>
+            <mockery_exec dir="${root.dir}/go/@{dir}">
+            <arg value="-all"/>
+            <arg value="-inpkg"/>
+            </mockery_exec>
+
+            <move todir="${root.dir}/go/@{dir}">
+                <fileset dir="${root.dir}/go/@{dir}" includes="*.go">
+                    <filename regex="^mock_[A-Z].*\.go$"/>
+                </fileset>
+                <chainedmapper>
+                    <regexpmapper from="^mock_(.*)\.go$" to="\1_mock.go"/>
+                    <scriptmapper language="javascript">
+                    self.addMappedName(source.toLowerCase());
+                    </scriptmapper>
+                </chainedmapper>
+            </move>
+
+            <delete >
+                <fileset dir="${root.dir}/go/@{dir}" includes="*.go">
+                    <filename regex="^mock_[a-z].*\.go$"/>
+                </fileset>
+            </delete>
+        </sequential>
+    </macrodef>
+
+	<macrodef name="tests">
+        <attribute name="dir"/>
+        <sequential>
+			<go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage-tmp"/>
+			<exec dir="${out.dir}\go\" executable="cmd" >
+				<arg line="/c type @{dir}-coverage-tmp | Findstr -v mock > @{dir}-coverage"/>
+			</exec>
+			<go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/@{dir}-coverage -o ${out.dir}/go/@{dir}-coverage.html" />
+        </sequential>
+    </macrodef>
+
 </project>

@@ -1,9 +1,10 @@
 *.go
 !*_ext.go
 !*_test.go
+*_impl_test.go
 !eresource*.go
 !e*list*.go
 !enotif*.go
 !eadapt*.go
 ![^e]*.go
-*_mock_test.go
+*_mock.go

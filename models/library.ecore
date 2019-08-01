@@ -14,22 +14,19 @@
   <eClassifiers xsi:type="ecore:EClass" name="Library" eSuperTypes="#//Addressable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="writers" upperBound="-1"
-        eType="#//Writer" volatile="true" transient="true" derived="true" containment="true"
-        resolveProxies="false">
+        eType="#//Writer" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="group" value="#people"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="employees" upperBound="-1"
-        eType="#//Employee" volatile="true" transient="true" derived="true" containment="true"
-        resolveProxies="false">
+        eType="#//Employee" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="group" value="#people"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="borrowers" upperBound="-1"
-        eType="#//Borrower" volatile="true" transient="true" derived="true" containment="true"
-        resolveProxies="false">
+        eType="#//Borrower" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="group" value="#people"/>
       </eAnnotations>
