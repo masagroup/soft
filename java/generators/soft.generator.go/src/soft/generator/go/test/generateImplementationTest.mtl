@@ -18,21 +18,13 @@
 package [aPackage.name/]
 
 import (
-	"testing"
-	"time"
+	_ "testing"
+	_ "time"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
-	[if not aPackage.isEcorePackage()]"github.com/masagroup/soft/go/ecore"[/if]
+	_ "github.com/stretchr/testify/assert"
+	_ "github.com/stretchr/testify/mock"
+	[if not aPackage.isEcorePackage()]_ "github.com/masagroup/soft/go/ecore"[/if]
 )
-
-func discard[name.toUpperFirst()/]() {
-	_ = assert.Equal
-	_ = mock.Anything
-	_ = testing.Coverage
-	[if not aPackage.isEcorePackage()]_ = ecore.ADD[/if]
-	_ = time.Now()
-}
 
 [aClass.eStructuralFeatures->select(isField()).generateTestImplementation()/]
 [aClass.eOperations->select(isDefault()).generateTestOperation()/]
