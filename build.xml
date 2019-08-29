@@ -349,12 +349,18 @@
       Generator
     ============================================================================
     -->
+    <target name="acceleo.build">
+        <maven_exec dir="${java.dir}/acceleo">
+            <arg value="-Pant"/>
+            <arg line="clean verify" />
+        </maven_exec>
+    </target>
+    
     <target name="generators.build">
         <maven_exec dir="${java.dir}/generators">
             <arg value="-Pant"/>
             <arg line="clean verify" />
         </maven_exec>
-    
     </target>
     
     <target name="generators.clean">
