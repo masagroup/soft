@@ -351,12 +351,11 @@
     -->
     <target name="acceleo.build">
         <maven_exec dir="${java.dir}/acceleo">
-            <arg value="-Pant"/>
-            <arg line="clean verify" />
+            <arg line="clean install" />
         </maven_exec>
     </target>
     
-    <target name="generators.build">
+    <target name="generators.build" depends="acceleo.build">
         <maven_exec dir="${java.dir}/generators">
             <arg value="-Pant"/>
             <arg line="clean verify" />
