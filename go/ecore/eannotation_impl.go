@@ -18,11 +18,11 @@ package ecore
 // eAnnotationImpl is the implementation of the model object 'EAnnotation'
 type eAnnotationImpl struct {
 	*eModelElementExt
-	contents      EList
-	source        string
-	eModelElement EModelElement
 	details       EList
+	contents      EList
+	eModelElement EModelElement
 	references    EList
+	source        string
 }
 
 // newEAnnotationImpl is the constructor of a eAnnotationImpl
@@ -36,8 +36,8 @@ func newEAnnotationImpl() *eAnnotationImpl {
 }
 
 type eAnnotationImplInitializers interface {
-	initContents() EList
 	initDetails() EList
+	initContents() EList
 	initReferences() EList
 }
 
@@ -49,6 +49,15 @@ func (eAnnotation *eAnnotationImpl) EStaticClass() EClass {
 	return GetPackage().GetEAnnotationClass()
 }
 
+// GetDetails get the value of details
+func (eAnnotation *eAnnotationImpl) GetDetails() EList {
+	if eAnnotation.details == nil {
+		eAnnotation.details = eAnnotation.getInitializers().initDetails()
+	}
+	return eAnnotation.details
+
+}
+
 // GetContents get the value of contents
 func (eAnnotation *eAnnotationImpl) GetContents() EList {
 	if eAnnotation.contents == nil {
@@ -56,21 +65,6 @@ func (eAnnotation *eAnnotationImpl) GetContents() EList {
 	}
 	return eAnnotation.contents
 
-}
-
-// GetSource get the value of source
-func (eAnnotation *eAnnotationImpl) GetSource() string {
-	return eAnnotation.source
-
-}
-
-// SetSource set the value of source
-func (eAnnotation *eAnnotationImpl) SetSource(newSource string) {
-	oldSource := eAnnotation.source
-	eAnnotation.source = newSource
-	if eAnnotation.ENotificationRequired() {
-		eAnnotation.ENotify(NewNotificationByFeatureID(eAnnotation.GetEObject(), SET, EANNOTATION__SOURCE, oldSource, newSource, NO_INDEX))
-	}
 }
 
 // GetEModelElement get the value of eModelElement
@@ -105,15 +99,6 @@ func (eAnnotation *eAnnotationImpl) basicSetEModelElement(newEModelElement EMode
 	return eAnnotation.EBasicSetContainer(newEModelElement, EANNOTATION__EMODEL_ELEMENT, msgs)
 }
 
-// GetDetails get the value of details
-func (eAnnotation *eAnnotationImpl) GetDetails() EList {
-	if eAnnotation.details == nil {
-		eAnnotation.details = eAnnotation.getInitializers().initDetails()
-	}
-	return eAnnotation.details
-
-}
-
 // GetReferences get the value of references
 func (eAnnotation *eAnnotationImpl) GetReferences() EList {
 	if eAnnotation.references == nil {
@@ -123,12 +108,27 @@ func (eAnnotation *eAnnotationImpl) GetReferences() EList {
 
 }
 
-func (eAnnotation *eAnnotationImpl) initContents() EList {
-	return NewEObjectEList(eAnnotation.GetEObjectInternal(), EANNOTATION__CONTENTS, -1, true, true, false, false, false)
+// GetSource get the value of source
+func (eAnnotation *eAnnotationImpl) GetSource() string {
+	return eAnnotation.source
+
+}
+
+// SetSource set the value of source
+func (eAnnotation *eAnnotationImpl) SetSource(newSource string) {
+	oldSource := eAnnotation.source
+	eAnnotation.source = newSource
+	if eAnnotation.ENotificationRequired() {
+		eAnnotation.ENotify(NewNotificationByFeatureID(eAnnotation.GetEObject(), SET, EANNOTATION__SOURCE, oldSource, newSource, NO_INDEX))
+	}
 }
 
 func (eAnnotation *eAnnotationImpl) initDetails() EList {
 	return NewEObjectEList(eAnnotation.GetEObjectInternal(), EANNOTATION__DETAILS, -1, true, true, false, false, false)
+}
+
+func (eAnnotation *eAnnotationImpl) initContents() EList {
+	return NewEObjectEList(eAnnotation.GetEObjectInternal(), EANNOTATION__CONTENTS, -1, true, true, false, false, false)
 }
 
 func (eAnnotation *eAnnotationImpl) initReferences() EList {

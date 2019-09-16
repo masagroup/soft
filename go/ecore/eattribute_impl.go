@@ -18,8 +18,8 @@ package ecore
 // eAttributeImpl is the implementation of the model object 'EAttribute'
 type eAttributeImpl struct {
 	*eStructuralFeatureExt
-	isID           bool
 	eAttributeType EDataType
+	isID           bool
 }
 
 // newEAttributeImpl is the constructor of a eAttributeImpl
@@ -36,6 +36,17 @@ func (eAttribute *eAttributeImpl) EStaticClass() EClass {
 	return GetPackage().GetEAttribute()
 }
 
+// GetEAttributeType get the value of eAttributeType
+func (eAttribute *eAttributeImpl) GetEAttributeType() EDataType {
+	panic("GetEAttributeType not implemented")
+
+}
+
+func (eAttribute *eAttributeImpl) basicGetEAttributeType() EDataType {
+	panic("GetEAttributeType not implemented")
+
+}
+
 // IsID get the value of isID
 func (eAttribute *eAttributeImpl) IsID() bool {
 	return eAttribute.isID
@@ -49,17 +60,6 @@ func (eAttribute *eAttributeImpl) SetID(newIsID bool) {
 	if eAttribute.ENotificationRequired() {
 		eAttribute.ENotify(NewNotificationByFeatureID(eAttribute.GetEObject(), SET, EATTRIBUTE__ID, oldIsID, newIsID, NO_INDEX))
 	}
-}
-
-// GetEAttributeType get the value of eAttributeType
-func (eAttribute *eAttributeImpl) GetEAttributeType() EDataType {
-	panic("GetEAttributeType not implemented")
-
-}
-
-func (eAttribute *eAttributeImpl) basicGetEAttributeType() EDataType {
-	panic("GetEAttributeType not implemented")
-
 }
 
 func (eAttribute *eAttributeImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {

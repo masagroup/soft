@@ -46,10 +46,10 @@ func TestEEnumELiteralsEGet(t *testing.T) {
 func TestEEnumELiteralsEInvoke(t *testing.T) {
 	obj := newEEnumImpl()
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(EENUM__GET_EENUM_LITERAL_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(EENUM__GET_EENUM_LITERAL_ESTRING, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(EENUM__GET_EENUM_LITERAL_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(EENUM__GET_EENUM_LITERAL_EINT, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(EENUM__GET_EENUM_LITERAL_BY_LITERAL_ESTRING, nil) })

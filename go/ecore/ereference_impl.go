@@ -18,11 +18,11 @@ package ecore
 // eReferenceImpl is the implementation of the model object 'EReference'
 type eReferenceImpl struct {
 	*eStructuralFeatureExt
-	eKeys            EList
-	isContainment    bool
 	isResolveProxies bool
+	eKeys            EList
 	eReferenceType   EClass
 	eOpposite        EReference
+	isContainment    bool
 	isContainer      bool
 }
 
@@ -31,8 +31,8 @@ func newEReferenceImpl() *eReferenceImpl {
 	eReference := new(eReferenceImpl)
 	eReference.eStructuralFeatureExt = newEStructuralFeatureExt()
 	eReference.SetInterfaces(eReference)
-	eReference.isContainment = false
 	eReference.isResolveProxies = true
+	eReference.isContainment = false
 
 	return eReference
 }
@@ -49,30 +49,6 @@ func (eReference *eReferenceImpl) EStaticClass() EClass {
 	return GetPackage().GetEReference()
 }
 
-// GetEKeys get the value of eKeys
-func (eReference *eReferenceImpl) GetEKeys() EList {
-	if eReference.eKeys == nil {
-		eReference.eKeys = eReference.getInitializers().initEKeys()
-	}
-	return eReference.eKeys
-
-}
-
-// IsContainment get the value of isContainment
-func (eReference *eReferenceImpl) IsContainment() bool {
-	return eReference.isContainment
-
-}
-
-// SetContainment set the value of isContainment
-func (eReference *eReferenceImpl) SetContainment(newIsContainment bool) {
-	oldIsContainment := eReference.isContainment
-	eReference.isContainment = newIsContainment
-	if eReference.ENotificationRequired() {
-		eReference.ENotify(NewNotificationByFeatureID(eReference.GetEObject(), SET, EREFERENCE__CONTAINMENT, oldIsContainment, newIsContainment, NO_INDEX))
-	}
-}
-
 // IsResolveProxies get the value of isResolveProxies
 func (eReference *eReferenceImpl) IsResolveProxies() bool {
 	return eReference.isResolveProxies
@@ -86,6 +62,15 @@ func (eReference *eReferenceImpl) SetResolveProxies(newIsResolveProxies bool) {
 	if eReference.ENotificationRequired() {
 		eReference.ENotify(NewNotificationByFeatureID(eReference.GetEObject(), SET, EREFERENCE__RESOLVE_PROXIES, oldIsResolveProxies, newIsResolveProxies, NO_INDEX))
 	}
+}
+
+// GetEKeys get the value of eKeys
+func (eReference *eReferenceImpl) GetEKeys() EList {
+	if eReference.eKeys == nil {
+		eReference.eKeys = eReference.getInitializers().initEKeys()
+	}
+	return eReference.eKeys
+
 }
 
 // GetEReferenceType get the value of eReferenceType
@@ -116,6 +101,21 @@ func (eReference *eReferenceImpl) SetEOpposite(newEOpposite EReference) {
 	eReference.eOpposite = newEOpposite
 	if eReference.ENotificationRequired() {
 		eReference.ENotify(NewNotificationByFeatureID(eReference.GetEObject(), SET, EREFERENCE__EOPPOSITE, oldEOpposite, newEOpposite, NO_INDEX))
+	}
+}
+
+// IsContainment get the value of isContainment
+func (eReference *eReferenceImpl) IsContainment() bool {
+	return eReference.isContainment
+
+}
+
+// SetContainment set the value of isContainment
+func (eReference *eReferenceImpl) SetContainment(newIsContainment bool) {
+	oldIsContainment := eReference.isContainment
+	eReference.isContainment = newIsContainment
+	if eReference.ENotificationRequired() {
+		eReference.ENotify(NewNotificationByFeatureID(eReference.GetEObject(), SET, EREFERENCE__CONTAINMENT, oldIsContainment, newIsContainment, NO_INDEX))
 	}
 }
 

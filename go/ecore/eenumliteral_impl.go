@@ -18,10 +18,10 @@ package ecore
 // eEnumLiteralImpl is the implementation of the model object 'EEnumLiteral'
 type eEnumLiteralImpl struct {
 	*eNamedElementImpl
-	literal  string
 	value    int
 	instance interface{}
 	eEnum    EEnum
+	literal  string
 }
 
 // newEEnumLiteralImpl is the constructor of a eEnumLiteralImpl
@@ -29,30 +29,15 @@ func newEEnumLiteralImpl() *eEnumLiteralImpl {
 	eEnumLiteral := new(eEnumLiteralImpl)
 	eEnumLiteral.eNamedElementImpl = newENamedElementImpl()
 	eEnumLiteral.SetInterfaces(eEnumLiteral)
-	eEnumLiteral.literal = ""
 	eEnumLiteral.value = 0
 	eEnumLiteral.instance = nil
+	eEnumLiteral.literal = ""
 
 	return eEnumLiteral
 }
 
 func (eEnumLiteral *eEnumLiteralImpl) EStaticClass() EClass {
 	return GetPackage().GetEEnumLiteral()
-}
-
-// GetLiteral get the value of literal
-func (eEnumLiteral *eEnumLiteralImpl) GetLiteral() string {
-	return eEnumLiteral.literal
-
-}
-
-// SetLiteral set the value of literal
-func (eEnumLiteral *eEnumLiteralImpl) SetLiteral(newLiteral string) {
-	oldLiteral := eEnumLiteral.literal
-	eEnumLiteral.literal = newLiteral
-	if eEnumLiteral.ENotificationRequired() {
-		eEnumLiteral.ENotify(NewNotificationByFeatureID(eEnumLiteral.GetEObject(), SET, EENUM_LITERAL__LITERAL, oldLiteral, newLiteral, NO_INDEX))
-	}
 }
 
 // GetValue get the value of value
@@ -92,6 +77,21 @@ func (eEnumLiteral *eEnumLiteralImpl) GetEEnum() EEnum {
 	}
 	return nil
 
+}
+
+// GetLiteral get the value of literal
+func (eEnumLiteral *eEnumLiteralImpl) GetLiteral() string {
+	return eEnumLiteral.literal
+
+}
+
+// SetLiteral set the value of literal
+func (eEnumLiteral *eEnumLiteralImpl) SetLiteral(newLiteral string) {
+	oldLiteral := eEnumLiteral.literal
+	eEnumLiteral.literal = newLiteral
+	if eEnumLiteral.ENotificationRequired() {
+		eEnumLiteral.ENotify(NewNotificationByFeatureID(eEnumLiteral.GetEObject(), SET, EENUM_LITERAL__LITERAL, oldLiteral, newLiteral, NO_INDEX))
+	}
 }
 
 func (eEnumLiteral *eEnumLiteralImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {

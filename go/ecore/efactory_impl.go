@@ -34,9 +34,9 @@ func (eFactory *eFactoryImpl) EStaticClass() EClass {
 	return GetPackage().GetEFactory()
 }
 
-// CreateFromString default implementation
-func (eFactory *eFactoryImpl) CreateFromString(EDataType, string) interface{} {
-	panic("CreateFromString not implemented")
+// Create default implementation
+func (eFactory *eFactoryImpl) Create(EClass) EObject {
+	panic("Create not implemented")
 }
 
 // ConvertToString default implementation
@@ -44,9 +44,9 @@ func (eFactory *eFactoryImpl) ConvertToString(EDataType, interface{}) string {
 	panic("ConvertToString not implemented")
 }
 
-// Create default implementation
-func (eFactory *eFactoryImpl) Create(EClass) EObject {
-	panic("Create not implemented")
+// CreateFromString default implementation
+func (eFactory *eFactoryImpl) CreateFromString(EDataType, string) interface{} {
+	panic("CreateFromString not implemented")
 }
 
 // GetEPackage get the value of ePackage

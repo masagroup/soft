@@ -18,12 +18,12 @@ package ecore
 // ePackageImpl is the implementation of the model object 'EPackage'
 type ePackageImpl struct {
 	*eNamedElementImpl
+	eSuperPackage    EPackage
 	nsURI            string
 	eFactoryInstance EFactory
+	eSubPackages     EList
 	nsPrefix         string
 	eClassifiers     EList
-	eSuperPackage    EPackage
-	eSubPackages     EList
 }
 
 // newEPackageImpl is the constructor of a ePackageImpl
@@ -38,8 +38,8 @@ func newEPackageImpl() *ePackageImpl {
 }
 
 type ePackageImplInitializers interface {
-	initEClassifiers() EList
 	initESubPackages() EList
+	initEClassifiers() EList
 }
 
 func (ePackage *ePackageImpl) getInitializers() ePackageImplInitializers {
@@ -53,6 +53,15 @@ func (ePackage *ePackageImpl) EStaticClass() EClass {
 // GetEClassifier default implementation
 func (ePackage *ePackageImpl) GetEClassifier(string) EClassifier {
 	panic("GetEClassifier not implemented")
+}
+
+// GetESuperPackage get the value of eSuperPackage
+func (ePackage *ePackageImpl) GetESuperPackage() EPackage {
+	if ePackage.EContainerFeatureID() == EPACKAGE__ESUPER_PACKAGE {
+		return ePackage.EContainer().(EPackage)
+	}
+	return nil
+
 }
 
 // GetNsURI get the value of nsURI
@@ -108,6 +117,15 @@ func (ePackage *ePackageImpl) basicSetEFactoryInstance(newEFactoryInstance EFact
 	return notifications
 }
 
+// GetESubPackages get the value of eSubPackages
+func (ePackage *ePackageImpl) GetESubPackages() EList {
+	if ePackage.eSubPackages == nil {
+		ePackage.eSubPackages = ePackage.getInitializers().initESubPackages()
+	}
+	return ePackage.eSubPackages
+
+}
+
 // GetNsPrefix get the value of nsPrefix
 func (ePackage *ePackageImpl) GetNsPrefix() string {
 	return ePackage.nsPrefix
@@ -132,30 +150,12 @@ func (ePackage *ePackageImpl) GetEClassifiers() EList {
 
 }
 
-// GetESuperPackage get the value of eSuperPackage
-func (ePackage *ePackageImpl) GetESuperPackage() EPackage {
-	if ePackage.EContainerFeatureID() == EPACKAGE__ESUPER_PACKAGE {
-		return ePackage.EContainer().(EPackage)
-	}
-	return nil
-
-}
-
-// GetESubPackages get the value of eSubPackages
-func (ePackage *ePackageImpl) GetESubPackages() EList {
-	if ePackage.eSubPackages == nil {
-		ePackage.eSubPackages = ePackage.getInitializers().initESubPackages()
-	}
-	return ePackage.eSubPackages
-
+func (ePackage *ePackageImpl) initESubPackages() EList {
+	return NewEObjectEList(ePackage.GetEObjectInternal(), EPACKAGE__ESUB_PACKAGES, EPACKAGE__ESUPER_PACKAGE, true, true, true, false, false)
 }
 
 func (ePackage *ePackageImpl) initEClassifiers() EList {
 	return NewEObjectEList(ePackage.GetEObjectInternal(), EPACKAGE__ECLASSIFIERS, ECLASSIFIER__EPACKAGE, true, true, true, false, false)
-}
-
-func (ePackage *ePackageImpl) initESubPackages() EList {
-	return NewEObjectEList(ePackage.GetEObjectInternal(), EPACKAGE__ESUB_PACKAGES, EPACKAGE__ESUPER_PACKAGE, true, true, true, false, false)
 }
 
 func (ePackage *ePackageImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {

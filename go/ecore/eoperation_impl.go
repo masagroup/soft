@@ -18,10 +18,10 @@ package ecore
 // eOperationImpl is the implementation of the model object 'EOperation'
 type eOperationImpl struct {
 	*eTypedElementExt
-	operationID      int
 	eContainingClass EClass
-	eExceptions      EList
+	operationID      int
 	eParameters      EList
+	eExceptions      EList
 }
 
 // newEOperationImpl is the constructor of a eOperationImpl
@@ -35,8 +35,8 @@ func newEOperationImpl() *eOperationImpl {
 }
 
 type eOperationImplInitializers interface {
-	initEExceptions() EList
 	initEParameters() EList
+	initEExceptions() EList
 }
 
 func (eOperation *eOperationImpl) getInitializers() eOperationImplInitializers {
@@ -50,6 +50,15 @@ func (eOperation *eOperationImpl) EStaticClass() EClass {
 // IsOverrideOf default implementation
 func (eOperation *eOperationImpl) IsOverrideOf(EOperation) bool {
 	panic("IsOverrideOf not implemented")
+}
+
+// GetEContainingClass get the value of eContainingClass
+func (eOperation *eOperationImpl) GetEContainingClass() EClass {
+	if eOperation.EContainerFeatureID() == EOPERATION__ECONTAINING_CLASS {
+		return eOperation.EContainer().(EClass)
+	}
+	return nil
+
 }
 
 // GetOperationID get the value of operationID
@@ -67,12 +76,12 @@ func (eOperation *eOperationImpl) SetOperationID(newOperationID int) {
 	}
 }
 
-// GetEContainingClass get the value of eContainingClass
-func (eOperation *eOperationImpl) GetEContainingClass() EClass {
-	if eOperation.EContainerFeatureID() == EOPERATION__ECONTAINING_CLASS {
-		return eOperation.EContainer().(EClass)
+// GetEParameters get the value of eParameters
+func (eOperation *eOperationImpl) GetEParameters() EList {
+	if eOperation.eParameters == nil {
+		eOperation.eParameters = eOperation.getInitializers().initEParameters()
 	}
-	return nil
+	return eOperation.eParameters
 
 }
 
@@ -92,21 +101,12 @@ func (eOperation *eOperationImpl) UnsetEExceptions() {
 	}
 }
 
-// GetEParameters get the value of eParameters
-func (eOperation *eOperationImpl) GetEParameters() EList {
-	if eOperation.eParameters == nil {
-		eOperation.eParameters = eOperation.getInitializers().initEParameters()
-	}
-	return eOperation.eParameters
-
+func (eOperation *eOperationImpl) initEParameters() EList {
+	return NewEObjectEList(eOperation.GetEObjectInternal(), EOPERATION__EPARAMETERS, EPARAMETER__EOPERATION, true, true, true, false, false)
 }
 
 func (eOperation *eOperationImpl) initEExceptions() EList {
 	return NewEObjectEList(eOperation.GetEObjectInternal(), EOPERATION__EEXCEPTIONS, -1, false, false, false, true, true)
-}
-
-func (eOperation *eOperationImpl) initEParameters() EList {
-	return NewEObjectEList(eOperation.GetEObjectInternal(), EOPERATION__EPARAMETERS, EPARAMETER__EOPERATION, true, true, true, false, false)
 }
 
 func (eOperation *eOperationImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {

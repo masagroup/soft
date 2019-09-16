@@ -20,10 +20,10 @@ import "reflect"
 // eClassifierImpl is the implementation of the model object 'EClassifier'
 type eClassifierImpl struct {
 	*eNamedElementImpl
-	instanceClass reflect.Type
-	defaultValue  interface{}
 	ePackage      EPackage
 	classifierID  int
+	instanceClass reflect.Type
+	defaultValue  interface{}
 }
 
 // newEClassifierImpl is the constructor of a eClassifierImpl
@@ -31,8 +31,8 @@ func newEClassifierImpl() *eClassifierImpl {
 	eClassifier := new(eClassifierImpl)
 	eClassifier.eNamedElementImpl = newENamedElementImpl()
 	eClassifier.SetInterfaces(eClassifier)
-	eClassifier.instanceClass = nil
 	eClassifier.classifierID = -1
+	eClassifier.instanceClass = nil
 
 	return eClassifier
 }
@@ -44,27 +44,6 @@ func (eClassifier *eClassifierImpl) EStaticClass() EClass {
 // IsInstance default implementation
 func (eClassifier *eClassifierImpl) IsInstance(interface{}) bool {
 	panic("IsInstance not implemented")
-}
-
-// GetInstanceClass get the value of instanceClass
-func (eClassifier *eClassifierImpl) GetInstanceClass() reflect.Type {
-	return eClassifier.instanceClass
-
-}
-
-// SetInstanceClass set the value of instanceClass
-func (eClassifier *eClassifierImpl) SetInstanceClass(newInstanceClass reflect.Type) {
-	oldInstanceClass := eClassifier.instanceClass
-	eClassifier.instanceClass = newInstanceClass
-	if eClassifier.ENotificationRequired() {
-		eClassifier.ENotify(NewNotificationByFeatureID(eClassifier.GetEObject(), SET, ECLASSIFIER__INSTANCE_CLASS, oldInstanceClass, newInstanceClass, NO_INDEX))
-	}
-}
-
-// GetDefaultValue get the value of defaultValue
-func (eClassifier *eClassifierImpl) GetDefaultValue() interface{} {
-	panic("GetDefaultValue not implemented")
-
 }
 
 // GetEPackage get the value of ePackage
@@ -89,6 +68,27 @@ func (eClassifier *eClassifierImpl) SetClassifierID(newClassifierID int) {
 	if eClassifier.ENotificationRequired() {
 		eClassifier.ENotify(NewNotificationByFeatureID(eClassifier.GetEObject(), SET, ECLASSIFIER__CLASSIFIER_ID, oldClassifierID, newClassifierID, NO_INDEX))
 	}
+}
+
+// GetInstanceClass get the value of instanceClass
+func (eClassifier *eClassifierImpl) GetInstanceClass() reflect.Type {
+	return eClassifier.instanceClass
+
+}
+
+// SetInstanceClass set the value of instanceClass
+func (eClassifier *eClassifierImpl) SetInstanceClass(newInstanceClass reflect.Type) {
+	oldInstanceClass := eClassifier.instanceClass
+	eClassifier.instanceClass = newInstanceClass
+	if eClassifier.ENotificationRequired() {
+		eClassifier.ENotify(NewNotificationByFeatureID(eClassifier.GetEObject(), SET, ECLASSIFIER__INSTANCE_CLASS, oldInstanceClass, newInstanceClass, NO_INDEX))
+	}
+}
+
+// GetDefaultValue get the value of defaultValue
+func (eClassifier *eClassifierImpl) GetDefaultValue() interface{} {
+	panic("GetDefaultValue not implemented")
+
 }
 
 func (eClassifier *eClassifierImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {
