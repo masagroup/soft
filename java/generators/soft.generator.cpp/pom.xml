@@ -51,12 +51,13 @@
                     <packagesToRegister>
                         <packageToRegister>org.eclipse.emf.ecore.EcorePackage</packageToRegister>
                     </packagesToRegister>
+                    <uriHandler>${acceleo.uriHandler}</uriHandler>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.1.1</version><!--$NO-MVN-MAN-VER$-->
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
@@ -65,7 +66,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
                             <useBaseVersion>false</useBaseVersion>
                         </configuration>
                     </execution>
@@ -79,7 +80,6 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>soft.generator.cpp.Generate</mainClass>
                         </manifest>
                     </archive>
@@ -101,7 +101,7 @@
                                     value="${project.build.directory}/${project.build.finalName}" />
                                 <property
                                     name="archive.includes"
-                                    value="${project.build.finalName}.${project.packaging} lib/*" />
+                                    value="${project.build.finalName}.${project.packaging} *.jar" />
                                 <zip
                                     basedir="${project.build.directory}"
                                     destfile="${final.name}.zip"

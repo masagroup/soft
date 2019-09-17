@@ -8,7 +8,6 @@
   <artifactId>soft.generators</artifactId>
   <version>1.0.0</version>
   <packaging>pom</packaging>
-  <name>Soft Generators</name>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,14 +16,14 @@
   <repositories>
         <repository>
             <id>Eclipse Acceleo</id>
-            <url>https://repo.eclipse.org/content/groups/acceleo</url>
+            <url>https://repo.eclipse.org/content/repositories/acceleo</url>
         </repository>
   </repositories>
 
   <pluginRepositories>
         <pluginRepository>
             <id>Eclipse Acceleo</id>
-            <url>https://repo.eclipse.org/content/groups/acceleo</url>
+            <url>https://repo.eclipse.org/content/repositories/acceleo</url>
         </pluginRepository>
   </pluginRepositories>
   
@@ -32,16 +31,25 @@
     <profile>
         <id>ant</id>
         <properties>
-            <project.target>../../../out/maven/${project.artifactId}</project.target>
+        	<project.target>../../../out/maven/${project.artifactId}</project.target>
+            <acceleo.uriHandler>soft.acceleo.AcceleoURIHandler</acceleo.uriHandler>
         </properties>
+        <dependencies>
+            <dependency>
+            	<groupId>soft.acceleo</groupId>
+			    <artifactId>soft.acceleo</artifactId>
+			    <version>1.0.0</version>
+			</dependency>
+        </dependencies>
     </profile>
     <profile>
-        <id>default</id>
+        <id>eclipse</id>
         <activation>
             <activeByDefault>true</activeByDefault>
         </activation>
         <properties>
-            <project.target>.target</project.target>
+        	<project.target>.target</project.target>
+            <acceleo.uriHandler>org.eclipse.acceleo.maven.AcceleoURIHandler</acceleo.uriHandler>
         </properties>
     </profile>
   </profiles>

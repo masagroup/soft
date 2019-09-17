@@ -7,7 +7,7 @@
     <property file="build.properties"/>
     <property name="aria2.SHA-512" value="af965693edafe504595d2fd24f9b18ccdbbda53c1a8e9e454b12e01db26644097ee76dc27760c8c5dae100af2240eb37bffedfda0d6d9d3bc1373189cec40899"/>
     <property name="cmake.SHA-512" value="44ea4ffd21fbdaa7158749a0a86de7ec294dc2569f743ff6a5ef4e650cd16063bad55b54d35a506d7c7985bdf63f9207b918d18d9381801a9e321f71c622aee1"/>
-    <property name="maven.SHA-512" value="0bb466363a7f60a9cd48f680ff14bdab64ded3cf5cffeb280c3c711acdd12cdb5c4891a0f1215bf69a22e6c4736f449f35b1e6a3c43c5ac8d397b24b71c02c1a"/>
+    <property name="maven.SHA-512" value="afd6549f3e50c105022baae7951ed6b052e748be4b5c57b2136c5635cb0773495766455ea4b70a633f5e4936f26be16efa1f44b3745fddb28121a0842923ef9f"/>
     <property name="ninja.SHA-512" value="56f3b94ed7f9e36446bb6fe2a786156befdde6b279ee6d9d7ebd8b6e5d6664cdfe1d526e158f68bfc5cf947bcf9360df8d1e1a8939b6db1b2f0658256a17d66b"/>
     <property name="go.SHA-512" value="5b7d060564be0bac615188c15195ad543c169346940a7a76238caba8f751276bc4e1e0cbbb7472cfd03ebfcb158ba38fe9bc5cce3c170edf9b04df803650bdc2"/>
     
@@ -200,9 +200,7 @@
     </target>
     
     <target name="maven.install" depends="aria2.install,maven.checksum" unless="maven.installed">
-        <install name="maven" url="https://www-us.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.zip">
-            <arg value="--checksum=sha-512=7d14ab2b713880538974aa361b987231473fbbed20e83586d542c691ace1139026f232bd46fdcce5e8887f528ab1c3fbfc1b2adec90518b6941235952d3868e9"/>
-        </install>
+        <install name="maven" url="https://archive.apache.org/dist/maven/maven-3/3.6.2/binaries/apache-maven-3.6.2-bin.zip"/>
     </target>
     
     <macrodef name="maven_exec">
@@ -349,12 +347,17 @@
       Generator
     ============================================================================
     -->
-    <target name="generators.build">
+    <target name="acceleo.build">
+        <maven_exec dir="${java.dir}/acceleo">
+            <arg line="clean install" />
+        </maven_exec>
+    </target>
+    
+    <target name="generators.build" depends="acceleo.build">
         <maven_exec dir="${java.dir}/generators">
             <arg value="-Pant"/>
             <arg line="clean verify" />
         </maven_exec>
-    
     </target>
     
     <target name="generators.clean">
