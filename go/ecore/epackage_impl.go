@@ -18,12 +18,12 @@ package ecore
 // ePackageImpl is the implementation of the model object 'EPackage'
 type ePackageImpl struct {
 	*eNamedElementImpl
-	eSuperPackage    EPackage
-	nsURI            string
+	eClassifiers     EList
 	eFactoryInstance EFactory
 	eSubPackages     EList
+	eSuperPackage    EPackage
 	nsPrefix         string
-	eClassifiers     EList
+	nsURI            string
 }
 
 // newEPackageImpl is the constructor of a ePackageImpl

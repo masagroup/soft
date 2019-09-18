@@ -19,9 +19,9 @@ package ecore
 type eOperationImpl struct {
 	*eTypedElementExt
 	eContainingClass EClass
-	operationID      int
-	eParameters      EList
 	eExceptions      EList
+	eParameters      EList
+	operationID      int
 }
 
 // newEOperationImpl is the constructor of a eOperationImpl

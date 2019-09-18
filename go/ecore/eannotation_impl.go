@@ -18,8 +18,8 @@ package ecore
 // eAnnotationImpl is the implementation of the model object 'EAnnotation'
 type eAnnotationImpl struct {
 	*eModelElementExt
-	details       EList
 	contents      EList
+	details       EList
 	eModelElement EModelElement
 	references    EList
 	source        string

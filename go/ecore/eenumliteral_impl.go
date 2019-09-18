@@ -18,10 +18,10 @@ package ecore
 // eEnumLiteralImpl is the implementation of the model object 'EEnumLiteral'
 type eEnumLiteralImpl struct {
 	*eNamedElementImpl
-	value    int
-	instance interface{}
 	eEnum    EEnum
+	instance interface{}
 	literal  string
+	value    int
 }
 
 // newEEnumLiteralImpl is the constructor of a eEnumLiteralImpl

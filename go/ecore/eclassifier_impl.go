@@ -20,10 +20,10 @@ import "reflect"
 // eClassifierImpl is the implementation of the model object 'EClassifier'
 type eClassifierImpl struct {
 	*eNamedElementImpl
-	ePackage      EPackage
 	classifierID  int
-	instanceClass reflect.Type
 	defaultValue  interface{}
+	ePackage      EPackage
+	instanceClass reflect.Type
 }
 
 // newEClassifierImpl is the constructor of a eClassifierImpl

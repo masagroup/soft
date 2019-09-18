@@ -18,12 +18,12 @@ package ecore
 // eReferenceImpl is the implementation of the model object 'EReference'
 type eReferenceImpl struct {
 	*eStructuralFeatureExt
-	isResolveProxies bool
 	eKeys            EList
-	eReferenceType   EClass
 	eOpposite        EReference
-	isContainment    bool
+	eReferenceType   EClass
 	isContainer      bool
+	isContainment    bool
+	isResolveProxies bool
 }
 
 // newEReferenceImpl is the constructor of a eReferenceImpl
@@ -47,27 +47,6 @@ func (eReference *eReferenceImpl) getInitializers() eReferenceImplInitializers {
 
 func (eReference *eReferenceImpl) EStaticClass() EClass {
 	return GetPackage().GetEReference()
-}
-
-// IsContainer get the value of isContainer
-func (eReference *eReferenceImpl) IsContainer() bool {
-	panic("IsContainer not implemented")
-
-}
-
-// IsContainment get the value of isContainment
-func (eReference *eReferenceImpl) IsContainment() bool {
-	return eReference.isContainment
-
-}
-
-// SetContainment set the value of isContainment
-func (eReference *eReferenceImpl) SetContainment(newIsContainment bool) {
-	oldIsContainment := eReference.isContainment
-	eReference.isContainment = newIsContainment
-	if eReference.ENotificationRequired() {
-		eReference.ENotify(NewNotificationByFeatureID(eReference.GetEObject(), SET, EREFERENCE__CONTAINMENT, oldIsContainment, newIsContainment, NO_INDEX))
-	}
 }
 
 // GetEKeys get the value of eKeys
@@ -108,6 +87,27 @@ func (eReference *eReferenceImpl) GetEReferenceType() EClass {
 func (eReference *eReferenceImpl) basicGetEReferenceType() EClass {
 	panic("GetEReferenceType not implemented")
 
+}
+
+// IsContainer get the value of isContainer
+func (eReference *eReferenceImpl) IsContainer() bool {
+	panic("IsContainer not implemented")
+
+}
+
+// IsContainment get the value of isContainment
+func (eReference *eReferenceImpl) IsContainment() bool {
+	return eReference.isContainment
+
+}
+
+// SetContainment set the value of isContainment
+func (eReference *eReferenceImpl) SetContainment(newIsContainment bool) {
+	oldIsContainment := eReference.isContainment
+	eReference.isContainment = newIsContainment
+	if eReference.ENotificationRequired() {
+		eReference.ENotify(NewNotificationByFeatureID(eReference.GetEObject(), SET, EREFERENCE__CONTAINMENT, oldIsContainment, newIsContainment, NO_INDEX))
+	}
 }
 
 // IsResolveProxies get the value of isResolveProxies

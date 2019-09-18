@@ -18,12 +18,12 @@ package ecore
 // eGenericTypeImpl is the implementation of the model object 'EGenericType'
 type eGenericTypeImpl struct {
 	*EObjectImpl
-	eUpperBound    EGenericType
-	eTypeArguments EList
-	eRawType       EClassifier
-	eLowerBound    EGenericType
-	eTypeParameter ETypeParameter
 	eClassifier    EClassifier
+	eLowerBound    EGenericType
+	eRawType       EClassifier
+	eTypeArguments EList
+	eTypeParameter ETypeParameter
+	eUpperBound    EGenericType
 }
 
 // newEGenericTypeImpl is the constructor of a eGenericTypeImpl
