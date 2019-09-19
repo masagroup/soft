@@ -38,7 +38,7 @@ func NewDynamicEObjectImpl() *DynamicEObjectImpl {
 	o.EObjectImpl = NewEObjectImpl()
 	o.adapter = &dynamicFeaturesAdapter{Adapter: NewAdapter(), object: o}
 	o.SetInterfaces(o)
-	o.EAdapters().Add(o.adapter)
+	o.SetEClass(nil)
 	return o
 }
 
@@ -52,7 +52,16 @@ func (o *DynamicEObjectImpl) EClass() EClass {
 
 // SetEClass ...
 func (o *DynamicEObjectImpl) SetEClass(class EClass) {
+	if o.class != nil {
+		o.class.EAdapters().Remove( o.adapter )
+	}
+
 	o.class = class
+	o.resizeProperties()
+
+	if o.class != nil {
+		o.class.EAdapters().Add( o.adapter )
+	}
 }
 
 // EGetFromID ...
