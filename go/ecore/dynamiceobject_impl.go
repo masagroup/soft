@@ -53,14 +53,14 @@ func (o *DynamicEObjectImpl) EClass() EClass {
 // SetEClass ...
 func (o *DynamicEObjectImpl) SetEClass(class EClass) {
 	if o.class != nil {
-		o.class.EAdapters().Remove( o.adapter )
+		o.class.EAdapters().Remove(o.adapter)
 	}
 
 	o.class = class
 	o.resizeProperties()
 
 	if o.class != nil {
-		o.class.EAdapters().Add( o.adapter )
+		o.class.EAdapters().Add(o.adapter)
 	}
 }
 
@@ -190,7 +190,10 @@ func (o *DynamicEObjectImpl) EUnsetFromID(featureID int) {
 }
 
 func (o *DynamicEObjectImpl) resizeProperties() {
-
+	newSize := o.EClass().GetFeatureCount() - o.eStaticFeatureCount()
+	newProperties := make([]interface{}, newSize)
+	copy(newProperties, o.properties)
+	o.properties = newProperties
 }
 
 func (o *DynamicEObjectImpl) eStaticFeatureCount() int {
