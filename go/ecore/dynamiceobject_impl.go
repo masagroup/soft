@@ -64,6 +64,21 @@ func (o *DynamicEObjectImpl) EIsSetFromID(featureID int) bool {
 	return o.EObjectImpl.EIsSetFromID(featureID)
 }
 
+func (o *DynamicEObjectImpl) EUnsetFromID(featureID int) {
+	dynamicFeatureID := featureID - o.eStaticFeatureCount()
+	if dynamicFeatureID >= 0 {
+		oldValue := o.properties[dynamicFeatureID]
+
+		o.properties[dynamicFeatureID] = nil
+
+		if o.ENotificationRequired() {
+			o.ENotify(NewNotificationByFeatureID(o.GetEObject(), UNSET, featureID, oldValue, nil, NO_INDEX))
+		}
+	} else {
+		o.EObjectImpl.EUnsetFromID(featureID)
+	}
+}
+
 func (o *DynamicEObjectImpl) eStaticFeatureCount() int {
 	return o.EStaticClass().GetFeatureCount()
 }
