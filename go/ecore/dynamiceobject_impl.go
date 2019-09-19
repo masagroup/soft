@@ -56,6 +56,88 @@ func (o *DynamicEObjectImpl) EGetFromID(featureID int, resolve bool, core bool) 
 	return o.EObjectImpl.EGetFromID(featureID, resolve, core)
 }
 
+// ESetFromID ...
+func (o *DynamicEObjectImpl) ESetFromID(featureID int, newValue interface{}) {
+	dynamicFeatureID := featureID - o.eStaticFeatureCount()
+    if dynamicFeatureID >= 0 {
+        dynamicFeature := o.eDynamicFeature( featureID )
+        if o.isContainer( dynamicFeature ) {
+			// container
+			newContainer := newValue.(EObject)
+            if newContainer != o.EContainer() || ( newContainer != nil && o.EContainerFeatureID() != featureID ) {
+                var notifications ENotificationChain
+                if o.EContainer() != nil {
+					notifications = o.EBasicRemoveFromContainer( notifications )
+				}
+                if newContainer != nil {
+					notifications = newContainer.(EObjectInternal).EInverseAdd( o.GetEObject(), featureID, notifications )
+				}
+				notifications = o.EBasicSetContainer( newContainer, featureID, notifications )
+				if ( notifications != nil ) {
+					notifications.Dispatch()
+				}
+            } else if o.ENotificationRequired() {
+				o.ENotify(NewNotificationByFeatureID(o.GetEObject(), SET, featureID, newValue, newValue, NO_INDEX))
+			}
+        } else if o.isBidirectional( dynamicFeature ) || o.isContains( dynamicFeature ) {
+            // inverse - opposite
+            oldValue := o.properties[ dynamicFeatureID ]
+            if( oldValue != newValue ) {
+				var notifications ENotificationChain
+				oldObject , _ := oldValue.(EObject)
+                newObject , _ := newValue.(EObject)
+                
+                if !o.isBidirectional( dynamicFeature ) {
+                    if oldObject != nil {
+						notifications = oldObject.(EObjectInternal).EInverseRemove( o.GetEObject(), EOPPOSITE_FEATURE_BASE - featureID, notifications )
+					}
+                    if newObject != nil {
+						notifications = newObject.(EObjectInternal).EInverseAdd( o.GetEObject(), EOPPOSITE_FEATURE_BASE - featureID, notifications )
+					}
+                } else {
+					dynamicReference := dynamicFeature.(EReference)
+                    reverseFeature := dynamicReference.GetEOpposite()
+                    if oldObject != nil {
+						notifications = oldObject.(EObjectInternal).EInverseRemove( o.GetEObject(), reverseFeature.GetFeatureID(), notifications )
+					}
+                    if newObject != nil {
+						notifications = newObject.(EObjectInternal).EInverseAdd( o.GetEObject(), reverseFeature.GetFeatureID(), notifications )
+					}
+                }
+                // basic set
+                o.properties[ dynamicFeatureID ] = newValue
+                
+                // create notification
+                if o.ENotificationRequired() {
+					notification := NewNotificationByFeatureID(o.GetEObject(), SET, featureID, oldValue, newValue, NO_INDEX)
+                    if notifications != nil {
+						notifications.Add( notification )
+					} else {
+						notifications = notification
+					}
+                }
+
+                // notify
+                if notifications != nil {
+					notifications.Dispatch()
+				}
+            }
+        } else {
+            // basic set
+            oldValue := o.properties[ dynamicFeatureID ]
+            o.properties[ dynamicFeatureID ] = newValue;
+
+            // notify
+			if o.ENotificationRequired() {
+				o.ENotify(NewNotificationByFeatureID(o.GetEObject(), SET, featureID, oldValue, newValue, NO_INDEX))
+			}
+        }
+    } else {
+		o.EObjectImpl.ESetFromID(featureID, newValue )
+	}
+}
+
+// EIsSetFromID ...
 func (o *DynamicEObjectImpl) EIsSetFromID(featureID int) bool {
 	dynamicFeatureID := featureID - o.eStaticFeatureCount()
 	if dynamicFeatureID >= 0 {
@@ -64,6 +146,7 @@ func (o *DynamicEObjectImpl) EIsSetFromID(featureID int) bool {
 	return o.EObjectImpl.EIsSetFromID(featureID)
 }
 
+// EUnsetFromID ...
 func (o *DynamicEObjectImpl) EUnsetFromID(featureID int) {
 	dynamicFeatureID := featureID - o.eStaticFeatureCount()
 	if dynamicFeatureID >= 0 {
