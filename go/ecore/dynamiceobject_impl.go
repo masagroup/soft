@@ -37,6 +37,7 @@ func (o *DynamicEObjectImpl) SetEClass(class EClass) {
 	o.class = class
 }
 
+// EGetFromID ...
 func (o *DynamicEObjectImpl) EGetFromID(featureID int, resolve bool, core bool) interface{} {
 	dynamicFeatureID := featureID - o.eStaticFeatureCount()
 	if dynamicFeatureID >= 0 {
@@ -53,6 +54,14 @@ func (o *DynamicEObjectImpl) EGetFromID(featureID int, resolve bool, core bool) 
 		return result
 	}
 	return o.EObjectImpl.EGetFromID(featureID, resolve, core)
+}
+
+func (o *DynamicEObjectImpl) EIsSetFromID(featureID int) bool {
+	dynamicFeatureID := featureID - o.eStaticFeatureCount()
+	if dynamicFeatureID >= 0 {
+		return o.properties[dynamicFeatureID] != nil
+	}
+	return o.EObjectImpl.EIsSetFromID(featureID)
 }
 
 func (o *DynamicEObjectImpl) eStaticFeatureCount() int {
