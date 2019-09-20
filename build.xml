@@ -55,6 +55,8 @@
                         <arg value="--continue=true"/>
                         <arg value="--allow-overwrite=true"/>
                         <arg value="--auto-file-renaming=false"/>
+                        <arg value="--show-console-readout=false"/>
+                        <arg value="--summary-interval=0"/>
                         <arg value="--dir"/>
                         <arg value="@{dir}"/>
                         <arg value="--out=${output}"/>

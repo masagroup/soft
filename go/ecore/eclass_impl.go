@@ -18,22 +18,22 @@ package ecore
 // eClassImpl is the implementation of the model object 'EClass'
 type eClassImpl struct {
 	*eClassifierExt
-	eOperations            EList
+	eAllAttributes         EList
+	eAllContainments       EList
 	eAllOperations         EList
-	isAbstract             bool
-	eContainments          EList
+	eAllReferences         EList
+	eAllStructuralFeatures EList
 	eAllSuperTypes         EList
 	eAttributes            EList
-	eAllAttributes         EList
-	isInterface            bool
-	eAllReferences         EList
-	eAllContainments       EList
-	eAllStructuralFeatures EList
-	eSuperTypes            EList
-	eIDAttribute           EAttribute
-	eReferences            EList
+	eContainments          EList
 	eCrossReferences       EList
+	eIDAttribute           EAttribute
+	eOperations            EList
+	eReferences            EList
 	eStructuralFeatures    EList
+	eSuperTypes            EList
+	isAbstract             bool
+	isInterface            bool
 }
 
 // newEClassImpl is the constructor of a eClassImpl
@@ -120,21 +120,6 @@ func (eClass *eClassImpl) GetOverride(EOperation) EOperation {
 // IsSuperTypeOf default implementation
 func (eClass *eClassImpl) IsSuperTypeOf(EClass) bool {
 	panic("IsSuperTypeOf not implemented")
-}
-
-// IsAbstract get the value of isAbstract
-func (eClass *eClassImpl) IsAbstract() bool {
-	return eClass.isAbstract
-
-}
-
-// SetAbstract set the value of isAbstract
-func (eClass *eClassImpl) SetAbstract(newIsAbstract bool) {
-	oldIsAbstract := eClass.isAbstract
-	eClass.isAbstract = newIsAbstract
-	if eClass.ENotificationRequired() {
-		eClass.ENotify(NewNotificationByFeatureID(eClass.GetEObject(), SET, ECLASS__ABSTRACT, oldIsAbstract, newIsAbstract, NO_INDEX))
-	}
 }
 
 // GetEAllAttributes get the value of eAllAttributes
@@ -239,6 +224,21 @@ func (eClass *eClassImpl) GetESuperTypes() EList {
 	}
 	return eClass.eSuperTypes
 
+}
+
+// IsAbstract get the value of isAbstract
+func (eClass *eClassImpl) IsAbstract() bool {
+	return eClass.isAbstract
+
+}
+
+// SetAbstract set the value of isAbstract
+func (eClass *eClassImpl) SetAbstract(newIsAbstract bool) {
+	oldIsAbstract := eClass.isAbstract
+	eClass.isAbstract = newIsAbstract
+	if eClass.ENotificationRequired() {
+		eClass.ENotify(NewNotificationByFeatureID(eClass.GetEObject(), SET, ECLASS__ABSTRACT, oldIsAbstract, newIsAbstract, NO_INDEX))
+	}
 }
 
 // IsInterface get the value of isInterface

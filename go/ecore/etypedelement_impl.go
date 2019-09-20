@@ -18,11 +18,11 @@ package ecore
 // eTypedElementImpl is the implementation of the model object 'ETypedElement'
 type eTypedElementImpl struct {
 	*eNamedElementImpl
-	isUnique   bool
 	eType      EClassifier
-	isOrdered  bool
 	isMany     bool
+	isOrdered  bool
 	isRequired bool
+	isUnique   bool
 	lowerBound int
 	upperBound int
 }
@@ -32,9 +32,9 @@ func newETypedElementImpl() *eTypedElementImpl {
 	eTypedElement := new(eTypedElementImpl)
 	eTypedElement.eNamedElementImpl = newENamedElementImpl()
 	eTypedElement.SetInterfaces(eTypedElement)
-	eTypedElement.lowerBound = 0
 	eTypedElement.isOrdered = true
 	eTypedElement.isUnique = true
+	eTypedElement.lowerBound = 0
 	eTypedElement.upperBound = 1
 
 	return eTypedElement
@@ -68,21 +68,6 @@ func (eTypedElement *eTypedElementImpl) SetEType(newEType EClassifier) {
 func (eTypedElement *eTypedElementImpl) UnsetEType() {
 	if eTypedElement.ENotificationRequired() {
 		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.GetEObject(), UNSET, ETYPED_ELEMENT__ETYPE, nil, nil, NO_INDEX))
-	}
-}
-
-// GetLowerBound get the value of lowerBound
-func (eTypedElement *eTypedElementImpl) GetLowerBound() int {
-	return eTypedElement.lowerBound
-
-}
-
-// SetLowerBound set the value of lowerBound
-func (eTypedElement *eTypedElementImpl) SetLowerBound(newLowerBound int) {
-	oldLowerBound := eTypedElement.lowerBound
-	eTypedElement.lowerBound = newLowerBound
-	if eTypedElement.ENotificationRequired() {
-		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.GetEObject(), SET, ETYPED_ELEMENT__LOWER_BOUND, oldLowerBound, newLowerBound, NO_INDEX))
 	}
 }
 
@@ -125,6 +110,21 @@ func (eTypedElement *eTypedElementImpl) SetUnique(newIsUnique bool) {
 	eTypedElement.isUnique = newIsUnique
 	if eTypedElement.ENotificationRequired() {
 		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.GetEObject(), SET, ETYPED_ELEMENT__UNIQUE, oldIsUnique, newIsUnique, NO_INDEX))
+	}
+}
+
+// GetLowerBound get the value of lowerBound
+func (eTypedElement *eTypedElementImpl) GetLowerBound() int {
+	return eTypedElement.lowerBound
+
+}
+
+// SetLowerBound set the value of lowerBound
+func (eTypedElement *eTypedElementImpl) SetLowerBound(newLowerBound int) {
+	oldLowerBound := eTypedElement.lowerBound
+	eTypedElement.lowerBound = newLowerBound
+	if eTypedElement.ENotificationRequired() {
+		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.GetEObject(), SET, ETYPED_ELEMENT__LOWER_BOUND, oldLowerBound, newLowerBound, NO_INDEX))
 	}
 }
 

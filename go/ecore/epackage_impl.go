@@ -18,12 +18,12 @@ package ecore
 // ePackageImpl is the implementation of the model object 'EPackage'
 type ePackageImpl struct {
 	*eNamedElementImpl
-	eSuperPackage    EPackage
-	nsURI            string
+	eClassifiers     EList
 	eFactoryInstance EFactory
 	eSubPackages     EList
+	eSuperPackage    EPackage
 	nsPrefix         string
-	eClassifiers     EList
+	nsURI            string
 }
 
 // newEPackageImpl is the constructor of a ePackageImpl
@@ -78,7 +78,7 @@ func (ePackage *ePackageImpl) SetEFactoryInstance(newEFactoryInstance EFactory) 
 			notifications = ePackage.eFactoryInstance.(EObjectInternal).EInverseRemove(ePackage, EFACTORY__EPACKAGE, notifications)
 		}
 		if newEFactoryInstance != nil {
-			notifications = newEFactoryInstance.(EObjectInternal).EInverseAdd(ePackage, EFACTORY__EPACKAGE, notifications)
+			notifications = newEFactoryInstance.(EObjectInternal).EInverseAdd(ePackage.GetEObject(), EFACTORY__EPACKAGE, notifications)
 		}
 		notifications = ePackage.basicSetEFactoryInstance(newEFactoryInstance, notifications)
 		if notifications != nil {
@@ -254,7 +254,7 @@ func (ePackage *ePackageImpl) EBasicInverseAdd(otherEnd EObject, featureID int, 
 	case EPACKAGE__EFACTORY_INSTANCE:
 		msgs := notifications
 		if ePackage.eFactoryInstance != nil {
-			msgs = ePackage.eFactoryInstance.(EObjectInternal).EInverseRemove(ePackage, EOPPOSITE_FEATURE_BASE-EPACKAGE__EFACTORY_INSTANCE, msgs)
+			msgs = ePackage.eFactoryInstance.(EObjectInternal).EInverseRemove(ePackage.GetEObject(), EOPPOSITE_FEATURE_BASE-EPACKAGE__EFACTORY_INSTANCE, msgs)
 		}
 		return ePackage.basicSetEFactoryInstance(otherEnd.(EFactory), msgs)
 	case EPACKAGE__ESUB_PACKAGES:

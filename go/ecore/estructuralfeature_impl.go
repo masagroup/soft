@@ -20,15 +20,15 @@ import "reflect"
 // eStructuralFeatureImpl is the implementation of the model object 'EStructuralFeature'
 type eStructuralFeatureImpl struct {
 	*eTypedElementExt
-	isVolatile          bool
-	isDerived           bool
 	defaultValue        interface{}
-	isUnsettable        bool
 	defaultValueLiteral string
+	eContainingClass    EClass
 	featureID           int
 	isChangeable        bool
-	eContainingClass    EClass
+	isDerived           bool
 	isTransient         bool
+	isUnsettable        bool
+	isVolatile          bool
 }
 
 // newEStructuralFeatureImpl is the constructor of a eStructuralFeatureImpl
@@ -36,10 +36,10 @@ func newEStructuralFeatureImpl() *eStructuralFeatureImpl {
 	eStructuralFeature := new(eStructuralFeatureImpl)
 	eStructuralFeature.eTypedElementExt = newETypedElementExt()
 	eStructuralFeature.SetInterfaces(eStructuralFeature)
-	eStructuralFeature.isChangeable = true
 	eStructuralFeature.defaultValueLiteral = ""
-	eStructuralFeature.isDerived = false
 	eStructuralFeature.featureID = -1
+	eStructuralFeature.isChangeable = true
+	eStructuralFeature.isDerived = false
 	eStructuralFeature.isTransient = false
 	eStructuralFeature.isUnsettable = false
 	eStructuralFeature.isVolatile = false
@@ -54,21 +54,6 @@ func (eStructuralFeature *eStructuralFeatureImpl) EStaticClass() EClass {
 // GetContainerClass default implementation
 func (eStructuralFeature *eStructuralFeatureImpl) GetContainerClass() reflect.Type {
 	panic("GetContainerClass not implemented")
-}
-
-// IsChangeable get the value of isChangeable
-func (eStructuralFeature *eStructuralFeatureImpl) IsChangeable() bool {
-	return eStructuralFeature.isChangeable
-
-}
-
-// SetChangeable set the value of isChangeable
-func (eStructuralFeature *eStructuralFeatureImpl) SetChangeable(newIsChangeable bool) {
-	oldIsChangeable := eStructuralFeature.isChangeable
-	eStructuralFeature.isChangeable = newIsChangeable
-	if eStructuralFeature.ENotificationRequired() {
-		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.GetEObject(), SET, ESTRUCTURAL_FEATURE__CHANGEABLE, oldIsChangeable, newIsChangeable, NO_INDEX))
-	}
 }
 
 // GetDefaultValue get the value of defaultValue
@@ -97,21 +82,6 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetDefaultValueLiteral(newDefa
 	}
 }
 
-// IsDerived get the value of isDerived
-func (eStructuralFeature *eStructuralFeatureImpl) IsDerived() bool {
-	return eStructuralFeature.isDerived
-
-}
-
-// SetDerived set the value of isDerived
-func (eStructuralFeature *eStructuralFeatureImpl) SetDerived(newIsDerived bool) {
-	oldIsDerived := eStructuralFeature.isDerived
-	eStructuralFeature.isDerived = newIsDerived
-	if eStructuralFeature.ENotificationRequired() {
-		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.GetEObject(), SET, ESTRUCTURAL_FEATURE__DERIVED, oldIsDerived, newIsDerived, NO_INDEX))
-	}
-}
-
 // GetEContainingClass get the value of eContainingClass
 func (eStructuralFeature *eStructuralFeatureImpl) GetEContainingClass() EClass {
 	if eStructuralFeature.EContainerFeatureID() == ESTRUCTURAL_FEATURE__ECONTAINING_CLASS {
@@ -133,6 +103,36 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetFeatureID(newFeatureID int)
 	eStructuralFeature.featureID = newFeatureID
 	if eStructuralFeature.ENotificationRequired() {
 		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.GetEObject(), SET, ESTRUCTURAL_FEATURE__FEATURE_ID, oldFeatureID, newFeatureID, NO_INDEX))
+	}
+}
+
+// IsChangeable get the value of isChangeable
+func (eStructuralFeature *eStructuralFeatureImpl) IsChangeable() bool {
+	return eStructuralFeature.isChangeable
+
+}
+
+// SetChangeable set the value of isChangeable
+func (eStructuralFeature *eStructuralFeatureImpl) SetChangeable(newIsChangeable bool) {
+	oldIsChangeable := eStructuralFeature.isChangeable
+	eStructuralFeature.isChangeable = newIsChangeable
+	if eStructuralFeature.ENotificationRequired() {
+		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.GetEObject(), SET, ESTRUCTURAL_FEATURE__CHANGEABLE, oldIsChangeable, newIsChangeable, NO_INDEX))
+	}
+}
+
+// IsDerived get the value of isDerived
+func (eStructuralFeature *eStructuralFeatureImpl) IsDerived() bool {
+	return eStructuralFeature.isDerived
+
+}
+
+// SetDerived set the value of isDerived
+func (eStructuralFeature *eStructuralFeatureImpl) SetDerived(newIsDerived bool) {
+	oldIsDerived := eStructuralFeature.isDerived
+	eStructuralFeature.isDerived = newIsDerived
+	if eStructuralFeature.ENotificationRequired() {
+		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.GetEObject(), SET, ESTRUCTURAL_FEATURE__DERIVED, oldIsDerived, newIsDerived, NO_INDEX))
 	}
 }
 
