@@ -254,7 +254,7 @@ func (ePackage *ePackageImpl) EBasicInverseAdd(otherEnd EObject, featureID int, 
 	case EPACKAGE__EFACTORY_INSTANCE:
 		msgs := notifications
 		if ePackage.eFactoryInstance != nil {
-			msgs = ePackage.eFactoryInstance.(EObjectInternal).EInverseRemove(ePackage, EOPPOSITE_FEATURE_BASE-EPACKAGE__EFACTORY_INSTANCE, msgs)
+			msgs = ePackage.eFactoryInstance.(EObjectInternal).EInverseRemove(ePackage.GetEObject(), EOPPOSITE_FEATURE_BASE-EPACKAGE__EFACTORY_INSTANCE, msgs)
 		}
 		return ePackage.basicSetEFactoryInstance(otherEnd.(EFactory), msgs)
 	case EPACKAGE__ESUB_PACKAGES:
