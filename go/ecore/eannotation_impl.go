@@ -84,7 +84,7 @@ func (eAnnotation *eAnnotationImpl) SetEModelElement(newEModelElement EModelElem
 			notifications = eAnnotation.EBasicRemoveFromContainer(notifications)
 		}
 		if newEModelElement != nil {
-			notifications = newEModelElement.(EObjectInternal).EInverseAdd(eAnnotation, EANNOTATION__EMODEL_ELEMENT, notifications)
+			notifications = newEModelElement.(EObjectInternal).EInverseAdd(eAnnotation.GetEObject(), EANNOTATION__EMODEL_ELEMENT, notifications)
 		}
 		notifications = eAnnotation.basicSetEModelElement(newEModelElement, notifications)
 		if notifications != nil {

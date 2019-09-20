@@ -78,7 +78,7 @@ func (ePackage *ePackageImpl) SetEFactoryInstance(newEFactoryInstance EFactory) 
 			notifications = ePackage.eFactoryInstance.(EObjectInternal).EInverseRemove(ePackage, EFACTORY__EPACKAGE, notifications)
 		}
 		if newEFactoryInstance != nil {
-			notifications = newEFactoryInstance.(EObjectInternal).EInverseAdd(ePackage, EFACTORY__EPACKAGE, notifications)
+			notifications = newEFactoryInstance.(EObjectInternal).EInverseAdd(ePackage.GetEObject(), EFACTORY__EPACKAGE, notifications)
 		}
 		notifications = ePackage.basicSetEFactoryInstance(newEFactoryInstance, notifications)
 		if notifications != nil {

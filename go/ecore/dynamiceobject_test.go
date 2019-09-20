@@ -69,4 +69,3 @@ func TestDynamicEObject_Unset(t *testing.T) {
 	o.EUnset(f)
 	assert.Nil(t, o.EGet(f))
 }
-
