@@ -47,10 +47,26 @@ func TestDynamicEObject_GetSet(t *testing.T) {
 
 	f := GetFactory().CreateEAttribute()
 	c.GetEStructuralFeatures().Add(f)
-	l := c.GetEAllStructuralFeatures()
-	assert.True(t, l.Contains(f))
 	assert.Nil(t, o.EGet(f))
 
 	o.ESet(f, 1)
 	assert.Equal(t, 1, o.EGet(f))
 }
+
+func TestDynamicEObject_Unset(t *testing.T) {
+	o := NewDynamicEObjectImpl()
+	c := GetFactory().CreateEClass()
+	o.SetEClass(c)
+	assert.Equal(t, c, o.EClass())
+
+	f := GetFactory().CreateEAttribute()
+	c.GetEStructuralFeatures().Add(f)
+	assert.Nil(t, o.EGet(f))
+
+	o.ESet(f, 1)
+	assert.Equal(t, 1, o.EGet(f))
+
+	o.EUnset(f)
+	assert.Nil(t, o.EGet(f))
+}
+
