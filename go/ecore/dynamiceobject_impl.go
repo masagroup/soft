@@ -189,6 +189,11 @@ func (o *DynamicEObjectImpl) EUnsetFromID(featureID int) {
 	}
 }
 
+// EInvokeFromID ...
+func (o *DynamicEObjectImpl) EInvokeFromID(operationID int, arguments EList) interface{} {
+	return nil
+}
+
 func (o *DynamicEObjectImpl) resizeProperties() {
 	newSize := o.EClass().GetFeatureCount() - o.eStaticFeatureCount()
 	newProperties := make([]interface{}, newSize)
