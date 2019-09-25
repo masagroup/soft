@@ -394,7 +394,7 @@
         <attribute name="output"/>
         <element name="args" implicit="yes" optional="yes"/>
         <sequential>
-            <java jar="${bin.dir}/soft.generators/soft.generator.@{langage}-1.0.0.jar"
+            <java jar="${bin.dir}/soft.generators/soft.generator.@{langage}-${version}.jar"
                   fork="true"
                   failonerror="true"
                   maxmemory="128m">
