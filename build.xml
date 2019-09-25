@@ -10,6 +10,7 @@
     <property name="maven.SHA-512" value="afd6549f3e50c105022baae7951ed6b052e748be4b5c57b2136c5635cb0773495766455ea4b70a633f5e4936f26be16efa1f44b3745fddb28121a0842923ef9f"/>
     <property name="ninja.SHA-512" value="56f3b94ed7f9e36446bb6fe2a786156befdde6b279ee6d9d7ebd8b6e5d6664cdfe1d526e158f68bfc5cf947bcf9360df8d1e1a8939b6db1b2f0658256a17d66b"/>
     <property name="go.SHA-512" value="5b7d060564be0bac615188c15195ad543c169346940a7a76238caba8f751276bc4e1e0cbbb7472cfd03ebfcb158ba38fe9bc5cce3c170edf9b04df803650bdc2"/>
+    <property name="version" value="0.1.0"/>
     
     
     <macrodef name="property-to-location">
@@ -355,17 +356,21 @@
         </maven_exec>
     </target>
     
+    <target name="generators.version">
+        <maven_exec dir="${java.dir}/generators">
+            <arg line="versions:set -DnewVersion=${version} -DgenerateBackupPoms=false" />
+        </maven_exec>
+    </target>
+    
     <target name="generators.build" depends="acceleo.build">
         <maven_exec dir="${java.dir}/generators">
-            <arg value="-Pant"/>
-            <arg line="clean verify" />
+            <arg line="-Pant clean verify" />
         </maven_exec>
     </target>
     
     <target name="generators.clean">
         <maven_exec dir="${java.dir}/generators">
-            <arg value="-Pant"/>
-            <arg line="clean" />
+            <arg line="-Pant clean" />
         </maven_exec>
     </target>
     
@@ -381,7 +386,7 @@
         </copy>
     </target>
     
-    <target name="generators" depends="generators.build,generators.dist,generators.install"/>
+    <target name="generators" depends="generators.version,generators.build,generators.dist,generators.install"/>
     
     <macrodef name="generator">
         <attribute name="langage"/>
