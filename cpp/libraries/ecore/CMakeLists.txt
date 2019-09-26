@@ -8,7 +8,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
 
-project(ecore CXX)
+project(ecore VERSION 0.0.0 LANGUAGES CXX)
 
 if(NOT CMAKE_BUILD_TYPE) 
     set(CMAKE_BUILD_TYPE Debug)
