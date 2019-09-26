@@ -436,6 +436,12 @@
       Ecore CPP
     ============================================================================
     -->
+    <target name="ecore.cpp.version">
+        <replaceregexp match="project\(([^ ]*) VERSION [^ ]*" replace="project\(\1 VERSION ${version}">
+            <fileset dir="${root.dir}/cpp" includes="**/CMakeLists.txt"/>
+        </replaceregexp>
+    </target>
+    
     <target name="ecore.cpp.generate">
         <generator langage="cpp" input="models/ecore.ecore" output="${root.dir}/cpp">
             <arg line="-t !generateLibraryCMakeProject"/>
@@ -509,7 +515,7 @@
         </copy>
     </target>
     
-    <target name="ecore.cpp" depends="ecore.cpp.generate,ecore.cpp.configure,ecore.cpp.build,ecore.cpp.tests,ecore.cpp.install,ecore.cpp.package,ecore.cpp.dist"/>
+    <target name="ecore.cpp" depends="ecore.cpp.version,ecore.cpp.generate,ecore.cpp.configure,ecore.cpp.build,ecore.cpp.tests,ecore.cpp.install,ecore.cpp.package,ecore.cpp.dist"/>
     
     <!--
     ============================================================================
