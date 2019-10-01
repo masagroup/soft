@@ -34,7 +34,23 @@ public class AcceleoURIHandler implements IAcceleoParserURIHandler {
 		if ( Arrays.stream(segments).anyMatch(s -> SEGMENT_EMPTY.equals(s) || SEGMENT_SELF.equals(s) || SEGMENT_PARENT.equals(s) )) {
 			newURI = URI.createHierarchicalURI( uri.scheme(), uri.authority(), uri.device(), resolve(segments), uri.query(), uri.fragment());
 		}
+		newURI = toClasspath( newURI );
 		return newURI;
 	}
-
+	
+	private URI toClasspath( URI uri ) {
+		String uriStr = uri.toString();
+		if (uriStr.startsWith("jar:file:")) {
+			int indexOf = uriStr.indexOf(".jar!/");
+			if (indexOf != -1) {
+				String name = uriStr;
+				name = "classpath:" + name.substring(indexOf + ".jar!".length() );
+				uri = URI.createURI(name);
+			}
+		}
+		return uri;
+	}
+	
+	
+	
 }

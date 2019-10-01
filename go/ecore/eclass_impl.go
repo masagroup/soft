@@ -77,14 +77,14 @@ func (eClass *eClassImpl) GetEOperation(int) EOperation {
 	panic("GetEOperation not implemented")
 }
 
-// GetEStructuralFeatureFromString default implementation
-func (eClass *eClassImpl) GetEStructuralFeatureFromString(string) EStructuralFeature {
-	panic("GetEStructuralFeatureFromString not implemented")
-}
-
 // GetEStructuralFeature default implementation
 func (eClass *eClassImpl) GetEStructuralFeature(int) EStructuralFeature {
 	panic("GetEStructuralFeature not implemented")
+}
+
+// GetEStructuralFeatureFromString default implementation
+func (eClass *eClassImpl) GetEStructuralFeatureFromString(string) EStructuralFeature {
+	panic("GetEStructuralFeatureFromString not implemented")
 }
 
 // GetFeatureCount default implementation
@@ -436,10 +436,10 @@ func (eClass *eClassImpl) EInvokeFromID(operationID int, arguments EList) interf
 	switch operationID {
 	case ECLASS__GET_EOPERATION_EINT:
 		return eClass.GetEOperation(arguments.Get(0).(int))
-	case ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING:
-		return eClass.GetEStructuralFeatureFromString(arguments.Get(0).(string))
 	case ECLASS__GET_ESTRUCTURAL_FEATURE_EINT:
 		return eClass.GetEStructuralFeature(arguments.Get(0).(int))
+	case ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING:
+		return eClass.GetEStructuralFeatureFromString(arguments.Get(0).(string))
 	case ECLASS__GET_FEATURE_COUNT:
 		return eClass.GetFeatureCount()
 	case ECLASS__GET_FEATURE_ID_ESTRUCTURALFEATURE:
