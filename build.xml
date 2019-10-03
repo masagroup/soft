@@ -6,7 +6,7 @@
     <property file="${user.home}/build.properties"/>
     <property file="build.properties"/>
     <property name="aria2.SHA-512" value="af965693edafe504595d2fd24f9b18ccdbbda53c1a8e9e454b12e01db26644097ee76dc27760c8c5dae100af2240eb37bffedfda0d6d9d3bc1373189cec40899"/>
-    <property name="cmake.SHA-512" value="44ea4ffd21fbdaa7158749a0a86de7ec294dc2569f743ff6a5ef4e650cd16063bad55b54d35a506d7c7985bdf63f9207b918d18d9381801a9e321f71c622aee1"/>
+    <property name="cmake.SHA-512" value="f43306c81272d209c88903f3d7cb27b833a0e09d096c657f3c7f9d41ef499e1fe996b0fc79f774958ab7f2b4c2b75024df89bcd5b236767d37e185b4b6adcd3b"/>
     <property name="maven.SHA-512" value="afd6549f3e50c105022baae7951ed6b052e748be4b5c57b2136c5635cb0773495766455ea4b70a633f5e4936f26be16efa1f44b3745fddb28121a0842923ef9f"/>
     <property name="ninja.SHA-512" value="56f3b94ed7f9e36446bb6fe2a786156befdde6b279ee6d9d7ebd8b6e5d6664cdfe1d526e158f68bfc5cf947bcf9360df8d1e1a8939b6db1b2f0658256a17d66b"/>
     <property name="go.SHA-512" value="56a46b38adf1194b5297872a19a34fb43c3f28e273a22629b69d114495fa02d6c330f13dd095a91862ab6e63775288ec6d50b4d6a92b2cca2241ebf98bac4d64"/>
@@ -144,14 +144,20 @@
     </target>
     
     <target name="cmake.install" depends="aria2.install,cmake.checksum" unless="cmake.installed">
-        <install name="cmake" url="https://github.com/Kitware/CMake/releases/download/v3.13.3/cmake-3.13.3-win64-x64.zip"/>
+        <install name="cmake" url="https://github.com/Kitware/CMake/releases/download/v3.15.4/cmake-3.15.4-win64-x64.zip"/>
     </target>
     
-    <property name = "cmake.generator.vs2015" value = "Visual Studio 14 2015 Win64"/>
-    <property name = "cmake.generator.vs2017" value = "Visual Studio 15 2017 Win64"/>
-    <property name = "cmake.generator.vs2019" value = "Visual Studio 16 2019 Win64"/>
-    <property name = "cmake.generator.ninja" value = "Ninja"/>
-    
+    <property name= "cmake.generator.vs2015" value = "Visual Studio 14 2015"/>
+    <property name= "cmake.generator.vs2017" value = "Visual Studio 15 2017"/>
+    <property name= "cmake.generator.vs2019" value = "Visual Studio 16 2019"/>
+    <property name= "cmake.generator.ninja"  value = "Ninja"/>
+	<property name= "cmake.architecture"     value ="x64"/>
+    <property name= "cmake.platform.vs2015"  value = "-G '${cmake.generator.vs2015}' -A ${cmake.architecture}"/>
+    <property name= "cmake.platform.vs2017"  value = "-G '${cmake.generator.vs2017}' -A ${cmake.architecture}"/>
+    <property name= "cmake.platform.vs2019"  value = "-G '${cmake.generator.vs2019}' -A ${cmake.architecture}"/>
+    <property name= "cmake.platform.ninja"   value = "-G '${cmake.generator.ninja}'"/>
+	
+	
     <macrodef name="cmake_exec">
         <attribute name="generator"/>
         <attribute name="project" default= "${ant.project.name}"/>
@@ -162,9 +168,9 @@
         <sequential>
             <mkdir dir="@{output}"/>
             <exec taskname="cmake" executable="${bin.dir}/cmake/bin/cmake.exe" dir="@{output}" failonerror="true">
-                <arg value="-G"/>
-                <arg value="${cmake.generator.@{generator}}"/>
-                <arg value="-DCMAKE_INSTALL_PREFIX=${out.dir}/cpp/deps"/>
+                <arg line="${cmake.platform.@{generator}}"/>
+				<arg value="${cmake.architecture}"/>
+				<arg value="-DCMAKE_INSTALL_PREFIX=${out.dir}/cpp/deps"/>
                 <arg value="-DVCPKG_ROOT=${vcpkg.dir}"/>
                 <elements/>
                 <arg value="@{input}"/>
