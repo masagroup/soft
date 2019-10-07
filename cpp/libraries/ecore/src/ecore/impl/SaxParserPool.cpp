@@ -1,5 +1,7 @@
 #include "ecore/impl/SaxParserPool.hpp"
 #include <xercesc/sax2/XMLReaderFactory.hpp>
+#include <stdexcept>
+
 using namespace ecore;
 using namespace ecore::impl;
 using namespace xercesc;

@@ -13,6 +13,7 @@
 #include <list>
 #include <map>
 #include <memory>
+#include <string>
 #include <xercesc/sax2/SAX2XMLReader.hpp>
 
 namespace ecore::impl
