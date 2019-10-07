@@ -123,11 +123,13 @@ BOOST_AUTO_TEST_CASE( Add )
     BOOST_CHECK_EQUAL( list.get( 1 ), 2 );
 }
 
+#ifdef _DEBUG
 BOOST_AUTO_TEST_CASE( Add_InvalidIndex, *boost::unit_test::precondition( no_debugger() ) )
 {
     ArrayEList<int> list;
     BOOST_REQUIRE_THROW( list.add( 1, 0 ), boost::execution_exception );
 }
+#endif
 
 BOOST_AUTO_TEST_CASE( Add_Index )
 {
@@ -192,12 +194,15 @@ BOOST_AUTO_TEST_CASE( Unique_Add_Index )
     BOOST_CHECK_EQUAL( list, std::vector<int>( {2, 1} ) );
 }
 
-BOOST_AUTO_TEST_CASE( Unique_Add_Index_InvalidElement, *boost::unit_test::precondition( no_debugger() ) )
+#ifdef _DEBUG
+BOOST_AUTO_TEST_CASE(Unique_Add_Index_InvalidElement, *boost::unit_test::precondition(no_debugger()))
 {
     ArrayEList<int, true> list;
-    list.add( 0, 1 );
-    BOOST_REQUIRE_THROW( list.add( 1, 1 ), boost::execution_exception );
+    list.add(0, 1);
+    BOOST_REQUIRE_THROW(list.add(1, 1), boost::execution_exception);
 }
+#endif // DEBUG
+
 
 BOOST_AUTO_TEST_CASE( Unique_AddAll )
 {
@@ -229,11 +234,13 @@ BOOST_AUTO_TEST_CASE( Unique_AddAll_Index )
     }
 }
 
+#ifdef _DEBUG
 BOOST_AUTO_TEST_CASE( Remove_InvalidIndex, *boost::unit_test::precondition( no_debugger() ) )
 {
     ArrayEList<int> list;
     BOOST_REQUIRE_THROW( list.remove( 0 ), boost::execution_exception );
 }
+#endif
 
 BOOST_AUTO_TEST_CASE( Remove_Index )
 {
@@ -243,11 +250,13 @@ BOOST_AUTO_TEST_CASE( Remove_Index )
     BOOST_CHECK_EQUAL( list.size(), 1 );
 }
 
+#ifdef _DEBUG
 BOOST_AUTO_TEST_CASE( Set_InvalidIndex, *boost::unit_test::precondition( no_debugger() ) )
 {
     ArrayEList<int> list = {1, 2};
     BOOST_REQUIRE_THROW( list.set( 2, 3 ), boost::execution_exception );
 }
+#endif
 
 BOOST_AUTO_TEST_CASE( Set )
 {
