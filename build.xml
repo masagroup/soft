@@ -301,13 +301,61 @@
         <copy file="${out.dir}/go/bin/mockery.exe" todir="${bin.dir}/mockery"/>
     </target>
     
+	<property environment="env"/>
+	
     <macrodef name="mockery_exec">
         <attribute name="dir"/>
         <element name="args" implicit="yes" optional="yes"/>
         <sequential>
             <exec executable="${bin.dir}/mockery/mockery.exe" dir="@{dir}" failonerror="true">
+				<env key="PATH" path="${env.PATH}:${bin.dir}/go/bin"/>
                 <args/>
             </exec>
+        </sequential>
+    </macrodef>
+
+
+    <!--
+    ============================================================================
+      Mock
+    ============================================================================
+    -->
+	<macrodef name="mock">
+        <attribute name="dir"/>
+        <sequential>
+            <mockery_exec dir="${root.dir}/go/@{dir}">
+				<arg value="-all"/>
+				<arg value="-inpkg"/>
+            </mockery_exec>
+
+            <move todir="${root.dir}/go/@{dir}">
+                <fileset dir="${root.dir}/go/@{dir}" includes="*.go">
+                    <filename regex="^mock_[A-Z].*\.go$"/>
+                </fileset>
+                <chainedmapper>
+                    <regexpmapper from="^mock_(.*)\.go$" to="\1_mock.go"/>
+                    <scriptmapper language="javascript">
+                    self.addMappedName(source.toLowerCase());
+                    </scriptmapper>
+                </chainedmapper>
+            </move>
+
+            <delete >
+                <fileset dir="${root.dir}/go/@{dir}" includes="*.go">
+                    <filename regex="^mock_[a-z].*\.go$"/>
+                </fileset>
+            </delete>
+        </sequential>
+    </macrodef>
+
+	<macrodef name="tests">
+        <attribute name="dir"/>
+        <sequential>
+			<go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage-tmp"/>
+			<exec dir="${out.dir}\go\" executable="cmd" >
+				<arg line="/c type @{dir}-coverage-tmp | Findstr -v mock > @{dir}-coverage"/>
+			</exec>
+			<go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/@{dir}-coverage -o ${out.dir}/go/@{dir}-coverage.html" />
         </sequential>
     </macrodef>
 
@@ -570,48 +618,5 @@
     <target name="all" depends="configure,generators,ecore,library"/>
 
 
-    <!--
-    ============================================================================
-      Mock
-    ============================================================================
-    -->
-	<macrodef name="mock">
-        <attribute name="dir"/>
-        <sequential>
-            <mockery_exec dir="${root.dir}/go/@{dir}">
-            <arg value="-all"/>
-            <arg value="-inpkg"/>
-            </mockery_exec>
-
-            <move todir="${root.dir}/go/@{dir}">
-                <fileset dir="${root.dir}/go/@{dir}" includes="*.go">
-                    <filename regex="^mock_[A-Z].*\.go$"/>
-                </fileset>
-                <chainedmapper>
-                    <regexpmapper from="^mock_(.*)\.go$" to="\1_mock.go"/>
-                    <scriptmapper language="javascript">
-                    self.addMappedName(source.toLowerCase());
-                    </scriptmapper>
-                </chainedmapper>
-            </move>
-
-            <delete >
-                <fileset dir="${root.dir}/go/@{dir}" includes="*.go">
-                    <filename regex="^mock_[a-z].*\.go$"/>
-                </fileset>
-            </delete>
-        </sequential>
-    </macrodef>
-
-	<macrodef name="tests">
-        <attribute name="dir"/>
-        <sequential>
-			<go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage-tmp"/>
-			<exec dir="${out.dir}\go\" executable="cmd" >
-				<arg line="/c type @{dir}-coverage-tmp | Findstr -v mock > @{dir}-coverage"/>
-			</exec>
-			<go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/@{dir}-coverage -o ${out.dir}/go/@{dir}-coverage.html" />
-        </sequential>
-    </macrodef>
 
 </project>
