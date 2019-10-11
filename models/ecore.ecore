@@ -318,6 +318,9 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EObject">
+    <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
+      <details key="exported" value="true"/>
+    </eAnnotations>
     <eAnnotations source="http://net.masagroup/soft/2019/GenGo">
       <details key="exported" value="true"/>
     </eAnnotations>
