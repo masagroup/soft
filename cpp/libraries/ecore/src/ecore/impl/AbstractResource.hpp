@@ -12,7 +12,7 @@
 
 #include "ecore/Exports.hpp"
 #include "ecore/EResource.hpp"
-#include "ecore/Uri.hpp"
+#include "ecore/URI.hpp"
 #include "ecore/impl/AbstractNotifier.hpp"
 #include "ecore/impl/Lazy.hpp"
 
@@ -23,7 +23,7 @@ namespace ecore
     class ENotificationChain;
     class EResourceSet;
     class EStructuralFeature;
-    class EUriConverter;
+    class URIConverter;
 } // namespace ecore
 
 namespace ecore::impl
@@ -33,15 +33,15 @@ namespace ecore::impl
     public:
         AbstractResource();
 
-        AbstractResource( const Uri& uri );
+        AbstractResource( const URI& uri );
 
         virtual ~AbstractResource();
 
         virtual std::shared_ptr<EResourceSet> getResourceSet() const;
 
-        virtual const Uri& getUri() const;
+        virtual const URI& getURI() const;
 
-        virtual void setUri( const Uri& uri );
+        virtual void setURI( const URI& uri );
 
         virtual std::shared_ptr<EList<std::shared_ptr<EObject>>> getContents() const;
 
@@ -80,7 +80,7 @@ namespace ecore::impl
         virtual void doUnload();
 
     private:
-        std::shared_ptr<EUriConverter> getUriConverter() const;
+        std::shared_ptr<URIConverter> getURIConverter() const;
         std::shared_ptr<EList<std::shared_ptr<EObject>>> initContents();
         std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> initDiagnostics();
 
@@ -95,7 +95,7 @@ namespace ecore::impl
 
     private:
         std::weak_ptr<EResourceSet> resourceSet_;
-        Uri uri_;
+        URI uri_;
         Lazy<std::shared_ptr<EList<std::shared_ptr<EObject>>>> eContents_{[&]() { return initContents(); }};
         Lazy<std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>>> errors_{[&]() { return initDiagnostics(); }};
         Lazy<std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>>> warnings_{[&]() { return initDiagnostics(); }};

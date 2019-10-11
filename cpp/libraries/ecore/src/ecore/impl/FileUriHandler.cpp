@@ -1,5 +1,5 @@
-#include "ecore/impl/FileUriHandler.hpp"
-#include "ecore/Uri.hpp"
+#include "ecore/impl/FileURIHandler.hpp"
+#include "ecore/URI.hpp"
 #include <fstream>
 #include <string.h>
 
@@ -11,20 +11,20 @@ namespace
     const char SCHEME_FILE[] = "file";
 } // namespace
 
-FileUriHandler::FileUriHandler()
+FileURIHandler::FileURIHandler()
 {
 }
 
-FileUriHandler::~FileUriHandler()
+FileURIHandler::~FileURIHandler()
 {
 }
 
-bool FileUriHandler::canHandle( const Uri& uri ) const
+bool FileURIHandler::canHandle( const URI& uri ) const
 {
     return uri.getScheme() == SCHEME_FILE || ( uri.getScheme().empty() && uri.getAuthority().empty() && uri.getQuery().empty() );
 }
 
-std::unique_ptr<std::istream> FileUriHandler::createInputStream( const Uri& uri ) const
+std::unique_ptr<std::istream> FileURIHandler::createInputStream( const URI& uri ) const
 {
     auto is = std::make_unique<std::ifstream>( uri.getPath() );
     if( is->fail() || is->bad() )
@@ -36,7 +36,7 @@ std::unique_ptr<std::istream> FileUriHandler::createInputStream( const Uri& uri 
     return std::move( is );
 }
 
-std::unique_ptr<std::ostream> FileUriHandler::createOutputStream( const Uri& uri ) const
+std::unique_ptr<std::ostream> FileURIHandler::createOutputStream( const URI& uri ) const
 {
     return std::move( std::make_unique<std::ofstream>( uri.getPath() ) );
 }

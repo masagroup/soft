@@ -28,10 +28,8 @@ namespace ecore
     class EDiagnostic;
     class EObject;
     class EResourceSet;
-    class EUriInputStream;
-    class EUriOutputStream;
-
-    class Uri;
+    
+    class URI;
 
     class ECORE_API EResource : public virtual ENotifier
     {
@@ -61,9 +59,9 @@ namespace ecore
 
         virtual std::shared_ptr<EResourceSet> getResourceSet() const = 0;
 
-        virtual const Uri& getUri() const = 0;
+        virtual const URI& getURI() const = 0;
 
-        virtual void setUri( const Uri& uri ) = 0;
+        virtual void setURI( const URI& uri ) = 0;
 
         virtual std::shared_ptr<EList<std::shared_ptr<EObject>>> getContents() const = 0;
 

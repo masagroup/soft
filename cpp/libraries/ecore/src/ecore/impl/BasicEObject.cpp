@@ -128,7 +128,7 @@ std::shared_ptr<EReference> BasicEObject::eContainmentFeature( const std::shared
 
 bool BasicEObject::eIsProxy() const
 {
-    return static_cast<bool>( eProxyUri_ );
+    return static_cast<bool>( eProxyURI_ );
 }
 
 std::shared_ptr<EResource> BasicEObject::eResource() const
@@ -325,14 +325,14 @@ std::shared_ptr<ENotificationChain> BasicEObject::eInverseRemove( const std::sha
         return eBasicSetContainer( nullptr, featureID, notifications );
 }
 
-Uri BasicEObject::eProxyUri() const
+URI BasicEObject::eProxyURI() const
 {
-    return eProxyUri_.value_or( Uri() );
+    return eProxyURI_.value_or( URI() );
 }
 
-void BasicEObject::eSetProxyURI( const Uri& uri )
+void BasicEObject::eSetProxyURI( const URI& uri )
 {
-    eProxyUri_ = uri;
+    eProxyURI_ = uri;
 }
 
 std::shared_ptr<EObject> BasicEObject::eResolveProxy( const std::shared_ptr<EObject>& proxy ) const

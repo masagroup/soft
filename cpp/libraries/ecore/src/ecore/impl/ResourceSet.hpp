@@ -26,8 +26,8 @@ namespace ecore::impl
 
         virtual std::shared_ptr<EList<std::shared_ptr<EResource>>> getResources() const;
    
-        virtual std::shared_ptr<EUriConverter> getUriConverter() const;
-        virtual void setUriConverter( const std::shared_ptr<EUriConverter>& uriConverter );
+        virtual std::shared_ptr<URIConverter> getURIConverter() const;
+        virtual void setURIConverter( const std::shared_ptr<URIConverter>& uriConverter );
 
         virtual std::shared_ptr<EResourceFactoryRegistry> gerResourceFactoryRegistry() const;
         virtual void setResourceFactoryRegistry( const std::shared_ptr<EResourceFactoryRegistry>& resourceFactoryRegistry );
@@ -37,7 +37,7 @@ namespace ecore::impl
      
     private:
         Lazy<std::shared_ptr<EList<std::shared_ptr<EResource>>>> resources_;
-        Lazy<std::shared_ptr<EUriConverter>> uriConverter_;
+        Lazy<std::shared_ptr<URIConverter>> uriConverter_;
         Lazy<std::shared_ptr<EResourceFactoryRegistry>> resourceFactoryRegistry_;
     };
 

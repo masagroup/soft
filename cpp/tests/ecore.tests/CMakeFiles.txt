@@ -16,7 +16,7 @@ set(SOURCE_FILES
     src/EObjectEListTests.cpp
     src/EObjectTests.cpp
     src/EPackageTests.cpp
-    src/FileUriHandlerTests.cpp
+    src/FileURIHandlerTests.cpp
     src/LazyTests.cpp
     src/NotificationTests.cpp
     src/NotificationChainTests.cpp
@@ -24,7 +24,7 @@ set(SOURCE_FILES
     src/ProxyTests.cpp
     src/ResourceTests.cpp
     src/ResourceSetTests.cpp
-    src/UriTests.cpp
+    src/URITests.cpp
     src/XmlNamespacesTests.cpp
     src/XmlResourceTests.cpp
 )

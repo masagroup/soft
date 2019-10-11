@@ -61,8 +61,8 @@ namespace ecore::impl
                                                             const std::shared_ptr<ENotificationChain>& notifications );
 
         // Proxy
-        virtual Uri eProxyUri() const;
-        virtual void eSetProxyURI( const Uri& uri );
+        virtual URI eProxyURI() const;
+        virtual void eSetProxyURI( const URI& uri );
         virtual std::shared_ptr<EObject> eResolveProxy( const std::shared_ptr<EObject>& proxy ) const;
 
         int eContainerFeatureID() const;
@@ -100,7 +100,7 @@ namespace ecore::impl
         std::weak_ptr<EResource> eResource_;
         std::weak_ptr<EObject> eContainer_;
         int eContainerFeatureID_;
-        std::optional<Uri> eProxyUri_;
+        std::optional<URI> eProxyURI_;
     };
 
     template <typename T>

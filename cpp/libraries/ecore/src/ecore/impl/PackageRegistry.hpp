@@ -26,8 +26,8 @@ namespace ecore::impl
         // Inherited via EPackageRegistry
         virtual void registerPackage( const std::shared_ptr<EPackage>& package ) override;
         virtual void unregisterPackage( const std::shared_ptr<EPackage>& package ) override;
-        virtual std::shared_ptr<EPackage> getPackage( const std::string& nsUri ) const override;
-        virtual std::shared_ptr<EFactory> getFactory( const std::string& nsUri ) const override;
+        virtual std::shared_ptr<EPackage> getPackage( const std::string& nsURI) const override;
+        virtual std::shared_ptr<EFactory> getFactory( const std::string& nsURI) const override;
 
     private:
         std::unordered_map<std::string, std::shared_ptr<EPackage>> packages_;

@@ -22,7 +22,7 @@ namespace ecore::impl
 
         virtual ~ResourceFactoryRegistry();
 
-        virtual EResourceFactory* getFactory( const Uri& uri );
+        virtual EResourceFactory* getFactory( const URI& uri );
 
         virtual FactoryMap& getProtocolToFactoryMap();
 

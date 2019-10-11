@@ -7,29 +7,33 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_FILEURIHANDLER_HPP_
-#define ECORE_FILEURIHANDLER_HPP_
+#ifndef ECORE_RESOURCEURICONVERTER_HPP_
+#define ECORE_RESOURCEURICONVERTER_HPP_
 
 #include "ecore/Exports.hpp"
-#include "ecore/URIHandler.hpp"
+#include "ecore/URIConverter.hpp"
 
 namespace ecore::impl
 {
-    
-    class ECORE_API FileURIHandler : public URIHandler
+    class ECORE_API ResourceURIConverter : public URIConverter
     {
     public:
-        FileURIHandler();
+        ResourceURIConverter();
 
-        virtual ~FileURIHandler();
-
-        virtual bool canHandle( const URI& uri ) const;
+        virtual ~ResourceURIConverter();
 
         virtual std::unique_ptr<std::istream> createInputStream( const URI& uri ) const;
 
         virtual std::unique_ptr<std::ostream> createOutputStream( const URI& uri ) const;
+
+        virtual std::shared_ptr<URIHandler> getURIHandler( const URI& uri ) const;
+
+        virtual std::shared_ptr<const EList<std::shared_ptr<URIHandler>>> getURIHandlers() const;
+
+    private:
+        std::shared_ptr<const EList<std::shared_ptr<URIHandler>>> uriHandlers_;
     };
 
-} // namespace ecore
+} // namespace ecore::impl
 
 #endif

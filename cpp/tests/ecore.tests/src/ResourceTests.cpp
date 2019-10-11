@@ -3,7 +3,7 @@
 
 #include "ecore/Any.hpp"
 #include "ecore/Stream.hpp"
-#include "ecore/Uri.hpp"
+#include "ecore/URI.hpp"
 #include "ecore/ENotification.hpp"
 #include "ecore/ENotificationChain.hpp"
 #include "ecore/impl/AbstractResource.hpp"
@@ -64,29 +64,29 @@ BOOST_AUTO_TEST_CASE( Constructor )
     resource->setThisPtr( resource );
 }
 
-BOOST_AUTO_TEST_CASE( Attribute_Uri )
+BOOST_AUTO_TEST_CASE( Attribute_URI )
 {
     auto resource = std::make_shared<Resource>();
-    auto uri = Uri( "http://host:10020" );
-    resource->setUri(  uri );
-    BOOST_CHECK_EQUAL( resource->getUri(), uri );
+    auto uri = URI( "http://host:10020" );
+    resource->setURI(  uri );
+    BOOST_CHECK_EQUAL( resource->getURI(), uri );
 }
 
-BOOST_FIXTURE_TEST_CASE( Attribute_Uri_Notifications , NotificationsFixture  )
+BOOST_FIXTURE_TEST_CASE( Attribute_URI_Notifications , NotificationsFixture  )
 {
-    auto uri = Uri( "http://host:10020" );
+    auto uri = URI( "http://host:10020" );
 
     MOCK_EXPECT( eAdapter->notifyChanged ).with( [ = ]( const std::shared_ptr<ENotification>& n )
     {
         return n->getNotifier() == resource
             && n->getFeatureID() == EResource::RESOURCE__URI
-            && n->getOldValue() == Uri()
+            && n->getOldValue() == URI()
             && n->getNewValue() == uri
             && n->getPosition() == -1;
     } ).once();
 
-    resource->setUri( uri );
-    BOOST_CHECK_EQUAL( resource->getUri(), uri );
+    resource->setURI( uri );
+    BOOST_CHECK_EQUAL( resource->getURI(), uri );
 }
 
 BOOST_AUTO_TEST_CASE( Contents )

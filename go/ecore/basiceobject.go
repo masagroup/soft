@@ -308,7 +308,6 @@ func (o *BasicEObject) EInverseAdd(otherEnd EObject, featureID int, n ENotificat
 		notifications = o.EBasicRemoveFromContainer(notifications)
 		return o.EBasicSetContainer(otherEnd, featureID, notifications)
 	}
-	return notifications
 }
 
 // EInverseRemove ...

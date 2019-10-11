@@ -1,8 +1,8 @@
 #include "ecore/impl/ResourceSet.hpp"
 #include "ecore/impl/AbstractResource.hpp"
 #include "ecore/impl/AbstractENotifyingList.hpp"
-#include "ecore/impl/UriConverter.hpp"
 #include "ecore/impl/ResourceFactoryRegistry.hpp"
+#include "ecore/impl/ResourceURIConverter.hpp"
 #include "ecore/ENotifyingList.hpp"
 
 using namespace ecore;
@@ -11,7 +11,7 @@ using namespace ecore::impl;
 
 ResourceSet::ResourceSet()
     : resources_( [&]() { return initResources();  } )
-    , uriConverter_( [&]() { return std::make_shared<UriConverter>(); } )
+    , uriConverter_( [&]() { return std::make_shared<ResourceURIConverter>(); } )
     , resourceFactoryRegistry_( [&]() { return std::make_shared<ResourceFactoryRegistry>(); } )
 {
 }
@@ -25,12 +25,12 @@ std::shared_ptr<EList<std::shared_ptr<EResource>>> ResourceSet::getResources() c
     return resources_;
 }
 
-std::shared_ptr<EUriConverter> ecore::impl::ResourceSet::getUriConverter() const
+std::shared_ptr<URIConverter> ecore::impl::ResourceSet::getURIConverter() const
 {
     return uriConverter_;
 }
 
-void ResourceSet::setUriConverter( const std::shared_ptr<EUriConverter>& uriConverter )
+void ResourceSet::setURIConverter( const std::shared_ptr<URIConverter>& uriConverter )
 {
     uriConverter_ = uriConverter;
 }

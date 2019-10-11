@@ -7,11 +7,12 @@
 #include "ecore/EObject.hpp"
 #include "ecore/EResourceSet.hpp"
 #include "ecore/Stream.hpp"
+#include "ecore/URIConverter.hpp"
 #include "ecore/impl/AbstractENotifyingList.hpp"
 #include "ecore/impl/AbstractNotification.hpp"
 #include "ecore/impl/EcoreUtils.hpp"
+#include "ecore/impl/ResourceURIConverter.hpp"
 #include "ecore/impl/StringUtils.hpp"
-#include "ecore/impl/UriConverter.hpp"
 
 #include <cctype>
 
@@ -57,7 +58,7 @@ AbstractResource::AbstractResource()
 {
 }
 
-AbstractResource::AbstractResource( const Uri& uri )
+AbstractResource::AbstractResource( const URI& uri )
     : uri_( uri )
 {
 }
@@ -71,17 +72,17 @@ std::shared_ptr<EResourceSet> AbstractResource::getResourceSet() const
     return resourceSet_.lock();
 }
 
-const Uri& AbstractResource::getUri() const
+const URI& AbstractResource::getURI() const
 {
     return uri_;
 }
 
-void AbstractResource::setUri( const Uri& uri )
+void AbstractResource::setURI( const URI& uri )
 {
-    Uri oldUri = uri_;
+    URI oldURI = uri_;
     uri_ = uri;
     if( eNotificationRequired() )
-        eNotify( std::make_shared<Notification>( thisPtr_, Notification::SET, RESOURCE__URI, oldUri, uri_ ) );
+        eNotify( std::make_shared<Notification>( thisPtr_, Notification::SET, RESOURCE__URI, oldURI, uri_ ) );
 }
 
 std::shared_ptr<EList<std::shared_ptr<EObject>>> AbstractResource::getContents() const
@@ -193,7 +194,7 @@ void AbstractResource::load()
 {
     if( !isLoaded_ )
     {
-        auto uriConverter = getUriConverter();
+        auto uriConverter = getURIConverter();
         auto is = uriConverter->createInputStream( uri_ );
         if( is )
             load( *is );
@@ -292,18 +293,18 @@ void AbstractResource::doUnload()
     eContents_->clear();
 }
 
-std::shared_ptr<EUriConverter> AbstractResource::getUriConverter() const
+std::shared_ptr<URIConverter> AbstractResource::getURIConverter() const
 {
     auto resourceSet = resourceSet_.lock();
     if( resourceSet )
-        resourceSet->getUriConverter();
+        return resourceSet->getURIConverter();
     else
     {
-        static std::shared_ptr<EUriConverter> defaultUriConverter = std::make_shared<UriConverter>();
-        return defaultUriConverter;
+        static std::shared_ptr<URIConverter> defaultURIConverter = std::make_shared<ResourceURIConverter>();
+        return defaultURIConverter;
     }
 
-    return std::shared_ptr<EUriConverter>();
+    return std::shared_ptr<URIConverter>();
 }
 
 std::shared_ptr<EList<std::shared_ptr<EObject>>> AbstractResource::initContents()

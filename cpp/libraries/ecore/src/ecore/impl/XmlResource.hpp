@@ -12,7 +12,7 @@
 
 #include "ecore/Exports.hpp"
 #include "ecore/impl/AbstractResource.hpp"
-#include "ecore/Uri.hpp"
+#include "ecore/URI.hpp"
 
 namespace ecore::impl
 {
@@ -21,7 +21,7 @@ namespace ecore::impl
     public:
         XmlResource();
 
-        XmlResource(const Uri& uri);
+        XmlResource(const URI& uri);
 
         virtual ~XmlResource();
 
