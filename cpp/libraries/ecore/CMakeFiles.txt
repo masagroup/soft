@@ -3,6 +3,7 @@
 set(SOURCE_ECORE_FILES
     src/ecore/EPackageRegistry.cpp
     src/ecore/URI.cpp
+    src/ecore/EcoreUtils.cpp
 )
 
 set(HEADER_ECORE_FILES
@@ -11,6 +12,7 @@ set(HEADER_ECORE_FILES
     src/ecore/EList.hpp
     src/ecore/Constants.hpp
     src/ecore/EAdapter.hpp
+    src/ecore/EcoreUtils.hpp
     src/ecore/ECollectionView.hpp
     src/ecore/EDiagnostic.hpp
     src/ecore/ENotification.hpp
@@ -43,11 +45,12 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/AbstractResource.hpp
     src/ecore/impl/BasicEObject.hpp
     src/ecore/impl/Diagnostic.hpp
-    src/ecore/impl/DynamicEObjectImpl.hpp
-    src/ecore/impl/EcoreUtils.hpp
+    src/ecore/impl/DynamicEObjectImpl.hpp   
     src/ecore/impl/EObjectEList.hpp
+    src/ecore/impl/EObjectInternal.hpp
     src/ecore/impl/FileURIHandler.hpp
     src/ecore/impl/ImmutableEList.hpp
+    src/ecore/impl/Join.hpp
     src/ecore/impl/Lazy.hpp
     src/ecore/impl/Notification.hpp
     src/ecore/impl/NotificationChain.hpp
@@ -73,7 +76,6 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/AbstractResource.cpp
     src/ecore/impl/BasicEObject.cpp
     src/ecore/impl/DynamicEObjectImpl.cpp
-    src/ecore/impl/EcoreUtils.cpp
     src/ecore/impl/FileURIHandler.cpp
     src/ecore/impl/Notification.cpp
     src/ecore/impl/NotificationChain.cpp

@@ -14,7 +14,7 @@
 #include "ecore/EDataType.hpp"
 #include "ecore/EObject.hpp"
 
-namespace ecore::impl
+namespace ecore
 {
     class ECORE_API EcoreUtils
     {
@@ -26,6 +26,12 @@ namespace ecore::impl
         static std::string convertToString( const std::shared_ptr<EDataType>& eDataType, const Any& value );
 
         static Any createFromString( const std::shared_ptr<EDataType>& eDataType, const std::string& literal );
+
+        static URI getURI(const std::shared_ptr<EObject>& eObject);
+
+    private:
+
+        static std::string getRelativeURIFragmentPath(const std::shared_ptr<EObject>& ancestor, const std::shared_ptr<EObject>& descendant, bool resolve);
     };
 
 } // namespace ecore::impl

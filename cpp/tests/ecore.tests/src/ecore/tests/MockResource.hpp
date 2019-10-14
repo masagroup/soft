@@ -27,6 +27,7 @@ namespace ecore::tests
         MOCK_METHOD( getContents, 0 )
         MOCK_METHOD( getAllContents, 0 )
         MOCK_METHOD( getEObject, 1 )
+        MOCK_METHOD( getURIFragment, 1 )
         MOCK_METHOD( attached, 1 )
         MOCK_METHOD( detached, 1 )
         MOCK_METHOD_EXT( load, 0, void(), loadSimple )

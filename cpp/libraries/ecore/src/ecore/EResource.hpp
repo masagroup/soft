@@ -69,6 +69,8 @@ namespace ecore
 
         virtual std::shared_ptr<EObject> getEObject( const std::string& uriFragment ) const = 0;
 
+        virtual std::string getURIFragment(const std::shared_ptr<EObject>& eObject) const = 0;
+
         virtual void attached( const std::shared_ptr<EObject>& object ) = 0;
 
         virtual void detached( const std::shared_ptr<EObject>& object ) = 0;

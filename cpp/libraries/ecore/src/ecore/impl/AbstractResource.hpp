@@ -33,7 +33,7 @@ namespace ecore::impl
     public:
         AbstractResource();
 
-        AbstractResource( const URI& uri );
+        AbstractResource(const URI& uri);
 
         virtual ~AbstractResource();
 
@@ -41,21 +41,23 @@ namespace ecore::impl
 
         virtual const URI& getURI() const;
 
-        virtual void setURI( const URI& uri );
+        virtual void setURI(const URI& uri);
 
         virtual std::shared_ptr<EList<std::shared_ptr<EObject>>> getContents() const;
 
         virtual std::shared_ptr<const ECollectionView<std::shared_ptr<EObject>>> getAllContents() const;
 
-        virtual std::shared_ptr<EObject> getEObject( const std::string& uriFragment ) const;
+        virtual std::shared_ptr<EObject> getEObject(const std::string& uriFragment) const;
 
-        virtual void attached( const std::shared_ptr<EObject>& object );
+        virtual std::string getURIFragment(const std::shared_ptr<EObject>& eObject) const;
 
-        virtual void detached( const std::shared_ptr<EObject>& object );
+        virtual void attached(const std::shared_ptr<EObject>& object);
+
+        virtual void detached(const std::shared_ptr<EObject>& object);
 
         virtual void load();
 
-        virtual void load( std::istream& is );
+        virtual void load(std::istream& is);
 
         virtual void unload();
 
@@ -63,20 +65,20 @@ namespace ecore::impl
 
         virtual void save();
 
-        virtual void save( std::ostream& os );
+        virtual void save(std::ostream& os);
 
         virtual std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> getErrors() const;
 
         virtual std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> getWarnings() const;
 
-        std::shared_ptr<ENotificationChain> basicSetLoaded( bool isLoaded, const std::shared_ptr<ENotificationChain>& notifications );
+        std::shared_ptr<ENotificationChain> basicSetLoaded(bool isLoaded, const std::shared_ptr<ENotificationChain>& notifications);
 
-        std::shared_ptr<ENotificationChain> basicSetResourceSet( const std::shared_ptr<EResourceSet> resourceSet,
-                                                                 const std::shared_ptr<ENotificationChain>& notifications );
+        std::shared_ptr<ENotificationChain> basicSetResourceSet(const std::shared_ptr<EResourceSet> resourceSet,
+            const std::shared_ptr<ENotificationChain>& notifications);
 
     protected:
-        virtual void doLoad( std::istream& is ) = 0;
-        virtual void doSave( std::ostream& os ) = 0;
+        virtual void doLoad(std::istream& is) = 0;
+        virtual void doSave(std::ostream& os) = 0;
         virtual void doUnload();
 
     private:
@@ -84,22 +86,21 @@ namespace ecore::impl
         std::shared_ptr<EList<std::shared_ptr<EObject>>> initContents();
         std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> initDiagnostics();
 
-        std::shared_ptr<EObject> getObjectByPath( const std::vector<std::string_view>& uriFragmentPath ) const;
-        std::shared_ptr<EObject> getObjectByID( const std::string& id ) const;
-        std::shared_ptr<EObject> getObjectForRootSegment( const std::string& rootSegment ) const;
-        std::shared_ptr<EObject> getObjectForFragmentSegment( const std::shared_ptr<EObject>& eObject, const std::string& uriSegment ) const;
-        std::shared_ptr<EStructuralFeature> getStructuralFeature( const std::shared_ptr<EObject>& eObject, const std::string& name ) const;
-
+        std::shared_ptr<EObject> getObjectByPath(const std::vector<std::string_view>& uriFragmentPath) const;
+        std::shared_ptr<EObject> getObjectByID(const std::string& id) const;
+        std::shared_ptr<EObject> getObjectForRootSegment(const std::string& rootSegment) const;
+        std::string getURIFragmentRootSegment(const std::shared_ptr<EObject>& eObject) const;
+        
     private:
         class Notification;
 
     private:
         std::weak_ptr<EResourceSet> resourceSet_;
         URI uri_;
-        Lazy<std::shared_ptr<EList<std::shared_ptr<EObject>>>> eContents_{[&]() { return initContents(); }};
-        Lazy<std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>>> errors_{[&]() { return initDiagnostics(); }};
-        Lazy<std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>>> warnings_{[&]() { return initDiagnostics(); }};
-        bool isLoaded_{false};
+        Lazy<std::shared_ptr<EList<std::shared_ptr<EObject>>>> eContents_{ [&]() { return initContents(); } };
+        Lazy<std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>>> errors_{ [&]() { return initDiagnostics(); } };
+        Lazy<std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>>> warnings_{ [&]() { return initDiagnostics(); } };
+        bool isLoaded_{ false };
     };
 
 } // namespace ecore::impl

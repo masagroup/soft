@@ -12,6 +12,7 @@
 
 #include "ecore/Exports.hpp"
 #include "ecore/EObject.hpp"
+#include "ecore/impl/EObjectInternal.hpp"
 #include "ecore/impl/AbstractNotifier.hpp"
 
 #include <optional>
@@ -24,7 +25,7 @@ namespace ecore
 namespace ecore::impl
 {
 
-    class ECORE_API BasicEObject : public virtual AbstractNotifier<EObject>
+    class ECORE_API BasicEObject : public virtual AbstractNotifier<EObjectInternal> 
     {
     public:
         BasicEObject();
@@ -48,6 +49,8 @@ namespace ecore::impl
         virtual bool eIsProxy() const;
         virtual std::shared_ptr<EResource> eResource() const;
 
+        virtual std::shared_ptr<EResource> eDirectResource() const;
+
         // Resource
         virtual std::shared_ptr<ENotificationChain> eSetResource( const std::shared_ptr<EResource>& resource,
                                                                   const std::shared_ptr<ENotificationChain>& notifications );
@@ -66,6 +69,10 @@ namespace ecore::impl
         virtual std::shared_ptr<EObject> eResolveProxy( const std::shared_ptr<EObject>& proxy ) const;
 
         int eContainerFeatureID() const;
+
+        // Fragment
+        virtual std::shared_ptr<EObject>eObjectForFragmentSegment( const std::string& uriSegment) const;
+        virtual std::string eURIFragmentSegment(const std::shared_ptr<EStructuralFeature>& feature, const std::shared_ptr<EObject>& eObject) const;
 
     protected:
         virtual std::shared_ptr<EClass> eStaticClass() const;
@@ -95,6 +102,7 @@ namespace ecore::impl
 
     private:
         std::shared_ptr<const EList<std::shared_ptr<EObject>>> eContentsList( const std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>>& refs ) const;
+        std::shared_ptr<EStructuralFeature> eStructuralFeature( const std::string& name) const;
 
     protected:
         std::weak_ptr<EResource> eResource_;
