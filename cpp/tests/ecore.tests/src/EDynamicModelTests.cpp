@@ -10,6 +10,8 @@
 #include "ecore/EClass.hpp"
 #include "ecore/EReference.hpp"
 #include "ecore/EDataType.hpp"
+#include "ecore/EcoreUtils.hpp"
+#include "ecore/Stream.hpp"
 
 using namespace ecore;
 
@@ -113,59 +115,76 @@ namespace
         std::shared_ptr<EAttribute> bookISBN;
     };
 
+    class BookStoreInstanciateModel : public BookStoreModelFixture {
+    public:
+        BookStoreInstanciateModel()
+            : BookStoreModelFixture() {
+            /*
+             * Obtain EFactory instance from BookStoreEPackage
+             */
+            auto bookFactoryInstance = bookStoreEPackage->getEFactoryInstance();
 
+            /*
+             * Create dynamic instance of BookStoreEClass and BookEClass
+             */
+            bookObject = bookFactoryInstance->create(bookEClass);
+            bookStoreObject = bookFactoryInstance->create(bookStoreEClass);
+
+            /*
+            * Set the values of bookStoreObject attributes
+            */
+            bookStoreObject->eSet(bookStoreOwner, std::string("David Brown"));
+            bookStoreObject->eSet(bookStoreLocation, std::string("Street#12, Top Town, NY"));
+            auto anyBooks = bookStoreObject->eGet(bookStore_Books);
+            auto allBooks = anyCast<std::shared_ptr<EList< std::shared_ptr<EObject>>>>(anyBooks);
+            allBooks->add(bookObject);
+
+            /*
+            * Set the values of bookObject attributes
+            */
+            bookObject->eSet(bookName, std::string("Harry Potter and the Deathly Hallows"));
+            bookObject->eSet(bookISBN, 157221);
+        }
+
+    protected:
+        std::shared_ptr<EObject> bookObject;
+        std::shared_ptr<EObject> bookStoreObject;
+    };
 
 }
 
 BOOST_AUTO_TEST_SUITE( EDynamicModelTests )
 
 
-BOOST_FIXTURE_TEST_CASE( InstanciateModel , BookStoreModelFixture )
+BOOST_FIXTURE_TEST_CASE( InstanciateModel , BookStoreInstanciateModel)
 {
-    /*
-    * Obtain EFactory instance from BookStoreEPackage
-    */
-    auto bookFactoryInstance = bookStoreEPackage->getEFactoryInstance();
-
-    /*
-    * Create dynamic instance of BookStoreEClass and BookEClass
-    */
-    auto bookObject = bookFactoryInstance->create( bookEClass );
-    auto bookStoreObject = bookFactoryInstance->create( bookStoreEClass );
-
-    /*
-    * Set the values of bookStoreObject attributes
-    */
-    bookStoreObject->eSet( bookStoreOwner, std::string("David Brown") );
-    bookStoreObject->eSet( bookStoreLocation, std::string( "Street#12, Top Town, NY") );
-    auto anyBooks = bookStoreObject->eGet( bookStore_Books );
-    auto allBooks = anyCast<std::shared_ptr<EList< std::shared_ptr<EObject>>>>( anyBooks );
-    allBooks->add( bookObject );
-
-    /*
-    * Set the values of bookObject attributes
-    */
-    bookObject->eSet( bookName, std::string( "Harry Potter and the Deathly Hallows") );
-    bookObject->eSet( bookISBN, 157221 );
-
-    /*
+   /*
     * Read/Get the values of bookStoreObject attributes
     */
     auto anyOwner = bookStoreObject->eGet( bookStoreOwner );
     auto strOwner = anyCast<std::string>( anyOwner );
+    BOOST_CHECK_EQUAL(strOwner, "David Brown");
 
     auto anyLocation = bookStoreObject->eGet( bookStoreLocation );
     auto strLocation = anyCast<std::string>( anyLocation );
+    BOOST_CHECK_EQUAL(strLocation, "Street#12, Top Town, NY");
 
     /*
     * Read/Get the values of bookObject attributes
     */
     auto anyName = bookObject->eGet( bookName );
     auto strName = anyCast<std::string>( anyName );
+    BOOST_CHECK_EQUAL(strName, "Harry Potter and the Deathly Hallows");
 
     auto anyISBN = bookObject->eGet( bookISBN );
-    auto strISBN = anyCast<int>( anyISBN );
+    auto intISBN = anyCast<int>( anyISBN );
+    BOOST_CHECK_EQUAL(intISBN, 157221);   
+}
 
+BOOST_FIXTURE_TEST_CASE(getURI_NoResource, BookStoreInstanciateModel)
+{
+    BOOST_CHECK_EQUAL(EcoreUtils::getURI(bookStoreObject), URI("#//"));
+    BOOST_CHECK_EQUAL(EcoreUtils::getURI(bookObject), URI("#//@books.0"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

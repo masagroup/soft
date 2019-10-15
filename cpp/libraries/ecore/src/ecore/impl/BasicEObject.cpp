@@ -131,7 +131,7 @@ std::string BasicEObject::eURIFragmentSegment(const std::shared_ptr<EStructuralF
         auto v = eGet(eFeature, false);
         auto l = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>(v);
         auto index = l->indexOf(eObject);
-        s << ",";
+        s << ".";
         s << index;
     }
     return s.str();
