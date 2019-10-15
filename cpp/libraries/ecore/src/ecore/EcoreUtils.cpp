@@ -5,7 +5,7 @@
 #include "ecore/EFactory.hpp"
 #include "ecore/EResource.hpp"
 #include "ecore/impl/EObjectInternal.hpp"
-#include "ecore/impl/Join.hpp"
+#include "ecore/impl/StringUtils.hpp"
 
 #include <deque>
 #include <unordered_set>
@@ -96,4 +96,13 @@ std::string EcoreUtils::getRelativeURIFragmentPath(const std::shared_ptr<EObject
         throw "The ancestor not found'";
 
     return join(fragmentURIPath, "/");
+}
+
+std::shared_ptr<EObject> getEObject(const std::shared_ptr<EObject>& rootEObject, const std::string& relativeFragmentPath) {
+    auto segments = split(relativeFragmentPath, "/");
+    auto eObject = std::dynamic_pointer_cast<EObjectInternal>(rootEObject);
+    for (int i = 0; i < segments.size() && eObject; ++i)
+        eObject = std::dynamic_pointer_cast<EObjectInternal>(eObject->eObjectForFragmentSegment(std::string(segments[i])));
+    return eObject;
+
 }

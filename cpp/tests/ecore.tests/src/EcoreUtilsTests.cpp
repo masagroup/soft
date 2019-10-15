@@ -16,14 +16,13 @@ BOOST_AUTO_TEST_CASE(getID)
 
 }
 
-BOOST_AUTO_TEST_CASE(getURI_Proxy)
+BOOST_AUTO_TEST_CASE(getURI)
 {
     URI uri("test://file");
     auto mockObject = std::make_shared<MockObject>();
     MOCK_EXPECT(mockObject->eIsProxy).returns(true);
     MOCK_EXPECT(mockObject->eProxyURI).returns(uri);
-    BOOST_CHECK_EQUAL(EcoreUtils::getURI(mockObject), uri);
- 
+    BOOST_CHECK_EQUAL(EcoreUtils::getURI(mockObject), uri); 
 }
 
 

@@ -29,6 +29,8 @@ namespace ecore
 
         static URI getURI(const std::shared_ptr<EObject>& eObject);
 
+        static std::shared_ptr<EObject> getEObject(const std::shared_ptr<EObject>& rootEObject, const std::string& relativeFragmentPath);
+        
     private:
 
         static std::string getRelativeURIFragmentPath(const std::shared_ptr<EObject>& ancestor, const std::shared_ptr<EObject>& descendant, bool resolve);

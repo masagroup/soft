@@ -78,7 +78,7 @@ namespace ecore::impl
     }
 
     template < typename Range >
-    std::string join(const Range& range, const std::string& sep) {
+    std::string join(const Range& range, const std::string_view& sep) {
         std::string s;
         auto end = std::end(range);
         for (auto it = std::begin(range); it != end; ++it) {
