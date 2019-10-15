@@ -535,11 +535,12 @@ std::string URI::toString() const
 {
     std::stringstream s;
     std::string auth = getAuthority();
-    if( auth.empty() )
+    if (!scheme_.empty())
         s << scheme_ << ":";
-    else
-        s << scheme_ << "://" << auth;
-   
+
+    if (!auth.empty())
+        s << "//" << auth;
+    
     s << path_;
 
     if (!query_.empty())
