@@ -77,6 +77,18 @@ namespace ecore::impl
         return result;
     }
 
+    template < typename Range >
+    std::string join(const Range& range, const std::string& sep) {
+        std::string s;
+        auto end = std::end(range);
+        for (auto it = std::begin(range); it != end; ++it) {
+            s += *it;
+            if (it != end - 1)
+                s += sep;
+        }
+        return s;
+    }
+
 } // namespace ecore::impl
 
 #endif

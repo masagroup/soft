@@ -12,7 +12,6 @@
 #include "ecore/impl/AbstractENotifyingList.hpp"
 #include "ecore/impl/AbstractNotification.hpp"
 #include "ecore/impl/EObjectInternal.hpp"
-#include "ecore/impl/Join.hpp"
 #include "ecore/impl/ResourceURIConverter.hpp"
 #include "ecore/impl/StringUtils.hpp"
 
