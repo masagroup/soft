@@ -12,8 +12,10 @@
 #include "ecore/EDataType.hpp"
 #include "ecore/EcoreUtils.hpp"
 #include "ecore/Stream.hpp"
+#include "ecore/impl/AbstractResource.hpp"
 
 using namespace ecore;
+using namespace ecore::impl;
 
 /*
     Inspired from Example of Dynamic Model : https://www.ibm.com/developerworks/library/os-eclipse-dynamicemf/
@@ -151,6 +153,23 @@ namespace
         std::shared_ptr<EObject> bookStoreObject;
     };
 
+    class Resource : public AbstractResource
+    {
+    public:
+        Resource()
+            : AbstractResource() {
+        }
+
+        Resource(const URI& uri)
+            : AbstractResource(uri) {
+        }
+    private:
+        virtual void doLoad(std::istream& is) override {
+        }
+
+        virtual void doSave(std::ostream& os) override {
+        }
+    };
 }
 
 BOOST_AUTO_TEST_SUITE( EDynamicModelTests )
@@ -185,6 +204,18 @@ BOOST_FIXTURE_TEST_CASE(getURI_NoResource, BookStoreInstanciateModel)
 {
     BOOST_CHECK_EQUAL(EcoreUtils::getURI(bookStoreObject), URI("#//"));
     BOOST_CHECK_EQUAL(EcoreUtils::getURI(bookObject), URI("#//@books.0"));
+}
+
+BOOST_FIXTURE_TEST_CASE(getURI_Resource, BookStoreInstanciateModel)
+{
+    auto resource = std::make_shared<Resource>( URI("file://a.test") );
+    resource->setThisPtr(resource);
+
+    auto contents = resource->getContents();
+    contents->add(bookStoreObject);
+
+    BOOST_CHECK_EQUAL(EcoreUtils::getURI(bookStoreObject), URI("file://a.test#/0"));
+    BOOST_CHECK_EQUAL(EcoreUtils::getURI(bookObject), URI("file://a.test#/0/@books.0"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

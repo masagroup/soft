@@ -132,10 +132,12 @@ std::string AbstractResource::getURIFragment(const std::shared_ptr<EObject>& eOb
             std::deque<std::string> fragmentPath;
             auto internalEObject = eObject;
             auto isContained = false;
-            for (auto eContainer = eObject->eContainer(); eContainer; internalEObject = eObject, eContainer = eObject->eContainer()) {
+            for (auto eContainer = eObject->eContainer(); eContainer; eContainer = eObject->eContainer()) {
                 auto internalEContainer = std::dynamic_pointer_cast<EObjectInternal>(eContainer);
                 if (id.empty())
                     fragmentPath.push_front(internalEContainer->eURIFragmentSegment(internalEObject->eContainingFeature(), internalEObject));
+
+                internalEObject = eContainer;
 
                 if (internalEContainer->eDirectResource() == getThisPtr())
                 {
