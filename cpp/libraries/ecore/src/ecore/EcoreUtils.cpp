@@ -56,8 +56,9 @@ URI EcoreUtils::getURI(const std::shared_ptr<EObject>& eObject)
     {
         std::shared_ptr<EResource> resource = eObject->eResource();
         if (resource) {
-            URI uri = resource->getURI();
-
+            auto uri = resource->getURI();
+            auto uriFragment = resource->getURIFragment(eObject);
+            return URI( uri.toString() + "#" + uriFragment);
         }
         else {
             std::string id = getID(eObject);
