@@ -534,29 +534,19 @@ const std::vector<std::pair<std::string, std::string>>& URI::getQueryParams()
 std::string URI::toString() const
 {
     std::stringstream s;
-
-    if( scheme_.empty() )
-        s << path_;
+    std::string auth = getAuthority();
+    if( auth.empty() )
+        s << scheme_ << ":";
     else
-    {
-        s << scheme_;
-        s << ':';
+        s << scheme_ << "://" << auth;
+   
+    s << path_;
 
-        std::string auth = getAuthority();
-        if( !auth.empty() || scheme_ == "file" )
-        {
-            s << "//";
-            s << auth;
-        }
+    if (!query_.empty())
+        s << '?' << query_;
 
-        s << path_;
-
-        if( !query_.empty() )
-            s << '?' << query_;
-
-        if( !fragment_.empty() )
-            s << '#' << fragment_;
-    }
+    if (!fragment_.empty())
+        s << '#' << fragment_;
     return s.str();
 }
 
