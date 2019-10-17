@@ -38,9 +38,10 @@ func TestEReferenceContainmentGet(t *testing.T) {
 }
 
 func TestEReferenceContainmentSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEReferenceImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetContainment(true)
 	mockAdapter.AssertExpectations(t)
@@ -134,9 +135,10 @@ func TestEReferenceResolveProxiesGet(t *testing.T) {
 }
 
 func TestEReferenceResolveProxiesSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEReferenceImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetResolveProxies(true)
 	mockAdapter.AssertExpectations(t)
@@ -230,9 +232,10 @@ func TestEReferenceEOppositeGet(t *testing.T) {
 }
 
 func TestEReferenceEOppositeSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEReferenceImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetEOpposite(newEReferenceImpl())
 	mockAdapter.AssertExpectations(t)

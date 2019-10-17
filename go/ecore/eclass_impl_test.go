@@ -38,9 +38,10 @@ func TestEClassAbstractGet(t *testing.T) {
 }
 
 func TestEClassAbstractSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEClassImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetAbstract(true)
 	mockAdapter.AssertExpectations(t)
@@ -274,9 +275,10 @@ func TestEClassInterfaceGet(t *testing.T) {
 }
 
 func TestEClassInterfaceSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEClassImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetInterface(true)
 	mockAdapter.AssertExpectations(t)

@@ -238,9 +238,10 @@ func TestEOperationOperationIDGet(t *testing.T) {
 }
 
 func TestEOperationOperationIDSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEOperationImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetOperationID(45)
 	mockAdapter.AssertExpectations(t)

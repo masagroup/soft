@@ -17,7 +17,6 @@ import (
 // BasicEObject is a basic implementation of an EObject
 type BasicEObject struct {
 	*Notifier
-	interfaces         interface{}
 	resource           EResource
 	container          EObject
 	containerFeatureID int
@@ -55,16 +54,6 @@ func NewBasicEObject() *BasicEObject {
 	o.interfaces = o
 	o.containerFeatureID = -1
 	return o
-}
-
-// SetInterfaces ...
-func (o *BasicEObject) SetInterfaces(interfaces interface{}) {
-	o.interfaces = interfaces
-}
-
-// GetInterfaces ...
-func (o *BasicEObject) GetInterfaces() interface{} {
-	return o.interfaces
 }
 
 // GetEObject ...

@@ -38,9 +38,10 @@ func TestETypedElementOrderedGet(t *testing.T) {
 }
 
 func TestETypedElementOrderedSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newETypedElementImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetOrdered(true)
 	mockAdapter.AssertExpectations(t)
@@ -141,9 +142,10 @@ func TestETypedElementUniqueGet(t *testing.T) {
 }
 
 func TestETypedElementUniqueSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newETypedElementImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetUnique(true)
 	mockAdapter.AssertExpectations(t)
@@ -244,9 +246,10 @@ func TestETypedElementLowerBoundGet(t *testing.T) {
 }
 
 func TestETypedElementLowerBoundSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newETypedElementImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetLowerBound(45)
 	mockAdapter.AssertExpectations(t)
@@ -347,9 +350,10 @@ func TestETypedElementUpperBoundGet(t *testing.T) {
 }
 
 func TestETypedElementUpperBoundSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newETypedElementImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetUpperBound(45)
 	mockAdapter.AssertExpectations(t)
@@ -450,9 +454,10 @@ func TestETypedElementETypeGet(t *testing.T) {
 }
 
 func TestETypedElementETypeSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newETypedElementImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetEType(newEClassifierImpl())
 	mockAdapter.AssertExpectations(t)

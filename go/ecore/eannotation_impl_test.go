@@ -38,9 +38,10 @@ func TestEAnnotationSourceGet(t *testing.T) {
 }
 
 func TestEAnnotationSourceSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEAnnotationImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetSource("Test String")
 	mockAdapter.AssertExpectations(t)

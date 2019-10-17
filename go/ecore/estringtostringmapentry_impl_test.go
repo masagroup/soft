@@ -38,9 +38,10 @@ func TestEStringToStringMapEntryKeyGet(t *testing.T) {
 }
 
 func TestEStringToStringMapEntryKeySet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEStringToStringMapEntryImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetKey("Test String")
 	mockAdapter.AssertExpectations(t)
@@ -93,9 +94,10 @@ func TestEStringToStringMapEntryValueGet(t *testing.T) {
 }
 
 func TestEStringToStringMapEntryValueSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEStringToStringMapEntryImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetValue("Test String")
 	mockAdapter.AssertExpectations(t)

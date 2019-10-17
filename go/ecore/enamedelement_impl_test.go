@@ -38,9 +38,10 @@ func TestENamedElementNameGet(t *testing.T) {
 }
 
 func TestENamedElementNameSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newENamedElementImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetName("Test String")
 	mockAdapter.AssertExpectations(t)

@@ -38,9 +38,10 @@ func TestEPackageNsURIGet(t *testing.T) {
 }
 
 func TestEPackageNsURISet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEPackageImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetNsURI("Test String")
 	mockAdapter.AssertExpectations(t)
@@ -190,9 +191,10 @@ func TestEPackageNsPrefixGet(t *testing.T) {
 }
 
 func TestEPackageNsPrefixSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEPackageImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetNsPrefix("Test String")
 	mockAdapter.AssertExpectations(t)
@@ -336,9 +338,10 @@ func TestEPackageNsPrefixEInverseRemove(t *testing.T) {
 }
 
 func TestEPackageEFactoryInstanceSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEPackageImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetEFactoryInstance(newEFactoryImpl())
 	mockAdapter.AssertExpectations(t)

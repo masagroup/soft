@@ -38,9 +38,10 @@ func TestEAttributeIDGet(t *testing.T) {
 }
 
 func TestEAttributeIDSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEAttributeImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetID(true)
 	mockAdapter.AssertExpectations(t)
