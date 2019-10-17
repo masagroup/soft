@@ -77,6 +77,7 @@ type EResourceImpl struct {
 func NewEResourceImpl() *EResourceImpl {
 	r := new(EResourceImpl)
 	r.Notifier = NewNotifier()
+	r.SetInterfaces(r)
 	return r
 }
 
@@ -89,7 +90,11 @@ func (r *EResourceImpl) GetURI() *url.URL {
 }
 
 func (r *EResourceImpl) SetURI(uri *url.URL) {
+	oldURI := r.uri
 	r.uri = uri
+	if r.ENotificationRequired() {
+		r.ENotify(newResourceNotification(r, RESOURCE__URI, SET, oldURI, uri, -1))
+	}
 }
 
 func (r *EResourceImpl) GetContents() EList {
