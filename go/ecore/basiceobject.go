@@ -29,6 +29,7 @@ type EObjectInternal interface {
 
 	EStaticClass() EClass
 
+	EDirectResource() EResource
 	ESetResource(resource EResource, notifications ENotificationChain) ENotificationChain
 	EInverseAdd(otherEnd EObject, featureID int, notifications ENotificationChain) ENotificationChain
 	EInverseRemove(otherEnd EObject, featureID int, notifications ENotificationChain) ENotificationChain
@@ -41,6 +42,9 @@ type EObjectInternal interface {
 
 	EBasicInverseAdd(otherEnd EObject, featureID int, notifications ENotificationChain) ENotificationChain
 	EBasicInverseRemove(otherEnd EObject, featureID int, notifications ENotificationChain) ENotificationChain
+
+	EObjectForFragmentSegment(string) EObject
+	EURIFragmentSegment(EStructuralFeature, EObject) string
 
 	EProxyURI() *url.URL
 	ESetProxyURI(uri *url.URL)
@@ -83,6 +87,11 @@ func (o *BasicEObject) EResource() EResource {
 			o.resource = o.container.EResource()
 		}
 	}
+	return o.resource
+}
+
+// EDirectResource ...
+func (o *BasicEObject) EDirectResource() EResource {
 	return o.resource
 }
 
@@ -422,4 +431,20 @@ func (o *BasicEObject) EBasicRemoveFromContainerFeature(notifications ENotificat
 		}
 	}
 	return notifications
+}
+
+func (o *BasicEObject) EObjectForFragmentSegment(uriSegment string) EObject {
+
+	return nil
+}
+
+func (o *BasicEObject) EURIFragmentSegment(feature EStructuralFeature, object EObject) string {
+	s := "@"
+	s += feature.GetName()
+	if feature.IsMany() {
+		v := o.EGet(feature)
+		i := v.(EList).IndexOf(object)
+		s += "." + strconv.Itoa(i)
+	}
+	return s
 }
