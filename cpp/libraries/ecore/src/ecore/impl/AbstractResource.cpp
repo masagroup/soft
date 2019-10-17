@@ -165,7 +165,11 @@ std::string AbstractResource::getURIFragmentRootSegment(const std::shared_ptr<EO
 std::shared_ptr<EObject> AbstractResource::getObjectByPath(const std::vector<std::string_view>& uriFragmentPath) const
 {
     auto eObject = getObjectForRootSegment(uriFragmentPath.empty() ? "" : std::string(uriFragmentPath.at(0)));
-    return std::shared_ptr<EObject>();
+    for (int i = 1; i < uriFragmentPath.size() && eObject; ++i) {
+        auto internalEObject = std::dynamic_pointer_cast<EObjectInternal>(eObject);
+        eObject = internalEObject->eObjectForFragmentSegment(std::string(uriFragmentPath[i]));
+    }
+    return eObject;
 }
 
 std::shared_ptr<EObject> AbstractResource::getObjectByID(const std::string& id) const
