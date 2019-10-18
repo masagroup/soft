@@ -77,6 +77,22 @@ func (_m *MockEResource) ESetDeliver(_a0 bool) {
 	_m.Called(_a0)
 }
 
+// GetAllContents provides a mock function with given fields:
+func (_m *MockEResource) GetAllContents() EIterator {
+	ret := _m.Called()
+
+	var r0 EIterator
+	if rf, ok := ret.Get(0).(func() EIterator); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(EIterator)
+		}
+	}
+
+	return r0
+}
+
 // GetContents provides a mock function with given fields:
 func (_m *MockEResource) GetContents() EList {
 	ret := _m.Called()

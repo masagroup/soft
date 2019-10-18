@@ -107,6 +107,15 @@ func (r *EResourceImpl) GetContents() EList {
 	return r.contents
 }
 
+func (r *EResourceImpl) GetAllContents() EIterator {
+	return newTreeIterator(r, false, func(o interface{}) EIterator {
+		if o == r {
+			return o.(EResource).GetContents().Iterator()
+		}
+		return o.(EObject).EContents().Iterator()
+	})
+}
+
 func (r *EResourceImpl) GetEObject(uriFragment string) EObject {
 	return nil
 }

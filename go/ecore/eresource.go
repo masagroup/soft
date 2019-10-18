@@ -22,6 +22,7 @@ type EResource interface {
 	SetURI(*url.URL)
 
 	GetContents() EList
+	GetAllContents() EIterator
 
 	GetEObject(string) EObject
 	GetURIFragment(EObject) string
