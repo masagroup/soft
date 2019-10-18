@@ -144,6 +144,19 @@ func (r *EResourceImpl) getObjectByID(id string) EObject {
 	return nil
 }
 
+func (r *EResourceImpl) getObjectByPath(uriFragmentPath []string) EObject {
+	var eObject EObject
+	if uriFragmentPath == nil || len(uriFragmentPath) == 0 {
+		eObject = r.getObjectForRootSegment("")
+	} else {
+		eObject = r.getObjectForRootSegment(uriFragmentPath[0])
+	}
+	for i := 1; i < len(uriFragmentPath) && eObject != nil; i++ {
+		eObject = eObject.(EObjectInternal).EObjectForFragmentSegment(uriFragmentPath[i])
+	}
+	return eObject
+}
+
 func (r *EResourceImpl) getObjectForRootSegment(rootSegment string) EObject {
 	position := 0
 	if len(rootSegment) > 0 {
