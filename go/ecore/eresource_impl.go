@@ -3,6 +3,7 @@ package ecore
 import (
 	"net/url"
 	"strconv"
+	"strings"
 )
 
 type resourceNotification struct {
@@ -117,7 +118,19 @@ func (r *EResourceImpl) GetAllContents() EIterator {
 }
 
 func (r *EResourceImpl) GetEObject(uriFragment string) EObject {
-	return nil
+	id := uriFragment
+	size := len(uriFragment)
+	if size > 0 {
+		if uriFragment[0] == '/' {
+			path := strings.Split(uriFragment, "/")
+			return r.getObjectByPath(path)
+		} else if uriFragment[size-1] == '?' {
+			if index := strings.LastIndex(uriFragment[:size-2], "?"); index != -1 {
+				id = uriFragment[:index]
+			}
+		}
+	}
+	return r.getObjectByID(id)
 }
 
 func (r *EResourceImpl) GetURIFragment(EObject) string {
