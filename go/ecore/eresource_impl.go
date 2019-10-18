@@ -1,6 +1,9 @@
 package ecore
 
-import "net/url"
+import (
+	"net/url"
+	"strconv"
+)
 
 type resourceNotification struct {
 	*abstractNotification
@@ -110,6 +113,34 @@ func (r *EResourceImpl) GetEObject(uriFragment string) EObject {
 
 func (r *EResourceImpl) GetURIFragment(EObject) string {
 	return "nil"
+}
+
+func (r *EResourceImpl) getURIFragmentRootSegment(eObject EObject) string {
+	contents := r.GetContents()
+	if contents.Empty() {
+		return ""
+	} else {
+		return strconv.Itoa(contents.IndexOf(eObject))
+	}
+}
+
+func (r *EResourceImpl) getObjectByID(id string) EObject {
+	return nil
+}
+
+func (r *EResourceImpl) getObjectForRootSegment(rootSegment string) EObject {
+	position := 0
+	if len(rootSegment) > 0 {
+		if rootSegment[0] == '?' {
+			return r.getObjectByID(rootSegment[1:])
+		} else {
+			position, _ = strconv.Atoi(rootSegment)
+		}
+	}
+	if position >= 0 && position < r.GetContents().Size() {
+		return r.GetContents().Get(position).(EObject)
+	}
+	return nil
 }
 
 func (r *EResourceImpl) Attached(object EObject) {
