@@ -134,6 +134,13 @@ func (r *EResourceImpl) getURIFragmentRootSegment(eObject EObject) string {
 }
 
 func (r *EResourceImpl) getObjectByID(id string) EObject {
+	for it := r.GetAllContents(); it.HasNext(); {
+		eObject := it.Next().(EObject)
+		objectID := GetEObjectID(eObject)
+		if id == objectID {
+			return eObject
+		}
+	}
 	return nil
 }
 
