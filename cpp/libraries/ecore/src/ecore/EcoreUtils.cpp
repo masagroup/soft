@@ -71,6 +71,8 @@ URI EcoreUtils::getURI(const std::shared_ptr<EObject>& eObject)
     return URI();
 }
 
+
+
 std::string EcoreUtils::getRelativeURIFragmentPath(const std::shared_ptr<EObject>& ancestor, const std::shared_ptr<EObject>& descendant, bool resolve)
 {
     if (ancestor == descendant)
@@ -98,7 +100,8 @@ std::string EcoreUtils::getRelativeURIFragmentPath(const std::shared_ptr<EObject
     return join(fragmentURIPath, "/");
 }
 
-std::shared_ptr<EObject> getEObject(const std::shared_ptr<EObject>& rootEObject, const std::string& relativeFragmentPath) {
+std::shared_ptr<EObject> EcoreUtils::getEObject( const std::shared_ptr<EObject>& rootEObject, const std::string& relativeFragmentPath )
+{
     auto segments = split(relativeFragmentPath, "/");
     auto eObject = std::dynamic_pointer_cast<EObjectInternal>(rootEObject);
     for (int i = 0; i < segments.size() && eObject; ++i)
