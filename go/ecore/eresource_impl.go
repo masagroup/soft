@@ -133,8 +133,39 @@ func (r *EResourceImpl) GetEObject(uriFragment string) EObject {
 	return r.getObjectByID(id)
 }
 
-func (r *EResourceImpl) GetURIFragment(EObject) string {
-	return "nil"
+func (r *EResourceImpl) GetURIFragment(eObject EObject) string {
+	id := GetEObjectID(eObject)
+	if len(id) == 0 {
+		internalEObject := eObject.(EObjectInternal)
+		if internalEObject.EDirectResource() == r.interfaces {
+			return "/" + r.getURIFragmentRootSegment(eObject)
+		} else {
+			fragmentPath := []string{}
+			isContained := false
+			for eContainer := eObject.EContainer(); eContainer != nil; eContainer = eObject.EContainer() {
+				internalEContainer := eContainer.(EObjectInternal)
+				if len(id) == 0 {
+					fragmentPath = append([]string{internalEContainer.EURIFragmentSegment(internalEObject.EContainingFeature(), internalEObject)}, fragmentPath...)
+				}
+				internalEObject = eContainer.(EObjectInternal)
+				if internalEContainer.EDirectResource() == r.interfaces {
+					isContained = true
+					break
+				}
+			}
+			if !isContained {
+				fragmentPath = append([]string{"/-1"}, fragmentPath...)
+			}
+			if len(id) == 0 {
+				fragmentPath = append([]string{r.getURIFragmentRootSegment(internalEObject)}, fragmentPath...)
+			} else {
+				fragmentPath = append([]string{"?" + id}, fragmentPath...)
+			}
+			fragmentPath = append([]string{""}, fragmentPath...)
+			return strings.Join(fragmentPath, "/")
+		}
+	}
+	return id
 }
 
 func (r *EResourceImpl) getURIFragmentRootSegment(eObject EObject) string {
