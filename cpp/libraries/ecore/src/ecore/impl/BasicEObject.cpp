@@ -96,7 +96,7 @@ std::shared_ptr<EObject> BasicEObject::eObjectForFragmentSegment( const std::str
         index = uriSegment.find_last_of('.');
         if (index != std::string::npos)
         {
-            auto position = std::stoi(uriSegment.substr(0, index));
+            auto position = std::stoi(uriSegment.substr(index + 1 ));
             auto eFeatureName = uriSegment.substr(0, index);
             auto eFeature = eStructuralFeature(eFeatureName);
             auto value = eGet(eFeature);
