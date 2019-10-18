@@ -12,6 +12,9 @@ package ecore
 import (
 	"net/url"
 	"strconv"
+	"strings"
+	"unicode"
+	"unicode/utf8"
 )
 
 // BasicEObject is a basic implementation of an EObject
@@ -433,8 +436,33 @@ func (o *BasicEObject) EBasicRemoveFromContainerFeature(notifications ENotificat
 	return notifications
 }
 
+func (o *BasicEObject) eStructuralFeature(featureName string) EStructuralFeature {
+	eFeature := o.EClass().GetEStructuralFeatureFromString(featureName)
+	if eFeature == nil {
+		panic("The feature " + featureName + " is not a valid feature")
+	}
+	return eFeature
+}
+
 func (o *BasicEObject) EObjectForFragmentSegment(uriSegment string) EObject {
 
+	index := -1
+	r, _ := utf8.DecodeLastRuneInString(uriSegment)
+	if unicode.IsDigit(r) {
+		if index = strings.LastIndex(uriSegment, "."); index != -1 {
+			pos, _ := strconv.Atoi(uriSegment[index+1:])
+			eFeatureName := uriSegment[:index]
+			eFeature := o.eStructuralFeature(eFeatureName)
+			list := o.EGet(eFeature).(EList)
+			if pos < list.Size() {
+				return list.Get(pos).(EObject)
+			}
+		}
+	}
+	if index == -1 {
+		eFeature := o.eStructuralFeature(uriSegment)
+		return o.EGet(eFeature).(EObject)
+	}
 	return nil
 }
 

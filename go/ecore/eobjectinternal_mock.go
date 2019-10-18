@@ -187,6 +187,22 @@ func (_m *MockEObjectInternal) EDeliver() bool {
 	return r0
 }
 
+// EDirectResource provides a mock function with given fields:
+func (_m *MockEObjectInternal) EDirectResource() EResource {
+	ret := _m.Called()
+
+	var r0 EResource
+	if rf, ok := ret.Get(0).(func() EResource); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(EResource)
+		}
+	}
+
+	return r0
+}
+
 // EGet provides a mock function with given fields: _a0
 func (_m *MockEObjectInternal) EGet(_a0 EStructuralFeature) interface{} {
 	ret := _m.Called(_a0)
@@ -360,6 +376,22 @@ func (_m *MockEObjectInternal) ENotify(_a0 ENotification) {
 	_m.Called(_a0)
 }
 
+// EObjectForFragmentSegment provides a mock function with given fields: _a0
+func (_m *MockEObjectInternal) EObjectForFragmentSegment(_a0 string) EObject {
+	ret := _m.Called(_a0)
+
+	var r0 EObject
+	if rf, ok := ret.Get(0).(func(string) EObject); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(EObject)
+		}
+	}
+
+	return r0
+}
+
 // EProxyURI provides a mock function with given fields:
 func (_m *MockEObjectInternal) EProxyURI() *url.URL {
 	ret := _m.Called()
@@ -455,6 +487,20 @@ func (_m *MockEObjectInternal) EStaticClass() EClass {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(EClass)
 		}
+	}
+
+	return r0
+}
+
+// EURIFragmentSegment provides a mock function with given fields: _a0, _a1
+func (_m *MockEObjectInternal) EURIFragmentSegment(_a0 EStructuralFeature, _a1 EObject) string {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(EStructuralFeature, EObject) string); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(string)
 	}
 
 	return r0
