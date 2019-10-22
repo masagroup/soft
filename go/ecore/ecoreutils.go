@@ -49,7 +49,7 @@ func GetURI(eObject EObject) *url.URL {
 		} else {
 			id := GetEObjectID(eObject)
 			if len(id) == 0 {
-				return &url.URL{Fragment: getRelativeURIFragmentPath(nil, eObject, false)}
+				return &url.URL{Fragment: "//" + getRelativeURIFragmentPath(nil, eObject, false)}
 			} else {
 				return &url.URL{Fragment: id}
 			}

@@ -2,6 +2,8 @@ package ecore
 
 // ENotifyingList ...
 type ENotifyingList interface {
+	EList
+
 	GetNotifier() ENotifier
 
 	GetFeature() EStructuralFeature

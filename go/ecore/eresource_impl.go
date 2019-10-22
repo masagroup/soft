@@ -135,7 +135,9 @@ func (r *EResourceImpl) GetEObject(uriFragment string) EObject {
 
 func (r *EResourceImpl) GetURIFragment(eObject EObject) string {
 	id := GetEObjectID(eObject)
-	if len(id) == 0 {
+	if len(id) > 0 {
+		return id
+	} else {
 		internalEObject := eObject.(EObjectInternal)
 		if internalEObject.EDirectResource() == r.interfaces {
 			return "/" + r.getURIFragmentRootSegment(eObject)
@@ -165,7 +167,6 @@ func (r *EResourceImpl) GetURIFragment(eObject EObject) string {
 			return strings.Join(fragmentPath, "/")
 		}
 	}
-	return id
 }
 
 func (r *EResourceImpl) getURIFragmentRootSegment(eObject EObject) string {

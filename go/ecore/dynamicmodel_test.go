@@ -174,7 +174,7 @@ func TestGetURIResource(t *testing.T) {
 	}, GetURI(m.bookStoreObject))
 	assert.Equal(t, &url.URL{Scheme: "file",
 		Path:     "a.test",
-		Fragment: "/0/@books.",
+		Fragment: "/0/@books.0",
 	}, GetURI(m.bookObject))
 
 }
