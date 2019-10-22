@@ -85,12 +85,13 @@ func (o *BasicEObject) EIsProxy() bool {
 
 // EResource ...
 func (o *BasicEObject) EResource() EResource {
-	if o.resource == nil {
+	resource := o.resource
+	if resource == nil {
 		if o.container != nil {
-			o.resource = o.container.EResource()
+			resource = o.container.EResource()
 		}
 	}
-	return o.resource
+	return resource
 }
 
 // EDirectResource ...
