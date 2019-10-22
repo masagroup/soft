@@ -98,6 +98,38 @@ func (o *BasicEObject) EDirectResource() EResource {
 	return o.resource
 }
 
+// ESetResource ...
+func (o *BasicEObject) ESetResource(newResource EResource, n ENotificationChain) ENotificationChain {
+	notifications := n
+	oldResource := o.resource
+	if oldResource != nil && newResource != nil {
+		list := oldResource.GetContents().(ENotifyingList)
+		notifications = list.RemoveWithNotification(o.GetEObject(), notifications)
+		oldResource.Detached(o.GetEObject())
+	}
+
+	eContainer := o.container
+	if eContainer != nil {
+		if o.EContainmentFeature().IsResolveProxies() {
+			oldContainerResource := eContainer.EResource()
+			if oldContainerResource != nil {
+				if newResource == nil {
+					// If we're not setting a new resource, attach it to the old container's resource.
+					oldContainerResource.Attached(o.GetEObject())
+				} else if oldResource == nil {
+					// If we didn't detach it from an old resource already, detach it from the old container's resource.
+					oldContainerResource.Detached(o.GetEObject())
+				}
+			}
+		} else {
+			notifications = o.EBasicRemoveFromContainer(notifications)
+			notifications = o.EBasicSetContainer(nil, -1, notifications)
+		}
+	}
+	o.resource = newResource
+	return notifications
+}
+
 // EContainer ...
 func (o *BasicEObject) EContainer() EObject {
 	return o.container
@@ -293,11 +325,6 @@ func (o *BasicEObject) EInvokeFromID(operationID int, arguments EList) interface
 // EStaticClass ...
 func (o *BasicEObject) EStaticClass() EClass {
 	return GetPackage().GetEObject()
-}
-
-// ESetResource ...
-func (o *BasicEObject) ESetResource(resource EResource, n ENotificationChain) ENotificationChain {
-	return n
 }
 
 // EInverseAdd ...
