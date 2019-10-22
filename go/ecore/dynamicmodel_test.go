@@ -10,120 +10,171 @@
 package ecore
 
 import (
-	"github.com/stretchr/testify/assert"
+	"net/url"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestDynamicModel(t *testing.T) {
+type DynamicMetaModel struct {
+	bookStoreEPackage EPackage
+	bookStoreEFactory EFactory
+	bookStoreEClass   EClass
+	bookStoreOwner    EAttribute
+	bookStoreLocation EAttribute
+	bookStoreBooks    EReference
+	bookEClass        EClass
+	bookName          EAttribute
+	bookISBN          EAttribute
+}
+
+func createDynamicMetaModel() *DynamicMetaModel {
+	m := new(DynamicMetaModel)
 	/*
 	* Create EClass instance to model BookStore class
 	 */
-	bookStoreEClass := GetFactory().CreateEClass()
+	m.bookStoreEClass = GetFactory().CreateEClass()
 
 	/*
-	* Create EClass instance to model Book class
+	 * Create EClass instance to model Book class
 	 */
-	bookEClass := GetFactory().CreateEClass()
+	m.bookEClass = GetFactory().CreateEClass()
 
 	/*
-	* Instantiate EPackage and provide unique URI
-	* to identify this package
+	 * Instantiate EPackage and provide unique URI
+	 * to identify this package
 	 */
-	bookStoreEFactory := GetFactory().CreateEFactory()
+	m.bookStoreEFactory = GetFactory().CreateEFactory()
 
-	bookStoreEPackage := GetFactory().CreateEPackage()
-	bookStoreEPackage.SetName("BookStorePackage")
-	bookStoreEPackage.SetNsPrefix("bookStore")
-	bookStoreEPackage.SetNsURI("http:///com.ibm.dynamic.example.bookstore.ecore")
-	bookStoreEPackage.SetEFactoryInstance(bookStoreEFactory)
+	m.bookStoreEPackage = GetFactory().CreateEPackage()
+	m.bookStoreEPackage.SetName("BookStorePackage")
+	m.bookStoreEPackage.SetNsPrefix("bookStore")
+	m.bookStoreEPackage.SetNsURI("http:///com.ibm.dynamic.example.bookstore.ecore")
+	m.bookStoreEPackage.SetEFactoryInstance(m.bookStoreEFactory)
 
 	/*
-	* Create attributes for BookStore class as specified in the model
+	 * Create attributes for BookStore class as specified in the model
 	 */
-	bookStoreOwner := GetFactory().CreateEAttribute()
-	bookStoreOwner.SetName("owner")
-	bookStoreOwner.SetEType(GetPackage().GetEString())
+	m.bookStoreOwner = GetFactory().CreateEAttribute()
+	m.bookStoreOwner.SetName("owner")
+	m.bookStoreOwner.SetEType(GetPackage().GetEString())
 
-	bookStoreLocation := GetFactory().CreateEAttribute()
-	bookStoreLocation.SetName("location")
-	bookStoreLocation.SetEType(GetPackage().GetEString())
+	m.bookStoreLocation = GetFactory().CreateEAttribute()
+	m.bookStoreLocation.SetName("location")
+	m.bookStoreLocation.SetEType(GetPackage().GetEString())
 
-	bookStoreBooks := GetFactory().CreateEReference()
-	bookStoreBooks.SetName("books")
-	bookStoreBooks.SetEType(bookEClass)
-	bookStoreBooks.SetUpperBound(UNBOUNDED_MULTIPLICITY)
-	bookStoreBooks.SetContainment(true)
+	m.bookStoreBooks = GetFactory().CreateEReference()
+	m.bookStoreBooks.SetName("books")
+	m.bookStoreBooks.SetEType(m.bookEClass)
+	m.bookStoreBooks.SetUpperBound(UNBOUNDED_MULTIPLICITY)
+	m.bookStoreBooks.SetContainment(true)
 
 	/*
-	* Create attributes for Book class as defined in the model
+	 * Create attributes for Book class as defined in the model
 	 */
-	bookName := GetFactory().CreateEAttribute()
-	bookName.SetName("name")
-	bookName.SetEType(GetPackage().GetEString())
+	m.bookName = GetFactory().CreateEAttribute()
+	m.bookName.SetName("name")
+	m.bookName.SetEType(GetPackage().GetEString())
 
-	bookISBN := GetFactory().CreateEAttribute()
-	bookISBN.SetName("isbn")
-	bookISBN.SetEType(GetPackage().GetEInt())
+	m.bookISBN = GetFactory().CreateEAttribute()
+	m.bookISBN.SetName("isbn")
+	m.bookISBN.SetEType(GetPackage().GetEInt())
 
 	/*
-	* Add owner, location and books attributes/references
-	* to BookStore class
+	 * Add owner, location and books attributes/references
+	 * to BookStore class
 	 */
-	bookStoreEClass.GetEStructuralFeatures().Add(bookStoreOwner)
-	bookStoreEClass.GetEStructuralFeatures().Add(bookStoreLocation)
-	bookStoreEClass.GetEStructuralFeatures().Add(bookStoreBooks)
+	m.bookStoreEClass.GetEStructuralFeatures().Add(m.bookStoreOwner)
+	m.bookStoreEClass.GetEStructuralFeatures().Add(m.bookStoreLocation)
+	m.bookStoreEClass.GetEStructuralFeatures().Add(m.bookStoreBooks)
 
 	/*
-	* Add name and isbn attributes to Book class
+	 * Add name and isbn attributes to Book class
 	 */
-	bookEClass.GetEStructuralFeatures().Add(bookName)
-	bookEClass.GetEStructuralFeatures().Add(bookISBN)
+	m.bookEClass.GetEStructuralFeatures().Add(m.bookName)
+	m.bookEClass.GetEStructuralFeatures().Add(m.bookISBN)
 
 	/*
-	* Place BookStore and Book classes in bookStoreEPackage
+	 * Place BookStore and Book classes in bookStoreEPackage
 	 */
-	bookStoreEPackage.GetEClassifiers().Add(bookStoreEClass)
-	bookStoreEPackage.GetEClassifiers().Add(bookEClass)
+	m.bookStoreEPackage.GetEClassifiers().Add(m.bookStoreEClass)
+	m.bookStoreEPackage.GetEClassifiers().Add(m.bookEClass)
 
-	/*
-	* Instanticate model
-	 */
+	return m
+}
 
-	/*
-	 * Obtain EFactory instance from BookStoreEPackage
-	 */
-	bookFactoryInstance := bookStoreEPackage.GetEFactoryInstance()
+type DynamicModel struct {
+	bookObject      EObject
+	bookStoreObject EObject
+}
 
+func instanciateDynamicModel(mm *DynamicMetaModel) *DynamicModel {
+	m := new(DynamicModel)
+
+	bookFactoryInstance := mm.bookStoreEPackage.GetEFactoryInstance()
 	/*
 	 * Create dynamic instance of BookStoreEClass and BookEClass
 	 */
-	bookObject := bookFactoryInstance.Create(bookEClass)
-	bookStoreObject := bookFactoryInstance.Create(bookStoreEClass)
+	m.bookObject = bookFactoryInstance.Create(mm.bookEClass)
+	m.bookStoreObject = bookFactoryInstance.Create(mm.bookStoreEClass)
 
 	/*
 	 * Set the values of bookStoreObject attributes
 	 */
-	bookStoreObject.ESet(bookStoreOwner, "David Brown")
-	bookStoreObject.ESet(bookStoreLocation, "Street#12, Top Town, NY")
-	allBooks := bookStoreObject.EGet(bookStoreBooks).(EList)
-	allBooks.Add(bookObject)
+	m.bookStoreObject.ESet(mm.bookStoreOwner, "David Brown")
+	m.bookStoreObject.ESet(mm.bookStoreLocation, "Street#12, Top Town, NY")
+	allBooks := m.bookStoreObject.EGet(mm.bookStoreBooks).(EList)
+	allBooks.Add(m.bookObject)
 
 	/*
 	 * Set the values of bookObject attributes
 	 */
-	bookObject.ESet(bookName, "Harry Potter and the Deathly Hallows")
-	bookObject.ESet(bookISBN, 157221)
+	m.bookObject.ESet(mm.bookName, "Harry Potter and the Deathly Hallows")
+	m.bookObject.ESet(mm.bookISBN, 157221)
+	return m
+}
+
+func TestDynamicModel(t *testing.T) {
+	mm := createDynamicMetaModel()
+	m := instanciateDynamicModel(mm)
 
 	/*
 	 * Read/Get the values of bookStoreObject attributes
 	 */
-	assert.Equal(t, "David Brown", bookStoreObject.EGet(bookStoreOwner).(string))
-	assert.Equal(t, "Street#12, Top Town, NY", bookStoreObject.EGet(bookStoreLocation).(string))
+	assert.Equal(t, "David Brown", m.bookStoreObject.EGet(mm.bookStoreOwner).(string))
+	assert.Equal(t, "Street#12, Top Town, NY", m.bookStoreObject.EGet(mm.bookStoreLocation).(string))
 
 	/*
 	 * Read/Get the values of bookObject attributes
 	 */
-	assert.Equal(t, "Harry Potter and the Deathly Hallows", bookObject.EGet(bookName).(string))
-	assert.Equal(t, 157221, bookObject.EGet(bookISBN).(int))
+	assert.Equal(t, "Harry Potter and the Deathly Hallows", m.bookObject.EGet(mm.bookName).(string))
+	assert.Equal(t, 157221, m.bookObject.EGet(mm.bookISBN).(int))
+
+}
+
+func TestGetURINoResource(t *testing.T) {
+	mm := createDynamicMetaModel()
+	m := instanciateDynamicModel(mm)
+	assert.Equal(t, &url.URL{Fragment: "//"}, GetURI(m.bookStoreObject))
+	assert.Equal(t, &url.URL{Fragment: "//@books.0"}, GetURI(m.bookObject))
+}
+
+func TestGetURIResource(t *testing.T) {
+	mm := createDynamicMetaModel()
+	m := instanciateDynamicModel(mm)
+	r := NewEResourceImpl()
+	r.SetURI(&url.URL{Scheme: "file",
+		Path: "a.test",
+	})
+	c := r.GetContents()
+	c.Add(m.bookStoreObject)
+	assert.Equal(t, &url.URL{Scheme: "file",
+		Path:     "a.test",
+		Fragment: "/0",
+	}, GetURI(m.bookStoreObject))
+	assert.Equal(t, &url.URL{Scheme: "file",
+		Path:     "a.test",
+		Fragment: "/0/@books.",
+	}, GetURI(m.bookObject))
 
 }
