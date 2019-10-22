@@ -135,7 +135,7 @@ std::string AbstractResource::getURIFragment(const std::shared_ptr<EObject>& eOb
                 if (id.empty())
                     fragmentPath.push_front(internalEContainer->eURIFragmentSegment(internalEObject->eContainingFeature(), internalEObject));
 
-                internalEObject = eContainer;
+                internalEObject = internalEContainer;
 
                 if (internalEContainer->eDirectResource() == getThisPtr())
                 {
