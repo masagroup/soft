@@ -138,6 +138,9 @@ func TestDynamicModel(t *testing.T) {
 	mm := createDynamicMetaModel()
 	m := instanciateDynamicModel(mm)
 
+	assert.Equal(t, mm.bookStoreEClass, m.bookStoreObject.EClass())
+	assert.Equal(t, mm.bookEClass, m.bookObject.EClass())
+
 	/*
 	 * Read/Get the values of bookStoreObject attributes
 	 */
@@ -176,5 +179,10 @@ func TestGetURIResource(t *testing.T) {
 		Path:     "a.test",
 		Fragment: "/0/@books.0",
 	}, GetURI(m.bookObject))
+}
 
+func TestGetEObjectFromRoot(t *testing.T) {
+	mm := createDynamicMetaModel()
+	m := instanciateDynamicModel(mm)
+	assert.Equal(t, m.bookObject, GetEObject(m.bookStoreObject, "@books.0"))
 }

@@ -465,7 +465,7 @@ func (o *BasicEObject) EBasicRemoveFromContainerFeature(notifications ENotificat
 }
 
 func (o *BasicEObject) eStructuralFeature(featureName string) EStructuralFeature {
-	eFeature := o.EClass().GetEStructuralFeatureFromString(featureName)
+	eFeature := o.GetEObject().EClass().GetEStructuralFeatureFromString(featureName)
 	if eFeature == nil {
 		panic("The feature " + featureName + " is not a valid feature")
 	}
@@ -479,9 +479,9 @@ func (o *BasicEObject) EObjectForFragmentSegment(uriSegment string) EObject {
 	if unicode.IsDigit(r) {
 		if index = strings.LastIndex(uriSegment, "."); index != -1 {
 			pos, _ := strconv.Atoi(uriSegment[index+1:])
-			eFeatureName := uriSegment[:index]
+			eFeatureName := uriSegment[1:index]
 			eFeature := o.eStructuralFeature(eFeatureName)
-			list := o.EGet(eFeature).(EList)
+			list := o.GetEObject().EGet(eFeature).(EList)
 			if pos < list.Size() {
 				return list.Get(pos).(EObject)
 			}
@@ -489,7 +489,7 @@ func (o *BasicEObject) EObjectForFragmentSegment(uriSegment string) EObject {
 	}
 	if index == -1 {
 		eFeature := o.eStructuralFeature(uriSegment)
-		return o.EGet(eFeature).(EObject)
+		return o.GetEObject().EGet(eFeature).(EObject)
 	}
 	return nil
 }
@@ -498,7 +498,7 @@ func (o *BasicEObject) EURIFragmentSegment(feature EStructuralFeature, object EO
 	s := "@"
 	s += feature.GetName()
 	if feature.IsMany() {
-		v := o.EGet(feature)
+		v := o.GetEObject().EGet(feature)
 		i := v.(EList).IndexOf(object)
 		s += "." + strconv.Itoa(i)
 	}

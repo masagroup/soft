@@ -85,3 +85,12 @@ func getRelativeURIFragmentPath(ancestor EObject, descendant EObject, resolve bo
 
 	return strings.Join(fragmentPath, "/")
 }
+
+func GetEObject(rootEObject EObject, relativeFragmentPath string) EObject {
+	segments := strings.Split(relativeFragmentPath, "/")
+	eObject := rootEObject.(EObjectInternal)
+	for i := 0; i < len(segments) && eObject != nil; i++ {
+		eObject = eObject.EObjectForFragmentSegment(segments[i]).(EObjectInternal)
+	}
+	return eObject
+}
