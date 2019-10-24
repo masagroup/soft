@@ -14,6 +14,7 @@
 #include "ecore/ENotifier.hpp"
 
 #include <memory>
+#include <unordered_map>
 
 namespace ecore
 {
@@ -39,6 +40,10 @@ namespace ecore
 
         virtual std::shared_ptr<EResourceFactoryRegistry> gerResourceFactoryRegistry() const = 0;
         virtual void setResourceFactoryRegistry( const std::shared_ptr<EResourceFactoryRegistry>& resourceFactoryRegistry ) = 0;
+
+        virtual void setURIResourceMap(const std::unordered_map<URI, std::shared_ptr<EResource>>& uriMap) = 0;
+        virtual std::unordered_map< URI, std::shared_ptr<EResource>> getURIResourceMap() const = 0;
+
     };
 
 } // namespace ecore

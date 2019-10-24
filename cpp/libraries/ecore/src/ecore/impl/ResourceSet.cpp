@@ -87,6 +87,16 @@ void ResourceSet::setResourceFactoryRegistry( const std::shared_ptr<EResourceFac
     resourceFactoryRegistry_ = resourceFactoryRegistry;
 }
 
+void ecore::impl::ResourceSet::setURIResourceMap(const std::unordered_map<URI, std::shared_ptr<EResource>>& uriMap)
+{
+    uriResourceMap_ = uriMap;
+}
+
+std::unordered_map<URI, std::shared_ptr<EResource>> ecore::impl::ResourceSet::getURIResourceMap() const
+{
+    return uriResourceMap_.has_value() ? uriResourceMap_.value() : std::unordered_map<URI, std::shared_ptr<EResource>>();
+}
+
 std::shared_ptr<EList<std::shared_ptr<EResource>>> ResourceSet::initResources()
 {
     class ResourcesEList : public AbstractENotifyingList<ENotifyingList<std::shared_ptr<EResource>>, std::shared_ptr<EResource>>

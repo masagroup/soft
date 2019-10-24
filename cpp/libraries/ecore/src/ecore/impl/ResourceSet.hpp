@@ -17,7 +17,6 @@
 #include "ecore/impl/Lazy.hpp"
 
 #include <optional>
-#include <unordered_map>
 
 namespace ecore::impl
 {
@@ -39,6 +38,9 @@ namespace ecore::impl
 
         virtual std::shared_ptr<EResourceFactoryRegistry> gerResourceFactoryRegistry() const;
         virtual void setResourceFactoryRegistry( const std::shared_ptr<EResourceFactoryRegistry>& resourceFactoryRegistry );
+
+        virtual void setURIResourceMap(const std::unordered_map<URI, std::shared_ptr<EResource>>& uriMap);
+        virtual std::unordered_map< URI, std::shared_ptr<EResource>> getURIResourceMap() const;
 
     private:
         std::shared_ptr<EList<std::shared_ptr<EResource>>> initResources();
