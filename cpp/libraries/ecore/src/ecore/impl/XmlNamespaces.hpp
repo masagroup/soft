@@ -34,7 +34,7 @@ namespace ecore::impl
 
         std::string getPrefix( const std::string& uri );
 
-        std::string getUri( const std::string& prefix );
+        std::string getURI( const std::string& prefix );
 
     private:
         std::vector<std::pair<std::string, std::string>> namespaces_{16};

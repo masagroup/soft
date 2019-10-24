@@ -9,6 +9,34 @@ type MockENotifyingList struct {
 	mock.Mock
 }
 
+// Add provides a mock function with given fields: _a0
+func (_m *MockENotifyingList) Add(_a0 interface{}) bool {
+	ret := _m.Called(_a0)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(interface{}) bool); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// AddAll provides a mock function with given fields: _a0
+func (_m *MockENotifyingList) AddAll(_a0 EList) bool {
+	ret := _m.Called(_a0)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(EList) bool); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
 // AddWithNotification provides a mock function with given fields: object, notifications
 func (_m *MockENotifyingList) AddWithNotification(object interface{}, notifications ENotificationChain) ENotificationChain {
 	ret := _m.Called(object, notifications)
@@ -19,6 +47,55 @@ func (_m *MockENotifyingList) AddWithNotification(object interface{}, notificati
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(ENotificationChain)
+		}
+	}
+
+	return r0
+}
+
+// Clear provides a mock function with given fields:
+func (_m *MockENotifyingList) Clear() {
+	_m.Called()
+}
+
+// Contains provides a mock function with given fields: _a0
+func (_m *MockENotifyingList) Contains(_a0 interface{}) bool {
+	ret := _m.Called(_a0)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(interface{}) bool); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// Empty provides a mock function with given fields:
+func (_m *MockENotifyingList) Empty() bool {
+	ret := _m.Called()
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func() bool); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// Get provides a mock function with given fields: _a0
+func (_m *MockENotifyingList) Get(_a0 int) interface{} {
+	ret := _m.Called(_a0)
+
+	var r0 interface{}
+	if rf, ok := ret.Get(0).(func(int) interface{}); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(interface{})
 		}
 	}
 
@@ -71,6 +148,115 @@ func (_m *MockENotifyingList) GetNotifier() ENotifier {
 	return r0
 }
 
+// IndexOf provides a mock function with given fields: _a0
+func (_m *MockENotifyingList) IndexOf(_a0 interface{}) int {
+	ret := _m.Called(_a0)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(interface{}) int); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	return r0
+}
+
+// Insert provides a mock function with given fields: _a0, _a1
+func (_m *MockENotifyingList) Insert(_a0 int, _a1 interface{}) bool {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(int, interface{}) bool); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// InsertAll provides a mock function with given fields: _a0, _a1
+func (_m *MockENotifyingList) InsertAll(_a0 int, _a1 EList) bool {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(int, EList) bool); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// Iterator provides a mock function with given fields:
+func (_m *MockENotifyingList) Iterator() EIterator {
+	ret := _m.Called()
+
+	var r0 EIterator
+	if rf, ok := ret.Get(0).(func() EIterator); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(EIterator)
+		}
+	}
+
+	return r0
+}
+
+// Move provides a mock function with given fields: _a0, _a1
+func (_m *MockENotifyingList) Move(_a0 int, _a1 int) interface{} {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 interface{}
+	if rf, ok := ret.Get(0).(func(int, int) interface{}); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(interface{})
+		}
+	}
+
+	return r0
+}
+
+// MoveObject provides a mock function with given fields: _a0, _a1
+func (_m *MockENotifyingList) MoveObject(_a0 int, _a1 interface{}) {
+	_m.Called(_a0, _a1)
+}
+
+// Remove provides a mock function with given fields: _a0
+func (_m *MockENotifyingList) Remove(_a0 interface{}) bool {
+	ret := _m.Called(_a0)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(interface{}) bool); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// RemoveAt provides a mock function with given fields: _a0
+func (_m *MockENotifyingList) RemoveAt(_a0 int) interface{} {
+	ret := _m.Called(_a0)
+
+	var r0 interface{}
+	if rf, ok := ret.Get(0).(func(int) interface{}); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(interface{})
+		}
+	}
+
+	return r0
+}
+
 // RemoveWithNotification provides a mock function with given fields: object, notifications
 func (_m *MockENotifyingList) RemoveWithNotification(object interface{}, notifications ENotificationChain) ENotificationChain {
 	ret := _m.Called(object, notifications)
@@ -87,6 +273,11 @@ func (_m *MockENotifyingList) RemoveWithNotification(object interface{}, notific
 	return r0
 }
 
+// Set provides a mock function with given fields: _a0, _a1
+func (_m *MockENotifyingList) Set(_a0 int, _a1 interface{}) {
+	_m.Called(_a0, _a1)
+}
+
 // SetWithNotification provides a mock function with given fields: index, object, notifications
 func (_m *MockENotifyingList) SetWithNotification(index int, object interface{}, notifications ENotificationChain) ENotificationChain {
 	ret := _m.Called(index, object, notifications)
@@ -97,6 +288,36 @@ func (_m *MockENotifyingList) SetWithNotification(index int, object interface{},
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(ENotificationChain)
+		}
+	}
+
+	return r0
+}
+
+// Size provides a mock function with given fields:
+func (_m *MockENotifyingList) Size() int {
+	ret := _m.Called()
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func() int); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	return r0
+}
+
+// ToArray provides a mock function with given fields:
+func (_m *MockENotifyingList) ToArray() []interface{} {
+	ret := _m.Called()
+
+	var r0 []interface{}
+	if rf, ok := ret.Get(0).(func() []interface{}); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]interface{})
 		}
 	}
 

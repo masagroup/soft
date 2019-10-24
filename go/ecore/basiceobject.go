@@ -12,12 +12,14 @@ package ecore
 import (
 	"net/url"
 	"strconv"
+	"strings"
+	"unicode"
+	"unicode/utf8"
 )
 
 // BasicEObject is a basic implementation of an EObject
 type BasicEObject struct {
 	*Notifier
-	interfaces         interface{}
 	resource           EResource
 	container          EObject
 	containerFeatureID int
@@ -30,6 +32,7 @@ type EObjectInternal interface {
 
 	EStaticClass() EClass
 
+	EDirectResource() EResource
 	ESetResource(resource EResource, notifications ENotificationChain) ENotificationChain
 	EInverseAdd(otherEnd EObject, featureID int, notifications ENotificationChain) ENotificationChain
 	EInverseRemove(otherEnd EObject, featureID int, notifications ENotificationChain) ENotificationChain
@@ -43,6 +46,9 @@ type EObjectInternal interface {
 	EBasicInverseAdd(otherEnd EObject, featureID int, notifications ENotificationChain) ENotificationChain
 	EBasicInverseRemove(otherEnd EObject, featureID int, notifications ENotificationChain) ENotificationChain
 
+	EObjectForFragmentSegment(string) EObject
+	EURIFragmentSegment(EStructuralFeature, EObject) string
+
 	EProxyURI() *url.URL
 	ESetProxyURI(uri *url.URL)
 	EResolveProxy(proxy EObject) EObject
@@ -55,16 +61,6 @@ func NewBasicEObject() *BasicEObject {
 	o.interfaces = o
 	o.containerFeatureID = -1
 	return o
-}
-
-// SetInterfaces ...
-func (o *BasicEObject) SetInterfaces(interfaces interface{}) {
-	o.interfaces = interfaces
-}
-
-// GetInterfaces ...
-func (o *BasicEObject) GetInterfaces() interface{} {
-	return o.interfaces
 }
 
 // GetEObject ...
@@ -89,12 +85,50 @@ func (o *BasicEObject) EIsProxy() bool {
 
 // EResource ...
 func (o *BasicEObject) EResource() EResource {
-	if o.resource == nil {
+	resource := o.resource
+	if resource == nil {
 		if o.container != nil {
-			o.resource = o.container.EResource()
+			resource = o.container.EResource()
 		}
 	}
+	return resource
+}
+
+// EDirectResource ...
+func (o *BasicEObject) EDirectResource() EResource {
 	return o.resource
+}
+
+// ESetResource ...
+func (o *BasicEObject) ESetResource(newResource EResource, n ENotificationChain) ENotificationChain {
+	notifications := n
+	oldResource := o.resource
+	if oldResource != nil && newResource != nil {
+		list := oldResource.GetContents().(ENotifyingList)
+		notifications = list.RemoveWithNotification(o.GetEObject(), notifications)
+		oldResource.Detached(o.GetEObject())
+	}
+
+	eContainer := o.container
+	if eContainer != nil {
+		if o.EContainmentFeature().IsResolveProxies() {
+			oldContainerResource := eContainer.EResource()
+			if oldContainerResource != nil {
+				if newResource == nil {
+					// If we're not setting a new resource, attach it to the old container's resource.
+					oldContainerResource.Attached(o.GetEObject())
+				} else if oldResource == nil {
+					// If we didn't detach it from an old resource already, detach it from the old container's resource.
+					oldContainerResource.Detached(o.GetEObject())
+				}
+			}
+		} else {
+			notifications = o.EBasicRemoveFromContainer(notifications)
+			notifications = o.EBasicSetContainer(nil, -1, notifications)
+		}
+	}
+	o.resource = newResource
+	return notifications
 }
 
 // EContainer ...
@@ -294,11 +328,6 @@ func (o *BasicEObject) EStaticClass() EClass {
 	return GetPackage().GetEObject()
 }
 
-// ESetResource ...
-func (o *BasicEObject) ESetResource(resource EResource, n ENotificationChain) ENotificationChain {
-	return n
-}
-
 // EInverseAdd ...
 func (o *BasicEObject) EInverseAdd(otherEnd EObject, featureID int, n ENotificationChain) ENotificationChain {
 	notifications := n
@@ -308,7 +337,6 @@ func (o *BasicEObject) EInverseAdd(otherEnd EObject, featureID int, n ENotificat
 		notifications = o.EBasicRemoveFromContainer(notifications)
 		return o.EBasicSetContainer(otherEnd, featureID, notifications)
 	}
-	return notifications
 }
 
 // EInverseRemove ...
@@ -434,4 +462,45 @@ func (o *BasicEObject) EBasicRemoveFromContainerFeature(notifications ENotificat
 		}
 	}
 	return notifications
+}
+
+func (o *BasicEObject) eStructuralFeature(featureName string) EStructuralFeature {
+	eFeature := o.GetEObject().EClass().GetEStructuralFeatureFromString(featureName)
+	if eFeature == nil {
+		panic("The feature " + featureName + " is not a valid feature")
+	}
+	return eFeature
+}
+
+func (o *BasicEObject) EObjectForFragmentSegment(uriSegment string) EObject {
+
+	index := -1
+	r, _ := utf8.DecodeLastRuneInString(uriSegment)
+	if unicode.IsDigit(r) {
+		if index = strings.LastIndex(uriSegment, "."); index != -1 {
+			pos, _ := strconv.Atoi(uriSegment[index+1:])
+			eFeatureName := uriSegment[1:index]
+			eFeature := o.eStructuralFeature(eFeatureName)
+			list := o.GetEObject().EGet(eFeature).(EList)
+			if pos < list.Size() {
+				return list.Get(pos).(EObject)
+			}
+		}
+	}
+	if index == -1 {
+		eFeature := o.eStructuralFeature(uriSegment)
+		return o.GetEObject().EGet(eFeature).(EObject)
+	}
+	return nil
+}
+
+func (o *BasicEObject) EURIFragmentSegment(feature EStructuralFeature, object EObject) string {
+	s := "@"
+	s += feature.GetName()
+	if feature.IsMany() {
+		v := o.GetEObject().EGet(feature)
+		i := v.(EList).IndexOf(object)
+		s += "." + strconv.Itoa(i)
+	}
+	return s
 }

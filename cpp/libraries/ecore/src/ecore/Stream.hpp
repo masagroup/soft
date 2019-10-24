@@ -13,7 +13,7 @@
 #include <vector>
 #include <memory>
 #include "ecore/EList.hpp"
-#include "ecore/Uri.hpp"
+#include "ecore/URI.hpp"
 
 namespace ecore
 {
@@ -57,7 +57,7 @@ namespace ecore
     }
 
     template<typename C, typename T>
-    std::basic_ostream<C, T>& operator<<( std::basic_ostream<C, T>& os, const Uri& uri )
+    std::basic_ostream<C, T>& operator<<( std::basic_ostream<C, T>& os, const URI& uri )
     {
         return os << uri.toString();
     }

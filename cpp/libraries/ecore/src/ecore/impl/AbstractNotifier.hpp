@@ -80,8 +80,7 @@ namespace ecore::impl
 
             virtual void didRemove( std::size_t pos, const ValueType& adapter ) override
             {
-                std::shared_ptr<ENotifier> notifier;
-                const_cast<EAdapter*>( adapter )->setTarget( notifier );
+                const_cast<EAdapter*>( adapter )->setTarget( nullptr );
             }
 
         private:

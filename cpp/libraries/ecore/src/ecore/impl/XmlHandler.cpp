@@ -173,7 +173,7 @@ std::shared_ptr<EObject> XmlHandler::createObject( const std::string& prefix, co
     }
     else
     {
-        handleUnknownPackage( namespaces_.getUri( prefix ) );
+        handleUnknownPackage( namespaces_.getURI( prefix ) );
         return nullptr;
     }
 }
@@ -228,7 +228,7 @@ std::shared_ptr<EObject> XmlHandler::createObjectFromTypeName( const std::shared
         typeName = typeQName;
 
     auto eFactory = getFactoryForPrefix( prefix );
-    if( !eFactory && prefix.empty() && namespaces_.getUri( prefix ).empty() )
+    if( !eFactory && prefix.empty() && namespaces_.getURI( prefix ).empty() )
         handleUnknownPackage( "" );
 
     auto ePackage = eFactory->getEPackage();
@@ -455,7 +455,7 @@ void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
 
 std::string XmlHandler::getLocation() const
 {
-    return locator_ && locator_->getSystemId() ? utf16_to_utf8( locator_->getSystemId() ) : resource_.getUri().toString();
+    return locator_ && locator_->getSystemId() ? utf16_to_utf8( locator_->getSystemId() ) : resource_.getURI().toString();
 }
 
 int XmlHandler::getLineNumber() const
@@ -515,7 +515,7 @@ void XmlHandler::handleReferences()
             auto eOpposite = eReference->getEOpposite();
             if( eOpposite && eOpposite->isChangeable() && eProxy->eIsSet( eReference ) )
             {
-                auto resolvedObject = resource_.getEObject( eProxy->eProxyUri().getFragment() );
+                auto resolvedObject = resource_.getEObject( eProxy->eProxyURI().getFragment() );
                 if( resolvedObject )
                 {
                     std::shared_ptr<EObject> proxyHolder;
@@ -624,10 +624,10 @@ void XmlHandler::handleAttributes( const std::shared_ptr<EObject>& eObject )
 
 void XmlHandler::handleProxy( const std::shared_ptr<EObject>& eProxy, const std::string& id )
 {
-    eProxy->eSetProxyURI( Uri( id ) );
+    eProxy->eSetProxyURI( URI( id ) );
 
-    auto uri = Uri( id );
-    if( uri.trimFragment() == resource_.getUri() )
+    auto uri = URI( id );
+    if( uri.trimFragment() == resource_.getURI() )
         sameDocumentProxies_.push_back( eProxy );
 }
 
@@ -662,7 +662,7 @@ std::shared_ptr<EFactory> XmlHandler::getFactoryForPrefix( const std::string& pr
         factory = found->second;
     else
     {
-        auto uri = namespaces_.getUri( prefix );
+        auto uri = namespaces_.getURI( prefix );
         factory = EPackageRegistry::getInstance()->getFactory( uri );
         if( factory )
             prefixesToFactories_.emplace( prefix, factory );

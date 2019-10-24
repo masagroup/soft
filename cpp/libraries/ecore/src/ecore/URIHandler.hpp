@@ -7,8 +7,8 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EURIHANDLER_HPP_
-#define ECORE_EURIHANDLER_HPP_
+#ifndef ECORE_URIHANDLER_HPP_
+#define ECORE_URIHANDLER_HPP_
 
 #include "ecore/Exports.hpp"
 #include <memory>
@@ -16,18 +16,18 @@
 
 namespace ecore
 {
-    class Uri;
+    class URI;
 
-    class ECORE_API EUriHandler
+    class ECORE_API URIHandler
     {
     public:
-        virtual ~EUriHandler() = default;
+        virtual ~URIHandler() = default;
 
-        virtual bool canHandle( const Uri& uri ) const = 0;
+        virtual bool canHandle( const URI& uri ) const = 0;
 
-        virtual std::unique_ptr<std::istream> createInputStream( const Uri& uri ) const = 0;
+        virtual std::unique_ptr<std::istream> createInputStream( const URI& uri ) const = 0;
 
-        virtual std::unique_ptr<std::ostream> createOutputStream( const Uri& uri ) const = 0;
+        virtual std::unique_ptr<std::ostream> createOutputStream( const URI& uri ) const = 0;
     };
 
 } // namespace ecore

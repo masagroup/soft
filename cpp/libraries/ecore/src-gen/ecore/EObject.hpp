@@ -56,7 +56,7 @@ namespace ecore
 }
 
 // Start of user code forward declarations for EObject
-#include "ecore/Uri.hpp"
+#include "ecore/URI.hpp"
 
 namespace ecore
 {
@@ -117,8 +117,8 @@ namespace ecore
                                                                 , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
         
         // Proxy
-        virtual Uri eProxyUri() const = 0;
-        virtual void eSetProxyURI( const Uri& uri ) = 0;
+        virtual URI eProxyURI() const = 0;
+        virtual void eSetProxyURI( const URI& uri ) = 0;
         virtual std::shared_ptr<EObject> eResolveProxy( const std::shared_ptr<EObject>& proxy ) const = 0;
         // End of user code
     };

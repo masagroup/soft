@@ -22,7 +22,7 @@ namespace ecore::impl
 
         virtual ~XmlResourceFactory();
 
-        virtual std::shared_ptr<EResource> createResource( const Uri & uri ) const override;
+        virtual std::shared_ptr<EResource> createResource( const URI & uri ) const override;
 
     };
 

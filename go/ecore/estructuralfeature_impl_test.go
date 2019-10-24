@@ -38,9 +38,10 @@ func TestEStructuralFeatureChangeableGet(t *testing.T) {
 }
 
 func TestEStructuralFeatureChangeableSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEStructuralFeatureImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetChangeable(true)
 	mockAdapter.AssertExpectations(t)
@@ -188,9 +189,10 @@ func TestEStructuralFeatureVolatileGet(t *testing.T) {
 }
 
 func TestEStructuralFeatureVolatileSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEStructuralFeatureImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetVolatile(true)
 	mockAdapter.AssertExpectations(t)
@@ -338,9 +340,10 @@ func TestEStructuralFeatureTransientGet(t *testing.T) {
 }
 
 func TestEStructuralFeatureTransientSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEStructuralFeatureImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetTransient(true)
 	mockAdapter.AssertExpectations(t)
@@ -488,9 +491,10 @@ func TestEStructuralFeatureDefaultValueLiteralGet(t *testing.T) {
 }
 
 func TestEStructuralFeatureDefaultValueLiteralSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEStructuralFeatureImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetDefaultValueLiteral("Test String")
 	mockAdapter.AssertExpectations(t)
@@ -638,9 +642,10 @@ func TestEStructuralFeatureUnsettableGet(t *testing.T) {
 }
 
 func TestEStructuralFeatureUnsettableSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEStructuralFeatureImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetUnsettable(true)
 	mockAdapter.AssertExpectations(t)
@@ -788,9 +793,10 @@ func TestEStructuralFeatureDerivedGet(t *testing.T) {
 }
 
 func TestEStructuralFeatureDerivedSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEStructuralFeatureImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetDerived(true)
 	mockAdapter.AssertExpectations(t)
@@ -938,9 +944,10 @@ func TestEStructuralFeatureFeatureIDGet(t *testing.T) {
 }
 
 func TestEStructuralFeatureFeatureIDSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEStructuralFeatureImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetFeatureID(45)
 	mockAdapter.AssertExpectations(t)

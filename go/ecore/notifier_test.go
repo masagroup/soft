@@ -20,3 +20,11 @@ func TestNotifierAccessors(t *testing.T) {
 	adapters := n.EAdapters()
 	assert.True(t, adapters.Empty())
 }
+
+func TestNotifierAdapters(t *testing.T) {
+	n := NewNotifier()
+	mockEAdapter := new(MockEAdapter)
+	mockEAdapter.On("SetTarget", n).Once()
+	n.EAdapters().Add(mockEAdapter)
+	mockEAdapter.AssertExpectations(t)
+}

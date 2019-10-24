@@ -8,10 +8,10 @@
 // *****************************************************************************
 
 #ifndef ECORE_URI_HPP_
-#error This file may only be included from folly/Uri.h
+#error This file may only be included from URI.h
 #endif
 
-#include "Uri.hpp"
+#include "URI.hpp"
 #include <functional>
 #include <tuple>
 #include <array>
@@ -20,7 +20,7 @@ namespace ecore
 {
     namespace detail
     {
-        using UriTuple = std::tuple<const std::string&,
+        using URITuple = std::tuple<const std::string&,
                                     const std::string&,
                                     const std::string&,
                                     const std::string&,
@@ -29,9 +29,9 @@ namespace ecore
                                     const std::string&,
                                     const std::string&>;
 
-        inline UriTuple as_tuple( const Uri& k )
+        inline URITuple as_tuple( const URI& k )
         {
-            return UriTuple( k.getScheme(),
+            return URITuple( k.getScheme(),
                              k.getUsername(),
                              k.getPassword(),
                              k.getHost(),
@@ -56,73 +56,73 @@ namespace ecore
     } // namespace detail
 
 
-    inline const std::string& Uri::getScheme() const
+    inline const std::string& URI::getScheme() const
     {
         return scheme_;
     }
     
-    inline const std::string& Uri::getUsername() const
+    inline const std::string& URI::getUsername() const
     {
         return username_;
     }
     
-    inline const std::string& Uri::getPassword() const
+    inline const std::string& URI::getPassword() const
     {
         return password_;
     }
 
-    inline const std::string& Uri::getHost() const
+    inline const std::string& URI::getHost() const
     {
         return host_;
     }
 
-    inline uint16_t Uri::getPort() const
+    inline uint16_t URI::getPort() const
     {
         return port_;
     }
 
-    inline const std::string& Uri::getPath() const
+    inline const std::string& URI::getPath() const
     {
         return path_;
     }
 
-    inline const std::string& Uri::getQuery() const
+    inline const std::string& URI::getQuery() const
     {
         return query_;
     }
 
-    inline const std::string& Uri::getFragment() const
+    inline const std::string& URI::getFragment() const
     {
         return fragment_;
     }
 
-    inline bool Uri::operator==( const Uri& other ) const
+    inline bool URI::operator==( const URI& other ) const
     {
         return ecore::detail::as_tuple( *this ) == ecore::detail::as_tuple( other );
     }
 
-    inline bool Uri::operator!=( const Uri& other ) const
+    inline bool URI::operator!=( const URI& other ) const
     {
         return !operator==( other );
     }
 
-    inline bool Uri::isAbsolute() const
+    inline bool URI::isAbsolute() const
     {
         return !scheme_.empty();
     }
 
-    inline bool Uri::isOpaque() const
+    inline bool URI::isOpaque() const
     {
         return path_.empty();
     }
 
-    inline bool Uri::isEmpty() const
+    inline bool URI::isEmpty() const
     {
-        return *this == Uri();
+        return *this == URI();
     }
 
     template <typename InputIterator, typename OutputIterator>
-    void uriEscape( InputIterator first, InputIterator last, OutputIterator out, UriEscapeMode mode )
+    void uriEscape( InputIterator first, InputIterator last, OutputIterator out, URIEscapeMode mode )
     {
         static const char hexValues[] = "0123456789abcdef";
         char esc[3];
@@ -140,7 +140,7 @@ namespace ecore
             {
                 ++p;
             }
-            else if( mode == UriEscapeMode::QUERY && discriminator == 3 )
+            else if( mode == URIEscapeMode::QUERY && discriminator == 3 )
             {
                 std::copy( l, p, out );
                 out++ = '+';
@@ -161,7 +161,7 @@ namespace ecore
     }
 
     template <typename StringInput, typename StringOutput>
-    StringOutput uriEscape( const StringInput& str, UriEscapeMode mode )
+    StringOutput uriEscape( const StringInput& str, URIEscapeMode mode )
     {
         StringOutput out;
         uriEscape( std::begin( str ), std::end( str ), std::back_inserter( out ), mode );
@@ -169,7 +169,7 @@ namespace ecore
     }
 
     template <typename InputIterator, typename OutputIterator>
-    void uriUnescape( InputIterator first, InputIterator last, OutputIterator out, UriEscapeMode mode )
+    void uriUnescape( InputIterator first, InputIterator last, OutputIterator out, URIEscapeMode mode )
     {
         auto p = first;
         auto l = p;
@@ -197,7 +197,7 @@ namespace ecore
                 break;
             }
             case '+':
-                if( mode == UriEscapeMode::QUERY )
+                if( mode == URIEscapeMode::QUERY )
                 {
                     std::copy( l, p, out );
                     out++ = ' ';
@@ -214,7 +214,7 @@ namespace ecore
     }
 
     template <typename StringInput, typename StringOutput>
-    StringOutput uriUnescape( const StringInput& str, UriEscapeMode mode )
+    StringOutput uriUnescape( const StringInput& str, URIEscapeMode mode )
     {
         StringOutput out;
         uriUnescape( std::begin( str ), std::end( str ), std::back_inserter( out ), mode );
@@ -227,9 +227,9 @@ namespace std
 {
 
     template <>
-    struct equal_to<ecore::Uri>
+    struct equal_to<ecore::URI>
     {
-        bool operator()( const ecore::Uri& a, const ecore::Uri& b ) const
+        bool operator()( const ecore::URI& a, const ecore::URI& b ) const
         {
             return ecore::detail::as_tuple( a ) == ecore::detail::as_tuple( b );
         }

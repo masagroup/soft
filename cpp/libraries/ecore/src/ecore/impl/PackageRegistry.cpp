@@ -25,14 +25,14 @@ void PackageRegistry::unregisterPackage( const std::shared_ptr<EPackage>& packag
     packages_.extract( package->getNsURI() );
 }
 
-std::shared_ptr<EPackage> PackageRegistry::getPackage( const std::string& nsUri ) const
+std::shared_ptr<EPackage> PackageRegistry::getPackage( const std::string& nsURI ) const
 {
-    auto it = packages_.find( nsUri );
+    auto it = packages_.find(nsURI);
     return it != packages_.end() ? it->second : std::shared_ptr<EPackage>();
 }
 
-std::shared_ptr<EFactory> PackageRegistry::getFactory( const std::string& nsUri ) const
+std::shared_ptr<EFactory> PackageRegistry::getFactory( const std::string& nsURI) const
 {
-    auto it = packages_.find( nsUri );
+    auto it = packages_.find(nsURI);
     return it != packages_.end() ? it->second->getEFactoryInstance() : std::shared_ptr<EFactory>();
 }

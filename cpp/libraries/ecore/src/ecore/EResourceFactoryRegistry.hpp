@@ -19,7 +19,7 @@
 
 namespace ecore
 {
-    class Uri;
+    class URI;
 
     class ECORE_API EResourceFactoryRegistry
     {
@@ -30,7 +30,7 @@ namespace ecore
 
         using FactoryMap = std::unordered_map<std::string, EResourceFactory*>;
 
-        virtual EResourceFactory* getFactory( const Uri& uri ) = 0;
+        virtual EResourceFactory* getFactory( const URI& uri ) = 0;
 
         virtual FactoryMap& getProtocolToFactoryMap() = 0;
 

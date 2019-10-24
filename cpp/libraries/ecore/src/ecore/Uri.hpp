@@ -16,12 +16,12 @@
 
 namespace ecore
 {
-    class ECORE_API Uri
+    class ECORE_API URI
     {
     public:
-        explicit Uri();
+        explicit URI();
 
-        explicit Uri( const std::string& str );
+        explicit URI( const std::string& str );
 
         const std::string& getScheme() const;
         
@@ -58,7 +58,7 @@ namespace ecore
 
         std::string toString() const;
 
-        Uri trimFragment() const; 
+        URI trimFragment() const; 
 
         std::string string() const;
 
@@ -90,9 +90,9 @@ namespace ecore
          */
         const std::vector<std::pair<std::string, std::string>>& getQueryParams();
 
-        bool operator==( const Uri& other ) const;
+        bool operator==( const URI& other ) const;
 
-        bool operator!=( const Uri& other ) const;
+        bool operator!=( const URI& other ) const;
 
         bool isAbsolute() const;
 
@@ -100,23 +100,23 @@ namespace ecore
 
         bool isEmpty() const;
 
-        Uri normalize() const;
+        URI normalize() const;
 
-        Uri resolve( const Uri& uri ) const;
+        URI resolve( const URI& uri ) const;
 
-        Uri resolve( const std::string& str ) const;
+        URI resolve( const std::string& str ) const;
 
-        Uri relativize( const Uri& uri ) const;
+        URI relativize( const URI& uri ) const;
 
     private:
         // normalization
-        static Uri normalize( const Uri& uri );
+        static URI normalize( const URI& uri );
         
         // relativize
-        static Uri relativize( const Uri& base, const Uri& child );
+        static URI relativize( const URI& base, const URI& child );
 
         // resolve
-        static Uri resolve( const Uri& base, const Uri& child );
+        static URI resolve( const URI& base, const URI& child );
         
     private:
         std::string scheme_;
@@ -138,7 +138,7 @@ namespace ecore
      * also left unchanged.  In QUERY mode, spaces are replaced by '+'.  All other
      * characters are percent-encoded.
      */
-    enum class UriEscapeMode : unsigned char
+    enum class URIEscapeMode : unsigned char
     {
         ALL = 0,
         QUERY = 1,
@@ -149,13 +149,13 @@ namespace ecore
     void uriEscape( InputIterator first,
                     InputIterator last,
                     OutputIterator out,
-                    UriEscapeMode mode = UriEscapeMode::ALL );
+                    URIEscapeMode mode = URIEscapeMode::ALL );
 
     /**
      * Similar to uriEscape above, but returns the escaped string.
      */
     template <typename StringInput, typename StringOutput = StringInput>
-    StringOutput uriEscape( const StringInput& str, UriEscapeMode mode = UriEscapeMode::ALL );
+    StringOutput uriEscape( const StringInput& str, URIEscapeMode mode = URIEscapeMode::ALL );
 
     /**
      * URI-unescape a string.  Appends the result to the output string.
@@ -167,16 +167,16 @@ namespace ecore
     void uriUnescape( InputIterator first,
                       InputIterator last,
                       OutputIterator out,
-                      UriEscapeMode mode = UriEscapeMode::ALL );
+                      URIEscapeMode mode = URIEscapeMode::ALL );
 
     /**
      * Similar to uriUnescape above, but returns the unescaped string.
      */
     template <typename StringInput, typename StringOutput = StringInput>
-    StringOutput uriUnescape( const StringInput& str, UriEscapeMode mode = UriEscapeMode::ALL );
+    StringOutput uriUnescape( const StringInput& str, URIEscapeMode mode = URIEscapeMode::ALL );
     
 } // namespace ecore
 
-#include "ecore/Uri.inl"
+#include "ecore/URI.inl"
 
 #endif

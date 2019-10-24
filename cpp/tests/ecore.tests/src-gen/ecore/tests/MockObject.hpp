@@ -46,7 +46,7 @@ namespace ecore::tests
         MOCK_METHOD( eSetResource, 2 )
         MOCK_METHOD( eInverseAdd, 3 )
         MOCK_METHOD( eInverseRemove, 3 )
-        MOCK_METHOD( eProxyUri, 0 )
+        MOCK_METHOD( eProxyURI, 0 )
         MOCK_METHOD( eSetProxyURI, 1 )
         MOCK_METHOD( eResolveProxy, 1)
         // End of user code

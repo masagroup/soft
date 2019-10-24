@@ -38,9 +38,10 @@ func TestEEnumLiteralValueGet(t *testing.T) {
 }
 
 func TestEEnumLiteralValueSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEEnumLiteralImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetValue(45)
 	mockAdapter.AssertExpectations(t)
@@ -121,9 +122,10 @@ func TestEEnumLiteralInstanceGet(t *testing.T) {
 }
 
 func TestEEnumLiteralInstanceSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEEnumLiteralImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetInstance(nil)
 	mockAdapter.AssertExpectations(t)
@@ -204,9 +206,10 @@ func TestEEnumLiteralLiteralGet(t *testing.T) {
 }
 
 func TestEEnumLiteralLiteralSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEEnumLiteralImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetLiteral("Test String")
 	mockAdapter.AssertExpectations(t)

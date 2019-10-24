@@ -1,4 +1,4 @@
-#include "ecore/Uri.hpp"
+#include "ecore/URI.hpp"
 #include "ecore/Assert.hpp"
 #include "ecore/impl/StringUtils.hpp"
 
@@ -421,11 +421,11 @@ decltype( ecore::detail::hexTable ) hexTable = make_array_with<256>( string_tabl
 
 decltype( ecore::detail::uriEscapeTable ) uriEscapeTable = make_array_with<256>( string_table_uri_escape_make_item{} );
 
-Uri::Uri()
+URI::URI()
 {
 }
 
-Uri::Uri( const std::string& str )
+URI::URI( const std::string& str )
 {
     static const std::regex uriRegex( "(([a-zA-Z][a-zA-Z0-9+.-]*):)?" // scheme:
                                       "([^?#]*)"                      // authority and path
@@ -474,7 +474,7 @@ Uri::Uri( const std::string& str )
     fragment_ = submatch( match, 5 );
 }
 
-std::string Uri::getAuthority() const
+std::string URI::getAuthority() const
 {
     std::stringstream s;
     if( !username_.empty() || !password_.empty() )
@@ -494,7 +494,7 @@ std::string Uri::getAuthority() const
     return s.str();
 }
 
-std::string Uri::getHostName() const
+std::string URI::getHostName() const
 {
     if( host_.size() > 0 && host_[0] == '[' )
     {
@@ -504,7 +504,7 @@ std::string Uri::getHostName() const
     return host_;
 }
 
-const std::vector<std::pair<std::string, std::string>>& Uri::getQueryParams()
+const std::vector<std::pair<std::string, std::string>>& URI::getQueryParams()
 {
     if( !query_.empty() && queryParams_.empty() )
     {
@@ -531,38 +531,29 @@ const std::vector<std::pair<std::string, std::string>>& Uri::getQueryParams()
     return queryParams_;
 }
 
-std::string Uri::toString() const
+std::string URI::toString() const
 {
     std::stringstream s;
+    std::string auth = getAuthority();
+    if (!scheme_.empty())
+        s << scheme_ << ":";
 
-    if( scheme_.empty() )
-        s << path_;
-    else
-    {
-        s << scheme_;
-        s << ':';
+    if (!auth.empty())
+        s << "//" << auth;
+    
+    s << path_;
 
-        std::string auth = getAuthority();
-        if( !auth.empty() || scheme_ == "file" )
-        {
-            s << "//";
-            s << auth;
-        }
+    if (!query_.empty())
+        s << '?' << query_;
 
-        s << path_;
-
-        if( !query_.empty() )
-            s << '?' << query_;
-
-        if( !fragment_.empty() )
-            s << '#' << fragment_;
-    }
+    if (!fragment_.empty())
+        s << '#' << fragment_;
     return s.str();
 }
 
-Uri Uri::trimFragment() const
+URI URI::trimFragment() const
 {
-    Uri uri;
+    URI uri;
     uri.scheme_ = scheme_;
     uri.username_ = username_;
     uri.password_ = password_;
@@ -573,50 +564,50 @@ Uri Uri::trimFragment() const
     return uri;
 }
 
-std::string Uri::string() const
+std::string URI::string() const
 {
     return toString();
 }
 
-std::wstring Uri::wstring() const
+std::wstring URI::wstring() const
 {
     auto s = toString();
     return std::wstring( std::begin( s ), std::end( s ) );
 }
 
-std::u16string Uri::u16string() const
+std::u16string URI::u16string() const
 {
     auto s = toString();
     return std::u16string( std::begin( s ), std::end( s ) );
 }
 
-std::u32string Uri::u32string() const
+std::u32string URI::u32string() const
 {
     auto s = toString();
     return std::u32string( std::begin( s ), std::end( s ) );
 }
 
-Uri Uri::normalize() const
+URI URI::normalize() const
 {
     return normalize( *this );
 }
 
-Uri Uri::resolve( const Uri& uri ) const
+URI URI::resolve( const URI& uri ) const
 {
     return resolve( *this, uri );
 }
 
-Uri Uri::resolve( const std::string& str ) const
+URI URI::resolve( const std::string& str ) const
 {
-    return resolve( *this, Uri( str ) );
+    return resolve( *this, URI( str ) );
 }
 
-Uri Uri::relativize( const Uri& uri ) const
+URI URI::relativize( const URI& uri ) const
 {
     return relativize( *this, uri );
 }
 
-Uri Uri::normalize( const Uri& u )
+URI URI::normalize( const URI& u )
 {
     if( u.isOpaque() || u.path_.empty() )
         return u;
@@ -625,7 +616,7 @@ Uri Uri::normalize( const Uri& u )
     if( np == u.path_ )
         return u;
 
-    Uri v;
+    URI v;
     v.scheme_ = u.scheme_;
     v.fragment_ = u.fragment_;
     v.username_ = u.username_;
@@ -643,7 +634,7 @@ Uri Uri::normalize( const Uri& u )
 // return a relative URI that, when resolved against the base, yields the
 // child; otherwise, return the child.
 //
-Uri Uri::relativize( const Uri& base, const Uri& child )
+URI URI::relativize( const URI& base, const URI& child )
 {
     // check if child if opaque first so that NPE is thrown
 
@@ -666,14 +657,14 @@ Uri Uri::relativize( const Uri& base, const Uri& child )
             return child;
     }
 
-    Uri v;
+    URI v;
     v.path_ = cp.substr( bp.length() );
     v.query_ = child.query_;
     v.fragment_ = child.fragment_;
     return v;
 }
 
-Uri Uri::resolve( const Uri& base, const Uri& child )
+URI URI::resolve( const URI& base, const URI& child )
 {
     // check if child if opaque first so that NPE is thrown
     // if child is null.
@@ -687,7 +678,7 @@ Uri Uri::resolve( const Uri& base, const Uri& child )
         if( !base.fragment_.empty() && child.fragment_ == base.fragment_ )
             return base;
 
-        Uri ru;
+        URI ru;
         ru.scheme_ = base.scheme_;
         ru.username_ = base.username_;
         ru.password_ = base.password_;
@@ -703,7 +694,7 @@ Uri Uri::resolve( const Uri& base, const Uri& child )
     if( !child.scheme_.empty() )
         return child;
 
-    Uri ru; // Resolved URI
+    URI ru; // Resolved URI
     ru.scheme_ = base.scheme_;
     ru.query_ = child.query_;
     ru.fragment_ = child.fragment_;

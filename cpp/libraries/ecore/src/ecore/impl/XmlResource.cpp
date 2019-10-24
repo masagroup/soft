@@ -11,7 +11,7 @@ XmlResource::XmlResource()
 {
 }
 
-XmlResource::XmlResource( const Uri& uri )
+XmlResource::XmlResource( const URI& uri )
     : AbstractResource( uri )
 {
 }

@@ -1,6 +1,6 @@
 #include "ecore/impl/ResourceFactoryRegistry.hpp"
 #include "ecore/EResourceFactory.hpp"
-#include "ecore/Uri.hpp"
+#include "ecore/URI.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -13,7 +13,7 @@ ResourceFactoryRegistry::~ResourceFactoryRegistry()
 {
 }
 
-EResourceFactory* ResourceFactoryRegistry::getFactory( const Uri& uri )
+EResourceFactory* ResourceFactoryRegistry::getFactory( const URI& uri )
 {
     {
         auto it = protocolToFactory_.find( uri.getScheme() );

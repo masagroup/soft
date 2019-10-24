@@ -17,14 +17,14 @@ namespace ecore
 {
     class EResource;
 
-    class Uri;
+    class URI;
 
     class ECORE_API EResourceFactory
     {
     public:
         virtual ~EResourceFactory() = default;
 
-        virtual std::shared_ptr<EResource> createResource( const Uri& uri ) const = 0;
+        virtual std::shared_ptr<EResource> createResource( const URI& uri ) const = 0;
     };
 
 }

@@ -46,7 +46,7 @@ std::string XmlNamespaces::getPrefix( const std::string& uri )
     return std::string();
 }
 
-std::string XmlNamespaces::getUri( const std::string& prefix )
+std::string XmlNamespaces::getURI( const std::string& prefix )
 {
     for( int i = namespacesSize_; i > 0; --i )
     {

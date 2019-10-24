@@ -32,9 +32,10 @@ func discardEGenericType() {
 }
 
 func TestEGenericTypeEUpperBoundSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEGenericTypeImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetEUpperBound(newEGenericTypeImpl())
 	mockAdapter.AssertExpectations(t)
@@ -370,9 +371,10 @@ func TestEGenericTypeERawTypeEInverseRemove(t *testing.T) {
 }
 
 func TestEGenericTypeELowerBoundSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEGenericTypeImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetELowerBound(newEGenericTypeImpl())
 	mockAdapter.AssertExpectations(t)
@@ -493,9 +495,10 @@ func TestEGenericTypeETypeParameterGet(t *testing.T) {
 }
 
 func TestEGenericTypeETypeParameterSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEGenericTypeImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetETypeParameter(newETypeParameterImpl())
 	mockAdapter.AssertExpectations(t)
@@ -616,9 +619,10 @@ func TestEGenericTypeEClassifierGet(t *testing.T) {
 }
 
 func TestEGenericTypeEClassifierSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEGenericTypeImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetEClassifier(newEClassifierImpl())
 	mockAdapter.AssertExpectations(t)

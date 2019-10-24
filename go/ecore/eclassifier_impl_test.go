@@ -38,9 +38,10 @@ func TestEClassifierInstanceClassGet(t *testing.T) {
 }
 
 func TestEClassifierInstanceClassSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEClassifierImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetInstanceClass(nil)
 	mockAdapter.AssertExpectations(t)
@@ -122,9 +123,10 @@ func TestEClassifierClassifierIDGet(t *testing.T) {
 }
 
 func TestEClassifierClassifierIDSet(t *testing.T) {
-	mockAdapter := &MockEAdapter{}
-	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj := newEClassifierImpl()
+	mockAdapter := &MockEAdapter{}
+	mockAdapter.On("SetTarget", obj).Once()
+	mockAdapter.On("NotifyChanged", mock.Anything).Once()
 	obj.EAdapters().Add(mockAdapter)
 	obj.SetClassifierID(45)
 	mockAdapter.AssertExpectations(t)

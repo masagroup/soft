@@ -30,9 +30,9 @@ namespace ecore
 
         virtual void unregisterPackage( const std::shared_ptr<EPackage>& package ) = 0;
 
-        virtual std::shared_ptr<EPackage> getPackage( const std::string& nsUri ) const  = 0;
+        virtual std::shared_ptr<EPackage> getPackage( const std::string& nsURI ) const  = 0;
 
-        virtual std::shared_ptr<EFactory> getFactory( const std::string& nsUri ) const  = 0;
+        virtual std::shared_ptr<EFactory> getFactory( const std::string& nsURI) const  = 0;
     };
 
 } // namespace ecore
