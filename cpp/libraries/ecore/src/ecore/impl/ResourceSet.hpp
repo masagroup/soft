@@ -24,6 +24,8 @@ namespace ecore::impl
 
         virtual ~ResourceSet();
 
+        virtual std::shared_ptr<EResource> createResource(const URI& uri) const;
+
         virtual std::shared_ptr<EList<std::shared_ptr<EResource>>> getResources() const;
    
         virtual std::shared_ptr<URIConverter> getURIConverter() const;

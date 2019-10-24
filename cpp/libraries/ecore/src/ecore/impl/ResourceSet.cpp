@@ -20,6 +20,17 @@ ResourceSet::~ResourceSet()
 {
 }
 
+std::shared_ptr<EResource> ResourceSet::createResource(const URI& uri) const
+{
+    auto resourceFactory = resourceFactoryRegistry_->getFactory(uri);
+    if (resourceFactory) {
+        auto resource = resourceFactory->createResource(uri);
+        resources_->add(resource);
+        return resource;
+    }
+    return nullptr;
+}
+
 std::shared_ptr<EList<std::shared_ptr<EResource>>> ResourceSet::getResources() const
 {
     return resources_;

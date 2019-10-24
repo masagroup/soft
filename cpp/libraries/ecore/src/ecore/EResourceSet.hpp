@@ -20,11 +20,14 @@ namespace ecore
     class EResource;
     class EResourceFactoryRegistry;
     class URIConverter;
+    class URI;
 
     class ECORE_API EResourceSet : public virtual ENotifier
     {
     public:
         virtual ~EResourceSet() = default;
+
+        virtual std::shared_ptr<EResource> createResource(const URI& uri) const = 0;
 
         virtual std::shared_ptr<EList<std::shared_ptr<EResource>>> getResources() const = 0;
 
