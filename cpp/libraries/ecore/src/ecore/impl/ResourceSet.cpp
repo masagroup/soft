@@ -12,7 +12,7 @@ using namespace ecore::impl;
 ResourceSet::ResourceSet()
     : resources_( [&]() { return initResources();  } )
     , uriConverter_( [&]() { return std::make_shared<ResourceURIConverter>(); } )
-    , resourceFactoryRegistry_( [&]() { return std::make_shared<ResourceFactoryRegistry>(); } )
+    , resourceFactoryRegistry_([&]() { return EResourceFactoryRegistry::getInstance(); })
 {
 }
 
@@ -58,6 +58,14 @@ std::shared_ptr<EResource> ResourceSet::getResource(const URI& uri, bool loadOnD
             return resource;
         }
     }
+
+    if (loadOnDemand) {
+        auto resource = createResource(uri);
+        if ( resource )
+            resource->load();
+        return resource;
+    }
+
     return nullptr;
 }
 

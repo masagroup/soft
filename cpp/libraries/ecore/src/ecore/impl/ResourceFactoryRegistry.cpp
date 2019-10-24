@@ -13,7 +13,7 @@ ResourceFactoryRegistry::~ResourceFactoryRegistry()
 {
 }
 
-EResourceFactory* ResourceFactoryRegistry::getFactory( const URI& uri )
+std::shared_ptr<EResourceFactory> ResourceFactoryRegistry::getFactory( const URI& uri ) const
 {
     {
         auto it = protocolToFactory_.find( uri.getScheme() );

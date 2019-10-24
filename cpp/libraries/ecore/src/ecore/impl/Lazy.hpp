@@ -180,7 +180,7 @@ namespace ecore::impl
 
         T* operator ->() const
         {
-            return value_.get();
+            return get().get();
         }
 
         operator const std::shared_ptr<T>&() const
@@ -240,7 +240,7 @@ namespace ecore::impl
 
         T* operator ->() const
         {
-            return value_.get();
+            return get().get();
         }
 
         operator const std::shared_ptr<T>&( ) const

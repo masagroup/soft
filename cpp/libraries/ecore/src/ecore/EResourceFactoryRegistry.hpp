@@ -31,9 +31,9 @@ namespace ecore
 
         virtual ~EResourceFactoryRegistry() = default;
 
-        using FactoryMap = std::unordered_map<std::string, EResourceFactory*>;
+        using FactoryMap = std::unordered_map<std::string, std::shared_ptr<EResourceFactory>>;
 
-        virtual EResourceFactory* getFactory( const URI& uri ) = 0;
+        virtual  std::shared_ptr<EResourceFactory> getFactory( const URI& uri ) const  = 0;
 
         virtual FactoryMap& getProtocolToFactoryMap() = 0;
 
