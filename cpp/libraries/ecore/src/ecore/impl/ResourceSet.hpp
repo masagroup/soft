@@ -12,8 +12,12 @@
 
 #include "ecore/Exports.hpp"
 #include "ecore/EResourceSet.hpp"
+#include "ecore/URI.hpp"
 #include "ecore/impl/AbstractNotifier.hpp"
 #include "ecore/impl/Lazy.hpp"
+
+#include <optional>
+#include <unordered_map>
 
 namespace ecore::impl
 {
@@ -24,10 +28,12 @@ namespace ecore::impl
 
         virtual ~ResourceSet();
 
-        virtual std::shared_ptr<EResource> createResource(const URI& uri) const;
-
+        virtual std::shared_ptr<EResource> createResource(const URI& uri);
         virtual std::shared_ptr<EList<std::shared_ptr<EResource>>> getResources() const;
-   
+        virtual std::shared_ptr<EResource> getResource(const URI& uri, bool loadOnDemand);
+
+        virtual std::shared_ptr<EObject> getEObject(const URI& uri, bool loadOnDemand);
+
         virtual std::shared_ptr<URIConverter> getURIConverter() const;
         virtual void setURIConverter( const std::shared_ptr<URIConverter>& uriConverter );
 
@@ -41,6 +47,7 @@ namespace ecore::impl
         Lazy<std::shared_ptr<EList<std::shared_ptr<EResource>>>> resources_;
         Lazy<std::shared_ptr<URIConverter>> uriConverter_;
         Lazy<std::shared_ptr<EResourceFactoryRegistry>> resourceFactoryRegistry_;
+        std::optional<std::unordered_map<URI, std::shared_ptr<EResource>>> uriResourceMap_;
     };
 
 }

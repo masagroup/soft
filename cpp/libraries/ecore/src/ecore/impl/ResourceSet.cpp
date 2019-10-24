@@ -20,7 +20,7 @@ ResourceSet::~ResourceSet()
 {
 }
 
-std::shared_ptr<EResource> ResourceSet::createResource(const URI& uri) const
+std::shared_ptr<EResource> ResourceSet::createResource(const URI& uri)
 {
     auto resourceFactory = resourceFactoryRegistry_->getFactory(uri);
     if (resourceFactory) {
@@ -36,7 +36,38 @@ std::shared_ptr<EList<std::shared_ptr<EResource>>> ResourceSet::getResources() c
     return resources_;
 }
 
-std::shared_ptr<URIConverter> ecore::impl::ResourceSet::getURIConverter() const
+std::shared_ptr<EResource> ResourceSet::getResource(const URI& uri, bool loadOnDemand)
+{
+    if (uriResourceMap_.has_value()) {
+        auto resource = uriResourceMap_->at(uri);
+        if (resource) {
+            if (loadOnDemand && !resource->isLoaded())
+                resource->load();
+            return resource;
+        }
+    }
+        
+    auto normalizedURI = uriConverter_->normalize(uri);
+    for (auto resource : *resources_.get()) {
+        auto resourceURI = uriConverter_->normalize(resource->getURI());
+        if (resourceURI == normalizedURI) {
+            if (loadOnDemand && !resource->isLoaded())
+                resource->load();
+            if (uriResourceMap_.has_value())
+                uriResourceMap_->insert({ uri, resource });
+            return resource;
+        }
+    }
+    return nullptr;
+}
+
+std::shared_ptr<EObject> ResourceSet::getEObject(const URI& uri, bool loadOnDemand)
+{
+    auto resource = getResource(uri.trimFragment(), loadOnDemand);
+    return resource ? resource->getEObject(uri.getFragment()) : nullptr;
+}
+
+std::shared_ptr<URIConverter> ResourceSet::getURIConverter() const
 {
     return uriConverter_;
 }

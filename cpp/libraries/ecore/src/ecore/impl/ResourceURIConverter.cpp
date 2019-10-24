@@ -1,6 +1,7 @@
 #include "ecore/impl/ResourceURIConverter.hpp"
 #include "ecore/impl/ImmutableEList.hpp"
 #include "ecore/impl/FileURIHandler.hpp"
+#include "ecore/URI.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -22,6 +23,11 @@ std::unique_ptr<std::istream> ResourceURIConverter::createInputStream( const URI
 std::unique_ptr<std::ostream> ResourceURIConverter::createOutputStream( const URI& uri ) const
 {
     return std::move(getURIHandler( uri )->createOutputStream( uri ) );
+}
+
+URI ResourceURIConverter::normalize(const URI& uri) const
+{
+    return uri;
 }
 
 std::shared_ptr<URIHandler> ResourceURIConverter::getURIHandler( const URI& uri ) const

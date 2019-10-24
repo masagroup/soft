@@ -17,6 +17,7 @@
 
 namespace ecore
 {
+    class EObject;
     class EResource;
     class EResourceFactoryRegistry;
     class URIConverter;
@@ -27,9 +28,11 @@ namespace ecore
     public:
         virtual ~EResourceSet() = default;
 
-        virtual std::shared_ptr<EResource> createResource(const URI& uri) const = 0;
-
+        virtual std::shared_ptr<EResource> createResource(const URI& uri) = 0;
         virtual std::shared_ptr<EList<std::shared_ptr<EResource>>> getResources() const = 0;
+        virtual std::shared_ptr<EResource> getResource(const URI& uri, bool loadOnDemand) = 0;
+
+        virtual std::shared_ptr<EObject> getEObject(const URI& uri, bool loadOnDemand) = 0;
 
         virtual std::shared_ptr<URIConverter> getURIConverter() const = 0;
         virtual void setURIConverter( const std::shared_ptr<URIConverter>& uriConverter ) = 0;
