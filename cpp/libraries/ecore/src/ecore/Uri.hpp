@@ -13,6 +13,7 @@
 #include "ecore/Exports.hpp"
 #include <string>
 #include <vector>
+#include <functional>
 
 namespace ecore
 {
