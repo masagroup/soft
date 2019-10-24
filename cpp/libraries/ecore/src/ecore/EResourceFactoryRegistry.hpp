@@ -24,6 +24,9 @@ namespace ecore
     class ECORE_API EResourceFactoryRegistry
     {
     public:
+        static std::shared_ptr<EResourceFactoryRegistry> getInstance();
+
+    public:
         static constexpr const char* DEFAULT_EXTENSION = "*";
 
         virtual ~EResourceFactoryRegistry() = default;
