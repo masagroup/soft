@@ -1,6 +1,9 @@
 package ecore
 
-import "net/url"
+import (
+	"io"
+	"net/url"
+)
 
 const (
 	RESOURCE__RESOURCE_SET = 0
@@ -29,4 +32,15 @@ type EResource interface {
 
 	Attached(object EObject)
 	Detached(object EObject)
+
+	Load()
+	LoadReader(r io.Reader)
+	Unload()
+	IsLoaded() bool
+
+	Save()
+	SaveWriter(w io.Writer)
+
+	GetErrors() EList
+	GetWarnings() EList
 }

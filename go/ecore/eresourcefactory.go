@@ -4,5 +4,5 @@ import "net/url"
 
 //EResourceFactory ...
 type EResourceFactory interface {
-	createResource(uri *url.URL) EResource
+	CreateResource(uri *url.URL) EResource
 }

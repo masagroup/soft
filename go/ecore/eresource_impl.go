@@ -1,6 +1,7 @@
 package ecore
 
 import (
+	"io"
 	"net/url"
 	"strconv"
 	"strings"
@@ -223,4 +224,36 @@ func (r *EResourceImpl) Attached(object EObject) {
 
 func (r *EResourceImpl) Detached(object EObject) {
 
+}
+
+func (r *EResourceImpl) Load() {
+
+}
+
+func (r *EResourceImpl) LoadReader(rd io.Reader) {
+
+}
+
+func (r *EResourceImpl) Unload() {
+
+}
+
+func (r *EResourceImpl) IsLoaded() bool {
+	return false
+}
+
+func (r *EResourceImpl) Save() {
+
+}
+
+func (r *EResourceImpl) SaveWriter(w io.Writer) {
+
+}
+
+func (r *EResourceImpl) GetErrors() EList {
+	return nil
+}
+
+func (r *EResourceImpl) GetWarnings() EList {
+	return nil
 }

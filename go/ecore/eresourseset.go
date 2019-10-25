@@ -8,18 +8,18 @@ const (
 
 //EResourceSet ...
 type EResourceSet interface {
-	createResource(uri *url.URL) EResource
-	getResources(uri *url.URL, loadOnDemand bool) EList
-	getResource(uri *url.URL, loadOnDemand bool) EResource
+	CreateResource(uri *url.URL) EResource
+	GetResources(uri *url.URL, loadOnDemand bool) EList
+	GetResource(uri *url.URL, loadOnDemand bool) EResource
 
-	getEObject(uri *url.URL, loadOnDemand bool) EObject
+	GetEObject(uri *url.URL, loadOnDemand bool) EObject
 
-	getURIConverter() EURIConverter
-	setURIConverter(uriConverter EURIConverter)
+	GetURIConverter() EURIConverter
+	SetURIConverter(uriConverter EURIConverter)
 
-	getResourceFactoryRegistry() EResourceFactoryRegistry
-	setResourceFactoryRegistry(resourceFactoryRegistry EResourceFactoryRegistry)
+	GetResourceFactoryRegistry() EResourceFactoryRegistry
+	SetResourceFactoryRegistry(resourceFactoryRegistry EResourceFactoryRegistry)
 
-	setURIResourceMap(uriMap map[*url.URL]EResource)
-	getURIResourceMap() map[*url.URL]EResource
+	SetURIResourceMap(uriMap map[*url.URL]EResource)
+	GetURIResourceMap() map[*url.URL]EResource
 }

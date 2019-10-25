@@ -3,6 +3,7 @@
 package ecore
 
 import (
+	io "io"
 	url "net/url"
 
 	mock "github.com/stretchr/testify/mock"
@@ -125,6 +126,22 @@ func (_m *MockEResource) GetEObject(_a0 string) EObject {
 	return r0
 }
 
+// GetErrors provides a mock function with given fields:
+func (_m *MockEResource) GetErrors() EList {
+	ret := _m.Called()
+
+	var r0 EList
+	if rf, ok := ret.Get(0).(func() EList); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(EList)
+		}
+	}
+
+	return r0
+}
+
 // GetResourceSet provides a mock function with given fields:
 func (_m *MockEResource) GetResourceSet() EResourceSet {
 	ret := _m.Called()
@@ -171,7 +188,62 @@ func (_m *MockEResource) GetURIFragment(_a0 EObject) string {
 	return r0
 }
 
+// GetWarnings provides a mock function with given fields:
+func (_m *MockEResource) GetWarnings() EList {
+	ret := _m.Called()
+
+	var r0 EList
+	if rf, ok := ret.Get(0).(func() EList); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(EList)
+		}
+	}
+
+	return r0
+}
+
+// IsLoaded provides a mock function with given fields:
+func (_m *MockEResource) IsLoaded() bool {
+	ret := _m.Called()
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func() bool); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// Load provides a mock function with given fields:
+func (_m *MockEResource) Load() {
+	_m.Called()
+}
+
+// LoadReader provides a mock function with given fields: r
+func (_m *MockEResource) LoadReader(r io.Reader) {
+	_m.Called(r)
+}
+
+// Save provides a mock function with given fields:
+func (_m *MockEResource) Save() {
+	_m.Called()
+}
+
+// SaveWriter provides a mock function with given fields: w
+func (_m *MockEResource) SaveWriter(w io.Writer) {
+	_m.Called(w)
+}
+
 // SetURI provides a mock function with given fields: _a0
 func (_m *MockEResource) SetURI(_a0 *url.URL) {
 	_m.Called(_a0)
+}
+
+// Unload provides a mock function with given fields:
+func (_m *MockEResource) Unload() {
+	_m.Called()
 }

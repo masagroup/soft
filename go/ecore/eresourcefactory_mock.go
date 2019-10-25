@@ -13,8 +13,8 @@ type MockEResourceFactory struct {
 	mock.Mock
 }
 
-// createResource provides a mock function with given fields: uri
-func (_m *MockEResourceFactory) createResource(uri *url.URL) EResource {
+// CreateResource provides a mock function with given fields: uri
+func (_m *MockEResourceFactory) CreateResource(uri *url.URL) EResource {
 	ret := _m.Called(uri)
 
 	var r0 EResource

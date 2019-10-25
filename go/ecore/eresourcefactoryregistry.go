@@ -4,7 +4,7 @@ import "net/url"
 
 //EResourceFactory ...
 type EResourceFactoryRegistry interface {
-	getFactory(uri *url.URL) EResourceFactory
-	getProtocolToFactoryMap() map[string]EResourceFactory
-	getExtensionToFactoryMap() map[string]EResourceFactory
+	GetFactory(uri *url.URL) EResourceFactory
+	GetProtocolToFactoryMap() map[string]EResourceFactory
+	GetExtensionToFactoryMap() map[string]EResourceFactory
 }

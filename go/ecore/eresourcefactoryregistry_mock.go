@@ -13,8 +13,8 @@ type MockEResourceFactoryRegistry struct {
 	mock.Mock
 }
 
-// getExtensionToFactoryMap provides a mock function with given fields:
-func (_m *MockEResourceFactoryRegistry) getExtensionToFactoryMap() map[string]EResourceFactory {
+// GetExtensionToFactoryMap provides a mock function with given fields:
+func (_m *MockEResourceFactoryRegistry) GetExtensionToFactoryMap() map[string]EResourceFactory {
 	ret := _m.Called()
 
 	var r0 map[string]EResourceFactory
@@ -29,8 +29,8 @@ func (_m *MockEResourceFactoryRegistry) getExtensionToFactoryMap() map[string]ER
 	return r0
 }
 
-// getFactory provides a mock function with given fields: uri
-func (_m *MockEResourceFactoryRegistry) getFactory(uri *url.URL) EResourceFactory {
+// GetFactory provides a mock function with given fields: uri
+func (_m *MockEResourceFactoryRegistry) GetFactory(uri *url.URL) EResourceFactory {
 	ret := _m.Called(uri)
 
 	var r0 EResourceFactory
@@ -45,8 +45,8 @@ func (_m *MockEResourceFactoryRegistry) getFactory(uri *url.URL) EResourceFactor
 	return r0
 }
 
-// getProtocolToFactoryMap provides a mock function with given fields:
-func (_m *MockEResourceFactoryRegistry) getProtocolToFactoryMap() map[string]EResourceFactory {
+// GetProtocolToFactoryMap provides a mock function with given fields:
+func (_m *MockEResourceFactoryRegistry) GetProtocolToFactoryMap() map[string]EResourceFactory {
 	ret := _m.Called()
 
 	var r0 map[string]EResourceFactory

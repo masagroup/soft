@@ -13,8 +13,8 @@ type MockEResourceSet struct {
 	mock.Mock
 }
 
-// createResource provides a mock function with given fields: uri
-func (_m *MockEResourceSet) createResource(uri *url.URL) EResource {
+// CreateResource provides a mock function with given fields: uri
+func (_m *MockEResourceSet) CreateResource(uri *url.URL) EResource {
 	ret := _m.Called(uri)
 
 	var r0 EResource
@@ -29,8 +29,8 @@ func (_m *MockEResourceSet) createResource(uri *url.URL) EResource {
 	return r0
 }
 
-// getEObject provides a mock function with given fields: uri, loadOnDemand
-func (_m *MockEResourceSet) getEObject(uri *url.URL, loadOnDemand bool) EObject {
+// GetEObject provides a mock function with given fields: uri, loadOnDemand
+func (_m *MockEResourceSet) GetEObject(uri *url.URL, loadOnDemand bool) EObject {
 	ret := _m.Called(uri, loadOnDemand)
 
 	var r0 EObject
@@ -45,8 +45,8 @@ func (_m *MockEResourceSet) getEObject(uri *url.URL, loadOnDemand bool) EObject 
 	return r0
 }
 
-// getResource provides a mock function with given fields: uri, loadOnDemand
-func (_m *MockEResourceSet) getResource(uri *url.URL, loadOnDemand bool) EResource {
+// GetResource provides a mock function with given fields: uri, loadOnDemand
+func (_m *MockEResourceSet) GetResource(uri *url.URL, loadOnDemand bool) EResource {
 	ret := _m.Called(uri, loadOnDemand)
 
 	var r0 EResource
@@ -61,8 +61,8 @@ func (_m *MockEResourceSet) getResource(uri *url.URL, loadOnDemand bool) EResour
 	return r0
 }
 
-// getResourceFactoryRegistry provides a mock function with given fields:
-func (_m *MockEResourceSet) getResourceFactoryRegistry() EResourceFactoryRegistry {
+// GetResourceFactoryRegistry provides a mock function with given fields:
+func (_m *MockEResourceSet) GetResourceFactoryRegistry() EResourceFactoryRegistry {
 	ret := _m.Called()
 
 	var r0 EResourceFactoryRegistry
@@ -77,8 +77,8 @@ func (_m *MockEResourceSet) getResourceFactoryRegistry() EResourceFactoryRegistr
 	return r0
 }
 
-// getResources provides a mock function with given fields: uri, loadOnDemand
-func (_m *MockEResourceSet) getResources(uri *url.URL, loadOnDemand bool) EList {
+// GetResources provides a mock function with given fields: uri, loadOnDemand
+func (_m *MockEResourceSet) GetResources(uri *url.URL, loadOnDemand bool) EList {
 	ret := _m.Called(uri, loadOnDemand)
 
 	var r0 EList
@@ -93,8 +93,8 @@ func (_m *MockEResourceSet) getResources(uri *url.URL, loadOnDemand bool) EList 
 	return r0
 }
 
-// getURIConverter provides a mock function with given fields:
-func (_m *MockEResourceSet) getURIConverter() EURIConverter {
+// GetURIConverter provides a mock function with given fields:
+func (_m *MockEResourceSet) GetURIConverter() EURIConverter {
 	ret := _m.Called()
 
 	var r0 EURIConverter
@@ -109,8 +109,8 @@ func (_m *MockEResourceSet) getURIConverter() EURIConverter {
 	return r0
 }
 
-// getURIResourceMap provides a mock function with given fields:
-func (_m *MockEResourceSet) getURIResourceMap() map[*url.URL]EResource {
+// GetURIResourceMap provides a mock function with given fields:
+func (_m *MockEResourceSet) GetURIResourceMap() map[*url.URL]EResource {
 	ret := _m.Called()
 
 	var r0 map[*url.URL]EResource
@@ -125,17 +125,17 @@ func (_m *MockEResourceSet) getURIResourceMap() map[*url.URL]EResource {
 	return r0
 }
 
-// setResourceFactoryRegistry provides a mock function with given fields: resourceFactoryRegistry
-func (_m *MockEResourceSet) setResourceFactoryRegistry(resourceFactoryRegistry EResourceFactoryRegistry) {
+// SetResourceFactoryRegistry provides a mock function with given fields: resourceFactoryRegistry
+func (_m *MockEResourceSet) SetResourceFactoryRegistry(resourceFactoryRegistry EResourceFactoryRegistry) {
 	_m.Called(resourceFactoryRegistry)
 }
 
-// setURIConverter provides a mock function with given fields: uriConverter
-func (_m *MockEResourceSet) setURIConverter(uriConverter EURIConverter) {
+// SetURIConverter provides a mock function with given fields: uriConverter
+func (_m *MockEResourceSet) SetURIConverter(uriConverter EURIConverter) {
 	_m.Called(uriConverter)
 }
 
-// setURIResourceMap provides a mock function with given fields: uriMap
-func (_m *MockEResourceSet) setURIResourceMap(uriMap map[*url.URL]EResource) {
+// SetURIResourceMap provides a mock function with given fields: uriMap
+func (_m *MockEResourceSet) SetURIResourceMap(uriMap map[*url.URL]EResource) {
 	_m.Called(uriMap)
 }
