@@ -14,8 +14,22 @@ type MockEURIHandler struct {
 	mock.Mock
 }
 
-// createInputStream provides a mock function with given fields: uri
-func (_m *MockEURIHandler) createInputStream(uri *url.URL) io.Reader {
+// CanHandle provides a mock function with given fields: uri
+func (_m *MockEURIHandler) CanHandle(uri *url.URL) bool {
+	ret := _m.Called(uri)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(*url.URL) bool); ok {
+		r0 = rf(uri)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// CreateReader provides a mock function with given fields: uri
+func (_m *MockEURIHandler) CreateReader(uri *url.URL) io.Reader {
 	ret := _m.Called(uri)
 
 	var r0 io.Reader
@@ -30,8 +44,8 @@ func (_m *MockEURIHandler) createInputStream(uri *url.URL) io.Reader {
 	return r0
 }
 
-// createOutputStream provides a mock function with given fields: uri
-func (_m *MockEURIHandler) createOutputStream(uri *url.URL) io.Writer {
+// CreateWriter provides a mock function with given fields: uri
+func (_m *MockEURIHandler) CreateWriter(uri *url.URL) io.Writer {
 	ret := _m.Called(uri)
 
 	var r0 io.Writer

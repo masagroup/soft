@@ -223,8 +223,8 @@ func (_m *MockEResource) Load() {
 	_m.Called()
 }
 
-// LoadReader provides a mock function with given fields: r
-func (_m *MockEResource) LoadReader(r io.Reader) {
+// LoadWithReader provides a mock function with given fields: r
+func (_m *MockEResource) LoadWithReader(r io.Reader) {
 	_m.Called(r)
 }
 
@@ -233,8 +233,8 @@ func (_m *MockEResource) Save() {
 	_m.Called()
 }
 
-// SaveWriter provides a mock function with given fields: w
-func (_m *MockEResource) SaveWriter(w io.Writer) {
+// SaveWithWriter provides a mock function with given fields: w
+func (_m *MockEResource) SaveWithWriter(w io.Writer) {
 	_m.Called(w)
 }
 

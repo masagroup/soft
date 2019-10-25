@@ -7,7 +7,9 @@ import (
 
 //URIHandler ...
 type EURIHandler interface {
-	createInputStream(uri *url.URL) io.Reader
+	CanHandle(uri *url.URL) bool
 
-	createOutputStream(uri *url.URL) io.Writer
+	CreateReader(uri *url.URL) io.Reader
+
+	CreateWriter(uri *url.URL) io.Writer
 }

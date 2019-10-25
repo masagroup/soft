@@ -14,8 +14,8 @@ type MockEURIConverter struct {
 	mock.Mock
 }
 
-// createInputStream provides a mock function with given fields: uri
-func (_m *MockEURIConverter) createInputStream(uri *url.URL) io.Reader {
+// CreateReader provides a mock function with given fields: uri
+func (_m *MockEURIConverter) CreateReader(uri *url.URL) io.Reader {
 	ret := _m.Called(uri)
 
 	var r0 io.Reader
@@ -30,8 +30,8 @@ func (_m *MockEURIConverter) createInputStream(uri *url.URL) io.Reader {
 	return r0
 }
 
-// createOutputStream provides a mock function with given fields: uri
-func (_m *MockEURIConverter) createOutputStream(uri *url.URL) io.Writer {
+// CreateWriter provides a mock function with given fields: uri
+func (_m *MockEURIConverter) CreateWriter(uri *url.URL) io.Writer {
 	ret := _m.Called(uri)
 
 	var r0 io.Writer
@@ -46,8 +46,8 @@ func (_m *MockEURIConverter) createOutputStream(uri *url.URL) io.Writer {
 	return r0
 }
 
-// getURIHandler provides a mock function with given fields: uri
-func (_m *MockEURIConverter) getURIHandler(uri *url.URL) EURIHandler {
+// GetURIHandler provides a mock function with given fields: uri
+func (_m *MockEURIConverter) GetURIHandler(uri *url.URL) EURIHandler {
 	ret := _m.Called(uri)
 
 	var r0 EURIHandler
@@ -62,8 +62,8 @@ func (_m *MockEURIConverter) getURIHandler(uri *url.URL) EURIHandler {
 	return r0
 }
 
-// getURIHandlers provides a mock function with given fields:
-func (_m *MockEURIConverter) getURIHandlers() EList {
+// GetURIHandlers provides a mock function with given fields:
+func (_m *MockEURIConverter) GetURIHandlers() EList {
 	ret := _m.Called()
 
 	var r0 EList
@@ -78,8 +78,8 @@ func (_m *MockEURIConverter) getURIHandlers() EList {
 	return r0
 }
 
-// normalize provides a mock function with given fields: uri
-func (_m *MockEURIConverter) normalize(uri *url.URL) *url.URL {
+// Normalize provides a mock function with given fields: uri
+func (_m *MockEURIConverter) Normalize(uri *url.URL) *url.URL {
 	ret := _m.Called(uri)
 
 	var r0 *url.URL
