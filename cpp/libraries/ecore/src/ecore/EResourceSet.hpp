@@ -27,6 +27,11 @@ namespace ecore
     class ECORE_API EResourceSet : public virtual ENotifier
     {
     public:
+        /**
+          * The getResources feature ID.
+          */
+        static const int RESOURCE_SET__RESOURCES = 0;
+
         virtual ~EResourceSet() = default;
 
         virtual std::shared_ptr<EResource> createResource(const URI& uri) = 0;

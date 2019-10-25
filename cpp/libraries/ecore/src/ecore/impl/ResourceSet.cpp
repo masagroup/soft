@@ -123,7 +123,7 @@ std::shared_ptr<EList<std::shared_ptr<EResource>>> ResourceSet::initResources()
 
         virtual int getFeatureID() const
         {
-            return 0;
+            return RESOURCE_SET__RESOURCES;
         }
 
         virtual std::shared_ptr<ENotificationChain> inverseAdd( const std::shared_ptr<EResource>& object
