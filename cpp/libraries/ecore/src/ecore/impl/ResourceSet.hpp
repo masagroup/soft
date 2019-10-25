@@ -36,7 +36,7 @@ namespace ecore::impl
         virtual std::shared_ptr<URIConverter> getURIConverter() const;
         virtual void setURIConverter( const std::shared_ptr<URIConverter>& uriConverter );
 
-        virtual std::shared_ptr<EResourceFactoryRegistry> gerResourceFactoryRegistry() const;
+        virtual std::shared_ptr<EResourceFactoryRegistry> getResourceFactoryRegistry() const;
         virtual void setResourceFactoryRegistry( const std::shared_ptr<EResourceFactoryRegistry>& resourceFactoryRegistry );
 
         virtual void setURIResourceMap(const std::unordered_map<URI, std::shared_ptr<EResource>>& uriMap);

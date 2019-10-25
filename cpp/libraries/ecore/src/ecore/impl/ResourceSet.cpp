@@ -85,7 +85,7 @@ void ResourceSet::setURIConverter( const std::shared_ptr<URIConverter>& uriConve
     uriConverter_ = uriConverter;
 }
 
-std::shared_ptr<EResourceFactoryRegistry> ResourceSet::gerResourceFactoryRegistry() const
+std::shared_ptr<EResourceFactoryRegistry> ResourceSet::getResourceFactoryRegistry() const
 {
     return resourceFactoryRegistry_;
 }
