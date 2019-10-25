@@ -6,7 +6,7 @@ import (
 )
 
 //URIHandler ...
-type URIHandler interface {
+type EURIHandler interface {
 	createInputStream(uri *url.URL) io.Reader
 
 	createOutputStream(uri *url.URL) io.Writer

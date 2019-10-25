@@ -13,4 +13,13 @@ type EResourceSet interface {
 	getResource(uri *url.URL, loadOnDemand bool) EResource
 
 	getEObject(uri *url.URL, loadOnDemand bool) EObject
+
+	getURIConverter() EURIConverter
+	setURIConverter(uriConverter EURIConverter)
+
+	getResourceFactoryRegistry() EResourceFactoryRegistry
+	setResourceFactoryRegistry(resourceFactoryRegistry EResourceFactoryRegistry)
+
+	setURIResourceMap(uriMap map[*url.URL]EResource)
+	getURIResourceMap() map[*url.URL]EResource
 }
