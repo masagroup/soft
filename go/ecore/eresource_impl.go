@@ -76,6 +76,7 @@ type EResourceImpl struct {
 	resourceSet EResourceSet
 	uri         *url.URL
 	contents    EList
+	isLoaded    bool
 }
 
 // NewBasicEObject is BasicEObject constructor
@@ -226,11 +227,22 @@ func (r *EResourceImpl) Detached(object EObject) {
 
 }
 
-func (r *EResourceImpl) Load() {
+func (r *EResourceImpl) getURIConverter() EURIConverter {
+	if r.resourceSet != nil {
+		return r.resourceSet.GetURIConverter()
+	} else {
+		return nil
+	}
 
 }
 
-func (r *EResourceImpl) LoadReader(rd io.Reader) {
+func (r *EResourceImpl) Load() {
+	if !r.isLoaded {
+		uriConverter := r.getURIConverter()
+	}
+}
+
+func (r *EResourceImpl) LoadWithReader(rd io.Reader) {
 
 }
 
@@ -246,7 +258,7 @@ func (r *EResourceImpl) Save() {
 
 }
 
-func (r *EResourceImpl) SaveWriter(w io.Writer) {
+func (r *EResourceImpl) SaveWithWriter(w io.Writer) {
 
 }
 

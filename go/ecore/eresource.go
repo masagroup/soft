@@ -34,12 +34,12 @@ type EResource interface {
 	Detached(object EObject)
 
 	Load()
-	LoadReader(r io.Reader)
+	LoadWithReader(r io.Reader)
 	Unload()
 	IsLoaded() bool
 
 	Save()
-	SaveWriter(w io.Writer)
+	SaveWithWriter(w io.Writer)
 
 	GetErrors() EList
 	GetWarnings() EList
