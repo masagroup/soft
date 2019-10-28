@@ -54,6 +54,37 @@ func (r *EResourceSetImpl) GetResources() EList {
     return r.resources
 }
 
+func (r *EResourceSetImpl) GetResource(uri *url.URL, loadOnDemand bool) EResource {
+
+}
+
+func (r *EResourceSetImpl) CreateResource(uri *url.URL) EResource {
+    resourceFactory := r.resourceFactoryRegistry.GetFactory(uri)
+    if resourceFactory != nil {
+        resource := resourceFactory.CreateResource(uri)
+        r.resources.Add(resource)
+        return resource
+    }
+    return nil
+}
+
+func (r *EResourceSetImpl) GetEObject(uri *url.URL, loadOnDemand bool) EObject {
+    trim := &url.URL{
+        Scheme : uri.Scheme,
+        User := uri.User,
+        Host : uri.Host,
+        Path : uri.Path,
+        RawPath : uri.RawPath,
+        ForceQuery : uri.ForceQuery,
+        RawQuery : uri.RawQuery
+    }
+    resource := r.GetResource(trim, loadOnDemand)
+    if resource != nil {
+        return resource.GetEObject(uri.Fragment)
+    }
+    return nil
+}
+
 func (r *EResourceSetImpl) GetURIConverter() EURIConverter {
     return r.uriConverter
 }
