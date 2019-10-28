@@ -37,7 +37,7 @@ func (l *resourcesList) inverseRemove(object interface{}, notifications ENotific
 type EResourceSetImpl struct {
 	resources EList
     uriConverter EURIConverter
-    uriMap map[*url.URL]EResource
+    uriResourceMap map[*url.URL]EResource
     resourceFactoryRegistry EResourceFactoryRegistry
 }
 
@@ -45,8 +45,7 @@ func NewEResourceSetImpl() *EResourceSetImpl {
     set := new(EResourceSetImpl)
     set.resources = new(resourcesList)
     set.uriConverter = new(EURIConverterImpl)
-    set.uriMap= map[*url.URL]EResource{}
-    set.resourceFactoryRegistry = NewEResourceFactoryRegistryImpl
+    set.resourceFactoryRegistry = NewEResourceFactoryRegistryImpl()
     return set;
 }
 
@@ -55,7 +54,40 @@ func (r *EResourceSetImpl) GetResources() EList {
 }
 
 func (r *EResourceSetImpl) GetResource(uri *url.URL, loadOnDemand bool) EResource {
+    if r.uriResourceMap != nil {
+        resource := r.uriResourceMap[uri]
+        if resource != nil {
+            if loadOnDemand && !resource->IsLoaded() {
+                resource.Load()
+            }
+            return resource
+        }
+    }
+        
+    normalizedURI := r.uriConverter.Normalize(uri)
+    for it := arr.Iterator(); it.HasNext(); {
+        resource := it.Next().(EResource)
+        resourceURI := uriConverter.Normalize( resource.GetURI() )
+        if resourceURI == normalizedURI {
+            if loadOnDemand && !resource->IsLoaded() {
+                resource.Load()
+            }
+            if r.uriResourceMap != nil {
+                r.uriResourceMap[uri] = resource
+            }
+            return resource
+        }
+    }
+    
+    if loadOnDemand {
+        resource := r.CreateResource(uri)
+        if resource != nil {
+            resource.Load()
+        }
+        return resource
+    }
 
+    return nil
 }
 
 func (r *EResourceSetImpl) CreateResource(uri *url.URL) EResource {
@@ -101,10 +133,10 @@ func (r *EResourceSetImpl) SetResourceFactoryRegistry(resourceFactoryRegistry ER
     r.resourceFactoryRegistry = resourceFactoryRegistry
 }
 
-func (r *EResourceSetImpl) SetURIResourceMap(uriMap map[*url.URL]EResource) {
-    r.uriMap = uriMap
+func (r *EResourceSetImpl) SetURIResourceMap(uriResourceMap map[*url.URL]EResource) {
+    r.uriResourceMap = uriResourceMap
 }
 
 func (r *EResourceSetImpl) GetURIResourceMap() map[*url.URL]EResource {
-    return r.uriMap
+    return r.uriResourceMap
 }
