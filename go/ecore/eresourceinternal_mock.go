@@ -18,14 +18,14 @@ func (_m *MockEResourceInternal) DoLoad(rd io.Reader) {
 	_m.Called(rd)
 }
 
+// DoSave provides a mock function with given fields: rd
+func (_m *MockEResourceInternal) DoSave(rd io.Writer) {
+	_m.Called(rd)
+}
+
 // DoUnload provides a mock function with given fields:
 func (_m *MockEResourceInternal) DoUnload() {
 	_m.Called()
-}
-
-// DoWrite provides a mock function with given fields: rd
-func (_m *MockEResourceInternal) DoWrite(rd io.Writer) {
-	_m.Called(rd)
 }
 
 // basicSetLoaded provides a mock function with given fields: _a0, _a1

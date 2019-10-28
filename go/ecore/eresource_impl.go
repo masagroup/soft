@@ -9,7 +9,7 @@ import (
 
 type EResourceInternal interface {
 	DoLoad(rd io.Reader)
-	DoWrite(rd io.Writer)
+	DoSave(rd io.Writer)
 	DoUnload()
 
 	basicSetLoaded(bool, ENotificationChain) ENotificationChain
