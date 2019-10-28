@@ -8,6 +8,8 @@ const (
 
 //EResourceSet ...
 type EResourceSet interface {
+	ENotifier
+
 	GetResources() EList
 	GetResource(uri *url.URL, loadOnDemand bool) EResource
 	CreateResource(uri *url.URL) EResource

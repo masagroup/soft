@@ -29,6 +29,60 @@ func (_m *MockEResourceSet) CreateResource(uri *url.URL) EResource {
 	return r0
 }
 
+// EAdapters provides a mock function with given fields:
+func (_m *MockEResourceSet) EAdapters() EList {
+	ret := _m.Called()
+
+	var r0 EList
+	if rf, ok := ret.Get(0).(func() EList); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(EList)
+		}
+	}
+
+	return r0
+}
+
+// EDeliver provides a mock function with given fields:
+func (_m *MockEResourceSet) EDeliver() bool {
+	ret := _m.Called()
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func() bool); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// ENotificationRequired provides a mock function with given fields:
+func (_m *MockEResourceSet) ENotificationRequired() bool {
+	ret := _m.Called()
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func() bool); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// ENotify provides a mock function with given fields: _a0
+func (_m *MockEResourceSet) ENotify(_a0 ENotification) {
+	_m.Called(_a0)
+}
+
+// ESetDeliver provides a mock function with given fields: _a0
+func (_m *MockEResourceSet) ESetDeliver(_a0 bool) {
+	_m.Called(_a0)
+}
+
 // GetEObject provides a mock function with given fields: uri, loadOnDemand
 func (_m *MockEResourceSet) GetEObject(uri *url.URL, loadOnDemand bool) EObject {
 	ret := _m.Called(uri, loadOnDemand)
