@@ -99,7 +99,7 @@ func (r *EResourceImpl) SetURI(uri *url.URL) {
 	oldURI := r.uri
 	r.uri = uri
 	if r.ENotificationRequired() {
-		r.ENotify(newResourceNotification(r, RESOURCE__URI, SET, oldURI, uri, -1))
+		r.ENotify(newResourceNotification(r.GetInterfaces().(EObject), RESOURCE__URI, SET, oldURI, uri, -1))
 	}
 }
 
@@ -272,4 +272,34 @@ func (r *EResourceImpl) GetErrors() EList {
 
 func (r *EResourceImpl) GetWarnings() EList {
 	return nil
+}
+
+func (r *EResourceImpl) basicSetLoaded(isLoaded bool, msgs ENotificationChain) ENotificationChain {
+	notifications := msgs
+	oldLoaded := r.isLoaded
+	r.isLoaded = isLoaded
+	if r.ENotificationRequired() {
+		if notifications == nil {
+			notifications = NewNotificationChain()
+		}
+		notifications.Add(newResourceNotification(r.GetInterfaces().(EObject), RESOURCE__IS_LOADED, SET, oldLoaded, r.isLoaded, -1))
+	}
+	return notifications
+}
+
+func (r *EResourceImpl) basicSetResourceSet(resourceSet EResourceSet, msgs ENotificationChain) ENotificationChain {
+	notifications := msgs
+	oldAbstractResourceSet := r.resourceSet
+	if oldAbstractResourceSet != nil {
+		l := oldAbstractResourceSet.GetResources().(ENotifyingList)
+		notifications = l.AddWithNotification(r.GetEObject(), notifications)
+	}
+	r.resourceSet = resourceSet
+	if r.ENotificationRequired() {
+		if notifications == nil {
+			notifications = NewNotificationChain()
+		}
+		notifications.Add(newResourceNotification(r.GetInterfaces().(EObject), RESOURCE__RESOURCE_SET, SET, oldAbstractResourceSet, resourceSet, -1))
+	}
+	return notifications
 }
