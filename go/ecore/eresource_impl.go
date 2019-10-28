@@ -7,6 +7,12 @@ import (
 	"strings"
 )
 
+type EResourceInternal interface {
+	DoLoad(rd io.Reader)
+	DoWrite(rd io.Writer)
+	DoUnload()
+}
+
 type resourceNotification struct {
 	*abstractNotification
 	notifier  ENotifier
@@ -99,7 +105,7 @@ func (r *EResourceImpl) SetURI(uri *url.URL) {
 	oldURI := r.uri
 	r.uri = uri
 	if r.ENotificationRequired() {
-		r.ENotify(newResourceNotification(r.GetInterfaces().(EObject), RESOURCE__URI, SET, oldURI, uri, -1))
+		r.ENotify(newResourceNotification(r.GetInterfaces().(ENotifier), RESOURCE__URI, SET, oldURI, uri, -1))
 	}
 }
 
@@ -247,15 +253,35 @@ func (r *EResourceImpl) Load() {
 }
 
 func (r *EResourceImpl) LoadWithReader(rd io.Reader) {
+	if !r.isLoaded {
+		n := r.basicSetLoaded(true, nil)
+		r.GetInterfaces().(EResourceInternal).DoLoad(rd)
+		if n != nil {
+			n.Dispatch()
+		}
+	}
+}
+
+func (r *EResourceImpl) DoLoad(rd io.Reader) {
 
 }
 
 func (r *EResourceImpl) Unload() {
+	if r.isLoaded {
+		n := r.basicSetLoaded(false, nil)
+		r.GetInterfaces().(EResourceInternal).DoUnload()
+		if n != nil {
+			n.Dispatch()
+		}
+	}
+}
+
+func (r *EResourceImpl) DoUnload() {
 
 }
 
 func (r *EResourceImpl) IsLoaded() bool {
-	return false
+	return r.isLoaded
 }
 
 func (r *EResourceImpl) Save() {
@@ -263,6 +289,10 @@ func (r *EResourceImpl) Save() {
 }
 
 func (r *EResourceImpl) SaveWithWriter(w io.Writer) {
+
+}
+
+func (r *EResourceImpl) DoSave(rd io.Writer) {
 
 }
 
@@ -282,7 +312,7 @@ func (r *EResourceImpl) basicSetLoaded(isLoaded bool, msgs ENotificationChain) E
 		if notifications == nil {
 			notifications = NewNotificationChain()
 		}
-		notifications.Add(newResourceNotification(r.GetInterfaces().(EObject), RESOURCE__IS_LOADED, SET, oldLoaded, r.isLoaded, -1))
+		notifications.Add(newResourceNotification(r.GetInterfaces().(ENotifier), RESOURCE__IS_LOADED, SET, oldLoaded, r.isLoaded, -1))
 	}
 	return notifications
 }
@@ -292,14 +322,14 @@ func (r *EResourceImpl) basicSetResourceSet(resourceSet EResourceSet, msgs ENoti
 	oldAbstractResourceSet := r.resourceSet
 	if oldAbstractResourceSet != nil {
 		l := oldAbstractResourceSet.GetResources().(ENotifyingList)
-		notifications = l.AddWithNotification(r.GetEObject(), notifications)
+		notifications = l.AddWithNotification(r.GetInterfaces().(ENotifier), notifications)
 	}
 	r.resourceSet = resourceSet
 	if r.ENotificationRequired() {
 		if notifications == nil {
 			notifications = NewNotificationChain()
 		}
-		notifications.Add(newResourceNotification(r.GetInterfaces().(EObject), RESOURCE__RESOURCE_SET, SET, oldAbstractResourceSet, resourceSet, -1))
+		notifications.Add(newResourceNotification(r.GetInterfaces().(ENotifier), RESOURCE__RESOURCE_SET, SET, oldAbstractResourceSet, resourceSet, -1))
 	}
 	return notifications
 }

@@ -8,9 +8,9 @@ const (
 
 //EResourceSet ...
 type EResourceSet interface {
-	CreateResource(uri *url.URL) EResource
-	GetResources(uri *url.URL, loadOnDemand bool) EList
+	GetResources() EList
 	GetResource(uri *url.URL, loadOnDemand bool) EResource
+	CreateResource(uri *url.URL) EResource
 
 	GetEObject(uri *url.URL, loadOnDemand bool) EObject
 

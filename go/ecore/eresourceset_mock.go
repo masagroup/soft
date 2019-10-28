@@ -77,13 +77,13 @@ func (_m *MockEResourceSet) GetResourceFactoryRegistry() EResourceFactoryRegistr
 	return r0
 }
 
-// GetResources provides a mock function with given fields: uri, loadOnDemand
-func (_m *MockEResourceSet) GetResources(uri *url.URL, loadOnDemand bool) EList {
-	ret := _m.Called(uri, loadOnDemand)
+// GetResources provides a mock function with given fields:
+func (_m *MockEResourceSet) GetResources() EList {
+	ret := _m.Called()
 
 	var r0 EList
-	if rf, ok := ret.Get(0).(func(*url.URL, bool) EList); ok {
-		r0 = rf(uri, loadOnDemand)
+	if rf, ok := ret.Get(0).(func() EList); ok {
+		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(EList)
