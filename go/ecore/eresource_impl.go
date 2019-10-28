@@ -11,6 +11,9 @@ type EResourceInternal interface {
 	DoLoad(rd io.Reader)
 	DoWrite(rd io.Writer)
 	DoUnload()
+
+	basicSetLoaded(bool, ENotificationChain) ENotificationChain
+	basicSetResourceSet(EResourceSet, ENotificationChain) ENotificationChain
 }
 
 type resourceNotification struct {

@@ -1,0 +1,50 @@
+package ecore
+
+import "net/url"
+
+const (
+	RESOURCE_SET__RESOURCES = 0
+)
+
+type resourcesList struct {
+    *ENotifyingListImpl
+    resourceSet EResourceSet
+}
+
+func (l *resourcesList) GetNotifier() {
+    l.resourceSet
+}
+
+func (l *resourcesList) GetFeatureID() int {
+	return RESOURCE_SET__RESOURCES
+}
+
+func (l *resourcesList) inverseAdd(object interface{}, notifications ENotificationChain) ENotificationChain {
+	eResource := object.(EResourceInternal)
+	n := notifications
+	n = eResource.basicSetResourceSet(l.resource, n)
+	return n
+}
+
+func (l *resourcesList) inverseRemove(object interface{}, notifications ENotificationChain) ENotificationChain {
+	eResource := object.(EResourceInternal)
+	n := notifications
+	n = eResource.basicSetResourceSet(nil, n)
+	return n
+}
+
+//EResourceSetImpl ...
+type EResourceSetImpl struct {
+	resources EList
+    uriConverter EURIConverter
+    uriMap map[*url.URL]EResource
+    resourceFactoryRegistry EResourceFactoryRegistry
+}
+
+func (r *EResourceSetImpl) GetResources() EList {
+    if r.resources == nil {
+        r.resources = new(resourcesList)
+    }
+    return r.resources
+}
+	
