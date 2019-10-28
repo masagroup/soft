@@ -41,10 +41,39 @@ type EResourceSetImpl struct {
     resourceFactoryRegistry EResourceFactoryRegistry
 }
 
+func NewEResourceSetImpl() *EResourceSetImpl {
+    set := new(EResourceSetImpl)
+    set.resources = new(resourcesList)
+    set.uriConverter = new(EURIConverterImpl)
+    set.uriMap= map[*url.URL]EResource{}
+    set.resourceFactoryRegistry = NewEResourceFactoryRegistryImpl
+    return set;
+}
+
 func (r *EResourceSetImpl) GetResources() EList {
-    if r.resources == nil {
-        r.resources = new(resourcesList)
-    }
     return r.resources
 }
-	
+
+func (r *EResourceSetImpl) GetURIConverter() EURIConverter {
+    return r.uriConverter
+}
+
+func (r *EResourceSetImpl) SetURIConverter(uriConverter EURIConverter) {
+    r.uriConverter = uriConverter
+}
+
+func (r *EResourceSetImpl) GetResourceFactoryRegistry() EResourceFactoryRegistry {
+    return r.resourceFactoryRegistry
+}
+
+func (r *EResourceSetImpl) SetResourceFactoryRegistry(resourceFactoryRegistry EResourceFactoryRegistry) {
+    r.resourceFactoryRegistry = resourceFactoryRegistry
+}
+
+func (r *EResourceSetImpl) SetURIResourceMap(uriMap map[*url.URL]EResource) {
+    r.uriMap = uriMap
+}
+
+func (r *EResourceSetImpl) GetURIResourceMap() map[*url.URL]EResource {
+    return r.uriMap
+}
