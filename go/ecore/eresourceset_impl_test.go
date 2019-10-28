@@ -1,6 +1,7 @@
 package ecore
 
 import (
+	"net/url"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -27,4 +28,18 @@ func TestEResourceSetResourcesNoMock(t *testing.T) {
 
 	rs.GetResources().Remove(r)
 	assert.Equal(t, nil, r.GetResourceSet())
+}
+
+func TestEResourceSetCreateResource(t *testing.T) {
+	mockResourceFactoryRegistry := new(MockEResourceFactoryRegistry)
+	mockResourceFactory := new(MockEResourceFactory)
+	mockResource := new(MockEResourceInternal)
+	uri, _ := url.Parse("test://file.t")
+	rs := NewEResourceSetImpl()
+	rs.SetResourceFactoryRegistry(mockResourceFactoryRegistry)
+
+	mockResourceFactoryRegistry.On("GetFactory", uri).Return(mockResourceFactory)
+	mockResourceFactory.On("CreateResource", uri).Return(mockResource)
+	mockResource.On("basicSetResourceSet", rs, nil).Return(nil)
+	assert.NotNil(t, mockResource, rs.CreateResource(uri))
 }

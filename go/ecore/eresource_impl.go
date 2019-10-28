@@ -8,6 +8,8 @@ import (
 )
 
 type EResourceInternal interface {
+	EResource
+
 	DoLoad(rd io.Reader)
 	DoSave(rd io.Writer)
 	DoUnload()
