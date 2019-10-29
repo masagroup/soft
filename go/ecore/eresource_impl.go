@@ -238,7 +238,7 @@ func (r *EResourceImpl) Detached(object EObject) {
 
 }
 
-var defaultURIConverter EURIConverter = new(EURIConverterImpl)
+var defaultURIConverter EURIConverter = NewEURIConverterImpl()
 
 func (r *EResourceImpl) getURIConverter() EURIConverter {
 	if r.resourceSet != nil {
@@ -252,7 +252,9 @@ func (r *EResourceImpl) Load() {
 		uriConverter := r.getURIConverter()
 		if uriConverter != nil {
 			rd := uriConverter.CreateReader(r.uri)
-			r.LoadWithReader(rd)
+			if rd != nil {
+				r.LoadWithReader(rd)
+			}
 		}
 	}
 }
