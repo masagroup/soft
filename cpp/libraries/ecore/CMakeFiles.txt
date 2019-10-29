@@ -2,6 +2,7 @@
 # Sources
 set(SOURCE_ECORE_FILES
     src/ecore/EPackageRegistry.cpp
+    src/ecore/EResourceFactoryRegistry.cpp 
     src/ecore/URI.cpp
     src/ecore/EcoreUtils.cpp
 )

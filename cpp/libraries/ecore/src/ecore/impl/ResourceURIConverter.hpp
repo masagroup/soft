@@ -26,6 +26,8 @@ namespace ecore::impl
 
         virtual std::unique_ptr<std::ostream> createOutputStream( const URI& uri ) const;
 
+        virtual URI normalize(const URI& uri) const;
+
         virtual std::shared_ptr<URIHandler> getURIHandler( const URI& uri ) const;
 
         virtual std::shared_ptr<const EList<std::shared_ptr<URIHandler>>> getURIHandlers() const;

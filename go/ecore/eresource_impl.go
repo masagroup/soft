@@ -1,10 +1,22 @@
 package ecore
 
 import (
+	"io"
 	"net/url"
 	"strconv"
 	"strings"
 )
+
+type EResourceInternal interface {
+	EResource
+
+	DoLoad(rd io.Reader)
+	DoSave(rd io.Writer)
+	DoUnload()
+
+	basicSetLoaded(bool, ENotificationChain) ENotificationChain
+	basicSetResourceSet(EResourceSet, ENotificationChain) ENotificationChain
+}
 
 type resourceNotification struct {
 	*abstractNotification
@@ -75,6 +87,7 @@ type EResourceImpl struct {
 	resourceSet EResourceSet
 	uri         *url.URL
 	contents    EList
+	isLoaded    bool
 }
 
 // NewBasicEObject is BasicEObject constructor
@@ -97,7 +110,7 @@ func (r *EResourceImpl) SetURI(uri *url.URL) {
 	oldURI := r.uri
 	r.uri = uri
 	if r.ENotificationRequired() {
-		r.ENotify(newResourceNotification(r, RESOURCE__URI, SET, oldURI, uri, -1))
+		r.ENotify(newResourceNotification(r.GetInterfaces().(ENotifier), RESOURCE__URI, SET, oldURI, uri, -1))
 	}
 }
 
@@ -223,4 +236,105 @@ func (r *EResourceImpl) Attached(object EObject) {
 
 func (r *EResourceImpl) Detached(object EObject) {
 
+}
+
+var defaultURIConverter EURIConverter = new(EURIConverterImpl)
+
+func (r *EResourceImpl) getURIConverter() EURIConverter {
+	if r.resourceSet != nil {
+		return r.resourceSet.GetURIConverter()
+	}
+	return defaultURIConverter
+}
+
+func (r *EResourceImpl) Load() {
+	if !r.isLoaded {
+		uriConverter := r.getURIConverter()
+		if uriConverter != nil {
+			rd := uriConverter.CreateReader(r.uri)
+			r.LoadWithReader(rd)
+		}
+	}
+}
+
+func (r *EResourceImpl) LoadWithReader(rd io.Reader) {
+	if !r.isLoaded {
+		n := r.basicSetLoaded(true, nil)
+		r.GetInterfaces().(EResourceInternal).DoLoad(rd)
+		if n != nil {
+			n.Dispatch()
+		}
+	}
+}
+
+func (r *EResourceImpl) DoLoad(rd io.Reader) {
+
+}
+
+func (r *EResourceImpl) Unload() {
+	if r.isLoaded {
+		n := r.basicSetLoaded(false, nil)
+		r.GetInterfaces().(EResourceInternal).DoUnload()
+		if n != nil {
+			n.Dispatch()
+		}
+	}
+}
+
+func (r *EResourceImpl) DoUnload() {
+
+}
+
+func (r *EResourceImpl) IsLoaded() bool {
+	return r.isLoaded
+}
+
+func (r *EResourceImpl) Save() {
+
+}
+
+func (r *EResourceImpl) SaveWithWriter(w io.Writer) {
+
+}
+
+func (r *EResourceImpl) DoSave(rd io.Writer) {
+
+}
+
+func (r *EResourceImpl) GetErrors() EList {
+	return nil
+}
+
+func (r *EResourceImpl) GetWarnings() EList {
+	return nil
+}
+
+func (r *EResourceImpl) basicSetLoaded(isLoaded bool, msgs ENotificationChain) ENotificationChain {
+	notifications := msgs
+	oldLoaded := r.isLoaded
+	r.isLoaded = isLoaded
+	if r.ENotificationRequired() {
+		if notifications == nil {
+			notifications = NewNotificationChain()
+		}
+		notifications.Add(newResourceNotification(r.GetInterfaces().(ENotifier), RESOURCE__IS_LOADED, SET, oldLoaded, r.isLoaded, -1))
+	}
+	return notifications
+}
+
+func (r *EResourceImpl) basicSetResourceSet(resourceSet EResourceSet, msgs ENotificationChain) ENotificationChain {
+	notifications := msgs
+	oldAbstractResourceSet := r.resourceSet
+	if oldAbstractResourceSet != nil {
+		l := oldAbstractResourceSet.GetResources().(ENotifyingList)
+		notifications = l.AddWithNotification(r.GetInterfaces().(ENotifier), notifications)
+	}
+	r.resourceSet = resourceSet
+	if r.ENotificationRequired() {
+		if notifications == nil {
+			notifications = NewNotificationChain()
+		}
+		notifications.Add(newResourceNotification(r.GetInterfaces().(ENotifier), RESOURCE__RESOURCE_SET, SET, oldAbstractResourceSet, resourceSet, -1))
+	}
+	return notifications
 }

@@ -235,4 +235,14 @@ namespace std
         }
     };
 
+    template <>
+    struct hash<ecore::URI>
+    {
+        std::size_t operator()(const ecore::URI& uri) const
+        {
+            return std::hash<std::string>()(uri.toString());
+        }
+    };
+
+
 } // namespace std
