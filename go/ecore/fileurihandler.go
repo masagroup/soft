@@ -14,12 +14,12 @@ func (fuh *FileURIHandler) CanHandle(uri *url.URL) bool {
 	return uri.Scheme == "file" || (len(uri.Scheme) == 0 && len(uri.Host) == 0 && len(uri.RawQuery) == 0)
 }
 
-func (fuh *FileURIHandler) CreateReader(uri *url.URL) io.Reader {
-	f, _ := os.Create(uri.String())
+func (fuh *FileURIHandler) CreateReader(uri *url.URL) io.ReadCloser {
+	f, _ := os.Open(uri.String())
 	return f
 }
 
-func (fuh *FileURIHandler) CreateWriter(uri *url.URL) io.Writer {
+func (fuh *FileURIHandler) CreateWriter(uri *url.URL) io.WriteCloser {
 	f, _ := os.Create(uri.String())
 	return f
 }

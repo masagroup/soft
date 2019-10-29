@@ -15,7 +15,7 @@ func NewEURIConverterImpl() *EURIConverterImpl {
 	return r
 }
 
-func (r *EURIConverterImpl) CreateReader(uri *url.URL) io.Reader {
+func (r *EURIConverterImpl) CreateReader(uri *url.URL) io.ReadCloser {
 	uriHandler := r.GetURIHandler(uri)
 	if uriHandler != nil {
 		return uriHandler.CreateReader(uri)
@@ -23,7 +23,7 @@ func (r *EURIConverterImpl) CreateReader(uri *url.URL) io.Reader {
 	return nil
 }
 
-func (r *EURIConverterImpl) CreateWriter(uri *url.URL) io.Writer {
+func (r *EURIConverterImpl) CreateWriter(uri *url.URL) io.WriteCloser {
 	uriHandler := r.GetURIHandler(uri)
 	if uriHandler != nil {
 		return uriHandler.CreateWriter(uri)

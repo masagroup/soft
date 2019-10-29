@@ -9,7 +9,7 @@ import (
 
 func TestXMLResourceLoad(t *testing.T) {
 	resource := NewXMLResource()
-	resource.SetURI(&url.URL{Scheme: "file", Path: "testdata/simple.book.ecore"})
+	resource.SetURI(&url.URL{Path: "testdata/simple.book.ecore"})
 	resource.Load()
 	assert.True(t, resource.IsLoaded())
 }

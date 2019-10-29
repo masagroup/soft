@@ -254,6 +254,7 @@ func (r *EResourceImpl) Load() {
 			rd := uriConverter.CreateReader(r.uri)
 			if rd != nil {
 				r.LoadWithReader(rd)
+				rd.Close()
 			}
 		}
 	}
