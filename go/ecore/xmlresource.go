@@ -2,7 +2,6 @@ package ecore
 
 import (
 	"encoding/xml"
-	"fmt"
 	"io"
 
 	"golang.org/x/net/html/charset"
@@ -83,6 +82,27 @@ type xmlResourceLoader struct {
 	isPushContext bool
 	elements      []string
 	objects       []interface{}
+	namespaces    *xmlNamespaces
+}
+
+func (l *xmlResourceLoader) startElement(e xml.StartElement) {
+
+}
+
+func (l *xmlResourceLoader) endElement(e xml.EndElement) {
+
+}
+
+func (l *xmlResourceLoader) charData(data string) {
+}
+
+func (l *xmlResourceLoader) comment(comment string) {
+}
+
+func (l *xmlResourceLoader) processingInstruction(procInst xml.ProcInst) {
+}
+
+func (l *xmlResourceLoader) directive(directive string) {
 }
 
 func NewXMLResource() *XMLResource {
@@ -97,13 +117,12 @@ type XMLResource struct {
 }
 
 func (r *XMLResource) DoLoad(rd io.Reader) {
-	// loader := &xmlResourceLoader{
-	// 	resource:      r,
-	// 	isRoot:        true,
-	// 	isPushContext: true,
-	// 	elements:      []string{},
-	// 	objects:       []interface{}{},
-	// }
+	loader := &xmlResourceLoader{
+		resource:      r,
+		isRoot:        true,
+		isPushContext: true,
+		namespaces:    newXmlNamespaces(),
+	}
 
 	d := xml.NewDecoder(rd)
 	d.CharsetReader = charset.NewReaderLabel
@@ -117,20 +136,17 @@ func (r *XMLResource) DoLoad(rd io.Reader) {
 		}
 		switch t := t.(type) {
 		case xml.StartElement:
-			fmt.Println("StartElement:" + t.Name.Local)
+			loader.startElement(t)
 		case xml.EndElement:
-			fmt.Println("EndElement:" + t.Name.Local)
+			loader.endElement(t)
 		case xml.CharData:
-			c := string([]byte(t))
-			fmt.Println("CharData:" + c)
+			loader.charData(string([]byte(t)))
 		case xml.Comment:
-			c := string([]byte(t))
-			fmt.Println("Comment:" + c)
+			loader.comment(string([]byte(t)))
 		case xml.ProcInst:
-			fmt.Println("ProcInst")
+			loader.processingInstruction(t)
 		case xml.Directive:
-			c := string([]byte(t))
-			fmt.Println("Directive:" + c)
+			loader.directive(string([]byte(t)))
 		}
 	}
 }
