@@ -40,7 +40,7 @@ namespace ecore::impl
         std::vector<std::pair<std::string, std::string>> namespaces_{16};
         int namespacesSize_{0};
         std::vector<int> contexts_{8};
-        int currentContext_{0};
+        int currentContext_{-1};
     };
 
 } // namespace ecore::impl

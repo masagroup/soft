@@ -8,11 +8,21 @@ using namespace ecore::impl;
 
 BOOST_AUTO_TEST_SUITE( XmlNamespacesTests )
 
+BOOST_AUTO_TEST_CASE(NoContext)
+{
+    XmlNamespaces namespaces;
+    BOOST_CHECK(namespaces.getURI("prefix").empty());
+    BOOST_CHECK(namespaces.getPrefix("uri").empty());
+}
+
 BOOST_AUTO_TEST_CASE( Empty )
 {
     XmlNamespaces namespaces;
+    namespaces.pushContext();
     BOOST_CHECK( namespaces.getURI( "prefix" ).empty() );
     BOOST_CHECK( namespaces.getPrefix( "uri" ).empty() );
+    auto c = namespaces.popContext();
+    BOOST_CHECK(c.empty());
 }
 
 BOOST_AUTO_TEST_CASE( Context )
