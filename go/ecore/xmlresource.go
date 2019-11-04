@@ -77,23 +77,95 @@ func (n *xmlNamespaces) getURI(prefix string) string {
 }
 
 type xmlResourceLoader struct {
-	resource      EResource
-	isRoot        bool
-	isPushContext bool
-	elements      []string
-	objects       []interface{}
-	namespaces    *xmlNamespaces
+	resource            EResource
+	isRoot              bool
+	isPushContext       bool
+	isNamespaceAware    bool
+	elements            []string
+	objects             []interface{}
+	attributes          []xml.Attr
+	namespaces          *xmlNamespaces
+	prefixesToFactories map[string]EFactory
 }
 
 func (l *xmlResourceLoader) startElement(e xml.StartElement) {
+	l.setAttributes(e.Attr)
 
+	if l.isRoot {
+		l.handleSchemaLocation()
+		l.handlePrefixMapping()
+	}
+
+	if l.isPushContext {
+		l.namespaces.pushContext()
+	}
+	l.isPushContext = true
+
+}
+
+func (l *xmlResourceLoader) setAttributes(attributes []xml.Attr) []xml.Attr {
+	old := l.attributes
+	l.attributes = attributes
+	return old
+}
+
+func (l *xmlResourceLoader) getAttributeValue(uri string, local string) string {
+	if l.attributes != nil {
+		for _, attr := range l.attributes {
+			if attr.Name.Space == uri && attr.Name.Local == local {
+				return attr.Value
+			}
+		}
+	}
+	return ""
+}
+
+func (l *xmlResourceLoader) handleSchemaLocation() {
+	xsiSchemaLocation := l.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation")
+	if len(xsiSchemaLocation) > 0 {
+		l.handleXSISchemaLocation(xsiSchemaLocation)
+	}
+
+	xsiNoNamespaceSchemaLocation := l.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "noNamespaceSchemaLocation")
+	if len(xsiNoNamespaceSchemaLocation) > 0 {
+		l.handleXSINoNamespaceSchemaLocation(xsiNoNamespaceSchemaLocation)
+	}
+}
+
+func (l *xmlResourceLoader) handleXSISchemaLocation(loc string) {
+}
+
+func (l *xmlResourceLoader) handleXSINoNamespaceSchemaLocation(loc string) {
+}
+
+func (l *xmlResourceLoader) handlePrefixMapping() {
+	if l.attributes != nil {
+		for _, attr := range l.attributes {
+			if attr.Name.Space == "xmlns" {
+				l.startPrefixMapping(attr.Name.Local, attr.Value)
+			}
+		}
+	}
+}
+
+func (l *xmlResourceLoader) startPrefixMapping(prefix string, uri string) {
+	l.isNamespaceAware = true
+	if l.isPushContext {
+		l.namespaces.pushContext()
+		l.isPushContext = false
+	}
+	l.namespaces.declarePrefix(prefix, uri)
+	delete(l.prefixesToFactories, prefix)
+}
+
+func (l *xmlResourceLoader) processElement(prefix string, local string) {
 }
 
 func (l *xmlResourceLoader) endElement(e xml.EndElement) {
 
 }
 
-func (l *xmlResourceLoader) charData(data string) {
+func (l *xmlResourceLoader) text(data string) {
 }
 
 func (l *xmlResourceLoader) comment(comment string) {
@@ -118,10 +190,11 @@ type XMLResource struct {
 
 func (r *XMLResource) DoLoad(rd io.Reader) {
 	loader := &xmlResourceLoader{
-		resource:      r,
-		isRoot:        true,
-		isPushContext: true,
-		namespaces:    newXmlNamespaces(),
+		resource:            r,
+		isRoot:              true,
+		isPushContext:       true,
+		namespaces:          newXmlNamespaces(),
+		prefixesToFactories: make(map[string]EFactory),
 	}
 
 	d := xml.NewDecoder(rd)
@@ -140,7 +213,7 @@ func (r *XMLResource) DoLoad(rd io.Reader) {
 		case xml.EndElement:
 			loader.endElement(t)
 		case xml.CharData:
-			loader.charData(string([]byte(t)))
+			loader.text(string([]byte(t)))
 		case xml.Comment:
 			loader.comment(string([]byte(t)))
 		case xml.ProcInst:
