@@ -1,9 +1,19 @@
 package ecore
 
 type EPackageRegistry interface {
-	registerPackage(pack EPackage)
-	unregisterPackage(pack EPackage)
+	RegisterPackage(pack EPackage)
+	UnregisterPackage(pack EPackage)
 
-	getPackage(nsURI string) EPackage
-	getFactory(nsURI string) EFactory
+	GetPackage(nsURI string) EPackage
+	GetFactory(nsURI string) EFactory
+}
+
+var packageRegistryInstance EPackageRegistry
+
+func GetPackageRegistry() EPackageRegistry {
+	if packageRegistryInstance == nil {
+		packageRegistryInstance = NewEPackageRegistryImpl()
+		packageRegistryInstance.RegisterPackage(GetPackage())
+	}
+	return packageRegistryInstance
 }
