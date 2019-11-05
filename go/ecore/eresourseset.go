@@ -19,6 +19,9 @@ type EResourceSet interface {
 	GetURIConverter() EURIConverter
 	SetURIConverter(uriConverter EURIConverter)
 
+	GetPackageRegistry() EPackageRegistry
+	SetPackageRegistry(packageregistry EPackageRegistry)
+
 	GetResourceFactoryRegistry() EResourceFactoryRegistry
 	SetResourceFactoryRegistry(resourceFactoryRegistry EResourceFactoryRegistry)
 

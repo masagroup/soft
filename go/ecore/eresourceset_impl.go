@@ -44,6 +44,7 @@ type EResourceSetImpl struct {
 	uriConverter            EURIConverter
 	uriResourceMap          map[*url.URL]EResource
 	resourceFactoryRegistry EResourceFactoryRegistry
+	packageRegistry         EPackageRegistry
 }
 
 func NewEResourceSetImpl() *EResourceSetImpl {
@@ -52,6 +53,7 @@ func NewEResourceSetImpl() *EResourceSetImpl {
 	rs.resources = newResourcesList(rs)
 	rs.uriConverter = NewEURIConverterImpl()
 	rs.resourceFactoryRegistry = NewEResourceFactoryRegistryImpl()
+	rs.packageRegistry = NewEPackageRegistryImplWithDelegate(GetPackageRegistry())
 	rs.SetInterfaces(rs)
 	return rs
 }
@@ -130,6 +132,14 @@ func (r *EResourceSetImpl) GetURIConverter() EURIConverter {
 
 func (r *EResourceSetImpl) SetURIConverter(uriConverter EURIConverter) {
 	r.uriConverter = uriConverter
+}
+
+func (r *EResourceSetImpl) GetPackageRegistry() EPackageRegistry {
+	return r.packageRegistry
+}
+
+func (r *EResourceSetImpl) SetPackageRegistry(packageRegistry EPackageRegistry) {
+	r.packageRegistry = packageRegistry
 }
 
 func (r *EResourceSetImpl) GetResourceFactoryRegistry() EResourceFactoryRegistry {

@@ -7,7 +7,7 @@ type EDiagnosticImpl struct {
 	column   int
 }
 
-func newEDiagnosticImpl(message string, location string, line int, column int) *EDiagnosticImpl {
+func NewEDiagnosticImpl(message string, location string, line int, column int) *EDiagnosticImpl {
 	return &EDiagnosticImpl{
 		message:  message,
 		location: location,
