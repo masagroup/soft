@@ -6,6 +6,7 @@
 #include "ecore/EPackageRegistry.hpp"
 #include "ecore/EReference.hpp"
 #include "ecore/EResource.hpp"
+#include "ecore/EResourceSet.hpp"
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/impl/Diagnostic.hpp"
 #include "ecore/impl/StringUtils.hpp"
@@ -47,6 +48,7 @@ namespace utf16
 
 XmlHandler::XmlHandler( XmlResource& resource )
     : resource_( resource )
+    , packageRegistry_( resource_.getResourceSet() ? resource_.getResourceSet()->getPackageRegistry() : EPackageRegistry::getInstance() )
 {
 }
 
@@ -663,7 +665,7 @@ std::shared_ptr<EFactory> XmlHandler::getFactoryForPrefix( const std::string& pr
     else
     {
         auto uri = namespaces_.getURI( prefix );
-        factory = EPackageRegistry::getInstance()->getFactory( uri );
+        factory = packageRegistry_->getFactory( uri );
         if( factory )
             prefixesToFactories_.emplace( prefix, factory );
     }
