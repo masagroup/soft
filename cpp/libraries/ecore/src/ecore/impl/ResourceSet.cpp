@@ -1,6 +1,7 @@
 #include "ecore/impl/ResourceSet.hpp"
 #include "ecore/impl/AbstractResource.hpp"
 #include "ecore/impl/AbstractENotifyingList.hpp"
+#include "ecore/impl/PackageRegistry.hpp"
 #include "ecore/impl/ResourceFactoryRegistry.hpp"
 #include "ecore/impl/ResourceURIConverter.hpp"
 #include "ecore/ENotifyingList.hpp"
@@ -13,6 +14,7 @@ ResourceSet::ResourceSet()
     : resources_( [&]() { return initResources();  } )
     , uriConverter_( [&]() { return std::make_shared<ResourceURIConverter>(); } )
     , resourceFactoryRegistry_([&]() { return EResourceFactoryRegistry::getInstance(); })
+    , packageRegistry_([&]() { return std::make_shared<PackageRegistry>( EPackageRegistry::getInstance()); })
 {
 }
 
@@ -93,6 +95,16 @@ std::shared_ptr<EResourceFactoryRegistry> ResourceSet::getResourceFactoryRegistr
 void ResourceSet::setResourceFactoryRegistry( const std::shared_ptr<EResourceFactoryRegistry>& resourceFactoryRegistry )
 {
     resourceFactoryRegistry_ = resourceFactoryRegistry;
+}
+
+std::shared_ptr<EPackageRegistry> ecore::impl::ResourceSet::getPackageRegistry() const
+{
+    return packageRegistry_;
+}
+
+void ResourceSet::setPackageRegistry(const std::shared_ptr<EPackageRegistry>& packageRegistry)
+{
+    packageRegistry_ = packageRegistry;
 }
 
 void ecore::impl::ResourceSet::setURIResourceMap(const std::unordered_map<URI, std::shared_ptr<EResource>>& uriMap)

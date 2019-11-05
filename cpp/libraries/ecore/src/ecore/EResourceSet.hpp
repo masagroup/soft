@@ -19,6 +19,7 @@
 namespace ecore
 {
     class EObject;
+    class EPackageRegistry;
     class EResource;
     class EResourceFactoryRegistry;
     class URIConverter;
@@ -42,6 +43,9 @@ namespace ecore
 
         virtual std::shared_ptr<URIConverter> getURIConverter() const = 0;
         virtual void setURIConverter( const std::shared_ptr<URIConverter>& uriConverter ) = 0;
+
+        virtual std::shared_ptr<EPackageRegistry> getPackageRegistry() const = 0;
+        virtual void setPackageRegistry(const std::shared_ptr<EPackageRegistry>& packageRegistry ) = 0;
 
         virtual std::shared_ptr<EResourceFactoryRegistry> getResourceFactoryRegistry() const = 0;
         virtual void setResourceFactoryRegistry( const std::shared_ptr<EResourceFactoryRegistry>& resourceFactoryRegistry ) = 0;
