@@ -231,7 +231,7 @@ std::shared_ptr<EObject> XmlHandler::createObjectFromTypeName( const std::shared
 
     auto eFactory = getFactoryForPrefix( prefix );
     if( !eFactory && prefix.empty() && namespaces_.getURI( prefix ).empty() )
-        handleUnknownPackage( "" );
+        handleUnknownPackage( prefix );
 
     auto ePackage = eFactory->getEPackage();
     auto eType = ePackage->getEClassifier( typeName );
