@@ -3,6 +3,7 @@ package ecore
 import (
 	"encoding/xml"
 	"io"
+	"net/url"
 	"strings"
 
 	"golang.org/x/net/html/charset"
@@ -117,6 +118,7 @@ type xmlResourceLoader struct {
 	references          []reference
 	namespaces          *xmlNamespaces
 	prefixesToFactories map[string]EFactory
+	sameDocumentProxies []EObject
 }
 
 func (l *xmlResourceLoader) startElement(e xml.StartElement) {
@@ -496,6 +498,25 @@ func (l *xmlResourceLoader) setValueFromId(eObject EObject, eReference EReferenc
 		l.setFeatureValue(eObject, eReference, nil, -2)
 	} else {
 		l.references = references
+	}
+}
+
+func (l *xmlResourceLoader) handleProxy(eProxy EObject, id string) {
+	uri, ok := url.Parse(id)
+	if ok != nil {
+		return
+	}
+
+	eProxy.(EObjectInternal).ESetProxyURI(uri)
+
+	if (l.resource.GetURI() == &url.URL{Scheme: uri.Scheme,
+		User:       uri.User,
+		Host:       uri.Host,
+		Path:       uri.Path,
+		ForceQuery: uri.ForceQuery,
+		RawPath:    uri.RawPath,
+		RawQuery:   uri.RawQuery}) {
+		l.sameDocumentProxies = append(l.sameDocumentProxies, eProxy)
 	}
 }
 
