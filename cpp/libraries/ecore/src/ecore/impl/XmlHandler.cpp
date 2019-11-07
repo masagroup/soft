@@ -70,7 +70,7 @@ void XmlHandler::startDocument()
 
 void XmlHandler::endDocument()
 {
-    namespaces_.popContext();
+    auto _ = namespaces_.popContext();
     handleReferences();
 }
 
@@ -104,7 +104,7 @@ void XmlHandler::endElement( const XMLCh* const uri, const XMLCh* const localnam
     // pop namespace context and remove corresponding namespace factories
     auto prefixes = namespaces_.popContext();
     for( auto p : prefixes )
-        prefixesToFactories_.extract( p.first );
+        auto _ =  prefixesToFactories_.extract( p.first );
 }
 
 void XmlHandler::startPrefixMapping( const XMLCh* const prefix, const XMLCh* const uri )
@@ -117,8 +117,9 @@ void XmlHandler::startPrefixMapping( const XMLCh* const prefix, const XMLCh* con
     }
     auto uri_utf8 = utf16_to_utf8( uri );
     auto prefix_utf8 = utf16_to_utf8( prefix );
+    auto _ = prefixesToFactories_.extract(prefix_utf8);
     namespaces_.declarePrefix( prefix_utf8, uri_utf8 );
-    prefixesToFactories_.extract( prefix_utf8 );
+    
 }
 
 void XmlHandler::endPrefixMapping( const XMLCh* const prefix )
@@ -320,7 +321,7 @@ void XmlHandler::setFeatureValue( const std::shared_ptr<EObject>& eObject,
             if( index == -1 )
                 eList->add( position, eValue );
             else
-                eList->move( position, index );
+                auto _ = eList->move( position, index );
         }
         else if( kind == ManyAdd )
             eList->add( eValue );
@@ -486,10 +487,10 @@ void XmlHandler::handleFeature( const std::string& prefix, const std::string& na
                                ? ( attributes_ ? attributes_->getValue( XSI_URI, TYPE ) : attributes_->getValue( TYPE_ATTRIB ) )
                                : nullptr;
             if( xsiType )
-                createObjectFromTypeName( eObject, utf16_to_utf8( xsiType ), eFeature );
+                auto _ = createObjectFromTypeName( eObject, utf16_to_utf8( xsiType ), eFeature );
 
             else
-                createObjectFromFeatureType( eObject, eFeature );
+                auto _ = createObjectFromFeatureType( eObject, eFeature );
         }
         else
             handleUnknownFeature( name );
@@ -541,8 +542,8 @@ void XmlHandler::handleReferences()
                         if( resolvedIndex != -1 )
                         {
                             auto proxyIndex = holderContents->indexOf( eProxy );
-                            holderContents->move( proxyIndex, resolvedIndex );
-                            holderContents->remove( proxyIndex > resolvedIndex ? proxyIndex - 1 : proxyIndex + 1 );
+                            auto _ = holderContents->move( proxyIndex, resolvedIndex );
+                            auto _ = holderContents->remove( proxyIndex > resolvedIndex ? proxyIndex - 1 : proxyIndex + 1 );
                             break;
                         }
                     }
