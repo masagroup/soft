@@ -86,6 +86,14 @@ const (
 	typeAttrib                = "type"
 )
 
+const (
+	single   = iota
+	many     = iota
+	manyAdd  = iota
+	manyMove = iota
+	other    = iota
+)
+
 type xmlResourceLoader struct {
 	decoder             *xml.Decoder
 	resource            EResource
@@ -278,6 +286,69 @@ func (l *xmlResourceLoader) setFeatureValue(eObject EObject,
 	eFeature EStructuralFeature,
 	value interface{},
 	position int) {
+	kind := l.getFeatureKind(eFeature)
+	switch kind {
+	case single:
+		eClassifier := eFeature.GetEType()
+		eDataType := eClassifier.(EDataType)
+		eFactory := eDataType.GetEPackage().GetEFactoryInstance()
+		if value == nil {
+			eObject.ESet(eFeature, nil)
+		} else {
+			eObject.ESet(eFeature, eFactory.CreateFromString(eDataType, value.(string)))
+		}
+
+	case many:
+		eClassifier := eFeature.GetEType()
+		eDataType := eClassifier.(EDataType)
+		eFactory := eDataType.GetEPackage().GetEFactoryInstance()
+		eList := eObject.EGet(eFeature).(EList)
+		if position == -2 {
+		} else if value == nil {
+			eList.Add(nil)
+		} else {
+			eList.Add(eFactory.CreateFromString(eDataType, value.(string)))
+		}
+	case manyAdd:
+	case manyMove:
+		eList := eObject.EGet(eFeature).(EList)
+		if position == -1 {
+			eList.Add(value)
+		} else if position == -2 {
+			eList.Clear()
+		} else if eObject == value {
+			index := eList.IndexOf(value)
+			if index == -1 {
+				eList.Insert(position, value)
+			} else {
+				eList.Move(position, index)
+			}
+		} else if kind == manyAdd {
+			eList.Add(value)
+		} else {
+			eList.MoveObject(position, value)
+		}
+	default:
+		eObject.ESet(eFeature, value)
+	}
+}
+
+func (l *xmlResourceLoader) getFeatureKind(eFeature EStructuralFeature) int {
+	eClassifier := eFeature.GetEType()
+	if eDataType, _ := eClassifier.(EDataType); eDataType != nil {
+		if eFeature.IsMany() {
+			return many
+		}
+		return single
+	} else if eFeature.IsMany() {
+		eReference := eFeature.(EReference)
+		eOpposite := eReference.GetEOpposite()
+		if eOpposite == nil || eOpposite.IsTransient() || !eOpposite.IsMany() {
+			return manyAdd
+		}
+		return manyMove
+	}
+	return other
 }
 
 func (l *xmlResourceLoader) handleAttributes(eObject EObject) {
