@@ -84,7 +84,10 @@ const (
 	schemaLocation            = "schemaLocation"
 	noNamespaceSchemaLocation = "noNamespaceSchemaLocation"
 	typeAttrib                = "type"
+	href                      = "href"
 )
+
+var notFeatures = [...]string{typeAttrib, schemaLocation, noNamespaceSchemaLocation}
 
 const (
 	single   = iota
@@ -350,6 +353,31 @@ func (l *xmlResourceLoader) getFeatureKind(eFeature EStructuralFeature) int {
 }
 
 func (l *xmlResourceLoader) handleAttributes(eObject EObject) {
+	if l.attributes != nil {
+		for _, attr := range l.attributes {
+			name := attr.Name.Local
+			uri := attr.Name.Space
+			value := attr.Value
+			if name == href {
+				l.handleProxy(eObject, value)
+			} else if l.isNamespaceAware {
+				if uri != xsiURI {
+					l.setAttributeValue(eObject, name, value)
+				}
+			} else if uri != xmlNS {
+				found := true
+				for _, notFeature := range notFeatures {
+					if notFeature == name {
+						found = false
+						break
+					}
+				}
+				if !found {
+					l.setAttributeValue(eObject, name, value)
+				}
+			}
+		}
+	}
 }
 
 func (l *xmlResourceLoader) getFactoryForPrefix(prefix string) EFactory {
