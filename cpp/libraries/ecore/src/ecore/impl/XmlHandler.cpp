@@ -609,10 +609,7 @@ void XmlHandler::handleAttributes( const std::shared_ptr<EObject>& eObject )
             auto name = utf16_to_utf8( attributes_->getQName( i ) );
             auto value = utf16_to_utf8( attributes_->getValue( i ) );
             if( name == HREF )
-            {
-                auto id = utf16_to_utf8( attributes_->getValue( i ) );
-                handleProxy( eObject, id );
-            }
+                handleProxy( eObject, value );
             else if( isNamespaceAware_ )
             {
                 auto uri = utf16_to_utf8( attributes_->getURI( i ) );
