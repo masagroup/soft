@@ -542,8 +542,8 @@ void XmlHandler::handleReferences()
                         if( resolvedIndex != -1 )
                         {
                             auto proxyIndex = holderContents->indexOf( eProxy );
-                            auto _ = holderContents->move( proxyIndex, resolvedIndex );
-                            auto _ = holderContents->remove( proxyIndex > resolvedIndex ? proxyIndex - 1 : proxyIndex + 1 );
+                            auto _1 = holderContents->move( proxyIndex, resolvedIndex );
+                            auto _2 = holderContents->remove( proxyIndex > resolvedIndex ? proxyIndex - 1 : proxyIndex + 1 );
                             break;
                         }
                     }
