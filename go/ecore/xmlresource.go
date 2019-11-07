@@ -232,12 +232,10 @@ func (l *xmlResourceLoader) createObjectFromFeatureType(eObject EObject, eFeatur
 
 func (l *xmlResourceLoader) createObjectFromTypeName(eObject EObject, qname string, eFeature EStructuralFeature) EObject {
 	prefix := ""
-	local := ""
+	local := qname
 	if index := strings.Index(qname, ":"); index > 0 {
 		prefix = qname[:index]
 		local = qname[index+1:]
-	} else {
-		local = qname
 	}
 
 	eFactory := l.getFactoryForPrefix(prefix)
@@ -369,6 +367,24 @@ func (l *xmlResourceLoader) getFactoryForPrefix(prefix string) EFactory {
 		}
 	}
 	return factory
+}
+
+func (l *xmlResourceLoader) setAttributeValue(eObject EObject, qname string, value string) {
+	local := qname
+	if index := strings.Index(qname, ":"); index > 0 {
+		local = qname[index+1:]
+	}
+	eFeature := l.getFeature(eObject, local)
+	if eFeature != nil {
+		kind := l.getFeatureKind(eFeature)
+		if kind == single || kind == many {
+			l.setFeatureValue(eObject, eFeature, value, -2)
+		} else {
+			l.setValueFromId(eObject, eFeature.(EReference), value)
+		}
+	} else {
+		l.handleUnknownFeature(local)
+	}
 }
 
 func (l *xmlResourceLoader) getFeature(eObject EObject, name string) EStructuralFeature {
