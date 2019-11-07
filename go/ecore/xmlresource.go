@@ -97,15 +97,24 @@ const (
 	other    = iota
 )
 
+type reference struct {
+	object  EObject
+	feature EStructuralFeature
+	id      string
+	pos     int
+}
+
 type xmlResourceLoader struct {
 	decoder             *xml.Decoder
 	resource            EResource
 	isRoot              bool
 	isPushContext       bool
 	isNamespaceAware    bool
+	isResolveDeferred   bool
 	elements            []string
 	objects             []EObject
 	attributes          []xml.Attr
+	references          []reference
 	namespaces          *xmlNamespaces
 	prefixesToFactories map[string]EFactory
 }
@@ -412,6 +421,81 @@ func (l *xmlResourceLoader) setAttributeValue(eObject EObject, qname string, val
 		}
 	} else {
 		l.handleUnknownFeature(local)
+	}
+}
+
+func (l *xmlResourceLoader) setValueFromId(eObject EObject, eReference EReference, ids string) {
+	mustAdd := l.isResolveDeferred
+	mustAddOrNotOppositeIsMany := false
+	isFirstID := true
+	position := 0
+	references := []reference{}
+	tokens := strings.Split(ids, " ")
+	qName := ""
+	for _, token := range tokens {
+		id := ""
+
+		if index := strings.Index(token, "#"); index != -1 {
+			if index == 0 {
+				id = token[1:]
+			} else {
+				oldAttributes := l.setAttributes(nil)
+				var eProxy EObject
+				if len(qName) == 0 {
+					eProxy = l.createObjectFromFeatureType(eObject, eReference)
+				} else {
+					eProxy = l.createObjectFromTypeName(eObject, qName, eReference)
+				}
+				l.setAttributes(oldAttributes)
+				if eProxy != nil {
+					l.handleProxy(eProxy, id)
+				}
+				l.objects = l.objects[:len(l.objects)-1]
+				qName = ""
+				position++
+				continue
+			}
+		} else if index := strings.Index(token, ":"); index != -1 {
+			qName = token
+			continue
+		}
+
+		if !l.isResolveDeferred {
+			if isFirstID {
+				eOpposite := eReference.GetEOpposite()
+				if eOpposite != nil {
+					mustAdd = eOpposite.IsTransient() || eReference.IsMany()
+					mustAddOrNotOppositeIsMany = mustAdd || !eOpposite.IsMany()
+				} else {
+					mustAdd = true
+					mustAddOrNotOppositeIsMany = true
+				}
+				isFirstID = false
+			}
+
+			if mustAddOrNotOppositeIsMany {
+				resolved := l.resource.GetEObject(id)
+				if resolved != nil {
+					l.setFeatureValue(eObject, eReference, resolved, -1)
+					qName = ""
+					position++
+					continue
+				}
+			}
+		}
+
+		if mustAdd {
+			references = append(references, reference{object: eObject, feature: eReference, id: id, pos: position})
+		}
+
+		qName = ""
+		position++
+	}
+
+	if position == 0 {
+		l.setFeatureValue(eObject, eReference, nil, -2)
+	} else {
+		l.references = references
 	}
 }
 
