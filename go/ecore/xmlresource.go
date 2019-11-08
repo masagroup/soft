@@ -523,7 +523,75 @@ func (l *xmlResourceLoader) handleProxy(eProxy EObject, id string) {
 }
 
 func (l *xmlResourceLoader) handleReferences() {
+	for _, eProxy := range l.sameDocumentProxies {
+		for itRef := eProxy.EClass().GetEAllReferences().Iterator(); itRef.HasNext(); {
+			eReference := itRef.Next().(EReference)
+			eOpposite := eReference.GetEOpposite()
+			if eOpposite != nil && eOpposite.IsChangeable() && eProxy.EIsSet(eReference) {
+				resolvedObject := l.resource.GetEObject(eProxy.(EObjectInternal).EProxyURI().Fragment)
+				if resolvedObject != nil {
+					var proxyHolder EObject
+					if eReference.IsMany() {
+						value := eProxy.EGet(eReference)
+						list := value.(EList)
+						proxyHolder = list.Get(0).(EObject)
+					} else {
+						value := eProxy.EGet(eReference)
+						proxyHolder = value.(EObject)
+					}
 
+					if eOpposite.IsMany() {
+						value := proxyHolder.EGet(eOpposite)
+						holderContents := value.(EList)
+						resolvedIndex := holderContents.IndexOf(resolvedObject)
+						if resolvedIndex != -1 {
+							proxyIndex := holderContents.IndexOf(eProxy)
+							holderContents.Move(proxyIndex, resolvedIndex)
+							if proxyIndex > resolvedIndex {
+								holderContents.Remove(proxyIndex - 1)
+							} else {
+								holderContents.Remove(proxyIndex + 1)
+							}
+							break
+						}
+					}
+
+					replace := false
+					if eReference.IsMany() {
+						value := resolvedObject.EGet(eReference)
+						list := value.(EList)
+						replace = !list.Contains(proxyHolder)
+					} else {
+						value := resolvedObject.EGet(eReference)
+						object := value.(EObject)
+						replace = object != proxyHolder
+					}
+
+					if replace {
+						if eOpposite.IsMany() {
+							value := proxyHolder.EGet(eOpposite)
+							list := value.(EList)
+							ndx := list.IndexOf(eProxy)
+							list.Set(ndx, resolvedObject)
+						} else {
+							proxyHolder.ESet(eOpposite, resolvedObject)
+						}
+					}
+					break
+				}
+			}
+		}
+	}
+
+	for _, reference := range l.references {
+		eObject := l.resource.GetEObject(reference.id)
+		if eObject != nil {
+			l.setFeatureValue(reference.object, reference.feature, eObject, reference.pos)
+		} else {
+			l.error(NewEDiagnosticImpl(
+				"Unresolved reference '"+reference.id+"'", l.resource.GetURI().String(), int(l.decoder.InputOffset()), 0))
+		}
+	}
 }
 
 func (l *xmlResourceLoader) getFeature(eObject EObject, name string) EStructuralFeature {
