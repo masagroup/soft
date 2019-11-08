@@ -16,6 +16,7 @@
 package ecore
 
 type EcoreFactory interface {
+	EFactory
 	CreateEAnnotation() EAnnotation
 	CreateEAnnotationFromContainer(eContainer EModelElement) EAnnotation
 	CreateEAttribute() EAttribute
