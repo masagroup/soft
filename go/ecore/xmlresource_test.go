@@ -73,4 +73,6 @@ func TestXMLResourceLoad(t *testing.T) {
 	resource.SetURI(&url.URL{Path: "testdata/simple.book.ecore"})
 	resource.Load()
 	assert.True(t, resource.IsLoaded())
+	assert.True(t, resource.GetErrors().Empty())
+	assert.True(t, resource.GetWarnings().Empty())
 }

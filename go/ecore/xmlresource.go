@@ -196,26 +196,26 @@ func (l *xmlResourceLoader) startPrefixMapping(prefix string, uri string) {
 	delete(l.prefixesToFactories, prefix)
 }
 
-func (l *xmlResourceLoader) processElement(prefix string, local string) {
+func (l *xmlResourceLoader) processElement(space string, local string) {
 	if len(l.objects) == 0 {
-		eObject := l.createObject(prefix, local)
+		eObject := l.createObject(space, local)
 		if eObject != nil {
 			l.objects = append(l.objects, eObject)
 			l.resource.GetContents().Add(eObject)
 		}
 	} else {
-		l.handleFeature(prefix, local)
+		l.handleFeature(space, local)
 	}
 }
 
-func (l *xmlResourceLoader) createObject(prefix string, local string) EObject {
-	eFactory := l.getFactoryForPrefix(prefix)
+func (l *xmlResourceLoader) createObject(space string, local string) EObject {
+	eFactory := l.getFactoryForSpace(space)
 	if eFactory != nil {
 		ePackage := eFactory.GetEPackage()
 		eType := ePackage.GetEClassifier(local)
 		return l.createObjectWithFactory(eFactory, eType)
 	} else {
-		l.handleUnknownPackage(l.namespaces.getURI(prefix))
+		l.handleUnknownPackage(l.namespaces.getPrefix(space))
 		return nil
 	}
 }
@@ -255,10 +255,11 @@ func (l *xmlResourceLoader) createObjectFromTypeName(eObject EObject, qname stri
 		prefix = qname[:index]
 		local = qname[index+1:]
 	}
-
-	eFactory := l.getFactoryForPrefix(prefix)
+	space := l.namespaces.getPrefix(prefix)
+	eFactory := l.getFactoryForSpace(space)
 	if eFactory == nil {
 		l.handleUnknownPackage(prefix)
+		return nil
 	}
 
 	ePackage := eFactory.GetEPackage()
@@ -271,7 +272,7 @@ func (l *xmlResourceLoader) createObjectFromTypeName(eObject EObject, qname stri
 	return eResult
 }
 
-func (l *xmlResourceLoader) handleFeature(prefix string, local string) {
+func (l *xmlResourceLoader) handleFeature(space string, local string) {
 	var eObject EObject
 	if len(l.objects) > 0 {
 		eObject = l.objects[len(l.objects)-1]
@@ -395,16 +396,16 @@ func (l *xmlResourceLoader) handleAttributes(eObject EObject) {
 	}
 }
 
-func (l *xmlResourceLoader) getFactoryForPrefix(prefix string) EFactory {
+func (l *xmlResourceLoader) getFactoryForSpace(space string) EFactory {
 
+	prefix := l.namespaces.getPrefix(space)
 	factory, _ := l.prefixesToFactories[prefix]
 	if factory == nil {
 		packageRegistry := GetPackageRegistry()
 		if l.resource.GetResourceSet() != nil {
 			packageRegistry = l.resource.GetResourceSet().GetPackageRegistry()
 		}
-		uri := l.namespaces.getURI(prefix)
-		factory = packageRegistry.GetFactory(uri)
+		factory = packageRegistry.GetFactory(space)
 		if factory != nil {
 			l.prefixesToFactories[prefix] = factory
 		}
@@ -603,11 +604,11 @@ func (l *xmlResourceLoader) getFeature(eObject EObject, name string) EStructural
 }
 
 func (l *xmlResourceLoader) handleUnknownFeature(name string) {
-	l.error(NewEDiagnosticImpl("Feature "+name+"not found", l.resource.GetURI().String(), int(l.decoder.InputOffset()), 0))
+	l.error(NewEDiagnosticImpl("Feature "+name+" not found", l.resource.GetURI().String(), int(l.decoder.InputOffset()), 0))
 }
 
 func (l *xmlResourceLoader) handleUnknownPackage(name string) {
-	l.error(NewEDiagnosticImpl("Package "+name+"not found", l.resource.GetURI().String(), int(l.decoder.InputOffset()), 0))
+	l.error(NewEDiagnosticImpl("Package "+name+" not found", l.resource.GetURI().String(), int(l.decoder.InputOffset()), 0))
 }
 
 func (l *xmlResourceLoader) error(diagnostic EDiagnostic) {
