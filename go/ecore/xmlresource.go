@@ -108,8 +108,6 @@ type reference struct {
 type xmlResourceLoader struct {
 	decoder             *xml.Decoder
 	resource            EResource
-	isRoot              bool
-	isPushContext       bool
 	isNamespaceAware    bool
 	isResolveDeferred   bool
 	elements            []string
@@ -123,16 +121,25 @@ type xmlResourceLoader struct {
 
 func (l *xmlResourceLoader) startElement(e xml.StartElement) {
 	l.setAttributes(e.Attr)
-
-	if l.isRoot {
+	l.namespaces.pushContext()
+	l.handlePrefixMapping()
+	if len(l.objects) == 0 {
 		l.handleSchemaLocation()
-		l.handlePrefixMapping()
+	}
+	l.processElement(e.Name.Space, e.Name.Local)
+}
+
+func (l *xmlResourceLoader) endElement(e xml.EndElement) {
+
+	l.objects = l.objects[:len(l.objects)-1]
+	if len(l.objects) == 0 {
+		l.handleReferences()
 	}
 
-	if l.isPushContext {
-		l.namespaces.pushContext()
+	prefixes := l.namespaces.popContext()
+	for _, p := range prefixes {
+		delete(l.prefixesToFactories, p[0].(string))
 	}
-	l.isPushContext = true
 
 }
 
@@ -183,16 +190,11 @@ func (l *xmlResourceLoader) handlePrefixMapping() {
 
 func (l *xmlResourceLoader) startPrefixMapping(prefix string, uri string) {
 	l.isNamespaceAware = true
-	if l.isPushContext {
-		l.namespaces.pushContext()
-		l.isPushContext = false
-	}
 	l.namespaces.declarePrefix(prefix, uri)
 	delete(l.prefixesToFactories, prefix)
 }
 
 func (l *xmlResourceLoader) processElement(prefix string, local string) {
-	l.isRoot = false
 	if len(l.objects) == 0 {
 		eObject := l.createObject(prefix, local)
 		if eObject != nil {
@@ -520,6 +522,10 @@ func (l *xmlResourceLoader) handleProxy(eProxy EObject, id string) {
 	}
 }
 
+func (l *xmlResourceLoader) handleReferences() {
+
+}
+
 func (l *xmlResourceLoader) getFeature(eObject EObject, name string) EStructuralFeature {
 	eClass := eObject.EClass()
 	eFeature := eClass.GetEStructuralFeatureFromString(name)
@@ -540,10 +546,6 @@ func (l *xmlResourceLoader) error(diagnostic EDiagnostic) {
 
 func (l *xmlResourceLoader) warning(diagnostic EDiagnostic) {
 	l.resource.GetWarnings().Add(diagnostic)
-}
-
-func (l *xmlResourceLoader) endElement(e xml.EndElement) {
-
 }
 
 func (l *xmlResourceLoader) text(data string) {
@@ -577,8 +579,6 @@ func (r *XMLResource) DoLoad(rd io.Reader) {
 	loader := &xmlResourceLoader{
 		decoder:             d,
 		resource:            r,
-		isRoot:              true,
-		isPushContext:       true,
 		namespaces:          newXmlNamespaces(),
 		prefixesToFactories: make(map[string]EFactory),
 	}
