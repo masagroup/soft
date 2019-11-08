@@ -115,7 +115,7 @@ type xmlResourceLoader struct {
 	attributes          []xml.Attr
 	references          []reference
 	namespaces          *xmlNamespaces
-	prefixesToFactories map[string]EFactory
+	spacesToFactories   map[string]EFactory
 	sameDocumentProxies []EObject
 }
 
@@ -138,9 +138,9 @@ func (l *xmlResourceLoader) endElement(e xml.EndElement) {
 		l.handleReferences()
 	}
 
-	prefixes := l.namespaces.popContext()
-	for _, p := range prefixes {
-		delete(l.prefixesToFactories, p[0].(string))
+	context := l.namespaces.popContext()
+	for _, p := range context {
+		delete(l.spacesToFactories, p[1].(string))
 	}
 
 }
@@ -193,7 +193,7 @@ func (l *xmlResourceLoader) handlePrefixMapping() {
 func (l *xmlResourceLoader) startPrefixMapping(prefix string, uri string) {
 	l.isNamespaceAware = true
 	l.namespaces.declarePrefix(prefix, uri)
-	delete(l.prefixesToFactories, prefix)
+	delete(l.spacesToFactories, uri)
 }
 
 func (l *xmlResourceLoader) processElement(space string, local string) {
@@ -255,7 +255,7 @@ func (l *xmlResourceLoader) createObjectFromTypeName(eObject EObject, qname stri
 		prefix = qname[:index]
 		local = qname[index+1:]
 	}
-	space := l.namespaces.getPrefix(prefix)
+	space := l.namespaces.getURI(prefix)
 	eFactory := l.getFactoryForSpace(space)
 	if eFactory == nil {
 		l.handleUnknownPackage(prefix)
@@ -397,9 +397,7 @@ func (l *xmlResourceLoader) handleAttributes(eObject EObject) {
 }
 
 func (l *xmlResourceLoader) getFactoryForSpace(space string) EFactory {
-
-	prefix := l.namespaces.getPrefix(space)
-	factory, _ := l.prefixesToFactories[prefix]
+	factory, _ := l.spacesToFactories[space]
 	if factory == nil {
 		packageRegistry := GetPackageRegistry()
 		if l.resource.GetResourceSet() != nil {
@@ -407,7 +405,7 @@ func (l *xmlResourceLoader) getFactoryForSpace(space string) EFactory {
 		}
 		factory = packageRegistry.GetFactory(space)
 		if factory != nil {
-			l.prefixesToFactories[prefix] = factory
+			l.spacesToFactories[space] = factory
 		}
 	}
 	return factory
@@ -648,10 +646,10 @@ func (r *XMLResource) DoLoad(rd io.Reader) {
 	d.CharsetReader = charset.NewReaderLabel
 
 	loader := &xmlResourceLoader{
-		decoder:             d,
-		resource:            r,
-		namespaces:          newXmlNamespaces(),
-		prefixesToFactories: make(map[string]EFactory),
+		decoder:           d,
+		resource:          r,
+		namespaces:        newXmlNamespaces(),
+		spacesToFactories: make(map[string]EFactory),
 	}
 
 	for {
