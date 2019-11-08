@@ -87,6 +87,8 @@ type EResourceImpl struct {
 	resourceSet EResourceSet
 	uri         *url.URL
 	contents    EList
+	errors      EList
+	warnings    EList
 	isLoaded    bool
 }
 
@@ -305,11 +307,17 @@ func (r *EResourceImpl) DoSave(rd io.Writer) {
 }
 
 func (r *EResourceImpl) GetErrors() EList {
-	return nil
+	if r.errors == nil {
+		r.errors = NewEmptyArrayEList()
+	}
+	return r.errors
 }
 
 func (r *EResourceImpl) GetWarnings() EList {
-	return nil
+	if r.warnings == nil {
+		r.warnings = NewEmptyArrayEList()
+	}
+	return r.warnings
 }
 
 func (r *EResourceImpl) basicSetLoaded(isLoaded bool, msgs ENotificationChain) ENotificationChain {
