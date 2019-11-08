@@ -131,7 +131,9 @@ func (l *xmlResourceLoader) startElement(e xml.StartElement) {
 
 func (l *xmlResourceLoader) endElement(e xml.EndElement) {
 
-	l.objects = l.objects[:len(l.objects)-1]
+	if len(l.objects) > 0 {
+		l.objects = l.objects[:len(l.objects)-1]
+	}
 	if len(l.objects) == 0 {
 		l.handleReferences()
 	}
