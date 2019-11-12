@@ -29,6 +29,10 @@ namespace ecore::ext
         // Operations
         //*********************************
         virtual std::shared_ptr<ecore::EAnnotation> getEAnnotation( const std::string& source );
+
+        virtual std::shared_ptr<EObject>eObjectForFragmentSegment(const std::string& uriSegment) const;
+        virtual std::string eURIFragmentSegment(const std::shared_ptr<EStructuralFeature>& feature, const std::shared_ptr<EObject>& eObject) const;
+
     };
 
 }
