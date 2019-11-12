@@ -222,7 +222,7 @@ func (l *xmlResourceLoader) createObject(space string, local string) EObject {
 
 func (l *xmlResourceLoader) createObjectWithFactory(eFactory EFactory, eType EClassifier) EObject {
 	if eFactory != nil {
-		eClass := eType.(EClass)
+		eClass, _ := eType.(EClass)
 		if eClass != nil && !eClass.IsAbstract() {
 			eObject := eFactory.Create(eClass)
 			if eObject != nil {
@@ -438,11 +438,10 @@ func (l *xmlResourceLoader) setValueFromId(eObject EObject, eReference EReferenc
 	tokens := strings.Split(ids, " ")
 	qName := ""
 	for _, token := range tokens {
-		id := ""
-
-		if index := strings.Index(token, "#"); index != -1 {
+		id := token
+		if index := strings.Index(id, "#"); index != -1 {
 			if index == 0 {
-				id = token[1:]
+				id = id[1:]
 			} else {
 				oldAttributes := l.setAttributes(nil)
 				var eProxy EObject
@@ -460,8 +459,8 @@ func (l *xmlResourceLoader) setValueFromId(eObject EObject, eReference EReferenc
 				position++
 				continue
 			}
-		} else if index := strings.Index(token, ":"); index != -1 {
-			qName = token
+		} else if index := strings.Index(id, ":"); index != -1 {
+			qName = id
 			continue
 		}
 
