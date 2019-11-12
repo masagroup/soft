@@ -48,7 +48,6 @@ namespace ecore::impl
     }
 
 #if _MSC_VER >= 1900
-
     inline std::string utf16_to_utf8( std::u16string utf16_string )
     {
         std::wstring_convert<std::codecvt_utf8_utf16<int16_t>, int16_t> convert;
@@ -66,16 +65,16 @@ namespace ecore::impl
 
 #endif
 
-    inline std::vector<std::string_view> split( const std::string& s, const std::string& token )
+    inline std::vector<std::string> split( const std::string& s, const std::string& token )
     {
-        std::string_view sv = s;
-        std::vector<std::string_view> result;
+        std::vector<std::string> result;
         std::size_t pos = 0;
         std::size_t start = 0;
-        while( ( pos = sv.find( token, start ) ) != std::string::npos )
-            result.emplace_back( sv.substr( start, pos ) );
-        if ( result.empty() )
-            result.emplace_back(s);
+        while ((pos = s.find(token, start)) != std::string::npos) {
+            result.emplace_back(s.substr(start, pos - start ));
+            start = pos + 1;
+        }
+        result.emplace_back(s.substr(start, pos - start));
         return result;
     }
 

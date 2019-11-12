@@ -498,7 +498,7 @@
     
     <target name="ecore.cpp.generate">
         <generator langage="cpp" input="models/ecore.ecore" output="${root.dir}/cpp">
-            <arg line="-t !generateLibraryCMakeProject"/>
+            <arg line="-t !generateLibraryCMakeProject !generateTestsCMakeProject"/>
         </generator>
     </target>
     
