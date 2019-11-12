@@ -417,9 +417,14 @@ namespace
 
 } // namespace
 
-decltype( ecore::detail::hexTable ) hexTable = make_array_with<256>( string_table_hex_make_item{} );
 
-decltype( ecore::detail::uriEscapeTable ) uriEscapeTable = make_array_with<256>( string_table_uri_escape_make_item{} );
+namespace ecore::detail {
+
+    decltype(hexTable) hexTable = make_array_with<256>(string_table_hex_make_item{});
+
+    decltype(uriEscapeTable) uriEscapeTable = make_array_with<256>(string_table_uri_escape_make_item{});
+}
+
 
 URI::URI()
 {
