@@ -382,8 +382,8 @@ void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
     int line = getLineNumber();
     int column = getColumnNumber();
     std::vector<Reference> references;
-    std::vector<std::string_view> tokens = split( ids, " " );
     std::string qName;
+    auto tokens = split(ids, " ");
     for( auto token : tokens )
     {
         std::string id(token);
