@@ -173,7 +173,8 @@ std::shared_ptr<EObject> AbstractResource::getObjectByPath(const std::vector<std
 
 std::shared_ptr<EObject> AbstractResource::getObjectByID(const std::string& id) const
 {
-    for (auto eObject : *getAllContents())
+    auto allContents = getAllContents();
+    for (auto eObject : *allContents)
     {
         auto objectID = EcoreUtils::getID(eObject);
         if (id == objectID)

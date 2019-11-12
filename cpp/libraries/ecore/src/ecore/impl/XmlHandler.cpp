@@ -386,8 +386,8 @@ void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
     std::string qName;
     for( auto token : tokens )
     {
-        std::string id;
-        std::size_t index = token.find( '#' );
+        std::string id(token);
+        std::size_t index = id.find( '#' );
         if( index != std::string_view::npos )
         {
             if( index == 0 )
@@ -406,9 +406,9 @@ void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
                 continue;
             }
         }
-        else if( token.find( ':' ) != std::string_view::npos )
+        else if( id.find( ':' ) != std::string_view::npos )
         {
-            qName = token;
+            qName = id;
             continue;
         }
 

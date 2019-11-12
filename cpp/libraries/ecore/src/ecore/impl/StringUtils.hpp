@@ -74,6 +74,8 @@ namespace ecore::impl
         std::size_t start = 0;
         while( ( pos = sv.find( token, start ) ) != std::string::npos )
             result.emplace_back( sv.substr( start, pos ) );
+        if ( result.empty() )
+            result.emplace_back(s);
         return result;
     }
 
