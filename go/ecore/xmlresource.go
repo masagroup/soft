@@ -108,7 +108,6 @@ type reference struct {
 type xmlResourceLoader struct {
 	decoder             *xml.Decoder
 	resource            EResource
-	isNamespaceAware    bool
 	isResolveDeferred   bool
 	elements            []string
 	objects             []EObject
@@ -191,7 +190,6 @@ func (l *xmlResourceLoader) handlePrefixMapping() {
 }
 
 func (l *xmlResourceLoader) startPrefixMapping(prefix string, uri string) {
-	l.isNamespaceAware = true
 	l.namespaces.declarePrefix(prefix, uri)
 	delete(l.spacesToFactories, uri)
 }
@@ -281,10 +279,7 @@ func (l *xmlResourceLoader) handleFeature(space string, local string) {
 	if eObject != nil {
 		eFeature := l.getFeature(eObject, local)
 		if eFeature != nil {
-			xsiType := ""
-			if l.isNamespaceAware {
-				xsiType = l.getAttributeValue(xsiURI, typeAttrib)
-			}
+			xsiType := l.getAttributeValue(xsiURI, typeAttrib)
 			if len(xsiType) > 0 {
 				l.createObjectFromTypeName(eObject, xsiType, eFeature)
 			} else {
@@ -376,24 +371,20 @@ func (l *xmlResourceLoader) handleAttributes(eObject EObject) {
 			value := attr.Value
 			if name == href {
 				l.handleProxy(eObject, value)
-			} else if l.isNamespaceAware {
-				if uri != xsiURI {
-					l.setAttributeValue(eObject, name, value)
-				}
-			} else if uri != xmlNS {
-				found := true
-				for _, notFeature := range notFeatures {
-					if notFeature == name {
-						found = false
-						break
-					}
-				}
-				if !found {
-					l.setAttributeValue(eObject, name, value)
-				}
+			} else if uri != xmlNS && isUserAttribute(name) {
+				l.setAttributeValue(eObject, name, value)
 			}
 		}
 	}
+}
+
+func isUserAttribute(name string) bool {
+	for _, notFeature := range notFeatures {
+		if notFeature == name {
+			return false
+		}
+	}
+	return true
 }
 
 func (l *xmlResourceLoader) getFactoryForSpace(space string) EFactory {
