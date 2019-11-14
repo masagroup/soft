@@ -10,6 +10,7 @@
 package ecore
 
 import (
+	"fmt"
 	"net/url"
 	"strconv"
 	"strings"
@@ -123,5 +124,63 @@ func (eModelElement *eModelElementExt) EObjectForFragmentSegment(uriFragmentSegm
 }
 
 func (eModelElement *eModelElementExt) EURIFragmentSegment(feature EStructuralFeature, object EObject) string {
-	return ""
+	eNamedElement, _ := object.(ENamedElement)
+	if eNamedElement != nil {
+		name := eNamedElement.GetName()
+		count := 0
+		for it := eModelElement.EContents().Iterator(); it.HasNext(); {
+			otherEObject := it.Next().(EObject)
+			if otherEObject == object {
+				break
+			}
+			otherENamedElement, _ := otherEObject.(ENamedElement)
+			if otherENamedElement != nil {
+				otherName := otherENamedElement.GetName()
+				if name == otherName {
+					count++
+				}
+			}
+		}
+		if len(name) == 0 {
+			name = "%"
+		} else {
+			name = url.PathEscape(name)
+		}
+		if count > 0 {
+			return name + "." + fmt.Sprintf("%d", count)
+		}
+		return name
+
+	}
+	eAnnotation, _ := object.(EAnnotation)
+	if eAnnotation != nil {
+		source := eAnnotation.GetSource()
+		count := 0
+		for it := eModelElement.EContents().Iterator(); it.HasNext(); {
+			otherEObject := it.Next().(EObject)
+			if otherEObject == object {
+				break
+			}
+			otherEAnnotation, _ := otherEObject.(EAnnotation)
+			if otherEAnnotation != nil {
+				otherSource := otherEAnnotation.GetSource()
+				if source == otherSource {
+					count++
+				}
+			}
+		}
+
+		result := "%"
+		if len(source) == 0 {
+			result += "%"
+		} else {
+			result += url.PathEscape(source)
+		}
+		result += "%"
+		if count > 0 {
+			result += "." + fmt.Sprintf("%d", count)
+		}
+		return result
+	}
+	return eModelElement.eModelElementImpl.EURIFragmentSegment(feature, object)
 }
