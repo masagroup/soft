@@ -32,9 +32,8 @@ namespace ecore::ext
 
         virtual std::shared_ptr<EObject>eObjectForFragmentSegment(const std::string& uriSegment) const;
         virtual std::string eURIFragmentSegment(const std::shared_ptr<EStructuralFeature>& feature, const std::shared_ptr<EObject>& eObject) const;
-
+    
     };
-
 }
 
 #endif // ECORE_EMODELELEMENT_EMODELELEMENTEXT_HPP
