@@ -68,7 +68,7 @@ std::shared_ptr<EObject> EModelElementExt::eObjectForFragmentSegment(const std::
                         auto eAnnotation = std::dynamic_pointer_cast<EAnnotation>(eObject);
                         if (eAnnotation) {
                             auto otherSource = eAnnotation->getSource();
-                            if (source == otherSource)
+                            if (source == otherSource && count-- == 0 )
                                 return eAnnotation;
                         }
 
@@ -98,7 +98,7 @@ std::shared_ptr<EObject> EModelElementExt::eObjectForFragmentSegment(const std::
                 auto eNamedElement = std::dynamic_pointer_cast<ENamedElement>(eObject);
                 if (eNamedElement) {
                     auto otherName = eNamedElement->getName();
-                    if (name == otherName)
+                    if (name == otherName && count-- == 0 )
                         return eNamedElement;
                 }
 
