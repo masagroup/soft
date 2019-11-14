@@ -138,6 +138,7 @@ func (r *EResourceImpl) GetEObject(uriFragment string) EObject {
 	if size > 0 {
 		if uriFragment[0] == '/' {
 			path := strings.Split(uriFragment, "/")
+			path = path[1:]
 			return r.getObjectByPath(path)
 		} else if uriFragment[size-1] == '?' {
 			if index := strings.LastIndex(uriFragment[:size-2], "?"); index != -1 {
