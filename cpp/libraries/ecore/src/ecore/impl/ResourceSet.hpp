@@ -39,6 +39,9 @@ namespace ecore::impl
         virtual std::shared_ptr<EResourceFactoryRegistry> getResourceFactoryRegistry() const;
         virtual void setResourceFactoryRegistry( const std::shared_ptr<EResourceFactoryRegistry>& resourceFactoryRegistry );
 
+        virtual std::shared_ptr<EPackageRegistry> getPackageRegistry() const;
+        virtual void setPackageRegistry(const std::shared_ptr<EPackageRegistry>& packageRegistry);
+
         virtual void setURIResourceMap(const std::unordered_map<URI, std::shared_ptr<EResource>>& uriMap);
         virtual std::unordered_map< URI, std::shared_ptr<EResource>> getURIResourceMap() const;
 
@@ -49,6 +52,7 @@ namespace ecore::impl
         Lazy<std::shared_ptr<EList<std::shared_ptr<EResource>>>> resources_;
         Lazy<std::shared_ptr<URIConverter>> uriConverter_;
         Lazy<std::shared_ptr<EResourceFactoryRegistry>> resourceFactoryRegistry_;
+        Lazy<std::shared_ptr<EPackageRegistry>> packageRegistry_;
         std::optional<std::unordered_map<URI, std::shared_ptr<EResource>>> uriResourceMap_;
     };
 

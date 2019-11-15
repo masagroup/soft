@@ -212,6 +212,7 @@ func newEcorePackageImpl() *ecorePackageImpl {
 	p := new(ecorePackageImpl)
 	p.EPackageExt = NewEPackageExt()
 	p.SetInterfaces(p)
+	p.SetEFactoryInstance(GetFactory())
 	p.createPackageContents()
 	p.initializePackageContents()
 	return p

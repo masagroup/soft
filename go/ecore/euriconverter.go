@@ -7,9 +7,9 @@ import (
 
 //URIConverter ...
 type EURIConverter interface {
-	CreateReader(uri *url.URL) io.Reader
+	CreateReader(uri *url.URL) io.ReadCloser
 
-	CreateWriter(uri *url.URL) io.Writer
+	CreateWriter(uri *url.URL) io.WriteCloser
 
 	Normalize(uri *url.URL) *url.URL
 

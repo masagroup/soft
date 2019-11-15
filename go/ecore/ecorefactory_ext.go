@@ -71,8 +71,8 @@ func (factory *ecoreFactoryExt) convertEFloatToString(dataType EDataType, instan
 }
 
 func (factory *ecoreFactoryExt) createEIntFromString(dataType EDataType, literalValue string) interface{} {
-	value, _ := strconv.ParseInt(literalValue, 10, 32)
-	return int32(value)
+	value, _ := strconv.Atoi(literalValue)
+	return int(value)
 }
 
 func (factory *ecoreFactoryExt) convertEIntToString(dataType EDataType, instanceValue interface{}) string {
@@ -81,7 +81,7 @@ func (factory *ecoreFactoryExt) convertEIntToString(dataType EDataType, instance
 
 func (factory *ecoreFactoryExt) createELongFromString(dataType EDataType, literalValue string) interface{} {
 	value, _ := strconv.ParseInt(literalValue, 10, 64)
-	return value
+	return int(value)
 }
 
 func (factory *ecoreFactoryExt) convertELongToString(dataType EDataType, instanceValue interface{}) string {
@@ -90,7 +90,7 @@ func (factory *ecoreFactoryExt) convertELongToString(dataType EDataType, instanc
 
 func (factory *ecoreFactoryExt) createEShortFromString(dataType EDataType, literalValue string) interface{} {
 	value, _ := strconv.ParseInt(literalValue, 10, 16)
-	return int16(value)
+	return int(value)
 }
 
 func (factory *ecoreFactoryExt) convertEShortToString(dataType EDataType, instanceValue interface{}) string {

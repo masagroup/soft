@@ -87,6 +87,8 @@ type EResourceImpl struct {
 	resourceSet EResourceSet
 	uri         *url.URL
 	contents    EList
+	errors      EList
+	warnings    EList
 	isLoaded    bool
 }
 
@@ -136,6 +138,7 @@ func (r *EResourceImpl) GetEObject(uriFragment string) EObject {
 	if size > 0 {
 		if uriFragment[0] == '/' {
 			path := strings.Split(uriFragment, "/")
+			path = path[1:]
 			return r.getObjectByPath(path)
 		} else if uriFragment[size-1] == '?' {
 			if index := strings.LastIndex(uriFragment[:size-2], "?"); index != -1 {
@@ -238,7 +241,7 @@ func (r *EResourceImpl) Detached(object EObject) {
 
 }
 
-var defaultURIConverter EURIConverter = new(EURIConverterImpl)
+var defaultURIConverter EURIConverter = NewEURIConverterImpl()
 
 func (r *EResourceImpl) getURIConverter() EURIConverter {
 	if r.resourceSet != nil {
@@ -252,7 +255,10 @@ func (r *EResourceImpl) Load() {
 		uriConverter := r.getURIConverter()
 		if uriConverter != nil {
 			rd := uriConverter.CreateReader(r.uri)
-			r.LoadWithReader(rd)
+			if rd != nil {
+				r.LoadWithReader(rd)
+				rd.Close()
+			}
 		}
 	}
 }
@@ -302,11 +308,17 @@ func (r *EResourceImpl) DoSave(rd io.Writer) {
 }
 
 func (r *EResourceImpl) GetErrors() EList {
-	return nil
+	if r.errors == nil {
+		r.errors = NewEmptyArrayEList()
+	}
+	return r.errors
 }
 
 func (r *EResourceImpl) GetWarnings() EList {
-	return nil
+	if r.warnings == nil {
+		r.warnings = NewEmptyArrayEList()
+	}
+	return r.warnings
 }
 
 func (r *EResourceImpl) basicSetLoaded(isLoaded bool, msgs ENotificationChain) ENotificationChain {

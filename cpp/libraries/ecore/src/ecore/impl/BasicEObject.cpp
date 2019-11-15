@@ -91,7 +91,7 @@ int BasicEObject::eContainerFeatureID() const
 std::shared_ptr<EObject> BasicEObject::eObjectForFragmentSegment( const std::string& uriSegment) const
 {
     std::size_t index = std::string::npos;
-    if (std::isdigit(uriSegment.back()))
+    if (!uriSegment.empty() && std::isdigit(uriSegment.back()))
     {
         index = uriSegment.find_last_of('.');
         if (index != std::string::npos)
@@ -114,14 +114,6 @@ std::shared_ptr<EObject> BasicEObject::eObjectForFragmentSegment( const std::str
     return std::shared_ptr<EObject>();
 }
 
-std::shared_ptr<EStructuralFeature> BasicEObject::eStructuralFeature( const std::string& name) const
-{
-    auto eFeature = eClass()->getEStructuralFeature(name);
-    if (!eFeature)
-        throw std::runtime_error("The feature " + name + " is not a valid feature");
-    return eFeature;
-}
-
 std::string BasicEObject::eURIFragmentSegment(const std::shared_ptr<EStructuralFeature>& eFeature, const std::shared_ptr<EObject>& eObject) const
 {
     std::stringstream s;
@@ -135,6 +127,14 @@ std::string BasicEObject::eURIFragmentSegment(const std::shared_ptr<EStructuralF
         s << index;
     }
     return s.str();
+}
+
+std::shared_ptr<EStructuralFeature> BasicEObject::eStructuralFeature(const std::string& name) const
+{
+    auto eFeature = eClass()->getEStructuralFeature(name);
+    if (!eFeature)
+        throw std::runtime_error("The feature " + name + " is not a valid feature");
+    return eFeature;
 }
 
 std::shared_ptr<ecore::EStructuralFeature> BasicEObject::eContainingFeature() const

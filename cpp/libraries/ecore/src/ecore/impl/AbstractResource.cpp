@@ -106,6 +106,7 @@ std::shared_ptr<EObject> AbstractResource::getEObject(const std::string& uriFrag
         if (uriFragment.at(0) == '/')
         {
             auto path = split(uriFragment, "/");
+            path.erase(path.begin());
             return getObjectByPath(path);
         }
         else if (uriFragment.at(size - 1) == '?')
@@ -161,19 +162,20 @@ std::string AbstractResource::getURIFragmentRootSegment(const std::shared_ptr<EO
     return contents->empty() ? "" : std::to_string(contents->indexOf(eObject));
 }
 
-std::shared_ptr<EObject> AbstractResource::getObjectByPath(const std::vector<std::string_view>& uriFragmentPath) const
+std::shared_ptr<EObject> AbstractResource::getObjectByPath(const std::vector<std::string>& uriFragmentPath) const
 {
-    auto eObject = getObjectForRootSegment(uriFragmentPath.empty() ? "" : std::string(uriFragmentPath.at(0)));
+    auto eObject = getObjectForRootSegment(uriFragmentPath.empty() ? "" : uriFragmentPath[0]);
     for (int i = 1; i < uriFragmentPath.size() && eObject; ++i) {
         auto internalEObject = std::dynamic_pointer_cast<EObjectInternal>(eObject);
-        eObject = internalEObject->eObjectForFragmentSegment(std::string(uriFragmentPath[i]));
+        eObject = internalEObject->eObjectForFragmentSegment(uriFragmentPath[i]);
     }
     return eObject;
 }
 
 std::shared_ptr<EObject> AbstractResource::getObjectByID(const std::string& id) const
 {
-    for (auto eObject : *getAllContents())
+    auto allContents = getAllContents();
+    for (auto eObject : *allContents)
     {
         auto objectID = EcoreUtils::getID(eObject);
         if (id == objectID)

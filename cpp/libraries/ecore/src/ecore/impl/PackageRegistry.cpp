@@ -5,9 +5,20 @@
 using namespace ecore;
 using namespace ecore::impl;
 
+std::shared_ptr<PackageRegistry> PackageRegistry::createGlobalRegistry()
+{
+    auto registry = std::make_shared<PackageRegistry>();
+    registry->registerPackage(EcorePackage::eInstance());
+    return registry;
+}
+
 PackageRegistry::PackageRegistry()
 {
-    registerPackage( EcorePackage::eInstance() );
+}
+
+PackageRegistry::PackageRegistry(const std::shared_ptr<EPackageRegistry>& delegate)
+    :   delegate_(delegate)
+{
 }
 
 PackageRegistry::~PackageRegistry()
@@ -28,11 +39,11 @@ void PackageRegistry::unregisterPackage( const std::shared_ptr<EPackage>& packag
 std::shared_ptr<EPackage> PackageRegistry::getPackage( const std::string& nsURI ) const
 {
     auto it = packages_.find(nsURI);
-    return it != packages_.end() ? it->second : std::shared_ptr<EPackage>();
+    return it != packages_.end() ? it->second : ( delegate_ ? delegate_->getPackage(nsURI) : nullptr );
 }
 
 std::shared_ptr<EFactory> PackageRegistry::getFactory( const std::string& nsURI) const
 {
     auto it = packages_.find(nsURI);
-    return it != packages_.end() ? it->second->getEFactoryInstance() : std::shared_ptr<EFactory>();
+    return it != packages_.end() ? it->second->getEFactoryInstance() : (delegate_ ? delegate_->getFactory(nsURI) : nullptr);
 }

@@ -13,14 +13,18 @@
 #include "ecore/Exports.hpp"
 #include "ecore/EPackageRegistry.hpp"
 #include <unordered_map>
+#include <memory>
 
 namespace ecore::impl
 {
     class ECORE_API PackageRegistry : public EPackageRegistry
     {
     public:
-        PackageRegistry();
+        static std::shared_ptr<PackageRegistry> createGlobalRegistry();
 
+    public:
+        PackageRegistry();
+        PackageRegistry(const std::shared_ptr<EPackageRegistry>& delegate );
         virtual ~PackageRegistry();
 
         // Inherited via EPackageRegistry
@@ -31,6 +35,7 @@ namespace ecore::impl
 
     private:
         std::unordered_map<std::string, std::shared_ptr<EPackage>> packages_;
+        std::shared_ptr<EPackageRegistry> delegate_;
     };
 
 } // namespace ecore

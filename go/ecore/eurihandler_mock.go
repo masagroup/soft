@@ -29,15 +29,15 @@ func (_m *MockEURIHandler) CanHandle(uri *url.URL) bool {
 }
 
 // CreateReader provides a mock function with given fields: uri
-func (_m *MockEURIHandler) CreateReader(uri *url.URL) io.Reader {
+func (_m *MockEURIHandler) CreateReader(uri *url.URL) io.ReadCloser {
 	ret := _m.Called(uri)
 
-	var r0 io.Reader
-	if rf, ok := ret.Get(0).(func(*url.URL) io.Reader); ok {
+	var r0 io.ReadCloser
+	if rf, ok := ret.Get(0).(func(*url.URL) io.ReadCloser); ok {
 		r0 = rf(uri)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(io.Reader)
+			r0 = ret.Get(0).(io.ReadCloser)
 		}
 	}
 
@@ -45,15 +45,15 @@ func (_m *MockEURIHandler) CreateReader(uri *url.URL) io.Reader {
 }
 
 // CreateWriter provides a mock function with given fields: uri
-func (_m *MockEURIHandler) CreateWriter(uri *url.URL) io.Writer {
+func (_m *MockEURIHandler) CreateWriter(uri *url.URL) io.WriteCloser {
 	ret := _m.Called(uri)
 
-	var r0 io.Writer
-	if rf, ok := ret.Get(0).(func(*url.URL) io.Writer); ok {
+	var r0 io.WriteCloser
+	if rf, ok := ret.Get(0).(func(*url.URL) io.WriteCloser); ok {
 		r0 = rf(uri)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(io.Writer)
+			r0 = ret.Get(0).(io.WriteCloser)
 		}
 	}
 

@@ -99,6 +99,22 @@ func (_m *MockEResourceSet) GetEObject(uri *url.URL, loadOnDemand bool) EObject 
 	return r0
 }
 
+// GetPackageRegistry provides a mock function with given fields:
+func (_m *MockEResourceSet) GetPackageRegistry() EPackageRegistry {
+	ret := _m.Called()
+
+	var r0 EPackageRegistry
+	if rf, ok := ret.Get(0).(func() EPackageRegistry); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(EPackageRegistry)
+		}
+	}
+
+	return r0
+}
+
 // GetResource provides a mock function with given fields: uri, loadOnDemand
 func (_m *MockEResourceSet) GetResource(uri *url.URL, loadOnDemand bool) EResource {
 	ret := _m.Called(uri, loadOnDemand)
@@ -177,6 +193,11 @@ func (_m *MockEResourceSet) GetURIResourceMap() map[*url.URL]EResource {
 	}
 
 	return r0
+}
+
+// SetPackageRegistry provides a mock function with given fields: packageregistry
+func (_m *MockEResourceSet) SetPackageRegistry(packageregistry EPackageRegistry) {
+	_m.Called(packageregistry)
 }
 
 // SetResourceFactoryRegistry provides a mock function with given fields: resourceFactoryRegistry

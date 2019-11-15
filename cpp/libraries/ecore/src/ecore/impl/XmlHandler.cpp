@@ -6,6 +6,7 @@
 #include "ecore/EPackageRegistry.hpp"
 #include "ecore/EReference.hpp"
 #include "ecore/EResource.hpp"
+#include "ecore/EResourceSet.hpp"
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/impl/Diagnostic.hpp"
 #include "ecore/impl/StringUtils.hpp"
@@ -47,6 +48,7 @@ namespace utf16
 
 XmlHandler::XmlHandler( XmlResource& resource )
     : resource_( resource )
+    , packageRegistry_( resource_.getResourceSet() ? resource_.getResourceSet()->getPackageRegistry() : EPackageRegistry::getInstance() )
 {
 }
 
@@ -68,7 +70,7 @@ void XmlHandler::startDocument()
 
 void XmlHandler::endDocument()
 {
-    namespaces_.popContext();
+    auto _ = namespaces_.popContext();
     handleReferences();
 }
 
@@ -102,7 +104,7 @@ void XmlHandler::endElement( const XMLCh* const uri, const XMLCh* const localnam
     // pop namespace context and remove corresponding namespace factories
     auto prefixes = namespaces_.popContext();
     for( auto p : prefixes )
-        prefixesToFactories_.extract( p.first );
+        auto _ =  prefixesToFactories_.extract( p.first );
 }
 
 void XmlHandler::startPrefixMapping( const XMLCh* const prefix, const XMLCh* const uri )
@@ -115,8 +117,9 @@ void XmlHandler::startPrefixMapping( const XMLCh* const prefix, const XMLCh* con
     }
     auto uri_utf8 = utf16_to_utf8( uri );
     auto prefix_utf8 = utf16_to_utf8( prefix );
+    auto _ = prefixesToFactories_.extract(prefix_utf8);
     namespaces_.declarePrefix( prefix_utf8, uri_utf8 );
-    prefixesToFactories_.extract( prefix_utf8 );
+    
 }
 
 void XmlHandler::endPrefixMapping( const XMLCh* const prefix )
@@ -229,7 +232,7 @@ std::shared_ptr<EObject> XmlHandler::createObjectFromTypeName( const std::shared
 
     auto eFactory = getFactoryForPrefix( prefix );
     if( !eFactory && prefix.empty() && namespaces_.getURI( prefix ).empty() )
-        handleUnknownPackage( "" );
+        handleUnknownPackage( prefix );
 
     auto ePackage = eFactory->getEPackage();
     auto eType = ePackage->getEClassifier( typeName );
@@ -318,7 +321,7 @@ void XmlHandler::setFeatureValue( const std::shared_ptr<EObject>& eObject,
             if( index == -1 )
                 eList->add( position, eValue );
             else
-                eList->move( position, index );
+                auto _ = eList->move( position, index );
         }
         else if( kind == ManyAdd )
             eList->add( eValue );
@@ -379,12 +382,12 @@ void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
     int line = getLineNumber();
     int column = getColumnNumber();
     std::vector<Reference> references;
-    std::vector<std::string_view> tokens = split( ids, " " );
     std::string qName;
+    auto tokens = split(ids, " ");
     for( auto token : tokens )
     {
-        std::string id;
-        std::size_t index = token.find( '#' );
+        std::string id(token);
+        std::size_t index = id.find( '#' );
         if( index != std::string_view::npos )
         {
             if( index == 0 )
@@ -403,9 +406,9 @@ void XmlHandler::setValueFromId( const std::shared_ptr<EObject>& eObject,
                 continue;
             }
         }
-        else if( token.find( ':' ) != std::string_view::npos )
+        else if( id.find( ':' ) != std::string_view::npos )
         {
-            qName = token;
+            qName = id;
             continue;
         }
 
@@ -484,10 +487,10 @@ void XmlHandler::handleFeature( const std::string& prefix, const std::string& na
                                ? ( attributes_ ? attributes_->getValue( XSI_URI, TYPE ) : attributes_->getValue( TYPE_ATTRIB ) )
                                : nullptr;
             if( xsiType )
-                createObjectFromTypeName( eObject, utf16_to_utf8( xsiType ), eFeature );
+                auto _ = createObjectFromTypeName( eObject, utf16_to_utf8( xsiType ), eFeature );
 
             else
-                createObjectFromFeatureType( eObject, eFeature );
+                auto _ = createObjectFromFeatureType( eObject, eFeature );
         }
         else
             handleUnknownFeature( name );
@@ -539,8 +542,8 @@ void XmlHandler::handleReferences()
                         if( resolvedIndex != -1 )
                         {
                             auto proxyIndex = holderContents->indexOf( eProxy );
-                            holderContents->move( proxyIndex, resolvedIndex );
-                            holderContents->remove( proxyIndex > resolvedIndex ? proxyIndex - 1 : proxyIndex + 1 );
+                            auto _1 = holderContents->move( proxyIndex, resolvedIndex );
+                            auto _2 = holderContents->remove( proxyIndex > resolvedIndex ? proxyIndex - 1 : proxyIndex + 1 );
                             break;
                         }
                     }
@@ -606,10 +609,7 @@ void XmlHandler::handleAttributes( const std::shared_ptr<EObject>& eObject )
             auto name = utf16_to_utf8( attributes_->getQName( i ) );
             auto value = utf16_to_utf8( attributes_->getValue( i ) );
             if( name == HREF )
-            {
-                auto id = utf16_to_utf8( attributes_->getValue( i ) );
-                handleProxy( eObject, id );
-            }
+                handleProxy( eObject, value );
             else if( isNamespaceAware_ )
             {
                 auto uri = utf16_to_utf8( attributes_->getURI( i ) );
@@ -663,7 +663,7 @@ std::shared_ptr<EFactory> XmlHandler::getFactoryForPrefix( const std::string& pr
     else
     {
         auto uri = namespaces_.getURI( prefix );
-        factory = EPackageRegistry::getInstance()->getFactory( uri );
+        factory = packageRegistry_->getFactory( uri );
         if( factory )
             prefixesToFactories_.emplace( prefix, factory );
     }

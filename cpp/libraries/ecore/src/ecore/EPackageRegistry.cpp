@@ -6,6 +6,6 @@ using namespace ecore::impl;
 
 std::shared_ptr<EPackageRegistry> EPackageRegistry::getInstance()
 {
-    static auto instance = std::make_shared<PackageRegistry>();
+    static auto instance = PackageRegistry::createGlobalRegistry();
     return instance;
 }

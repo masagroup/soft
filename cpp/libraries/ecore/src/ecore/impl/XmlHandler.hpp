@@ -27,6 +27,7 @@ namespace ecore
     class EDiagnostic;
     class EFactory;
     class EObject;
+    class EPackageRegistry;
     class EReference;
     class EStructuralFeature;
 
@@ -139,6 +140,7 @@ namespace ecore::impl
         bool isPushContext_{false};
         bool isRoot_{false};
         bool isNamespaceAware_{false};
+        std::shared_ptr<EPackageRegistry> packageRegistry_;
         std::unordered_map<std::string, std::shared_ptr<EFactory>> prefixesToFactories_;
         std::stack<std::string> elements_;
         std::stack<std::shared_ptr<EObject>> objects_;
