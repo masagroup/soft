@@ -322,6 +322,7 @@ func (l *xmlResourceLoader) setFeatureValue(eObject EObject,
 			eList.Add(eFactory.CreateFromString(eDataType, value.(string)))
 		}
 	case manyAdd:
+		fallthrough
 	case manyMove:
 		eList := eObject.EGet(eFeature).(EList)
 		if position == -1 {

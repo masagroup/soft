@@ -74,10 +74,12 @@ func (eModelElement *eModelElementExt) EObjectForFragmentSegment(uriFragmentSegm
 							eAnnotation, _ := it.Next().(EAnnotation)
 							if eAnnotation != nil {
 								otherSource := eAnnotation.GetSource()
-								if source == otherSource && count == 0 {
-									return eAnnotation
+								if source == otherSource {
+									if count == 0 {
+										return eAnnotation
+									}
+									count--
 								}
-								count--
 							}
 						}
 						return nil
@@ -111,10 +113,12 @@ func (eModelElement *eModelElementExt) EObjectForFragmentSegment(uriFragmentSegm
 				eNamedElement := it.Next().(ENamedElement)
 				if eNamedElement != nil {
 					otherName := eNamedElement.GetName()
-					if name == otherName && count == 0 {
-						return eNamedElement
+					if name == otherName {
+						if count == 0 {
+							return eNamedElement
+						}
+						count--
 					}
-					count--
 				}
 			}
 			return nil
