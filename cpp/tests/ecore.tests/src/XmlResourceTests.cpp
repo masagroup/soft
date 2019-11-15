@@ -73,6 +73,9 @@ BOOST_AUTO_TEST_CASE( Load )
     BOOST_CHECK_EQUAL( eISBNFeature->getName(), "isbn" );
     auto eISBNAttribute = std::dynamic_pointer_cast<EAttribute>( eISBNFeature );
     BOOST_CHECK( eISBNAttribute );
+
+    // check resolved reference
+    BOOST_CHECK_EQUAL(eBooksReference->getEReferenceType(), eBookClass);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -33,6 +33,15 @@ namespace ecore::ext
 
         virtual bool isContainer() const;
 
+        virtual std::shared_ptr<ecore::EClass> getEReferenceType() const;
+
+        virtual void setEType(const std::shared_ptr<ecore::EClassifier>& newEType);
+
+    protected:
+        virtual std::shared_ptr<ecore::EClass> basicGetEReferenceType() const;
+
+    private:
+        mutable std::shared_ptr<ecore::EClass> eReferenceType_;
     };
 
 }
