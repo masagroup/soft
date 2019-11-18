@@ -620,15 +620,151 @@ func (l *xmlResourceLoader) processingInstruction(procInst xml.ProcInst) {
 func (l *xmlResourceLoader) directive(directive string) {
 }
 
+type xmlString struct {
+	str                strings.Builder
+	lineWidth          int
+	currentLineWidth   int
+	depth              int
+	indentation        string
+	indents            []string
+	lastElementIsStart bool
+	elementNames       []string
+}
+
+const MaxInt = int(^uint(0) >> 1)
+
+func newXmlString() *xmlString {
+	s := &xmlString{
+		lineWidth:          MaxInt,
+		currentLineWidth:   0,
+		depth:              0,
+		indentation:        "    ",
+		indents:            []string{""},
+		lastElementIsStart: false,
+	}
+	return s
+}
+
+func (s *xmlString) add(newString string) {
+	if s.lineWidth != MaxInt {
+		s.currentLineWidth += len(newString)
+	}
+	s.str.WriteString(newString)
+}
+
+func (s *xmlString) addLine() {
+	s.add("\n")
+	s.currentLineWidth = 0
+}
+
+func (s *xmlString) startElement(name string) {
+	if s.lastElementIsStart {
+		s.closeStartElement()
+	}
+	s.elementNames = append(s.elementNames, name)
+	if len(name) > 0 {
+		s.depth++
+		s.add(s.getElementIndent())
+		s.add("<")
+		s.add(name)
+		s.lastElementIsStart = true
+	} else {
+		s.add(s.getElementIndentWithExtra(1))
+	}
+}
+
+func (s *xmlString) closeStartElement() {
+	s.add(">")
+	s.addLine()
+	s.lastElementIsStart = false
+}
+
+func (s *xmlString) endElement() {
+	if s.lastElementIsStart {
+		s.endEmptyElement()
+	} else {
+		name := s.removeLast()
+		if name != "" {
+			s.add(s.getElementIndentWithExtra(1))
+			s.add("</")
+			s.add(name)
+			s.add(">")
+			s.addLine()
+		}
+	}
+}
+
+func (s *xmlString) endEmptyElement() {
+	s.removeLast()
+	s.add("/>")
+	s.addLine()
+	s.lastElementIsStart = false
+}
+
+func (s *xmlString) removeLast() string {
+	end := len(s.elementNames) - 1
+	result := s.elementNames[end]
+	s.elementNames = s.elementNames[:end-1]
+	if result != "" {
+		s.depth--
+	}
+	return result
+}
+
+func (s *xmlString) addAttribute(name string, value string) {
+	s.startAttribute(name)
+	s.addAttributeContent(value)
+	s.endElement()
+}
+
+func (s *xmlString) startAttribute(name string) {
+	if s.currentLineWidth > s.lineWidth {
+		s.addLine()
+		s.add(s.getAttributeIndent())
+	} else {
+		s.add(" ")
+	}
+	s.add(name)
+	s.add("=\"")
+}
+
+func (s *xmlString) addAttributeContent(content string) {
+	s.add(content)
+}
+
+func (s *xmlString) endAttribute() {
+	s.add("\"")
+}
+
+func (s *xmlString) getElementIndent() string {
+	return s.getElementIndentWithExtra(0)
+}
+
+func (s *xmlString) getElementIndentWithExtra(extra int) string {
+	nesting := s.depth + extra - 1
+	for i := len(s.indents) - 1; i < nesting; i++ {
+		s.indents = append(s.indents, s.indents[i]+"  ")
+	}
+	return s.indents[nesting]
+}
+
+func (s *xmlString) getAttributeIndent() string {
+	nesting := s.depth + 1
+	for i := len(s.indents) - 1; i < nesting; i++ {
+		s.indents = append(s.indents, s.indents[i]+"  ")
+	}
+	return s.indents[nesting]
+}
+
+type XMLResource struct {
+	*EResourceImpl
+}
+
 func NewXMLResource() *XMLResource {
 	r := new(XMLResource)
 	r.EResourceImpl = NewEResourceImpl()
 	r.SetInterfaces(r)
 	return r
-}
-
-type XMLResource struct {
-	*EResourceImpl
 }
 
 func (r *XMLResource) DoLoad(rd io.Reader) {
@@ -666,4 +802,7 @@ func (r *XMLResource) DoLoad(rd io.Reader) {
 			loader.directive(string([]byte(t)))
 		}
 	}
+}
+
+func (r *XMLResource) DoSave(rd io.Writer) {
 }
