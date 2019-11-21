@@ -620,10 +620,15 @@ func (l *xmlResourceLoader) processingInstruction(procInst xml.ProcInst) {
 func (l *xmlResourceLoader) directive(directive string) {
 }
 
+type xmlStringSegment struct {
+	strings.Builder
+	lineWidth int
+}
+
 type xmlString struct {
-	str                strings.Builder
+	segments           []*xmlStringSegment
+	currentSegment     *xmlStringSegment
 	lineWidth          int
-	currentLineWidth   int
 	depth              int
 	indentation        string
 	indents            []string
@@ -634,9 +639,11 @@ type xmlString struct {
 const MaxInt = int(^uint(0) >> 1)
 
 func newXmlString() *xmlString {
+	segment := &xmlStringSegment{}
 	s := &xmlString{
+		segments:           []*xmlStringSegment{segment},
+		currentSegment:     segment,
 		lineWidth:          MaxInt,
-		currentLineWidth:   0,
 		depth:              0,
 		indentation:        "    ",
 		indents:            []string{""},
@@ -647,14 +654,14 @@ func newXmlString() *xmlString {
 
 func (s *xmlString) add(newString string) {
 	if s.lineWidth != MaxInt {
-		s.currentLineWidth += len(newString)
+		s.currentSegment.lineWidth += len(newString)
 	}
-	s.str.WriteString(newString)
+	s.currentSegment.WriteString(newString)
 }
 
 func (s *xmlString) addLine() {
 	s.add("\n")
-	s.currentLineWidth = 0
+	s.currentSegment.lineWidth = 0
 }
 
 func (s *xmlString) startElement(name string) {
@@ -718,7 +725,7 @@ func (s *xmlString) addAttribute(name string, value string) {
 }
 
 func (s *xmlString) startAttribute(name string) {
-	if s.currentLineWidth > s.lineWidth {
+	if s.currentSegment.lineWidth > s.lineWidth {
 		s.addLine()
 		s.add(s.getAttributeIndent())
 	} else {
@@ -754,6 +761,17 @@ func (s *xmlString) getAttributeIndent() string {
 		s.indents = append(s.indents, s.indents[i]+"  ")
 	}
 	return s.indents[nesting]
+}
+
+func (s *xmlString) mark() *xmlStringSegment {
+	r := s.currentSegment
+	s.currentSegment = &xmlStringSegment{}
+	s.segments = append(s.segments, s.currentSegment)
+	return r
+}
+
+func (s *xmlString) resetToMark(segment *xmlStringSegment) {
+	s.currentSegment = segment
 }
 
 type XMLResource struct {
@@ -805,4 +823,8 @@ func (r *XMLResource) DoLoad(rd io.Reader) {
 }
 
 func (r *XMLResource) DoSave(rd io.Writer) {
+	s := newXmlString()
+	s.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+	s.addLine()
+
 }
