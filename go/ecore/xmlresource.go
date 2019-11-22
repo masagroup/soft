@@ -2,6 +2,7 @@ package ecore
 
 import (
 	"encoding/xml"
+	"fmt"
 	"io"
 	"net/url"
 	"strings"
@@ -776,8 +777,12 @@ func (s *xmlString) resetToMark(segment *xmlStringSegment) {
 }
 
 type xmlResourceSave struct {
-	resource *XMLResource
-	str      *xmlString
+	resource      *XMLResource
+	str           *xmlString
+	packages      map[EPackage]string
+	uriToPrefixes map[string][]string
+	prefixesToURI map[string]string
+	namespaces    *xmlNamespaces
 }
 
 func (s *xmlResourceSave) saveHeader() {
@@ -802,7 +807,58 @@ func (s *xmlResourceSave) saveFeatures(eObject EObject) {
 }
 
 func (s *xmlResourceSave) getQName(eClass EClass) string {
-	return ""
+	return s.getQNameInPackage(eClass.GetEPackage(), eClass.GetName(), false)
+}
+
+func (s *xmlResourceSave) getQNameInPackage(ePackage EPackage, name string, mustHavePrefix bool) string {
+	nsPrefix := s.getPrefix(ePackage, mustHavePrefix)
+	if nsPrefix == "" {
+		return name
+	} else if len(name) == 0 {
+		return nsPrefix
+	} else {
+		return nsPrefix + ":" + name
+	}
+}
+
+func (s *xmlResourceSave) getPrefix(ePackage EPackage, mustHavePrefix bool) string {
+	nsPrefix, ok := s.packages[ePackage]
+	if !ok {
+		nsURI := ePackage.GetNsURI()
+		found := false
+		prefixes := s.uriToPrefixes[nsURI]
+		if prefixes != nil {
+			for _, prefix := range prefixes {
+				nsPrefix = prefix
+				if !mustHavePrefix || len(nsPrefix) > 0 {
+					found = true
+					break
+				}
+			}
+		}
+		if !found {
+			nsPrefix, ok = s.namespaces.getPrefix(nsURI)
+			if ok {
+				return nsPrefix
+			}
+			nsPrefix = ePackage.GetNsPrefix()
+			if len(nsPrefix) == 0 && mustHavePrefix {
+				nsPrefix = "_"
+			}
+
+			if uri, exists := s.prefixesToURI[nsPrefix]; exists && uri != nsURI {
+				index := 1
+				for _, exists = s.prefixesToURI[nsPrefix+"_"+fmt.Sprintf("%d", index)]; exists; {
+					index++
+				}
+				nsPrefix += "_" + fmt.Sprintf("%d", index)
+			}
+			s.prefixesToURI[nsPrefix] = nsURI
+		}
+
+		s.packages[ePackage] = nsPrefix
+	}
+	return nsPrefix
 }
 
 type XMLResource struct {
@@ -854,7 +910,7 @@ func (r *XMLResource) DoLoad(rd io.Reader) {
 }
 
 func (r *XMLResource) DoSave(rd io.Writer) {
-	s := &xmlResourceSave{resource: r, str: newXmlString()}
+	s := &xmlResourceSave{resource: r, str: newXmlString(), packages: make(map[EPackage]string), uriToPrefixes: make(map[string][]string), prefixesToURI: make(map[string]string), namespaces: newXmlNamespaces()}
 	s.saveHeader()
 	if !r.GetContents().Empty() {
 		s.saveObject(r.GetContents().Get(0).(EObject))
