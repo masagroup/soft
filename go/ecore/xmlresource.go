@@ -910,8 +910,16 @@ func (r *XMLResource) DoLoad(rd io.Reader) {
 }
 
 func (r *XMLResource) DoSave(rd io.Writer) {
-	s := &xmlResourceSave{resource: r, str: newXmlString(), packages: make(map[EPackage]string), uriToPrefixes: make(map[string][]string), prefixesToURI: make(map[string]string), namespaces: newXmlNamespaces()}
+	s := &xmlResourceSave{
+		resource:      r,
+		str:           newXmlString(),
+		packages:      make(map[EPackage]string),
+		uriToPrefixes: make(map[string][]string),
+		prefixesToURI: make(map[string]string),
+		namespaces:    newXmlNamespaces()}
+
 	s.saveHeader()
+
 	if !r.GetContents().Empty() {
 		s.saveObject(r.GetContents().Get(0).(EObject))
 	}
