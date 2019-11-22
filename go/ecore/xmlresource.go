@@ -58,24 +58,24 @@ func (n *xmlNamespaces) declarePrefix(prefix string, uri string) bool {
 	return false
 }
 
-func (n *xmlNamespaces) getPrefix(uri string) string {
+func (n *xmlNamespaces) getPrefix(uri string) (response string, ok bool) {
 	for i := n.namespacesSize; i > 0; i-- {
 		p := n.namespaces[i-1]
 		if p[1].(string) == uri {
-			return p[0].(string)
+			return p[0].(string), true
 		}
 	}
-	return ""
+	return "", false
 }
 
-func (n *xmlNamespaces) getURI(prefix string) string {
+func (n *xmlNamespaces) getURI(prefix string) (response string, ok bool) {
 	for i := n.namespacesSize; i > 0; i-- {
 		p := n.namespaces[i-1]
 		if p[0].(string) == prefix {
-			return p[1].(string)
+			return p[1].(string), true
 		}
 	}
-	return ""
+	return "", false
 }
 
 const (
@@ -107,7 +107,7 @@ type reference struct {
 
 type xmlResourceLoad struct {
 	decoder             *xml.Decoder
-	resource            EResource
+	resource            *XMLResource
 	isResolveDeferred   bool
 	elements            []string
 	objects             []EObject
@@ -213,7 +213,8 @@ func (l *xmlResourceLoad) createObject(space string, local string) EObject {
 		eType := ePackage.GetEClassifier(local)
 		return l.createObjectWithFactory(eFactory, eType)
 	} else {
-		l.handleUnknownPackage(l.namespaces.getPrefix(space))
+		prefix, _ := l.namespaces.getPrefix(space)
+		l.handleUnknownPackage(prefix)
 		return nil
 	}
 }
@@ -253,7 +254,7 @@ func (l *xmlResourceLoad) createObjectFromTypeName(eObject EObject, qname string
 		prefix = qname[:index]
 		local = qname[index+1:]
 	}
-	space := l.namespaces.getURI(prefix)
+	space, _ := l.namespaces.getURI(prefix)
 	eFactory := l.getFactoryForSpace(space)
 	if eFactory == nil {
 		l.handleUnknownPackage(prefix)
@@ -774,6 +775,36 @@ func (s *xmlString) resetToMark(segment *xmlStringSegment) {
 	s.currentSegment = segment
 }
 
+type xmlResourceSave struct {
+	resource *XMLResource
+	str      *xmlString
+}
+
+func (s *xmlResourceSave) saveHeader() {
+	s.str.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+	s.str.addLine()
+}
+
+func (s *xmlResourceSave) saveObject(eObject EObject) *xmlStringSegment {
+	eClass := eObject.EClass()
+	name := s.getQName(eClass)
+	s.str.startElement(name)
+	mark := s.str.mark()
+	s.saveElementID(eObject)
+	s.saveFeatures(eObject)
+	return mark
+}
+
+func (s *xmlResourceSave) saveElementID(eObject EObject) {
+}
+
+func (s *xmlResourceSave) saveFeatures(eObject EObject) {
+}
+
+func (s *xmlResourceSave) getQName(eClass EClass) string {
+	return ""
+}
+
 type XMLResource struct {
 	*EResourceImpl
 }
@@ -823,8 +854,9 @@ func (r *XMLResource) DoLoad(rd io.Reader) {
 }
 
 func (r *XMLResource) DoSave(rd io.Writer) {
-	s := newXmlString()
-	s.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-	s.addLine()
-
+	s := &xmlResourceSave{resource: r, str: newXmlString()}
+	s.saveHeader()
+	if !r.GetContents().Empty() {
+		s.saveObject(r.GetContents().Get(0).(EObject))
+	}
 }
