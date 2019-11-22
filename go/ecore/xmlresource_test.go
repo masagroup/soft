@@ -137,3 +137,13 @@ func TestXMLResourceLoad(t *testing.T) {
 	// check resolved reference
 	assert.Equal(t, eBookClass, eBooksReference.GetEReferenceType())
 }
+
+func TestXMLResourceSave(t *testing.T) {
+
+	resource := NewXMLResource()
+	resource.SetURI(&url.URL{Path: "testdata/simple.book.ecore"})
+	resource.Load()
+
+	resource.SetURI(&url.URL{Path: "testdata/simple.book2.ecore"})
+	resource.Save()
+}
