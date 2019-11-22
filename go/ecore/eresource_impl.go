@@ -296,11 +296,18 @@ func (r *EResourceImpl) IsLoaded() bool {
 }
 
 func (r *EResourceImpl) Save() {
-
+	uriConverter := r.getURIConverter()
+	if uriConverter != nil {
+		w := uriConverter.CreateWriter(r.uri)
+		if w != nil {
+			r.SaveWithWriter(w)
+			w.Close()
+		}
+	}
 }
 
 func (r *EResourceImpl) SaveWithWriter(w io.Writer) {
-
+	r.GetInterfaces().(EResourceInternal).DoSave(w)
 }
 
 func (r *EResourceImpl) DoSave(rd io.Writer) {

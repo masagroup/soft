@@ -654,6 +654,12 @@ func newXmlString() *xmlString {
 	return s
 }
 
+func (s *xmlString) write(w io.Writer) {
+	for _, segment := range s.segments {
+		w.Write([]byte(segment.String()))
+	}
+}
+
 func (s *xmlString) add(newString string) {
 	if s.lineWidth != MaxInt {
 		s.currentSegment.lineWidth += len(newString)
@@ -713,7 +719,7 @@ func (s *xmlString) endEmptyElement() {
 func (s *xmlString) removeLast() string {
 	end := len(s.elementNames) - 1
 	result := s.elementNames[end]
-	s.elementNames = s.elementNames[:end-1]
+	s.elementNames = s.elementNames[:end]
 	if result != "" {
 		s.depth--
 	}
@@ -797,6 +803,7 @@ func (s *xmlResourceSave) saveObject(eObject EObject) *xmlStringSegment {
 	mark := s.str.mark()
 	s.saveElementID(eObject)
 	s.saveFeatures(eObject)
+	s.str.endElement()
 	return mark
 }
 
@@ -807,10 +814,10 @@ func (s *xmlResourceSave) saveFeatures(eObject EObject) {
 }
 
 func (s *xmlResourceSave) getQName(eClass EClass) string {
-	return s.getQNameInPackage(eClass.GetEPackage(), eClass.GetName(), false)
+	return s.getElementQName(eClass.GetEPackage(), eClass.GetName(), false)
 }
 
-func (s *xmlResourceSave) getQNameInPackage(ePackage EPackage, name string, mustHavePrefix bool) string {
+func (s *xmlResourceSave) getElementQName(ePackage EPackage, name string, mustHavePrefix bool) string {
 	nsPrefix := s.getPrefix(ePackage, mustHavePrefix)
 	if nsPrefix == "" {
 		return name
@@ -909,7 +916,7 @@ func (r *XMLResource) DoLoad(rd io.Reader) {
 	}
 }
 
-func (r *XMLResource) DoSave(rd io.Writer) {
+func (r *XMLResource) DoSave(w io.Writer) {
 	s := &xmlResourceSave{
 		resource:      r,
 		str:           newXmlString(),
@@ -923,4 +930,6 @@ func (r *XMLResource) DoSave(rd io.Writer) {
 	if !r.GetContents().Empty() {
 		s.saveObject(r.GetContents().Get(0).(EObject))
 	}
+
+	s.str.write(w)
 }
