@@ -1019,6 +1019,7 @@ func (s *xmlResourceSave) saveDataTypeMany(eObject EObject, eFeature EStructural
 }
 
 func (s *xmlResourceSave) saveManyEmpty(eObject EObject, eFeature EStructuralFeature) {
+	s.str.addAttribute(s.getFeatureQName(eFeature), "")
 }
 
 func (s *xmlResourceSave) saveEObjectSingle(eObject EObject, eFeature EStructuralFeature) {
