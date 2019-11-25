@@ -300,7 +300,7 @@ func (l *xmlResourceLoad) setFeatureValue(eObject EObject,
 	eFeature EStructuralFeature,
 	value interface{},
 	position int) {
-	kind := l.getFeatureKind(eFeature)
+	kind := l.getLoadFeatureKind(eFeature)
 	switch kind {
 	case single:
 		eClassifier := eFeature.GetEType()
@@ -348,7 +348,7 @@ func (l *xmlResourceLoad) setFeatureValue(eObject EObject,
 	}
 }
 
-func (l *xmlResourceLoad) getFeatureKind(eFeature EStructuralFeature) int {
+func (l *xmlResourceLoad) getLoadFeatureKind(eFeature EStructuralFeature) int {
 	eClassifier := eFeature.GetEType()
 	if eDataType, _ := eClassifier.(EDataType); eDataType != nil {
 		if eFeature.IsMany() {
@@ -412,7 +412,7 @@ func (l *xmlResourceLoad) setAttributeValue(eObject EObject, qname string, value
 	}
 	eFeature := l.getFeature(eObject, local)
 	if eFeature != nil {
-		kind := l.getFeatureKind(eFeature)
+		kind := l.getLoadFeatureKind(eFeature)
 		if kind == single || kind == many {
 			l.setFeatureValue(eObject, eFeature, value, -2)
 		} else {
@@ -782,13 +782,45 @@ func (s *xmlString) resetToMark(segment *xmlStringSegment) {
 	s.currentSegment = segment
 }
 
+const (
+	transient                              = iota
+	datatype_single                        = iota
+	datatype_element_single                = iota
+	datatype_content_single                = iota
+	datatype_single_nillable               = iota
+	datatype_many                          = iota
+	object_contain_single                  = iota
+	object_contain_many                    = iota
+	object_href_single                     = iota
+	object_href_many                       = iota
+	object_contain_single_unsettable       = iota
+	object_contain_many_unsettable         = iota
+	object_href_single_unsettable          = iota
+	object_href_many_unsettable            = iota
+	object_element_single                  = iota
+	object_element_single_unsettable       = iota
+	object_element_many                    = iota
+	object_element_idref_single            = iota
+	object_element_idref_single_unsettable = iota
+	object_element_idref_many              = iota
+	attribute_feature_map                  = iota
+	element_feature_map                    = iota
+	object_attribute_single                = iota
+	object_attribute_many                  = iota
+	object_attribute_idref_single          = iota
+	object_attribute_idref_many            = iota
+	datatype_attribute_many                = iota
+)
+
 type xmlResourceSave struct {
 	resource      *XMLResource
 	str           *xmlString
 	packages      map[EPackage]string
 	uriToPrefixes map[string][]string
 	prefixesToURI map[string]string
+	featureKinds  map[EStructuralFeature]int
 	namespaces    *xmlNamespaces
+	keepDefaults  bool
 }
 
 func (s *xmlResourceSave) saveHeader() {
@@ -802,7 +834,7 @@ func (s *xmlResourceSave) saveObject(eObject EObject) *xmlStringSegment {
 	s.str.startElement(name)
 	mark := s.str.mark()
 	s.saveElementID(eObject)
-	s.saveFeatures(eObject)
+	s.saveFeatures(eObject, false)
 	s.str.endElement()
 	return mark
 }
@@ -810,7 +842,215 @@ func (s *xmlResourceSave) saveObject(eObject EObject) *xmlStringSegment {
 func (s *xmlResourceSave) saveElementID(eObject EObject) {
 }
 
-func (s *xmlResourceSave) saveFeatures(eObject EObject) {
+func (s *xmlResourceSave) saveFeatures(eObject EObject, attributesOnly bool) bool {
+	eClass := eObject.EClass()
+	eAllFeatures := eClass.GetEAllStructuralFeatures()
+	var elementFeatures []int
+	elementCount := 0
+	i := 0
+	for it := eAllFeatures.Iterator(); it.HasNext(); i++ {
+		// current feature
+		eFeature := it.Next().(EStructuralFeature)
+		// compute feature kind
+		kind, ok := s.featureKinds[eFeature]
+		if !ok {
+			kind = s.getSaveFeatureKind(eFeature)
+			s.featureKinds[eFeature] = kind
+		}
+
+		if kind != transient && s.shouldSaveFeature(eObject, eFeature) {
+			switch kind {
+			case datatype_single:
+				s.saveDataType(eObject, eFeature)
+				continue
+			case datatype_single_nillable:
+				if !s.isNil(eObject, eFeature) {
+					s.saveDataType(eObject, eFeature)
+					continue
+				}
+			case object_contain_many_unsettable:
+				fallthrough
+			case datatype_many:
+				if s.isEmpty(eObject, eFeature) {
+					s.saveManyEmpty(eObject, eFeature)
+					continue
+				}
+			case object_contain_single_unsettable:
+			case object_contain_single:
+			case object_contain_many:
+			case object_href_single_unsettable:
+				if !s.isNil(eObject, eFeature) {
+					s.saveEObjectSingle(eObject, eFeature)
+					continue
+				}
+			case object_href_single:
+				s.saveEObjectSingle(eObject, eFeature)
+				continue
+			case object_href_many_unsettable:
+				if s.isEmpty(eObject, eFeature) {
+					s.saveManyEmpty(eObject, eFeature)
+				} else {
+					s.saveEObjectMany(eObject, eFeature)
+				}
+				continue
+			case object_href_many:
+				s.saveEObjectMany(eObject, eFeature)
+				continue
+			default:
+				continue
+			}
+			if attributesOnly {
+				continue
+			}
+			if elementFeatures == nil {
+				elementFeatures = make([]int, eAllFeatures.Size())
+			}
+			elementFeatures[elementCount] = i
+			elementCount++
+		}
+	}
+	if elementFeatures == nil {
+		s.str.endEmptyElement()
+		return false
+	}
+	for i := 0; i < elementCount; i++ {
+		eFeature := eAllFeatures.Get(elementFeatures[i]).(EStructuralFeature)
+		kind := s.featureKinds[eFeature]
+		switch kind {
+		case datatype_single_nillable:
+			s.saveNil(eObject, eFeature)
+		case datatype_many:
+			s.saveDataTypeMany(eObject, eFeature)
+		case object_contain_single_unsettable:
+			if s.isNil(eObject, eFeature) {
+				s.saveNil(eObject, eFeature)
+			} else {
+				s.saveContainedSingle(eObject, eFeature)
+			}
+		case object_contain_single:
+			s.saveContainedSingle(eObject, eFeature)
+		case object_contain_many_unsettable:
+			fallthrough
+		case object_contain_many:
+			s.saveContainedMany(eObject, eFeature)
+		case object_href_single_unsettable:
+			if s.isNil(eObject, eFeature) {
+				s.saveNil(eObject, eFeature)
+			} else {
+				s.saveHRefSingle(eObject, eFeature)
+			}
+		case object_href_single:
+			s.saveHRefSingle(eObject, eFeature)
+		case object_href_many_unsettable:
+			fallthrough
+		case object_href_many:
+			s.saveHRefMany(eObject, eFeature)
+		}
+	}
+
+	s.str.endElement()
+	return true
+}
+
+func (s *xmlResourceSave) saveDataType(eObject EObject, eFeature EStructuralFeature) {
+}
+
+func (s *xmlResourceSave) saveManyEmpty(eObject EObject, eFeature EStructuralFeature) {
+}
+
+func (s *xmlResourceSave) saveEObjectSingle(eObject EObject, eFeature EStructuralFeature) {
+}
+
+func (s *xmlResourceSave) saveEObjectMany(eObject EObject, eFeature EStructuralFeature) {
+}
+
+func (s *xmlResourceSave) saveNil(eObject EObject, eFeature EStructuralFeature) {
+}
+
+func (s *xmlResourceSave) saveDataTypeMany(eObject EObject, eFeature EStructuralFeature) {
+}
+
+func (s *xmlResourceSave) saveContainedSingle(eObject EObject, eFeature EStructuralFeature) {
+}
+
+func (s *xmlResourceSave) saveContainedMany(eObject EObject, eFeature EStructuralFeature) {
+}
+
+func (s *xmlResourceSave) saveHRefSingle(eObject EObject, eFeature EStructuralFeature) {
+}
+
+func (s *xmlResourceSave) saveHRefMany(eObject EObject, eFeature EStructuralFeature) {
+}
+
+func (s *xmlResourceSave) isNil(eObject EObject, eFeature EStructuralFeature) bool {
+	return eObject.EGet(eFeature) == nil
+}
+
+func (s *xmlResourceSave) isEmpty(eObject EObject, eFeature EStructuralFeature) bool {
+	return eObject.EGet(eFeature).(EList).Empty()
+}
+
+func (s *xmlResourceSave) shouldSaveFeature(o EObject, f EStructuralFeature) bool {
+	return o.EIsSet(f) || s.keepDefaults && f.GetDefaultValueLiteral() != ""
+}
+
+func (s *xmlResourceSave) getSaveFeatureKind(f EStructuralFeature) int {
+	if f.IsTransient() {
+		return transient
+	}
+
+	isMany := f.IsMany()
+	isUnsettable := f.IsUnsettable()
+
+	if r, _ := f.(EReference); r != nil {
+		if r.IsContainment() {
+			if isMany {
+				if isUnsettable {
+					return object_contain_many_unsettable
+				} else {
+					return object_contain_many
+				}
+			} else {
+				if isUnsettable {
+					return object_contain_single_unsettable
+				} else {
+					return object_contain_single
+				}
+			}
+		}
+		opposite := r.GetEOpposite()
+		if opposite != nil && opposite.IsContainment() {
+			return transient
+		}
+		if isMany {
+			if isUnsettable {
+				return object_href_many_unsettable
+			} else {
+				return object_href_many
+			}
+		} else {
+			if isUnsettable {
+				return object_href_single_unsettable
+			} else {
+				return object_href_single
+			}
+		}
+	} else {
+		// Attribute
+		d, _ := f.GetEType().(EDataType)
+		if !d.IsSerializable() {
+			return transient
+		}
+		if isMany {
+			return datatype_many
+		}
+		if isUnsettable {
+			return datatype_single_nillable
+		}
+		return datatype_single
+
+	}
+
 }
 
 func (s *xmlResourceSave) getQName(eClass EClass) string {
@@ -923,6 +1163,7 @@ func (r *XMLResource) DoSave(w io.Writer) {
 		packages:      make(map[EPackage]string),
 		uriToPrefixes: make(map[string][]string),
 		prefixesToURI: make(map[string]string),
+		featureKinds:  make(map[EStructuralFeature]int),
 		namespaces:    newXmlNamespaces()}
 
 	s.saveHeader()
