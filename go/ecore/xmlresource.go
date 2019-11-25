@@ -772,6 +772,24 @@ func (s *xmlString) addNil(name string) {
 	s.lastElementIsStart = false
 }
 
+func (s *xmlString) addContent(name string, content string) {
+	if s.lastElementIsStart {
+		s.closeStartElement()
+	}
+	s.depth++
+	s.add(s.getElementIndent())
+	s.add("<")
+	s.add(name)
+	s.add(">")
+	s.add(content)
+	s.add("</")
+	s.depth--
+	s.add(name)
+	s.add(">")
+	s.addLine()
+	s.lastElementIsStart = false
+}
+
 func (s *xmlString) getElementIndent() string {
 	return s.getElementIndentWithExtra(0)
 }
@@ -982,6 +1000,22 @@ func (s *xmlResourceSave) saveDataTypeSingle(eObject EObject, eFeature EStructur
 }
 
 func (s *xmlResourceSave) saveDataTypeMany(eObject EObject, eFeature EStructuralFeature) {
+	l := eObject.EGet(eFeature).(EList)
+	d := eFeature.GetEType().(EDataType)
+	p := d.GetEPackage()
+	f := p.GetEFactoryInstance()
+	name := s.getFeatureQName(eFeature)
+	for it := l.Iterator(); it.HasNext(); {
+		value := it.Next()
+		if value == nil {
+			s.str.startElement(name)
+			s.str.addAttribute("xsi:nil", "true")
+			s.str.endEmptyElement()
+		} else {
+			str := f.ConvertToString(d, value)
+			s.str.addContent(name, url.QueryEscape(str))
+		}
+	}
 }
 
 func (s *xmlResourceSave) saveManyEmpty(eObject EObject, eFeature EStructuralFeature) {
