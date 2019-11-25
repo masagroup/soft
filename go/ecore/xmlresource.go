@@ -751,6 +751,27 @@ func (s *xmlString) endAttribute() {
 	s.add("\"")
 }
 
+func (s *xmlString) addNil(name string) {
+	if s.lastElementIsStart {
+		s.closeStartElement()
+	}
+
+	s.depth++
+	s.add(s.getElementIndent())
+	s.add("<")
+	s.add(name)
+	if s.currentSegment.lineWidth > s.lineWidth {
+		s.addLine()
+		s.add(s.getAttributeIndent())
+	} else {
+		s.add(" ")
+	}
+	s.add("xsi:nil=\"true\"/>")
+	s.depth--
+	s.addLine()
+	s.lastElementIsStart = false
+}
+
 func (s *xmlString) getElementIndent() string {
 	return s.getElementIndentWithExtra(0)
 }
@@ -861,11 +882,11 @@ func (s *xmlResourceSave) saveFeatures(eObject EObject, attributesOnly bool) boo
 		if kind != transient && s.shouldSaveFeature(eObject, eFeature) {
 			switch kind {
 			case datatype_single:
-				s.saveDataType(eObject, eFeature)
+				s.saveDataTypeSingle(eObject, eFeature)
 				continue
 			case datatype_single_nillable:
 				if !s.isNil(eObject, eFeature) {
-					s.saveDataType(eObject, eFeature)
+					s.saveDataTypeSingle(eObject, eFeature)
 					continue
 				}
 			case object_contain_many_unsettable:
@@ -952,7 +973,15 @@ func (s *xmlResourceSave) saveFeatures(eObject EObject, attributesOnly bool) boo
 	return true
 }
 
-func (s *xmlResourceSave) saveDataType(eObject EObject, eFeature EStructuralFeature) {
+func (s *xmlResourceSave) saveDataTypeSingle(eObject EObject, eFeature EStructuralFeature) {
+	val := eObject.EGet(eFeature)
+	str, ok := s.getDataType(val, eFeature, true)
+	if ok {
+		s.str.addAttribute(s.getFeatureQName(eFeature), str)
+	}
+}
+
+func (s *xmlResourceSave) saveDataTypeMany(eObject EObject, eFeature EStructuralFeature) {
 }
 
 func (s *xmlResourceSave) saveManyEmpty(eObject EObject, eFeature EStructuralFeature) {
@@ -965,9 +994,7 @@ func (s *xmlResourceSave) saveEObjectMany(eObject EObject, eFeature EStructuralF
 }
 
 func (s *xmlResourceSave) saveNil(eObject EObject, eFeature EStructuralFeature) {
-}
-
-func (s *xmlResourceSave) saveDataTypeMany(eObject EObject, eFeature EStructuralFeature) {
+	s.str.addNil(s.getFeatureQName(eFeature))
 }
 
 func (s *xmlResourceSave) saveContainedSingle(eObject EObject, eFeature EStructuralFeature) {
@@ -1068,6 +1095,10 @@ func (s *xmlResourceSave) getElementQName(ePackage EPackage, name string, mustHa
 	}
 }
 
+func (s *xmlResourceSave) getFeatureQName(eFeature EStructuralFeature) string {
+	return eFeature.GetName()
+}
+
 func (s *xmlResourceSave) getPrefix(ePackage EPackage, mustHavePrefix bool) string {
 	nsPrefix, ok := s.packages[ePackage]
 	if !ok {
@@ -1106,6 +1137,18 @@ func (s *xmlResourceSave) getPrefix(ePackage EPackage, mustHavePrefix bool) stri
 		s.packages[ePackage] = nsPrefix
 	}
 	return nsPrefix
+}
+
+func (s *xmlResourceSave) getDataType(value interface{}, f EStructuralFeature, isAttribute bool) (string, bool) {
+	if value == nil {
+		return "", false
+	} else {
+		d := f.GetEType().(EDataType)
+		p := d.GetEPackage()
+		f := p.GetEFactoryInstance()
+		s := f.ConvertToString(d, value)
+		return url.QueryEscape(s), true
+	}
 }
 
 type XMLResource struct {
