@@ -867,7 +867,7 @@ func (s *xmlResourceSave) saveHeader() {
 	s.str.addLine()
 }
 
-func (s *xmlResourceSave) saveObject(eObject EObject) *xmlStringSegment {
+func (s *xmlResourceSave) saveTopObject(eObject EObject) *xmlStringSegment {
 	eClass := eObject.EClass()
 	name := s.getQName(eClass)
 	s.str.startElement(name)
@@ -1090,7 +1090,7 @@ func (s *xmlResourceSave) saveEObjectInternal(o EObjectInternal, f EStructuralFe
 }
 
 func (s *xmlResourceSave) saveEObject(o EObject, f EStructuralFeature) {
-
+	s.str.startElement(s.getFeatureQName(f))
 }
 
 func (s *xmlResourceSave) saveHRefSingle(eObject EObject, eFeature EStructuralFeature) {
@@ -1347,7 +1347,7 @@ func (r *XMLResource) DoSave(w io.Writer) {
 	s.saveHeader()
 
 	if !r.GetContents().Empty() {
-		s.saveObject(r.GetContents().Get(0).(EObject))
+		s.saveTopObject(r.GetContents().Get(0).(EObject))
 	}
 
 	s.str.write(w)
