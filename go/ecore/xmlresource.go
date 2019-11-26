@@ -1065,15 +1065,59 @@ func (s *xmlResourceSave) saveNil(eObject EObject, eFeature EStructuralFeature) 
 }
 
 func (s *xmlResourceSave) saveContainedSingle(eObject EObject, eFeature EStructuralFeature) {
+	value, _ := eObject.EGet(eFeature).(EObjectInternal)
+	if value != nil {
+		s.saveEObjectInternal(value, eFeature)
+	}
 }
 
 func (s *xmlResourceSave) saveContainedMany(eObject EObject, eFeature EStructuralFeature) {
+	l := eObject.EGet(eFeature).(EList)
+	for it := l.Iterator(); it.HasNext(); {
+		value, _ := it.Next().(EObjectInternal)
+		if value != nil {
+			s.saveEObjectInternal(value, eFeature)
+		}
+	}
+}
+
+func (s *xmlResourceSave) saveEObjectInternal(o EObjectInternal, f EStructuralFeature) {
+	if o.EDirectResource() != nil || o.EIsProxy() {
+		s.saveHRef(o, f)
+	} else {
+		s.saveEObject(o, f)
+	}
+}
+
+func (s *xmlResourceSave) saveEObject(o EObject, f EStructuralFeature) {
+
 }
 
 func (s *xmlResourceSave) saveHRefSingle(eObject EObject, eFeature EStructuralFeature) {
+	value, _ := eObject.EGet(eFeature).(EObject)
+	if value != nil {
+		s.saveHRef(value, eFeature)
+	}
 }
 
 func (s *xmlResourceSave) saveHRefMany(eObject EObject, eFeature EStructuralFeature) {
+	l := eObject.EGet(eFeature).(EList)
+	for it := l.Iterator(); it.HasNext(); {
+		value, _ := it.Next().(EObject)
+		if value != nil {
+			s.saveHRef(value, eFeature)
+		}
+	}
+}
+
+func (s *xmlResourceSave) saveHRef(eObject EObject, eFeature EStructuralFeature) {
+	href := s.getHRef(eObject)
+	href = url.QueryEscape(href)
+	if href != "" {
+		s.str.startElement(s.getFeatureQName(eFeature))
+		s.str.addAttribute("href", href)
+		s.str.endEmptyElement()
+	}
 }
 
 func (s *xmlResourceSave) isNil(eObject EObject, eFeature EStructuralFeature) bool {
@@ -1229,7 +1273,6 @@ func (s *xmlResourceSave) getHRef(eObject EObject) string {
 			} else {
 				return s.getResourceHRef(eResource, eObject)
 			}
-			return ""
 		} else {
 			return uri.String()
 		}
