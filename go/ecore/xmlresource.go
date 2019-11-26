@@ -729,7 +729,7 @@ func (s *xmlString) removeLast() string {
 func (s *xmlString) addAttribute(name string, value string) {
 	s.startAttribute(name)
 	s.addAttributeContent(value)
-	s.endElement()
+	s.endAttribute()
 }
 
 func (s *xmlString) startAttribute(name string) {
@@ -1023,9 +1023,41 @@ func (s *xmlResourceSave) saveManyEmpty(eObject EObject, eFeature EStructuralFea
 }
 
 func (s *xmlResourceSave) saveEObjectSingle(eObject EObject, eFeature EStructuralFeature) {
+	value, _ := eObject.EGet(eFeature).(EObject)
+	if value != nil {
+		id := s.getHRef(value)
+		id = url.QueryEscape(id)
+		s.str.addAttribute(s.getFeatureQName(eFeature), id)
+	}
 }
 
 func (s *xmlResourceSave) saveEObjectMany(eObject EObject, eFeature EStructuralFeature) {
+	l := eObject.EGet(eFeature).(EList)
+	failure := false
+	var buffer strings.Builder
+	for it := l.Iterator(); ; {
+		value, _ := it.Next().(EObject)
+		if value != nil {
+			id := s.getHRef(value)
+			id = url.QueryEscape(id)
+			if id == "" {
+				failure = true
+				if !it.HasNext() {
+					break
+				}
+			} else {
+				buffer.WriteString(id)
+				if it.HasNext() {
+					buffer.WriteString(" ")
+				} else {
+					break
+				}
+			}
+		}
+	}
+	if !failure && buffer.Len() > 0 {
+		s.str.addAttribute(s.getFeatureQName(eFeature), buffer.String())
+	}
 }
 
 func (s *xmlResourceSave) saveNil(eObject EObject, eFeature EStructuralFeature) {
@@ -1184,6 +1216,31 @@ func (s *xmlResourceSave) getDataType(value interface{}, f EStructuralFeature, i
 		s := f.ConvertToString(d, value)
 		return url.QueryEscape(s), true
 	}
+}
+
+func (s *xmlResourceSave) getHRef(eObject EObject) string {
+	eInternal, _ := eObject.(EObjectInternal)
+	if eInternal != nil {
+		uri := eInternal.EProxyURI()
+		if uri == nil {
+			eResource := eObject.EResource()
+			if eResource == nil {
+				return ""
+			} else {
+				return s.getResourceHRef(eResource, eObject)
+			}
+			return ""
+		} else {
+			return uri.String()
+		}
+	}
+	return ""
+}
+
+func (s *xmlResourceSave) getResourceHRef(resource EResource, object EObject) string {
+	uri := resource.GetURI()
+	uri.Fragment = resource.GetURIFragment(object)
+	return uri.String()
 }
 
 type XMLResource struct {
