@@ -874,7 +874,6 @@ func (s *xmlResourceSave) saveTopObject(eObject EObject) *xmlStringSegment {
 	mark := s.str.mark()
 	s.saveElementID(eObject)
 	s.saveFeatures(eObject, false)
-	s.str.endElement()
 	return mark
 }
 
