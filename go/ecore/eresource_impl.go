@@ -118,14 +118,14 @@ func (r *EResourceImpl) SetURI(uri *url.URL) {
 
 func (r *EResourceImpl) GetContents() EList {
 	if r.contents == nil {
-		r.contents = newResourceContents(r)
+		r.contents = newResourceContents(r.GetInterfaces().(EResource))
 	}
 	return r.contents
 }
 
 func (r *EResourceImpl) GetAllContents() EIterator {
 	return newTreeIterator(r, false, func(o interface{}) EIterator {
-		if o == r {
+		if o == r.GetInterfaces() {
 			return o.(EResource).GetContents().Iterator()
 		}
 		return o.(EObject).EContents().Iterator()
