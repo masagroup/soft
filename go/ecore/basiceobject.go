@@ -383,7 +383,7 @@ func (o *BasicEObject) EBasicSetContainer(newContainer EObject, newContainerFeat
 	// resource
 	var newResource EResource
 	if oldResource != nil {
-		if newContainer != nil && eContainmentFeature(o, newContainer, newContainerFeatureID) == nil {
+		if newContainer != nil && !eContainmentFeature(o, newContainer, newContainerFeatureID).IsResolveProxies() {
 			list := oldResource.GetContents().(ENotifyingList)
 			notifications = list.RemoveWithNotification(o.GetEObject(), notifications)
 			o.resource = nil
