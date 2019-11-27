@@ -1148,6 +1148,11 @@ func (s *xmlResourceSave) saveHRef(eObject EObject, eFeature EStructuralFeature)
 	href := s.getHRef(eObject)
 	if href != "" {
 		s.str.startElement(s.getFeatureQName(eFeature))
+		eClass := eObject.EClass()
+		eType, _ := eFeature.GetEType().(EClass)
+		if eType != eClass && eType != nil && eType.IsAbstract() {
+			s.saveTypeAttribute(eClass)
+		}
 		s.str.addAttribute("href", href)
 		s.str.endEmptyElement()
 	}
