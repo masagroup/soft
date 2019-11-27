@@ -874,6 +874,10 @@ func (s *xmlResourceSave) saveTopObject(eObject EObject) *xmlStringSegment {
 	mark := s.str.mark()
 	s.saveElementID(eObject)
 	s.saveFeatures(eObject, false)
+	s.str.resetToMark(mark)
+	for prefix, uri := range s.prefixesToURI {
+		s.str.addAttribute("xmlns:"+prefix, uri)
+	}
 	return mark
 }
 
@@ -1036,6 +1040,8 @@ func (s *xmlResourceSave) saveDataTypeMany(eObject EObject, eFeature EStructural
 			s.str.startElement(name)
 			s.str.addAttribute("xsi:nil", "true")
 			s.str.endEmptyElement()
+			s.uriToPrefixes[xsiURI] = []string{xsiNS}
+			s.prefixesToURI[xsiNS] = xsiURI
 		} else {
 			str := f.ConvertToString(d, value)
 			s.str.addContent(name, str)
@@ -1125,6 +1131,8 @@ func (s *xmlResourceSave) saveEObject(o EObject, f EStructuralFeature) {
 
 func (s *xmlResourceSave) saveTypeAttribute(eClass EClass) {
 	s.str.addAttribute("xsi:type", s.getQName(eClass))
+	s.uriToPrefixes[xsiURI] = []string{xsiNS}
+	s.prefixesToURI[xsiNS] = xsiURI
 }
 
 func (s *xmlResourceSave) saveHRefSingle(eObject EObject, eFeature EStructuralFeature) {
@@ -1449,8 +1457,10 @@ func (r *XMLResource) DoSave(w io.Writer) {
 		featureKinds:  make(map[EStructuralFeature]int),
 		namespaces:    newXmlNamespaces()}
 
+	// header
 	s.saveHeader()
 
+	// content
 	if !r.GetContents().Empty() {
 		s.saveTopObject(r.GetContents().Get(0).(EObject))
 	}
