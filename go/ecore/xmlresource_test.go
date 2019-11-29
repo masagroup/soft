@@ -76,7 +76,7 @@ func TestXmlNamespacesContextNoRemap(t *testing.T) {
 
 func TestXMLResourceLoad(t *testing.T) {
 	resource := NewXMLResource()
-	resource.SetURI(&url.URL{Path: "testdata/simple.book.ecore"})
+	resource.SetURI(&url.URL{Path: "testdata/bookStore.ecore"})
 	resource.Load()
 	assert.True(t, resource.IsLoaded())
 	assert.True(t, resource.GetErrors().Empty())
@@ -143,13 +143,13 @@ func TestXMLResourceLoad(t *testing.T) {
 func TestXMLResourceSave(t *testing.T) {
 
 	resource := NewXMLResource()
-	resource.SetURI(&url.URL{Path: "testdata/simple.book.ecore"})
+	resource.SetURI(&url.URL{Path: "testdata/bookStore.ecore"})
 	resource.Load()
 
 	var strbuff strings.Builder
 	resource.SaveWithWriter(&strbuff)
 
-	bytes, err := ioutil.ReadFile("testdata/simple.book.ecore")
+	bytes, err := ioutil.ReadFile("testdata/bookStore.ecore")
 	assert.Nil(t, err)
 	assert.Equal(t, string(bytes), strbuff.String())
 }
