@@ -69,6 +69,7 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/XmlResource.hpp
     src/ecore/impl/XmlResourceFactory.hpp
     src/ecore/impl/XmlSave.hpp
+    src/ecore/impl/XmlString.hpp
 )
 
 set(SOURCE_ECORE_IMPL_FILES 
@@ -90,6 +91,7 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/XmlResource.cpp
     src/ecore/impl/XmlResourceFactory.cpp
     src/ecore/impl/XmlSave.cpp
+    src/ecore/impl/XmlString.cpp
 )
 
 set(HEADER_ECORE_EXT_FILES 
