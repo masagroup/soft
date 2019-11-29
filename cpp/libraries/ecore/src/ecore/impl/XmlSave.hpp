@@ -14,6 +14,8 @@
 #include "ecore/impl/XmlNamespaces.hpp"
 #include "ecore/impl/XmlString.hpp"
 
+#include <map>
+
 namespace ecore {
     class EClass;
     class EObject;
@@ -126,6 +128,10 @@ namespace ecore::impl
         XmlResource& resource_;
         XmlNamespaces namespaces_;
         XmlString str_;
+        std::map<std::shared_ptr<EPackage>, std::string> packages_;
+        std::map<std::string, std::vector<std::string>> uriToPrefixes_;
+        std::map<std::string, std::string> prefixesToURI_;
+        std::map<std::shared_ptr< EStructuralFeature>, FeatureKind> featureKinds_;
     };
 }
 

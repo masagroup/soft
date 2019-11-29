@@ -1,10 +1,16 @@
 #include "ecore/impl/XmlSave.hpp"
+#include "ecore/EClass.hpp"
+#include "ecore/EObject.hpp"
+#include "ecore/EList.hpp"
+
+#include <iterator>
+#include <optional>
 
 using namespace ecore;
 using namespace ecore::impl;
 
 XmlSave::XmlSave(XmlResource& resource)
-    :   resource_(resource)
+    : resource_(resource)
 {
 }
 
@@ -18,15 +24,27 @@ void XmlSave::save(std::ostream& o)
 
 void XmlSave::saveHeader()
 {
+    str_.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+    str_.addLine();
 }
 
 std::shared_ptr<XmlString::Segment> XmlSave::saveTopObject(const std::shared_ptr<EObject>& eObject)
 {
-    return std::shared_ptr<XmlString::Segment>();
+    auto eClass = eObject->eClass();
+    auto name = getQName(eClass);
+    str_.startElement(name);
+    auto mark = str_.mark();
+    saveElementID(eObject);
+    saveFeatures(eObject, false);
+    str_.resetToMark(mark);
+    saveNamespaces();
+    return mark;
 }
 
 void XmlSave::saveNamespaces()
 {
+    for (auto p : prefixesToURI_)
+        str_.addAttribute("xmlns:" + p.first, p.second);
 }
 
 void XmlSave::saveElementID(const std::shared_ptr<EObject>& eObject)
@@ -35,7 +53,128 @@ void XmlSave::saveElementID(const std::shared_ptr<EObject>& eObject)
 
 bool XmlSave::saveFeatures(const std::shared_ptr<EObject>& eObject, bool attributesOnly)
 {
-    return false;
+    auto eClass = eObject->eClass();
+    auto eAllFeatures = eClass->getEAllStructuralFeatures();
+    std::optional<std::vector<int>> elementFeatures;
+    auto elementCount = 0;
+    auto i = 0;
+    for (auto it = std::begin(*eAllFeatures); it != std::end(*eAllFeatures); ++it, ++i) {
+        // current feature
+        auto eFeature = *it;
+
+        FeatureKind kind;
+        auto itFound = featureKinds_.find(eFeature);
+        if (itFound == featureKinds_.end()) {
+            kind = featureKinds_[eFeature] = getFeatureKind(eFeature);
+        }
+        else {
+            kind = itFound->second;
+        }
+
+        if (kind != TRANSIENT && shouldSaveFeature(eObject, eFeature)) {
+            switch (kind) {
+            case DATATYPE_SINGLE:
+                saveDataTypeSingle(eObject, eFeature);
+                continue;
+            case DATATYPE_SINGLE_NILLABLE:
+                if (!isNil(eObject, eFeature)) {
+                    saveDataTypeSingle(eObject, eFeature);
+                    continue;
+                }
+                break;
+            case OBJECT_CONTAIN_MANY_UNSETTABLE:
+            case DATATYPE_MANY:
+                if (isEmpty(eObject, eFeature)) {
+                    saveManyEmpty(eObject, eFeature);
+                    continue;
+                }
+            case OBJECT_CONTAIN_SINGLE_UNSETTABLE:
+            case OBJECT_CONTAIN_SINGLE:
+            case OBJECT_CONTAIN_MANY:
+                break;
+            case OBJECT_HREF_SINGLE_UNSETTABLE:
+                if (isNil(eObject, eFeature))
+                    break;
+            case OBJECT_HREF_SINGLE:
+                switch (getResourceKind(eObject, eFeature)) {
+                case CROSS:
+                    break;
+                case SAME:
+                    saveIDRefSingle(eObject, eFeature);
+                    continue;
+                default:
+                    continue;
+                }
+            case OBJECT_HREF_MANY_UNSETTABLE:
+                if (isEmpty(eObject, eFeature)) {
+                    saveManyEmpty(eObject, eFeature);
+                    continue;
+                }
+            case OBJECT_HREF_MANY:
+                switch (getResourceKind(eObject, eFeature)) {
+                case CROSS:
+                    break;
+                case SAME:
+                    saveIDRefMany(eObject, eFeature);
+                    continue;
+                default:
+                    continue;
+                }
+            default:
+                continue;
+            }
+            if (attributesOnly) {
+                continue;
+            }
+            if (!elementFeatures) {
+                elementFeatures = std::vector<int>(eAllFeatures->size());
+            }
+            elementFeatures->operator[](elementCount++) = i;
+        }
+    }
+    if (!elementFeatures) {
+        str_.endEmptyElement();
+        return false;
+    }
+    for (auto i = 0; i < elementCount; i++) {
+        auto eFeature = eAllFeatures->get(elementFeatures->operator[](i));
+        auto kind = featureKinds_[eFeature];
+        switch (kind) {
+        case DATATYPE_SINGLE_NILLABLE:
+            saveNil(eObject, eFeature);
+            break;
+        case DATATYPE_MANY:
+            saveDataTypeMany(eObject, eFeature);
+            break;
+        case OBJECT_CONTAIN_SINGLE_UNSETTABLE:
+            if (isNil(eObject, eFeature)) {
+                saveNil(eObject, eFeature);
+                break;
+            }
+        case OBJECT_CONTAIN_SINGLE:
+            saveContainedSingle(eObject, eFeature);
+            break;
+        case OBJECT_CONTAIN_MANY_UNSETTABLE:
+        case OBJECT_CONTAIN_MANY:
+            saveContainedMany(eObject, eFeature);
+            break;
+        case OBJECT_HREF_SINGLE_UNSETTABLE:
+            if (isNil(eObject, eFeature)) {
+                saveNil(eObject, eFeature);
+                break;
+            }
+        case OBJECT_HREF_SINGLE:
+            saveHRefSingle(eObject, eFeature);
+            break;
+        case OBJECT_HREF_MANY_UNSETTABLE:
+        case OBJECT_HREF_MANY:
+            saveHRefMany(eObject, eFeature);
+            break;
+        }
+    }
+
+    str_.endElement();
+    return true;
 }
 
 void XmlSave::saveDataTypeSingle(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
