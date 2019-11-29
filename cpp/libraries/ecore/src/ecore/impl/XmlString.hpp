@@ -24,6 +24,34 @@ namespace ecore::impl
     public:
         XmlString();
 
+        void write(std::ostream& os);
+
+        void add(const std::string& s);
+        void addLine();
+
+        void startElement(const std::string& name);
+        void closeStartElement();
+        void endElement();
+        void endEmptyElement();
+
+        void addAttribute(const std::string& name, const std::string& value);
+        void startAttribute(const std::string& name);
+        void addAttributeContent(const std::string& content);
+        void endAttribute();
+
+        void addNil(const std::string& name);
+        void addContent(const std::string& name, const std::string& content);
+
+        std::shared_ptr<Segment> mark();
+        void resetToMark(const std::shared_ptr<Segment>& m);
+
+    private:
+        std::string removeLast();
+
+        std::string getElementIndent();
+        std::string getElementIndent(int extra);
+        std::string getAttributeIndent();
+
     private:
         std::vector<std::shared_ptr<Segment>> segments_;
         std::shared_ptr<Segment> currentSegment_;
