@@ -37,12 +37,12 @@ namespace ecore::impl
 {
     class XmlResource;
 
-    class XmlHandler : public xercesc::DefaultHandler
+    class XmlLoad : public xercesc::DefaultHandler
     {
     public:
-        XmlHandler( XmlResource& resource );
+        XmlLoad( XmlResource& resource );
 
-        virtual ~XmlHandler();
+        virtual ~XmlLoad();
 
         virtual void setDocumentLocator( const xercesc::Locator* const locator );
 

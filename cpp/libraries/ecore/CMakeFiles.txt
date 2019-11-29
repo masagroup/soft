@@ -64,10 +64,11 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/TypeTraits.hpp
     src/ecore/impl/WeakPtr.hpp
     src/ecore/impl/XmlInputSource.hpp
-    src/ecore/impl/XmlHandler.hpp
+    src/ecore/impl/XmlLoad.hpp
     src/ecore/impl/XmlNamespaces.hpp
     src/ecore/impl/XmlResource.hpp
     src/ecore/impl/XmlResourceFactory.hpp
+    src/ecore/impl/XmlSave.hpp
 )
 
 set(SOURCE_ECORE_IMPL_FILES 
@@ -84,10 +85,11 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/ResourceSet.cpp
     src/ecore/impl/ResourceURIConverter.cpp
     src/ecore/impl/SaxParserPool.cpp
-    src/ecore/impl/XmlHandler.cpp
+    src/ecore/impl/XmlLoad.cpp
     src/ecore/impl/XmlNamespaces.cpp
     src/ecore/impl/XmlResource.cpp
     src/ecore/impl/XmlResourceFactory.cpp
+    src/ecore/impl/XmlSave.cpp
 )
 
 set(HEADER_ECORE_EXT_FILES 
