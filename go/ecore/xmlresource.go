@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/url"
+	"sort"
 	"strings"
 
 	"golang.org/x/net/html/charset"
@@ -875,10 +876,19 @@ func (s *xmlResourceSave) saveTopObject(eObject EObject) *xmlStringSegment {
 	s.saveElementID(eObject)
 	s.saveFeatures(eObject, false)
 	s.str.resetToMark(mark)
-	for prefix, uri := range s.prefixesToURI {
-		s.str.addAttribute("xmlns:"+prefix, uri)
-	}
+	s.saveNamespaces()
 	return mark
+}
+
+func (s *xmlResourceSave) saveNamespaces() {
+	var prefixes []string
+	for prefix, _ := range s.prefixesToURI {
+		prefixes = append(prefixes, prefix)
+	}
+	sort.Strings(prefixes)
+	for _, prefix := range prefixes {
+		s.str.addAttribute("xmlns:"+prefix, s.prefixesToURI[prefix])
+	}
 }
 
 func (s *xmlResourceSave) saveElementID(eObject EObject) {

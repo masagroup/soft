@@ -1,7 +1,9 @@
 package ecore
 
 import (
+	"io/ioutil"
 	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -144,6 +146,10 @@ func TestXMLResourceSave(t *testing.T) {
 	resource.SetURI(&url.URL{Path: "testdata/simple.book.ecore"})
 	resource.Load()
 
-	resource.SetURI(&url.URL{Path: "testdata/simple.book2.ecore"})
-	resource.Save()
+	var strbuff strings.Builder
+	resource.SaveWithWriter(&strbuff)
+
+	bytes, err := ioutil.ReadFile("testdata/simple.book.ecore")
+	assert.Nil(t, err)
+	assert.Equal(t, string(bytes), strbuff.String())
 }
