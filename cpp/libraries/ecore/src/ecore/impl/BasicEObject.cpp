@@ -43,7 +43,7 @@ std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eCro
     return eContentsList( eClass()->getECrossReferences() );
 }
 
-std::shared_ptr<const EList<std::shared_ptr<EObject>>> ecore::impl::BasicEObject::eContentsList(const std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>>& refs ) const
+std::shared_ptr<const EList<std::shared_ptr<EObject>>> BasicEObject::eContentsList(const std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>>& refs ) const
 {
     std::vector<std::shared_ptr<EObject>> contents;
     for( auto ref : *refs )
@@ -177,6 +177,7 @@ std::shared_ptr<EReference> BasicEObject::eContainmentFeature( const std::shared
     return std::shared_ptr<EReference>();
 }
 
+
 bool BasicEObject::eIsProxy() const
 {
     return static_cast<bool>( eProxyURI_ );
@@ -198,6 +199,12 @@ std::shared_ptr<EResource> BasicEObject::eDirectResource() const
 {
     return eResource_.lock();
 }
+
+void BasicEObject::eSetDirectResource(const std::shared_ptr<EResource>& resource)
+{
+    eResource_ = resource;
+}
+
 
 std::shared_ptr<ENotificationChain> BasicEObject::eSetResource( const std::shared_ptr<EResource>& newResource,
                                                                 const std::shared_ptr<ENotificationChain>& n )
@@ -236,9 +243,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eSetResource( const std::share
             notifications = eBasicSetContainer( nullptr, -1, notifications );
         }
     }
-
-    eResource_ = newResource;
-
+    eSetDirectResource(newResource);
     return notifications;
 }
 
@@ -403,7 +408,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
     auto notifications = n;
     auto thisPtr = thisPtr_.lock();
     auto oldContainer = eContainer_.lock();
-    auto oldResource = eResource_.lock();
+    auto oldResource = eDirectResource();
 
     // resource
     std::shared_ptr<EResource> newResource;
@@ -414,9 +419,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
             auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
             _ASSERTE( list );
             notifications = list->remove( thisPtr, notifications );
-
-            eResource_.reset();
-
+            eSetDirectResource(nullptr);
             newResource = newContainer->eResource();
         }
         else
@@ -441,8 +444,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
     int oldContainerFeatureID = eContainerFeatureID_;
     eContainer_ = newContainer;
     eContainerFeatureID_ = newContainerFeatureID;
-    eResource_ = newResource;
-
+    
     // notification
     if( eNotificationRequired() )
     {

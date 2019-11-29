@@ -100,6 +100,8 @@ namespace ecore::impl
                                                                 const std::shared_ptr<EObject>& eContainer,
                                                                 int eContainerFeatureID );
 
+        void eSetDirectResource(const std::shared_ptr<EResource>& resource);
+
     private:
         std::shared_ptr<const EList<std::shared_ptr<EObject>>> eContentsList( const std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>>& refs ) const;
         std::shared_ptr<EStructuralFeature> eStructuralFeature( const std::string& name) const;
