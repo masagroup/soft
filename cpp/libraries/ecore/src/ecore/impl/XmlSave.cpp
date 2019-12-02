@@ -199,32 +199,38 @@ void XmlSave::saveDataTypeSingle(const std::shared_ptr<EObject>& eObject, const 
 void XmlSave::saveDataTypeMany(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
     auto val = eObject->eGet(eFeature);
-    auto l = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>(val);
-    auto d = std::dynamic_pointer_cast<EDataType>(eFeature->getEType());
-    auto p = d->getEPackage();
-    auto f = p->getEFactoryInstance();
-    auto name = getQName(eFeature);
-    for (auto value : *l) {
-        if (!value) {
-            str_.startElement(name);
-            str_.addAttribute("xsi:nil", "true");
-            str_.endEmptyElement();
-            uriToPrefixes_[XSI_URI] = { XSI_NS };
-            prefixesToURI_[XSI_NS] = XSI_URI;
+    try {
+        auto l = anyCast<std::shared_ptr<EList<Any>>>(val);
+        auto d = std::dynamic_pointer_cast<EDataType>(eFeature->getEType());
+        auto p = d->getEPackage();
+        auto f = p->getEFactoryInstance();
+        auto name = getQName(eFeature);
+        for (auto value : *l) {
+            if (value.empty()) {
+                str_.startElement(name);
+                str_.addAttribute("xsi:nil", "true");
+                str_.endEmptyElement();
+                uriToPrefixes_[XSI_URI] = { XSI_NS };
+                prefixesToURI_[XSI_NS] = XSI_URI;
+            }
+            else {
+                auto str = f->convertToString(d, value);
+                str_.addContent(name, str);
+            }
         }
-        else {
-            auto str = f->convertToString(d, value);
-            str_.addContent(name, str);
-        }
+    }
+    catch (BadAnyCast & e) {
     }
 }
 
 void XmlSave::saveManyEmpty(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
+    str_.addAttribute(getQName(eFeature), "");
 }
 
 void XmlSave::saveEObjectSingle(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
+
 }
 
 void XmlSave::saveEObjectMany(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
