@@ -6,6 +6,8 @@
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/EPackage.hpp"
 #include "ecore/EFactory.hpp"
+#include "ecore/EcorePackage.hpp"
+#include "ecore/impl/EObjectInternal.hpp"
 
 #include <memory>
 #include <iterator>
@@ -271,18 +273,47 @@ void XmlSave::saveNil(const std::shared_ptr<EObject>& eObject, const std::shared
 
 void XmlSave::saveContainedSingle(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
+    auto val = eObject->eGet(eFeature);
+    if (!val.empty()) {
+        auto obj = anyCast<std::shared_ptr<EObject>>(val);
+        auto internal = std::dynamic_pointer_cast<EObjectInternal>(obj);
+        saveEObjectInternal(internal, eFeature);
+    }
+    
+
 }
 
 void XmlSave::saveContainedMany(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
+    auto val = eObject->eGet(eFeature);
+    if (!val.empty()) {
+        auto l = anyCast<std::shared_ptr<EList<Any>>>(val);
+        for (auto v : *l) {
+            auto obj = anyCast<std::shared_ptr<EObject>>(v);
+            auto internal = std::dynamic_pointer_cast<EObjectInternal>(obj);
+            saveEObjectInternal(internal, eFeature);
+        }
+    }
 }
 
 void XmlSave::saveEObjectInternal(const std::shared_ptr<EObjectInternal>& eObjectInternal, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
+    if (eObjectInternal->eDirectResource() || eObjectInternal->eIsProxy() )
+        saveHRef(eObjectInternal, eFeature);
+    else
+        saveEObject(eObjectInternal, eFeature);
 }
 
 void XmlSave::saveEObject(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
+    str_.startElement(getQName(eFeature));
+    auto eClass = eObject->eClass();
+    auto eType = eFeature->getEType();
+    if ( eType != eClass && eType != EcorePackage::eInstance()->getEObject() ) {
+        saveTypeAttribute(eClass);
+    }
+    saveElementID(eObject);
+    saveFeatures(eObject, false);
 }
 
 void XmlSave::saveTypeAttribute(const std::shared_ptr<EClass>& eClass)
