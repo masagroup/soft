@@ -477,7 +477,23 @@ XmlSave::ResourceKind XmlSave::getResourceKind(const std::shared_ptr<EObject>& e
 
 std::string XmlSave::getQName(const std::shared_ptr<EClass>& eClass)
 {
-    return std::string();
+    return getQName(eClass->getEPackage(), eClass->getName(), false);
+}
+
+std::string XmlSave::getQName(const std::shared_ptr<EStructuralFeature>& eFeature)
+{
+    return eFeature->getName();
+}
+
+std::string XmlSave::getQName(const std::shared_ptr<EPackage>& ePackage, const std::string& name, bool mustHavePrefix)
+{
+    auto nsPrefix = getPrefix(ePackage, mustHavePrefix);
+    if (nsPrefix.empty())
+        return name;
+    else if (name.empty())
+        return nsPrefix;
+    else
+        return nsPrefix + ":" + name;
 }
 
 std::string XmlSave::getPrefix(const std::shared_ptr<EPackage>& ePackage, bool mustHavePrefix)
@@ -505,7 +521,4 @@ std::string XmlSave::getIDRef(const std::shared_ptr<EObject>& eObject)
     return std::string();
 }
 
-std::string XmlSave::getQName(const std::shared_ptr<EPackage>& ePackage, const std::string& name, bool mustHavePrefix)
-{
-    return std::string();
-}
+
