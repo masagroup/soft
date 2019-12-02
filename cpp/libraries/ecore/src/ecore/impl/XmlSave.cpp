@@ -230,15 +230,43 @@ void XmlSave::saveManyEmpty(const std::shared_ptr<EObject>& eObject, const std::
 
 void XmlSave::saveEObjectSingle(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
-
+    auto val = eObject->eGet(eFeature);
+    if (!val.empty()) {
+        auto eObject = anyCast<std::shared_ptr<EObject>>(val);
+        auto id = getHRef(eObject);
+        str_.addAttribute(getQName(eFeature), "");
+    }
 }
 
 void XmlSave::saveEObjectMany(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
+    auto val = eObject->eGet(eFeature);
+    auto l = anyCast<std::shared_ptr<EList<Any>>>(val);
+    auto failure = false;
+    std::string s = "";
+    for (auto it = std::begin(*l); it != std::end(*l) ; ++it ){
+        auto v = *it;
+        if (!v.empty()) {
+            auto o = anyCast<std::shared_ptr<EObject>>(v);
+            auto id = getHRef(o);
+            if (id.empty()) {
+                failure = true;
+                break;
+            }
+            else {
+                if (it != std::begin(*l))
+                    s += " ";
+                s += id;
+            }
+        }
+    }
+    if (!failure && !s.empty())
+        str_.addAttribute(getQName(eFeature), s);
 }
 
 void XmlSave::saveNil(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
+    str_.addNil(getQName(eFeature));
 }
 
 void XmlSave::saveContainedSingle(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
