@@ -132,6 +132,7 @@ namespace ecore::impl
         std::map<std::string, std::vector<std::string>> uriToPrefixes_;
         std::map<std::string, std::string> prefixesToURI_;
         std::map<std::shared_ptr< EStructuralFeature>, FeatureKind> featureKinds_;
+        bool keepDefaults_;
     };
 }
 

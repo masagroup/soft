@@ -7,6 +7,7 @@
 #include "ecore/EPackage.hpp"
 #include "ecore/EFactory.hpp"
 #include "ecore/EcorePackage.hpp"
+#include "ecore/EReference.hpp"
 #include "ecore/impl/EObjectInternal.hpp"
 
 #include <memory>
@@ -24,6 +25,7 @@ namespace {
 
 XmlSave::XmlSave(XmlResource& resource)
     : resource_(resource)
+    , keepDefaults_(false)
 {
 }
 
@@ -246,7 +248,7 @@ void XmlSave::saveEObjectMany(const std::shared_ptr<EObject>& eObject, const std
     auto l = anyCast<std::shared_ptr<EList<Any>>>(val);
     auto failure = false;
     std::string s = "";
-    for (auto it = std::begin(*l); it != std::end(*l) ; ++it ){
+    for (auto it = std::begin(*l); it != std::end(*l); ++it) {
         auto v = *it;
         if (!v.empty()) {
             auto o = anyCast<std::shared_ptr<EObject>>(v);
@@ -279,7 +281,7 @@ void XmlSave::saveContainedSingle(const std::shared_ptr<EObject>& eObject, const
         auto internal = std::dynamic_pointer_cast<EObjectInternal>(obj);
         saveEObjectInternal(internal, eFeature);
     }
-    
+
 
 }
 
@@ -298,7 +300,7 @@ void XmlSave::saveContainedMany(const std::shared_ptr<EObject>& eObject, const s
 
 void XmlSave::saveEObjectInternal(const std::shared_ptr<EObjectInternal>& eObjectInternal, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
-    if (eObjectInternal->eDirectResource() || eObjectInternal->eIsProxy() )
+    if (eObjectInternal->eDirectResource() || eObjectInternal->eIsProxy())
         saveHRef(eObjectInternal, eFeature);
     else
         saveEObject(eObjectInternal, eFeature);
@@ -309,7 +311,7 @@ void XmlSave::saveEObject(const std::shared_ptr<EObject>& eObject, const std::sh
     str_.startElement(getQName(eFeature));
     auto eClass = eObject->eClass();
     auto eType = eFeature->getEType();
-    if ( eType != eClass && eType != EcorePackage::eInstance()->getEObject() ) {
+    if (eType != eClass && eType != EcorePackage::eInstance()->getEObject()) {
         saveTypeAttribute(eClass);
     }
     saveElementID(eObject);
@@ -347,11 +349,11 @@ void XmlSave::saveHRefMany(const std::shared_ptr<EObject>& eObject, const std::s
 void XmlSave::saveHRef(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
     auto href = getHRef(eObject);
-    if ( href.empty() ) {
+    if (href.empty()) {
         str_.startElement(getQName(eFeature));
         auto eClass = eObject->eClass();
         auto eType = std::dynamic_pointer_cast<EClass>(eFeature->getEType());
-        if (eType != eClass && eType  && eType->isAbstract())
+        if (eType != eClass && eType && eType->isAbstract())
             saveTypeAttribute(eClass);
         str_.addAttribute("href", href);
         str_.endEmptyElement();
@@ -397,22 +399,59 @@ void XmlSave::saveIDRefMany(const std::shared_ptr<EObject>& eObject, const std::
 
 bool XmlSave::isNil(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
-    return false;
+    return eObject->eGet(eFeature).empty();
 }
 
 bool XmlSave::isEmpty(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
-    return false;
+    auto value = eObject->eGet(eFeature);
+    auto l = anyCast<std::shared_ptr<EList<Any>>>(value);
+    return l->empty();
 }
 
 bool XmlSave::shouldSaveFeature(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
-    return false;
+    return eObject->eIsSet(eFeature) || keepDefaults_ && !eFeature->getDefaultValueLiteral().empty()
 }
 
 XmlSave::FeatureKind XmlSave::getFeatureKind(const std::shared_ptr<EStructuralFeature>& eFeature)
 {
-    return FeatureKind();
+    if (eFeature->isTransient())
+        return TRANSIENT;
+
+
+    auto isMany = eFeature->isMany();
+    auto isUnsettable = eFeature->isUnsettable();
+
+    auto eReference = std::dynamic_pointer_cast<EReference>(eFeature);
+    if (eReference) {
+        if (eReference->isContainment())
+            return
+            isMany ?
+            isUnsettable ? OBJECT_CONTAIN_MANY_UNSETTABLE : OBJECT_CONTAIN_MANY :
+            isUnsettable ? OBJECT_CONTAIN_SINGLE_UNSETTABLE : OBJECT_CONTAIN_SINGLE;
+        auto opposite = eReference->getEOpposite();
+        if (opposite && opposite->isContainment())
+            return TRANSIENT;
+        return
+            isMany ?
+            isUnsettable ? OBJECT_HREF_MANY_UNSETTABLE : OBJECT_HREF_MANY :
+            isUnsettable ? OBJECT_HREF_SINGLE_UNSETTABLE : OBJECT_HREF_SINGLE;
+    }
+    else {
+        // Attribute
+        auto d = std::dynamic_pointer_cast<EDataType>(eFeature->getEType());
+        if (!d->isSerializable())
+            return TRANSIENT;
+        if (isMany)
+            return DATATYPE_MANY;
+
+        if (isUnsettable)
+            return DATATYPE_SINGLE_NILLABLE;
+        else
+            return DATATYPE_SINGLE;
+
+    }
 }
 
 XmlSave::ResourceKind XmlSave::getResourceKind(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
