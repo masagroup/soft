@@ -9,6 +9,7 @@
 #include "ecore/EcorePackage.hpp"
 #include "ecore/EReference.hpp"
 #include "ecore/impl/EObjectInternal.hpp"
+#include "ecore/impl/XmlResource.hpp"
 
 #include <memory>
 #include <iterator>
@@ -22,6 +23,8 @@ namespace {
     static constexpr char* XSI_NS = "xsi";
     static constexpr char* XML_NS = "xmlns";
 }
+
+
 
 XmlSave::XmlSave(XmlResource& resource)
     : resource_(resource)
@@ -223,7 +226,7 @@ void XmlSave::saveDataTypeMany(const std::shared_ptr<EObject>& eObject, const st
             }
         }
     }
-    catch (BadAnyCast & e) {
+    catch (BadAnyCast & ) {
     }
 }
 
@@ -411,7 +414,7 @@ bool XmlSave::isEmpty(const std::shared_ptr<EObject>& eObject, const std::shared
 
 bool XmlSave::shouldSaveFeature(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
-    return eObject->eIsSet(eFeature) || keepDefaults_ && !eFeature->getDefaultValueLiteral().empty()
+    return eObject->eIsSet(eFeature) || keepDefaults_ && !eFeature->getDefaultValueLiteral().empty();
 }
 
 XmlSave::FeatureKind XmlSave::getFeatureKind(const std::shared_ptr<EStructuralFeature>& eFeature)
@@ -456,7 +459,20 @@ XmlSave::FeatureKind XmlSave::getFeatureKind(const std::shared_ptr<EStructuralFe
 
 XmlSave::ResourceKind XmlSave::getResourceKind(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
-    return ResourceKind();
+    auto val = eObject->eGet(eFeature);
+    auto obj = anyCast<std::shared_ptr<EObject>>(val);
+    auto internal = std::dynamic_pointer_cast<EObjectInternal>(obj);
+    if (!internal)
+        return SKIP;
+    else if (internal->eIsProxy())
+        return CROSS;
+    else {
+        auto resource = internal->eResource();
+        if (resource == resource_.getThisPtr() || !resource)
+            return SAME;
+        else
+            return CROSS;
+    }    
 }
 
 std::string XmlSave::getQName(const std::shared_ptr<EClass>& eClass)
