@@ -226,7 +226,7 @@ void XmlSave::saveDataTypeMany(const std::shared_ptr<EObject>& eObject, const st
             }
         }
     }
-    catch (BadAnyCast & ) {
+    catch (BadAnyCast&) {
     }
 }
 
@@ -472,7 +472,7 @@ XmlSave::ResourceKind XmlSave::getResourceKind(const std::shared_ptr<EObject>& e
             return SAME;
         else
             return CROSS;
-    }    
+    }
 }
 
 std::string XmlSave::getQName(const std::shared_ptr<EClass>& eClass)
@@ -498,7 +498,40 @@ std::string XmlSave::getQName(const std::shared_ptr<EPackage>& ePackage, const s
 
 std::string XmlSave::getPrefix(const std::shared_ptr<EPackage>& ePackage, bool mustHavePrefix)
 {
-    return std::string();
+    std::string nsPrefix;
+    auto itFound = packages_.find(ePackage);
+    if (itFound == packages_.end()) {
+        auto nsURI = ePackage->getNsURI();
+        auto found = false;
+        auto& prefixes = uriToPrefixes_[nsURI];
+        for (auto prefix : prefixes) {
+            nsPrefix = prefix;
+            if (!mustHavePrefix || !nsPrefix.empty()) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            nsPrefix = namespaces_.getPrefix(nsPrefix);
+            if (!nsPrefix.empty())
+                return nsPrefix;
+
+            nsPrefix = ePackage->getNsPrefix();
+            if (nsPrefix.empty() && mustHavePrefix)
+                nsPrefix = "_";
+
+            auto itPref = prefixesToURI_.find(nsPrefix);
+            if (itPref != prefixesToURI_.end() && itPref->second != nsURI) {
+                auto index = 1;
+                while (prefixesToURI_.find(nsPrefix + "_" + std::to_string(index)) != prefixesToURI_.end())
+                    index++;
+                nsPrefix += "_" + std::to_string(index);
+            }
+            prefixesToURI_[nsPrefix] = nsURI;
+        }
+        packages_[ePackage] = nsPrefix;
+    }
+    return nsPrefix;
 }
 
 std::string XmlSave::getDataType(const Any& value, const std::shared_ptr<EStructuralFeature>& eFeature, bool isAttribute)
