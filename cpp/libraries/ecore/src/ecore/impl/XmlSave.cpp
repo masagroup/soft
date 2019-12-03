@@ -309,9 +309,8 @@ void XmlSave::saveContainedMany(const std::shared_ptr<EObject>& eObject, const s
 {
     auto val = eObject->eGet(eFeature);
     if (!val.empty()) {
-        auto l = anyCast<std::shared_ptr<EList<Any>>>(val);
-        for (auto v : *l) {
-            auto obj = anyCast<std::shared_ptr<EObject>>(v);
+        auto l = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>(val);
+        for (auto obj : *l) {
             auto internal = std::dynamic_pointer_cast<EObjectInternal>(obj);
             saveEObjectInternal(internal, eFeature);
         }
