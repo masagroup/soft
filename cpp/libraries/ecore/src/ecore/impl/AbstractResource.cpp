@@ -251,10 +251,15 @@ bool AbstractResource::isLoaded() const
 
 void AbstractResource::save()
 {
+    auto uriConverter = getURIConverter();
+    auto os = uriConverter->createOutputStream(uri_);
+    if (os)
+        save(*os);
 }
 
 void AbstractResource::save(std::ostream& os)
 {
+    doSave(os);
 }
 
 std::shared_ptr<EList<std::shared_ptr<EDiagnostic>>> AbstractResource::getErrors() const

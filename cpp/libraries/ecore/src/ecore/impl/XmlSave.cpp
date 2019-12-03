@@ -38,6 +38,23 @@ XmlSave::~XmlSave()
 
 void XmlSave::save(std::ostream& o)
 {
+    auto c = resource_.getContents();
+    if (!c || c->empty())
+        return;
+
+    // header
+    saveHeader();
+
+    // content
+    auto object = c->get(0);
+    auto mark = saveTopObject(object);
+
+    // namespace
+    str_.resetToMark(mark);
+    saveNamespaces();
+
+    // write result
+    str_.write(o);
 }
 
 void XmlSave::saveHeader()

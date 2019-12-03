@@ -16,10 +16,10 @@ XmlString::XmlString()
     , depth_(0)
     , lastElementIsStart_(false)
     , currentSegment_( std::make_shared<Segment>() )
-    , segments_({currentSegment_})
     , indentation_("    ")
     , indents_({""})
 {
+    segments_ = { currentSegment_ };
 }
 
 void XmlString::write(std::ostream& os)
@@ -167,7 +167,8 @@ std::shared_ptr<XmlString::Segment> XmlString::mark()
 
 void XmlString::resetToMark(const std::shared_ptr<Segment>& m)
 {
-    currentSegment_ = m;
+    if (m)
+        currentSegment_ = m;
 }
 
 std::string XmlString::removeLast()

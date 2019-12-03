@@ -2,6 +2,7 @@
 #include "ecore/impl/SaxParserPool.hpp"
 #include "ecore/impl/XmlLoad.hpp"
 #include "ecore/impl/XmlInputSource.hpp"
+#include "ecore/impl/XmlSave.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -34,4 +35,6 @@ void XmlResource::doLoad( std::istream& is )
 
 void XmlResource::doSave( std::ostream& os )
 {
+    XmlSave s(*this);
+    s.save(os);
 }
