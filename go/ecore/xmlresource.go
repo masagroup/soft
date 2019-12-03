@@ -819,7 +819,9 @@ func (s *xmlString) mark() *xmlStringSegment {
 }
 
 func (s *xmlString) resetToMark(segment *xmlStringSegment) {
-	s.currentSegment = segment
+	if segment != nil {
+		s.currentSegment = segment
+	}
 }
 
 const (
@@ -875,8 +877,6 @@ func (s *xmlResourceSave) saveTopObject(eObject EObject) *xmlStringSegment {
 	mark := s.str.mark()
 	s.saveElementID(eObject)
 	s.saveFeatures(eObject, false)
-	s.str.resetToMark(mark)
-	s.saveNamespaces()
 	return mark
 }
 
@@ -1458,6 +1458,11 @@ func (r *XMLResource) DoLoad(rd io.Reader) {
 }
 
 func (r *XMLResource) DoSave(w io.Writer) {
+	c := r.GetContents()
+	if c.Empty() {
+		return
+	}
+
 	s := &xmlResourceSave{
 		resource:      r,
 		str:           newXmlString(),
@@ -1470,10 +1475,14 @@ func (r *XMLResource) DoSave(w io.Writer) {
 	// header
 	s.saveHeader()
 
-	// content
-	if !r.GetContents().Empty() {
-		s.saveTopObject(r.GetContents().Get(0).(EObject))
-	}
+	// top object
+	object := c.Get(0).(EObject)
+	mark := s.saveTopObject(object)
 
+	// namespaces
+	s.str.resetToMark(mark)
+	s.saveNamespaces()
+
+	// write result
 	s.str.write(w)
 }
