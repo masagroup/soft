@@ -78,4 +78,17 @@ BOOST_AUTO_TEST_CASE( Load )
     BOOST_CHECK_EQUAL(eBooksReference->getEReferenceType(), eBookClass);
 }
 
+BOOST_AUTO_TEST_CASE(Save)
+{
+    XmlResource resource(URI("data/bookStore.ecore"));
+    resource.load();
+
+    BOOST_CHECK(resource.isLoaded());
+    BOOST_CHECK(resource.getWarnings()->empty());
+    BOOST_CHECK(resource.getErrors()->empty());
+
+    resource.setURI(URI("file:c:/dev/bookStore2.ecore"));
+    resource.save();
+}
+
 BOOST_AUTO_TEST_SUITE_END()
