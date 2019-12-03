@@ -536,22 +536,48 @@ std::string XmlSave::getPrefix(const std::shared_ptr<EPackage>& ePackage, bool m
 
 std::string XmlSave::getDataType(const Any& value, const std::shared_ptr<EStructuralFeature>& eFeature, bool isAttribute)
 {
-    return std::string();
+    if (value.empty())
+        return "";
+    else 
+    {
+        auto d = std::dynamic_pointer_cast<EDataType>(eFeature->getEType());
+        auto p = d->getEPackage();
+        auto f = p->getEFactoryInstance();
+        auto s = f->convertToString(d, value);
+        return s;
+    }
 }
 
 std::string XmlSave::getHRef(const std::shared_ptr<EObject>& eObject)
 {
+    auto internal = std::dynamic_pointer_cast<EObjectInternal>(eObject);
+    if (internal) {
+        auto uri = internal->eProxyURI();
+        if (uri.isEmpty()) {
+            auto eResource = eObject->eResource();
+            if (eResource)
+                return getHRef(eResource, eObject);
+            else
+                return std::string();
+        }   
+        else {
+            return uri.toString();
+        }
+    }
     return std::string();
 }
 
 std::string XmlSave::getHRef(const std::shared_ptr<EResource>& eResource, const std::shared_ptr<EObject>& eObject)
 {
-    return std::string();
+    auto uri = eResource->getURI();
+    auto fragment = eResource->getURIFragment(eObject);
+    uri.setFragment(fragment);
+    return uri.toString();
 }
 
 std::string XmlSave::getIDRef(const std::shared_ptr<EObject>& eObject)
 {
-    return std::string();
+    return resource_.getURIFragment(eObject);
 }
 
 
