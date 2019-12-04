@@ -151,5 +151,5 @@ func TestXMLResourceSave(t *testing.T) {
 
 	bytes, err := ioutil.ReadFile("testdata/bookStore.ecore")
 	assert.Nil(t, err)
-	assert.Equal(t, string(bytes), strbuff.String())
+	assert.Equal(t, strings.ReplaceAll(string(bytes), "\r\n", "\n"), strings.ReplaceAll(strbuff.String(), "\r\n", "\n"))
 }
