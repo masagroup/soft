@@ -102,7 +102,7 @@ std::shared_ptr<EObject> BasicEObject::eObjectForFragmentSegment( const std::str
             auto eFeatureName = uriSegment.substr(0, index);
             auto eFeature = eStructuralFeature(eFeatureName);
             auto value = eGet(eFeature);
-            auto list = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>(value);
+            auto list = anyListCast<std::shared_ptr<EObject>>(value);
             if (position < list->size())
                 return list->get(position);
         }
@@ -123,7 +123,7 @@ std::string BasicEObject::eURIFragmentSegment(const std::shared_ptr<EStructuralF
     s << eFeature->getName();
     if (eFeature->isMany()) {
         auto v = eGet(eFeature, false);
-        auto l = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>(v);
+        auto l = anyListCast<std::shared_ptr<EObject>>(v);
         auto index = l->indexOf(eObject);
         s << ".";
         s << index;
