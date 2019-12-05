@@ -145,7 +145,7 @@ std::string AbstractResource::getURIFragment(const std::shared_ptr<EObject>& eOb
                 }
             }
             if (!isContained)
-                fragmentPath.push_front("/-1");
+                return "/-1";
 
             fragmentPath.push_front(id.empty() ? getURIFragmentRootSegment(internalEObject) : "?" + id);
             fragmentPath.push_front("");
@@ -159,7 +159,7 @@ std::string AbstractResource::getURIFragment(const std::shared_ptr<EObject>& eOb
 std::string AbstractResource::getURIFragmentRootSegment(const std::shared_ptr<EObject>& eObject) const
 {
     auto contents = eContents_.get();
-    return contents->empty() ? "" : std::to_string(contents->indexOf(eObject));
+    return contents->size() > 1 ? std::to_string(contents->indexOf(eObject)) : "";
 }
 
 std::shared_ptr<EObject> AbstractResource::getObjectByPath(const std::vector<std::string>& uriFragmentPath) const

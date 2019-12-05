@@ -214,8 +214,8 @@ BOOST_FIXTURE_TEST_CASE(getURI_Resource, BookStoreInstanciateModel)
     auto contents = resource->getContents();
     contents->add(bookStoreObject);
 
-    BOOST_CHECK_EQUAL(EcoreUtils::getURI(bookStoreObject), URI("file://a.test#/0"));
-    BOOST_CHECK_EQUAL(EcoreUtils::getURI(bookObject), URI("file://a.test#/0/@books.0"));
+    BOOST_CHECK_EQUAL(EcoreUtils::getURI(bookStoreObject), URI("file://a.test#/"));
+    BOOST_CHECK_EQUAL(EcoreUtils::getURI(bookObject), URI("file://a.test#//@books.0"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
