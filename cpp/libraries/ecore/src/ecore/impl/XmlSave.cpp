@@ -444,7 +444,7 @@ bool XmlSave::isEmpty( const std::shared_ptr<EObject>& eObject, const std::share
 
 bool XmlSave::shouldSaveFeature( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature )
 {
-    return eObject->eIsSet( eFeature ) || keepDefaults_ && !eFeature->getDefaultValueLiteral().empty();
+    return eObject->eIsSet( eFeature ) || (keepDefaults_ && !eFeature->getDefaultValueLiteral().empty());
 }
 
 XmlSave::FeatureKind XmlSave::getFeatureKind( const std::shared_ptr<EStructuralFeature>& eFeature )

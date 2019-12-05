@@ -1931,7 +1931,7 @@ func (p *ecorePackageImpl) initializeEClassifierContent() {
 	p.eClassifier_ClassifierID.SetEType(p.GetEInt())
 	p.eClassifier_ClassifierID.SetLowerBound(0)
 	p.eClassifier_ClassifierID.SetUpperBound(1)
-	p.eClassifier_ClassifierID.SetTransient(false)
+	p.eClassifier_ClassifierID.SetTransient(true)
 	p.eClassifier_ClassifierID.SetVolatile(false)
 	p.eClassifier_ClassifierID.SetChangeable(true)
 	p.eClassifier_ClassifierID.SetUnsettable(false)

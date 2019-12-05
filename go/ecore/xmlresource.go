@@ -1223,7 +1223,7 @@ func (s *xmlResourceSave) isEmpty(eObject EObject, eFeature EStructuralFeature) 
 }
 
 func (s *xmlResourceSave) shouldSaveFeature(o EObject, f EStructuralFeature) bool {
-	return o.EIsSet(f) || s.keepDefaults && f.GetDefaultValueLiteral() != ""
+	return o.EIsSet(f) || (s.keepDefaults && f.GetDefaultValueLiteral() != "")
 }
 
 func (s *xmlResourceSave) getSaveFeatureKind(f EStructuralFeature) int {
