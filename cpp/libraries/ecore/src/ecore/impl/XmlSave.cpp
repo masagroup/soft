@@ -527,7 +527,9 @@ std::string XmlSave::getPrefix( const std::shared_ptr<EPackage>& ePackage, bool 
 {
     std::string nsPrefix;
     auto itFound = packages_.find( ePackage );
-    if( itFound == packages_.end() )
+    if( itFound != packages_.end() )
+        nsPrefix = itFound->second;
+    else
     {
         auto nsURI = ePackage->getNsURI();
         auto found = false;
