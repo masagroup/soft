@@ -1,4 +1,6 @@
 #include "ecore/impl/XmlSave.hpp"
+#include "ecore/Any.hpp"
+#include "ecore/AnyCast.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/EDataType.hpp"
 #include "ecore/EObject.hpp"
@@ -223,27 +225,23 @@ void XmlSave::saveDataTypeSingle(const std::shared_ptr<EObject>& eObject, const 
 void XmlSave::saveDataTypeMany(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
     auto val = eObject->eGet(eFeature);
-    try {
-        auto l = anyCast<std::shared_ptr<EList<Any>>>(val);
-        auto d = std::dynamic_pointer_cast<EDataType>(eFeature->getEType());
-        auto p = d->getEPackage();
-        auto f = p->getEFactoryInstance();
-        auto name = getQName(eFeature);
-        for (auto value : *l) {
-            if (value.empty()) {
-                str_.startElement(name);
-                str_.addAttribute("xsi:nil", "true");
-                str_.endEmptyElement();
-                uriToPrefixes_[XSI_URI] = { XSI_NS };
-                prefixesToURI_[XSI_NS] = XSI_URI;
-            }
-            else {
-                auto str = f->convertToString(d, value);
-                str_.addContent(name, str);
-            }
+    auto l = anyCast<std::shared_ptr<EList<Any>>>(val);
+    auto d = std::dynamic_pointer_cast<EDataType>(eFeature->getEType());
+    auto p = d->getEPackage();
+    auto f = p->getEFactoryInstance();
+    auto name = getQName(eFeature);
+    for (auto value : *l) {
+        if (value.empty()) {
+            str_.startElement(name);
+            str_.addAttribute("xsi:nil", "true");
+            str_.endEmptyElement();
+            uriToPrefixes_[XSI_URI] = { XSI_NS };
+            prefixesToURI_[XSI_NS] = XSI_URI;
         }
-    }
-    catch (BadAnyCast&) {
+        else {
+            auto str = f->convertToString(d, value);
+            str_.addContent(name, str);
+        }
     }
 }
 
@@ -255,33 +253,31 @@ void XmlSave::saveManyEmpty(const std::shared_ptr<EObject>& eObject, const std::
 void XmlSave::saveEObjectSingle(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
     auto val = eObject->eGet(eFeature);
-    if (!val.empty()) {
-        auto eObject = anyCast<std::shared_ptr<EObject>>(val);
-        auto id = getHRef(eObject);
-        str_.addAttribute(getQName(eFeature), "");
-    }
+    auto obj = anyObjectCast<std::shared_ptr<EObject>>(val);
+    if( obj )
+    {
+        auto id = getHRef( obj );
+        str_.addAttribute( getQName( eFeature ), "" );
+    }   
 }
 
 void XmlSave::saveEObjectMany(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
     auto val = eObject->eGet(eFeature);
-    auto l = anyCast<std::shared_ptr<EList<Any>>>(val);
+    auto l = anyListCast<std::shared_ptr<EObject>>(val);
     auto failure = false;
     std::string s = "";
     for (auto it = std::begin(*l); it != std::end(*l); ++it) {
-        auto v = *it;
-        if (!v.empty()) {
-            auto o = anyCast<std::shared_ptr<EObject>>(v);
-            auto id = getHRef(o);
-            if (id.empty()) {
-                failure = true;
-                break;
-            }
-            else {
-                if (it != std::begin(*l))
-                    s += " ";
-                s += id;
-            }
+        auto obj = *it;
+        auto id = getHRef(obj);
+        if (id.empty()) {
+            failure = true;
+            break;
+        }
+        else {
+            if (it != std::begin(*l))
+                s += " ";
+            s += id;
         }
     }
     if (!failure && !s.empty())
@@ -296,25 +292,17 @@ void XmlSave::saveNil(const std::shared_ptr<EObject>& eObject, const std::shared
 void XmlSave::saveContainedSingle(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
     auto val = eObject->eGet(eFeature);
-    if (!val.empty()) {
-        auto obj = anyCast<std::shared_ptr<EObject>>(val);
-        auto internal = std::dynamic_pointer_cast<EObjectInternal>(obj);
-        saveEObjectInternal(internal, eFeature);
-    }
-
-
+    auto obj = anyObjectCast<std::shared_ptr<EObjectInternal>>( val );
+    if( obj )
+        saveEObjectInternal( obj, eFeature );
 }
 
 void XmlSave::saveContainedMany(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
     auto val = eObject->eGet(eFeature);
-    if (!val.empty()) {
-        auto l = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>(val);
-        for (auto obj : *l) {
-            auto internal = std::dynamic_pointer_cast<EObjectInternal>(obj);
-            saveEObjectInternal(internal, eFeature);
-        }
-    }
+    auto l = anyListCast<std::shared_ptr<EObjectInternal>>( val );
+    for (auto obj : *l)
+        saveEObjectInternal(obj, eFeature);
 }
 
 void XmlSave::saveEObjectInternal(const std::shared_ptr<EObjectInternal>& eObjectInternal, const std::shared_ptr<EStructuralFeature>& eFeature)
@@ -347,22 +335,17 @@ void XmlSave::saveTypeAttribute(const std::shared_ptr<EClass>& eClass)
 void XmlSave::saveHRefSingle(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
     auto value = eObject->eGet(eFeature);
-    if (!value.empty()) {
-        auto o = anyCast<std::shared_ptr<EObject>>(eObject);
+    auto o = anyObjectCast<std::shared_ptr<EObject>>( value );
+    if (o)
         saveHRef(o, eFeature);
-    }
 }
 
 void XmlSave::saveHRefMany(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
     auto val = eObject->eGet(eFeature);
-    if (!val.empty()) {
-        auto l = anyCast<std::shared_ptr<EList<Any>>>(val);
-        for (auto v : *l) {
-            auto o = anyCast<std::shared_ptr<EObject>>(v);
-            saveHRef(o, eFeature);
-        }
-    }
+    auto l = anyListCast<std::shared_ptr<EObject>>(val);
+    for( auto obj : *l )
+        saveHRef( obj, eFeature );
 }
 
 void XmlSave::saveHRef(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
@@ -382,34 +365,31 @@ void XmlSave::saveHRef(const std::shared_ptr<EObject>& eObject, const std::share
 void XmlSave::saveIDRefSingle(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
     auto value = eObject->eGet(eFeature);
-    if (!value.empty()) {
-        auto obj = anyCast<std::shared_ptr<EObject>>(value);
-        auto id = getIDRef(obj);
-        if (!id.empty())
-            str_.addAttribute(getQName(eFeature), id);
+    auto obj = anyObjectCast<std::shared_ptr<EObject>>( value );
+    if( obj ) {
+        auto id = getIDRef( obj );
+        if( !id.empty() )
+            str_.addAttribute( getQName( eFeature ), id );
     }
 }
 
 void XmlSave::saveIDRefMany(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
     auto val = eObject->eGet(eFeature);
-    auto l = anyCast<std::shared_ptr<EList<Any>>>(val);
+    auto l = anyListCast<std::shared_ptr<EObject>>(val);
     auto failure = false;
     std::string s = "";
     for (auto it = std::begin(*l); it != std::end(*l); ++it) {
-        auto v = *it;
-        if (!v.empty()) {
-            auto o = anyCast<std::shared_ptr<EObject>>(v);
-            auto id = getIDRef(o);
-            if (id.empty()) {
-                failure = true;
-                break;
-            }
-            else {
-                if (it != std::begin(*l))
-                    s += " ";
-                s += id;
-            }
+        auto o = *it;
+        auto id = getIDRef(o);
+        if (id.empty()) {
+            failure = true;
+            break;
+        }
+        else {
+            if (it != std::begin(*l))
+                s += " ";
+            s += id;
         }
     }
     if (!failure && !s.empty())
@@ -476,8 +456,7 @@ XmlSave::FeatureKind XmlSave::getFeatureKind(const std::shared_ptr<EStructuralFe
 XmlSave::ResourceKind XmlSave::getResourceKind(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature)
 {
     auto val = eObject->eGet(eFeature);
-    auto obj = anyCast<std::shared_ptr<EObject>>(val);
-    auto internal = std::dynamic_pointer_cast<EObjectInternal>(obj);
+    auto internal = anyObjectCast<std::shared_ptr<EObjectInternal>>( val );
     if (!internal)
         return SKIP;
     else if (internal->eIsProxy())
