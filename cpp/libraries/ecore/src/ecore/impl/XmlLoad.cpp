@@ -1,4 +1,6 @@
 #include "ecore/impl/XmlLoad.hpp"
+#include "ecore/Any.hpp"
+#include "ecore/AnyCast.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/EDataType.hpp"
 #include "ecore/EFactory.hpp"
@@ -293,7 +295,7 @@ void XmlLoad::setFeatureValue( const std::shared_ptr<EObject>& eObject,
         auto eClassifier = eFeature->getEType();
         auto eDataType = std::dynamic_pointer_cast<EDataType>( eClassifier );
         auto eFactory = eDataType->getEPackage()->getEFactoryInstance();
-        auto eList = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( eObject->eGet( eFeature ) );
+        auto eList = anyListCast<std::shared_ptr<EObject>>( eObject->eGet( eFeature ) );
         if( position == -2 )
         {
         }
@@ -302,15 +304,15 @@ void XmlLoad::setFeatureValue( const std::shared_ptr<EObject>& eObject,
         else
         {
             auto any = eFactory->createFromString( eDataType, anyCast<std::string>( value ) );
-            auto eValue = anyCast<std::shared_ptr<EObject>>( any );
+            auto eValue = anyObjectCast<std::shared_ptr<EObject>>( any );
             eList->add( eValue );
         }
     }
     case ManyAdd:
     case ManyMove:
     {
-        auto eList = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( eObject->eGet( eFeature ) );
-        auto eValue = anyCast<std::shared_ptr<EObject>>( value );
+        auto eList = anyListCast<std::shared_ptr<EObject>>( eObject->eGet( eFeature ) );
+        auto eValue = anyObjectCast<std::shared_ptr<EObject>>( value );
         if( position == -1 )
             eList->add( eValue );
         else if( position == -2 )
@@ -525,19 +527,19 @@ void XmlLoad::handleReferences()
                     if( eReference->isMany() )
                     {
                         auto value = eProxy->eGet( eReference );
-                        auto list = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( value );
+                        auto list = anyListCast<std::shared_ptr<EObject>>( value );
                         proxyHolder = list->get( 0 );
                     }
                     else
                     {
                         auto value = eProxy->eGet( eReference );
-                        proxyHolder = anyCast<std::shared_ptr<EObject>>( value );
+                        proxyHolder = anyObjectCast<std::shared_ptr<EObject>>( value );
                     }
 
                     if( eOpposite->isMany() )
                     {
                         auto value = proxyHolder->eGet( eOpposite );
-                        auto holderContents = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( value );
+                        auto holderContents = anyListCast<std::shared_ptr<EObject>>( value );
                         auto resolvedIndex = holderContents->indexOf( resolvedObject );
                         if( resolvedIndex != -1 )
                         {
@@ -552,13 +554,13 @@ void XmlLoad::handleReferences()
                     if( eReference->isMany() )
                     {
                         auto value = resolvedObject->eGet( eReference );
-                        auto list = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( value );
+                        auto list = anyListCast<std::shared_ptr<EObject>>( value );
                         replace = !list->contains( proxyHolder );
                     }
                     else
                     {
                         auto value = resolvedObject->eGet( eReference );
-                        auto object = anyCast<std::shared_ptr<EObject>>( value );
+                        auto object = anyObjectCast<std::shared_ptr<EObject>>( value );
                         replace = object != proxyHolder;
                     }
 
@@ -567,7 +569,7 @@ void XmlLoad::handleReferences()
                         if( eOpposite->isMany() )
                         {
                             auto value = proxyHolder->eGet( eOpposite );
-                            auto list = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( value );
+                            auto list = anyListCast<std::shared_ptr<EObject>>( value );
                             auto ndx = list->indexOf( eProxy );
                             list->set( ndx, resolvedObject );
                         }

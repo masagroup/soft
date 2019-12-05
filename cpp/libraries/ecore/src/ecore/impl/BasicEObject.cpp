@@ -1,5 +1,7 @@
 #include "ecore/impl/BasicEObject.hpp"
 #include "ecore/Constants.hpp"
+#include "ecore/Any.hpp"
+#include "ecore/AnyCast.hpp"
 #include "ecore/EAdapter.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/ECollectionView.hpp"
@@ -53,12 +55,12 @@ std::shared_ptr<const EList<std::shared_ptr<EObject>>> BasicEObject::eContentsLi
             auto value = eGet( ref );
             if( ref->isMany() )
             {
-                std::shared_ptr<EList<std::shared_ptr<EObject>>> l = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( value );
+                auto l = anyListCast<std::shared_ptr<EObject>>( value );
                 std::copy( l->begin(), l->end(), std::back_inserter( contents ) );
             }
             else if( !value.empty() )
             {
-                std::shared_ptr<EObject> object = anyCast<std::shared_ptr<EObject>>( value );
+                auto object = anyObjectCast<std::shared_ptr<EObject>>( value );
                 if( object )
                     contents.push_back( object );
             }

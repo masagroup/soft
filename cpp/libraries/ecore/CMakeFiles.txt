@@ -8,7 +8,8 @@ set(SOURCE_ECORE_FILES
 )
 
 set(HEADER_ECORE_FILES
-    src/ecore/Any.hpp 
+    src/ecore/Any.hpp
+    src/ecore/AnyCast.hpp
     src/ecore/Assert.hpp 
     src/ecore/EList.hpp
     src/ecore/EList.inl

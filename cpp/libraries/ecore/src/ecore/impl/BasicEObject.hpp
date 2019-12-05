@@ -10,10 +10,10 @@
 #ifndef ECORE_BASICEOBJECT_HPP_
 #define ECORE_BASICEOBJECT_HPP_
 
-#include "ecore/Exports.hpp"
 #include "ecore/EObject.hpp"
-#include "ecore/impl/EObjectInternal.hpp"
+#include "ecore/Exports.hpp"
 #include "ecore/impl/AbstractNotifier.hpp"
+#include "ecore/impl/EObjectInternal.hpp"
 
 #include <optional>
 
@@ -25,7 +25,7 @@ namespace ecore
 namespace ecore::impl
 {
 
-    class ECORE_API BasicEObject : public virtual AbstractNotifier<EObjectInternal> 
+    class ECORE_API BasicEObject : public virtual AbstractNotifier<EObjectInternal>
     {
     public:
         BasicEObject();
@@ -71,8 +71,9 @@ namespace ecore::impl
         int eContainerFeatureID() const;
 
         // Fragment
-        virtual std::shared_ptr<EObject>eObjectForFragmentSegment( const std::string& uriSegment) const;
-        virtual std::string eURIFragmentSegment(const std::shared_ptr<EStructuralFeature>& feature, const std::shared_ptr<EObject>& eObject) const;
+        virtual std::shared_ptr<EObject> eObjectForFragmentSegment( const std::string& uriSegment ) const;
+        virtual std::string eURIFragmentSegment( const std::shared_ptr<EStructuralFeature>& feature,
+                                                 const std::shared_ptr<EObject>& eObject ) const;
 
     protected:
         virtual std::shared_ptr<EClass> eStaticClass() const;
@@ -100,11 +101,12 @@ namespace ecore::impl
                                                                 const std::shared_ptr<EObject>& eContainer,
                                                                 int eContainerFeatureID );
 
-        void eSetDirectResource(const std::shared_ptr<EResource>& resource);
+        void eSetDirectResource( const std::shared_ptr<EResource>& resource );
 
     private:
-        std::shared_ptr<const EList<std::shared_ptr<EObject>>> eContentsList( const std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>>& refs ) const;
-        std::shared_ptr<EStructuralFeature> eStructuralFeature( const std::string& name) const;
+        std::shared_ptr<const EList<std::shared_ptr<EObject>>> eContentsList(
+            const std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>>& refs ) const;
+        std::shared_ptr<EStructuralFeature> eStructuralFeature( const std::string& name ) const;
 
     protected:
         std::weak_ptr<EResource> eResource_;
@@ -113,19 +115,6 @@ namespace ecore::impl
         std::optional<URI> eProxyURI_;
     };
 
-    template <typename T>
-    T objectCast( const Any& any )
-    {
-        auto id = &any.type();
-        if( id == &typeid( T ) )
-            return anyCast<T>( any );
-        else if( id == &typeid( std::shared_ptr<EObject> ) )
-        {
-            auto object = anyCast<std::shared_ptr<EObject>>( any );
-            return std::dynamic_pointer_cast<typename T::element_type>( object );
-        }
-        return nullptr;
-    }
 
 } // namespace ecore::impl
 
