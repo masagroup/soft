@@ -21,13 +21,13 @@ namespace ecore
     T anyObjectCast( const Any& any )
     {
         auto id = &any.type();
-        if( id == &typeid( T ) )
-            return anyCast<T>( any );
-        else if( id == &typeid( std::shared_ptr<EObject> ) )
+        if( id == &typeid( std::shared_ptr<EObject> ) )
         {
             auto object = anyCast<std::shared_ptr<EObject>>( any );
             return std::dynamic_pointer_cast<typename T::element_type>( object );
         }
+        else if( id == &typeid( T ) )
+            return anyCast<T>( any );
         return nullptr;
     }
 
@@ -35,18 +35,18 @@ namespace ecore
     std::shared_ptr<EList<T>> anyListCast( const Any& any )
     {
         auto id = &any.type();
-        if( id == &typeid( std::shared_ptr<EList<T>> ) )
-            return anyCast<std::shared_ptr<EList<T>>>( any );
+        if( id == &typeid( std::shared_ptr<EList<Any>> ) )
+        {
+            auto l = anyCast<std::shared_ptr<EList<Any>>>( any );
+            return l->asEListOf<T>();
+        }
         else if( id == &typeid( std::shared_ptr<EList<std::shared_ptr<EObject>>> ) )
         {
             auto l = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( any );
             return l->asEListOf<T>();
         }
-        else if( id == &typeid( std::shared_ptr<EList<Any>> ) )
-        {
-            auto l = anyCast<std::shared_ptr<EList<Any>>>( any );
-            return l->asEListOf<T>();
-        }
+        else if( id == &typeid( std::shared_ptr<EList<T>> ) )
+            return anyCast<std::shared_ptr<EList<T>>>( any );
         return nullptr;
     }
 
