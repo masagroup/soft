@@ -72,8 +72,6 @@ std::shared_ptr<XmlString::Segment> XmlSave::saveTopObject( const std::shared_pt
     auto mark = str_.mark();
     saveElementID( eObject );
     saveFeatures( eObject, false );
-    str_.resetToMark( mark );
-    saveNamespaces();
     return mark;
 }
 
@@ -360,7 +358,7 @@ void XmlSave::saveTypeAttribute( const std::shared_ptr<EClass>& eClass )
 {
     str_.addAttribute( "xsi:type", getQName( eClass ) );
     uriToPrefixes_[XSI_URI] = {XSI_NS};
-    prefixesToURI_[XSI_NS] = XSI_NS;
+    prefixesToURI_[XSI_NS] = XSI_URI;
 }
 
 void XmlSave::saveHRefSingle( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature )
