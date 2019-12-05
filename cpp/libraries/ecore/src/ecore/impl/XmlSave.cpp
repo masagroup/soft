@@ -131,6 +131,7 @@ bool XmlSave::saveFeatures( const std::shared_ptr<EObject>& eObject, bool attrib
                     saveManyEmpty( eObject, eFeature );
                     continue;
                 }
+                break;
             case OBJECT_CONTAIN_SINGLE_UNSETTABLE:
             case OBJECT_CONTAIN_SINGLE:
             case OBJECT_CONTAIN_MANY:
@@ -149,6 +150,7 @@ bool XmlSave::saveFeatures( const std::shared_ptr<EObject>& eObject, bool attrib
                 default:
                     continue;
                 }
+                break;
             case OBJECT_HREF_MANY_UNSETTABLE:
                 if( isEmpty( eObject, eFeature ) )
                 {
@@ -166,6 +168,7 @@ bool XmlSave::saveFeatures( const std::shared_ptr<EObject>& eObject, bool attrib
                 default:
                     continue;
                 }
+                break;
             default:
                 continue;
             }
