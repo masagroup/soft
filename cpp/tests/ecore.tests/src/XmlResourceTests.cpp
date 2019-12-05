@@ -17,14 +17,15 @@ BOOST_AUTO_TEST_SUITE( XmlResourceTests )
 
 BOOST_AUTO_TEST_CASE( Load )
 {
-    XmlResource resource( URI( "data/bookStore.ecore" ) );
-    resource.load();
+    auto resource = std::make_shared < XmlResource>( URI( "data/bookStore.ecore" ) );
+    resource->setThisPtr( resource );
+    resource->load();
 
-    BOOST_CHECK( resource.isLoaded() );
-    BOOST_CHECK( resource.getWarnings()->empty() );
-    BOOST_CHECK( resource.getErrors()->empty() );
+    BOOST_CHECK( resource->isLoaded() );
+    BOOST_CHECK( resource->getWarnings()->empty() );
+    BOOST_CHECK( resource->getErrors()->empty() );
 
-    auto contents = resource.getContents();
+    auto contents = resource->getContents();
     BOOST_CHECK_EQUAL( contents->size(), 1 );
 
     auto ePackage = std::dynamic_pointer_cast<EPackage>( contents->get( 0 ) );
@@ -80,15 +81,16 @@ BOOST_AUTO_TEST_CASE( Load )
 
 BOOST_AUTO_TEST_CASE(Save)
 {
-    XmlResource resource(URI("data/bookStore.ecore"));
-    resource.load();
+    auto resource = std::make_shared<XmlResource>( URI( "data/bookStore.ecore" ) );
+    resource->setThisPtr( resource );
+    resource->load();
 
-    BOOST_CHECK(resource.isLoaded());
-    BOOST_CHECK(resource.getWarnings()->empty());
-    BOOST_CHECK(resource.getErrors()->empty());
+    BOOST_CHECK(resource->isLoaded());
+    BOOST_CHECK(resource->getWarnings()->empty());
+    BOOST_CHECK(resource->getErrors()->empty());
 
-    resource.setURI(URI("file:c:/dev/bookStore2.ecore"));
-    resource.save();
+    resource->setURI(URI("file:d:/dev/bookStore2.ecore"));
+    resource->save();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
