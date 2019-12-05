@@ -11,6 +11,7 @@ set(HEADER_ECORE_FILES
     src/ecore/Any.hpp 
     src/ecore/Assert.hpp 
     src/ecore/EList.hpp
+    src/ecore/EList.inl
     src/ecore/Constants.hpp
     src/ecore/EAdapter.hpp
     src/ecore/EcoreUtils.hpp

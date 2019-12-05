@@ -195,14 +195,13 @@ BOOST_AUTO_TEST_CASE( Unique_Add_Index )
 }
 
 #ifdef _DEBUG
-BOOST_AUTO_TEST_CASE(Unique_Add_Index_InvalidElement, *boost::unit_test::precondition(no_debugger()))
+BOOST_AUTO_TEST_CASE( Unique_Add_Index_InvalidElement, *boost::unit_test::precondition( no_debugger() ) )
 {
     ArrayEList<int, true> list;
-    list.add(0, 1);
-    BOOST_REQUIRE_THROW(list.add(1, 1), boost::execution_exception);
+    list.add( 0, 1 );
+    BOOST_REQUIRE_THROW( list.add( 1, 1 ), boost::execution_exception );
 }
 #endif // DEBUG
-
 
 BOOST_AUTO_TEST_CASE( Unique_AddAll )
 {
@@ -279,7 +278,7 @@ BOOST_AUTO_TEST_CASE( Move )
     BOOST_CHECK_EQUAL( list, std::vector<int>( {1, 2, 4, 3, 5} ) );
 }
 
-BOOST_AUTO_TEST_CASE( Delegate )
+BOOST_AUTO_TEST_CASE( Delegate_SharedPtr )
 {
     class A
     {
@@ -306,6 +305,27 @@ BOOST_AUTO_TEST_CASE( Delegate )
     BOOST_CHECK( delegate->add( newB ) );
     BOOST_CHECK_EQUAL( list->size(), 3 );
     BOOST_CHECK_EQUAL( list->get( 2 ), newB );
+}
+
+BOOST_AUTO_TEST_CASE( Delegate_Any )
+{
+    class A
+    {
+    public:
+        A() = default;
+
+        virtual ~A() = default;
+    };
+
+    auto init = std::initializer_list<std::shared_ptr<A>>( {std::make_shared<A>(), std::make_shared<A>()} );
+    auto list = std::make_shared<ArrayEList<std::shared_ptr<A>>>( init );
+    auto delegate = list->asEListOf<Any>();
+
+    auto newA = std::make_shared<A>();
+    BOOST_CHECK( delegate->add( newA) );
+    BOOST_CHECK_EQUAL( list->size(), 3 );
+    BOOST_CHECK_EQUAL( list->get( 2 ), newA );
+    BOOST_CHECK_EQUAL( delegate->get( 2 ), newA );
 }
 
 BOOST_AUTO_TEST_SUITE_END()
