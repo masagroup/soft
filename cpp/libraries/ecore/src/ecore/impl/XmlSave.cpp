@@ -96,7 +96,7 @@ bool XmlSave::saveFeatures( const std::shared_ptr<EObject>& eObject, bool attrib
     {
         // current feature
         auto eFeature = *it;
-
+        
         FeatureKind kind;
         auto itFound = featureKinds_.find( eFeature );
         if( itFound == featureKinds_.end() )
@@ -381,15 +381,14 @@ void XmlSave::saveHRef( const std::shared_ptr<EObject>& eObject, const std::shar
 {
     auto href = getHRef( eObject );
     if( href.empty() )
-    {
-        str_.startElement( getQName( eFeature ) );
-        auto eClass = eObject->eClass();
-        auto eType = std::dynamic_pointer_cast<EClass>( eFeature->getEType() );
-        if( eType != eClass && eType && eType->isAbstract() )
-            saveTypeAttribute( eClass );
-        str_.addAttribute( "href", href );
-        str_.endEmptyElement();
-    }
+        return;
+    str_.startElement( getQName( eFeature ) );
+    auto eClass = eObject->eClass();
+    auto eType = std::dynamic_pointer_cast<EClass>( eFeature->getEType() );
+    if( eType != eClass && eType && eType->isAbstract() )
+        saveTypeAttribute( eClass );
+    str_.addAttribute( "href", href );
+    str_.endEmptyElement();
 }
 
 void XmlSave::saveIDRefSingle( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature )
