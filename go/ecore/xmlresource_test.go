@@ -153,3 +153,16 @@ func TestXMLResourceSave(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, strings.ReplaceAll(string(bytes), "\r\n", "\n"), strings.ReplaceAll(strbuff.String(), "\r\n", "\n"))
 }
+
+func BenchmarkXMLResourceLoadSave(b *testing.B) {
+	b.ReportAllocs()
+	for i := 0; i < b.N; i++ {
+		resource := NewXMLResource()
+		resource.SetURI(&url.URL{Path: "testdata/bookStore.ecore"})
+		resource.Load()
+
+		var strbuff strings.Builder
+		resource.SaveWithWriter(&strbuff)
+		resource = nil
+	}
+}
