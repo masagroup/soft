@@ -13,9 +13,13 @@
 #include <fstream>
 #include <streambuf>
 #include <string>
+#include <chrono>
 
 using namespace ecore;
 using namespace ecore::impl;
+
+#define NB_ITERATIONS 8
+#define LOG 1
 
 BOOST_AUTO_TEST_SUITE( XmlResourceTests )
 
@@ -115,5 +119,27 @@ BOOST_AUTO_TEST_CASE( Save )
 
     BOOST_CHECK_EQUAL( replaceAll( ss.str(), "\r\n", "\n" ), replaceAll( expected, "\r\n", "\n" ) );
 }
+
+
+
+BOOST_AUTO_TEST_CASE( Performance, *boost::unit_test::disabled() )
+{
+    auto start = std::chrono::steady_clock::now();
+    for( int i = 0; i < NB_ITERATIONS; ++i )
+    {
+        auto resource = std::make_shared<XmlResource>( URI( "data/bookStore.ecore" ) );
+        resource->setThisPtr( resource );
+        resource->load();
+
+        std::stringstream ss;
+        resource->save( ss );
+    }
+    auto end = std::chrono::steady_clock::now();
+    auto times = std::chrono::duration_cast<std::chrono::microseconds>( end - start ).count();
+#if LOG
+    std::cout << "Load/Save:" << (double)times / NB_ITERATIONS << " us" << std::endl;
+#endif
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
