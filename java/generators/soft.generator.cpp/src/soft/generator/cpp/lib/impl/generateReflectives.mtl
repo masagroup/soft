@@ -123,8 +123,14 @@ ecore::Any [className/]::eGet(int featureID, bool resolve, bool coreType) const
         [if anStructFeature.isListType()]
         {
             auto list = [anStructFeature.getGetterName()/]();
-            _ASSERTE( list );
-            return list->asEListOf<std::shared_ptr<EObject>>();
+            auto objects = list->asEListOf<std::shared_ptr<EObject>>();
+            return objects->asEListOf<Any>();
+        }
+        [elseif anStructFeature.oclIsKindOf(EReference)]
+        {
+            auto value = [anStructFeature.getGetterName()/]();
+            auto object = std::dynamic_pointer_cast<EObject>(value);
+            return object;
         }
         [else]
             return [anStructFeature.getGetterName()/]();
@@ -168,17 +174,19 @@ void [aClass.getImplementationName()/]::eSet(int featureID, const ecore::Any& ne
         case [anStructFeature.getQualifiedFeatureIDName()/]:
         {
     [let varName : String = anStructFeature.name.first(1)]
-    [if anStructFeature.eGenericType.eClassifier.isAny()]
-            auto [varName/] = newValue;
-    [elseif anStructFeature.eGenericType.eClassifier.oclIsKindOf(EClass)]
-            [anStructFeature.generateEffectiveType()/] [varName/] = objectCast<[anStructFeature.generateEffectiveType()/]>(newValue);
-    [else]
-            [anStructFeature.generateEffectiveType()/] [varName/] = anyCast<[anStructFeature.generateEffectiveType()/]>(newValue);
-    [/if]
     [if anStructFeature.isListType()]
+            auto list = anyListCast<std::shared_ptr<EObject>>(newValue);
+            auto [varName/] = list->asEListOf<[anStructFeature.eGenericType.generateCppType()/]>();
             [anStructFeature.getGetterName()/]()->clear();
             [anStructFeature.getGetterName()/]()->addAll(*[varName/]);
     [else]
+        [if anStructFeature.eGenericType.eClassifier.isAny()]
+            auto [varName/] = newValue;
+        [elseif anStructFeature.eGenericType.eClassifier.oclIsKindOf(EClass)]
+            auto [varName/] = anyObjectCast<[anStructFeature.generateEffectiveType()/]>(newValue);
+        [else]
+            auto [varName/] = anyCast<[anStructFeature.generateEffectiveType()/]>(newValue);
+        [/if]
             [anStructFeature.getSetterName()/]([varName/]);
     [/if]
             return;

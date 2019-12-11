@@ -1,23 +1,29 @@
 package ecore
 
 import (
+	"io/ioutil"
 	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
+func m(a, b interface{}) []interface{} {
+	return []interface{}{a, b}
+}
+
 func TestXmlNamespacesNoContext(t *testing.T) {
 	n := newXmlNamespaces()
-	assert.Equal(t, "", n.getURI("prefix"))
-	assert.Equal(t, "", n.getPrefix("uri"))
+	assert.Equal(t, m("", false), m(n.getURI("prefix")))
+	assert.Equal(t, m("", false), m(n.getPrefix("uri")))
 }
 
 func TestXmlNamespacesEmpty(t *testing.T) {
 	n := newXmlNamespaces()
 	n.pushContext()
-	assert.Equal(t, "", n.getURI("prefix"))
-	assert.Equal(t, "", n.getPrefix("uri"))
+	assert.Equal(t, m("", false), m(n.getURI("prefix")))
+	assert.Equal(t, m("", false), m(n.getPrefix("uri")))
 	c := n.popContext()
 	assert.Equal(t, 0, len(c))
 }
@@ -26,51 +32,51 @@ func TestXmlNamespacesContext(t *testing.T) {
 	n := newXmlNamespaces()
 	n.pushContext()
 	assert.False(t, n.declarePrefix("prefix", "uri"))
-	assert.Equal(t, "uri", n.getURI("prefix"))
-	assert.Equal(t, "prefix", n.getPrefix("uri"))
+	assert.Equal(t, m("uri", true), m(n.getURI("prefix")))
+	assert.Equal(t, m("prefix", true), m(n.getPrefix("uri")))
 
 	n.pushContext()
 	assert.False(t, n.declarePrefix("prefix", "uri2"))
-	assert.Equal(t, "uri2", n.getURI("prefix"))
-	assert.Equal(t, "prefix", n.getPrefix("uri2"))
+	assert.Equal(t, m("uri2", true), m(n.getURI("prefix")))
+	assert.Equal(t, m("prefix", true), m(n.getPrefix("uri2")))
 
 	n.popContext()
-	assert.Equal(t, "uri", n.getURI("prefix"))
-	assert.Equal(t, "prefix", n.getPrefix("uri"))
+	assert.Equal(t, m("uri", true), m(n.getURI("prefix")))
+	assert.Equal(t, m("prefix", true), m(n.getPrefix("uri")))
 
 	n.popContext()
-	assert.Equal(t, "", n.getURI("prefix"))
-	assert.Equal(t, "", n.getPrefix("uri"))
+	assert.Equal(t, m("", false), m(n.getURI("prefix")))
+	assert.Equal(t, m("", false), m(n.getPrefix("uri")))
 }
 
 func TestXmlNamespacesContextRemap(t *testing.T) {
 	n := newXmlNamespaces()
 	n.pushContext()
 	assert.False(t, n.declarePrefix("prefix", "uri"))
-	assert.Equal(t, "uri", n.getURI("prefix"))
-	assert.Equal(t, "prefix", n.getPrefix("uri"))
+	assert.Equal(t, m("uri", true), m(n.getURI("prefix")))
+	assert.Equal(t, m("prefix", true), m(n.getPrefix("uri")))
 
 	assert.True(t, n.declarePrefix("prefix", "uri2"))
-	assert.Equal(t, "uri2", n.getURI("prefix"))
-	assert.Equal(t, "prefix", n.getPrefix("uri2"))
+	assert.Equal(t, m("uri2", true), m(n.getURI("prefix")))
+	assert.Equal(t, m("prefix", true), m(n.getPrefix("uri2")))
 }
 
 func TestXmlNamespacesContextNoRemap(t *testing.T) {
 	n := newXmlNamespaces()
 	n.pushContext()
 	assert.False(t, n.declarePrefix("prefix", "uri"))
-	assert.Equal(t, "uri", n.getURI("prefix"))
-	assert.Equal(t, "prefix", n.getPrefix("uri"))
+	assert.Equal(t, m("uri", true), m(n.getURI("prefix")))
+	assert.Equal(t, m("prefix", true), m(n.getPrefix("uri")))
 
 	n.pushContext()
 	assert.False(t, n.declarePrefix("prefix", "uri2"))
-	assert.Equal(t, "uri2", n.getURI("prefix"))
-	assert.Equal(t, "prefix", n.getPrefix("uri2"))
+	assert.Equal(t, m("uri2", true), m(n.getURI("prefix")))
+	assert.Equal(t, m("prefix", true), m(n.getPrefix("uri2")))
 }
 
 func TestXMLResourceLoad(t *testing.T) {
 	resource := NewXMLResource()
-	resource.SetURI(&url.URL{Path: "testdata/simple.book.ecore"})
+	resource.SetURI(&url.URL{Path: "testdata/bookStore.ecore"})
 	resource.Load()
 	assert.True(t, resource.IsLoaded())
 	assert.True(t, resource.GetErrors().Empty())
@@ -132,4 +138,31 @@ func TestXMLResourceLoad(t *testing.T) {
 
 	// check resolved reference
 	assert.Equal(t, eBookClass, eBooksReference.GetEReferenceType())
+}
+
+func TestXMLResourceSave(t *testing.T) {
+
+	resource := NewXMLResource()
+	resource.SetURI(&url.URL{Path: "testdata/bookStore.ecore"})
+	resource.Load()
+
+	var strbuff strings.Builder
+	resource.SaveWithWriter(&strbuff)
+
+	bytes, err := ioutil.ReadFile("testdata/bookStore.ecore")
+	assert.Nil(t, err)
+	assert.Equal(t, strings.ReplaceAll(string(bytes), "\r\n", "\n"), strings.ReplaceAll(strbuff.String(), "\r\n", "\n"))
+}
+
+func BenchmarkXMLResourceLoadSave(b *testing.B) {
+	b.ReportAllocs()
+	for i := 0; i < b.N; i++ {
+		resource := NewXMLResource()
+		resource.SetURI(&url.URL{Path: "testdata/bookStore.ecore"})
+		resource.Load()
+
+		var strbuff strings.Builder
+		resource.SaveWithWriter(&strbuff)
+		resource = nil
+	}
 }

@@ -96,6 +96,10 @@ namespace ecore
         return fragment_;
     }
 
+    inline void URI::setFragment(const std::string& fragment) {
+        fragment_ = fragment;
+    }
+
     inline bool URI::operator==( const URI& other ) const
     {
         return ecore::detail::as_tuple( *this ) == ecore::detail::as_tuple( other );

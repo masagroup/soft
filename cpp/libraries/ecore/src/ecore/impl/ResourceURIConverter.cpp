@@ -17,12 +17,14 @@ ResourceURIConverter::~ResourceURIConverter()
 
 std::unique_ptr<std::istream> ResourceURIConverter::createInputStream( const URI& uri ) const
 {
-    return std::move( getURIHandler( uri )->createInputStream( uri ) );
+    auto uriHandler = getURIHandler(uri);
+    return uriHandler ? std::move(uriHandler->createInputStream(uri)) : nullptr;
 }
 
 std::unique_ptr<std::ostream> ResourceURIConverter::createOutputStream( const URI& uri ) const
 {
-    return std::move(getURIHandler( uri )->createOutputStream( uri ) );
+    auto uriHandler = getURIHandler(uri);
+    return uriHandler ? std::move(uriHandler->createOutputStream(uri)) : nullptr;
 }
 
 URI ResourceURIConverter::normalize(const URI& uri) const

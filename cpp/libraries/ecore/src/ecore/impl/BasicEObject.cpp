@@ -1,5 +1,7 @@
 #include "ecore/impl/BasicEObject.hpp"
 #include "ecore/Constants.hpp"
+#include "ecore/Any.hpp"
+#include "ecore/AnyCast.hpp"
 #include "ecore/EAdapter.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/ECollectionView.hpp"
@@ -43,7 +45,7 @@ std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eCro
     return eContentsList( eClass()->getECrossReferences() );
 }
 
-std::shared_ptr<const EList<std::shared_ptr<EObject>>> ecore::impl::BasicEObject::eContentsList(const std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>>& refs ) const
+std::shared_ptr<const EList<std::shared_ptr<EObject>>> BasicEObject::eContentsList(const std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>>& refs ) const
 {
     std::vector<std::shared_ptr<EObject>> contents;
     for( auto ref : *refs )
@@ -53,12 +55,12 @@ std::shared_ptr<const EList<std::shared_ptr<EObject>>> ecore::impl::BasicEObject
             auto value = eGet( ref );
             if( ref->isMany() )
             {
-                std::shared_ptr<EList<std::shared_ptr<EObject>>> l = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( value );
+                auto l = anyListCast<std::shared_ptr<EObject>>( value );
                 std::copy( l->begin(), l->end(), std::back_inserter( contents ) );
             }
             else if( !value.empty() )
             {
-                std::shared_ptr<EObject> object = anyCast<std::shared_ptr<EObject>>( value );
+                auto object = anyObjectCast<std::shared_ptr<EObject>>( value );
                 if( object )
                     contents.push_back( object );
             }
@@ -100,7 +102,7 @@ std::shared_ptr<EObject> BasicEObject::eObjectForFragmentSegment( const std::str
             auto eFeatureName = uriSegment.substr(0, index);
             auto eFeature = eStructuralFeature(eFeatureName);
             auto value = eGet(eFeature);
-            auto list = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>(value);
+            auto list = anyListCast<std::shared_ptr<EObject>>(value);
             if (position < list->size())
                 return list->get(position);
         }
@@ -121,7 +123,7 @@ std::string BasicEObject::eURIFragmentSegment(const std::shared_ptr<EStructuralF
     s << eFeature->getName();
     if (eFeature->isMany()) {
         auto v = eGet(eFeature, false);
-        auto l = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>(v);
+        auto l = anyListCast<std::shared_ptr<EObject>>(v);
         auto index = l->indexOf(eObject);
         s << ".";
         s << index;
@@ -177,6 +179,7 @@ std::shared_ptr<EReference> BasicEObject::eContainmentFeature( const std::shared
     return std::shared_ptr<EReference>();
 }
 
+
 bool BasicEObject::eIsProxy() const
 {
     return static_cast<bool>( eProxyURI_ );
@@ -198,6 +201,12 @@ std::shared_ptr<EResource> BasicEObject::eDirectResource() const
 {
     return eResource_.lock();
 }
+
+void BasicEObject::eSetDirectResource(const std::shared_ptr<EResource>& resource)
+{
+    eResource_ = resource;
+}
+
 
 std::shared_ptr<ENotificationChain> BasicEObject::eSetResource( const std::shared_ptr<EResource>& newResource,
                                                                 const std::shared_ptr<ENotificationChain>& n )
@@ -236,9 +245,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eSetResource( const std::share
             notifications = eBasicSetContainer( nullptr, -1, notifications );
         }
     }
-
-    eResource_ = newResource;
-
+    eSetDirectResource(newResource);
     return notifications;
 }
 
@@ -403,7 +410,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
     auto notifications = n;
     auto thisPtr = thisPtr_.lock();
     auto oldContainer = eContainer_.lock();
-    auto oldResource = eResource_.lock();
+    auto oldResource = eDirectResource();
 
     // resource
     std::shared_ptr<EResource> newResource;
@@ -414,9 +421,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
             auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
             _ASSERTE( list );
             notifications = list->remove( thisPtr, notifications );
-
-            eResource_.reset();
-
+            eSetDirectResource(nullptr);
             newResource = newContainer->eResource();
         }
         else
@@ -441,8 +446,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
     int oldContainerFeatureID = eContainerFeatureID_;
     eContainer_ = newContainer;
     eContainerFeatureID_ = newContainerFeatureID;
-    eResource_ = newResource;
-
+    
     // notification
     if( eNotificationRequired() )
     {

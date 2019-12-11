@@ -59,7 +59,9 @@ namespace ecore
 
         std::string toString() const;
 
-        URI trimFragment() const; 
+        URI trimFragment() const;
+
+        void setFragment(const std::string& fragment);
 
         std::string string() const;
 

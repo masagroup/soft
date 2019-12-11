@@ -348,7 +348,7 @@
         </sequential>
     </macrodef>
 
-	<macrodef name="tests">
+	<macrodef name="go_tests">
         <attribute name="dir"/>
         <sequential>
 			<go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage-tmp"/>
@@ -356,6 +356,13 @@
 				<arg line="/c type @{dir}-coverage-tmp | Findstr -v mock > @{dir}-coverage"/>
 			</exec>
 			<go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/@{dir}-coverage -o ${out.dir}/go/@{dir}-coverage.html" />
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="go_bench">
+        <attribute name="dir"/>
+        <sequential>
+            <go_exec dir="${root.dir}/go/@{dir}" command="test -bench=."/>
         </sequential>
     </macrodef>
 
@@ -480,7 +487,11 @@
     </target>
     
     <target name="ecore.go.tests">
-        <tests dir="ecore"/>
+        <go_tests dir="ecore"/>
+    </target>
+    
+    <target name="ecore.go.bench">
+        <go_bench dir="ecore"/>
     </target>
 
     <target name="ecore.go" depends="ecore.go.generate,ecore.go.format,ecore.go.build,ecore.go.tests"/>
@@ -604,7 +615,7 @@
     </target>
 
     <target name="library.go.tests">
-        <tests dir="library"/>
+        <go_tests dir="library"/>
     </target>
    
     <target name="library.go" depends="library.go.generate,library.go.format,library.go.build,library.go.tests"/>

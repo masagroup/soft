@@ -226,7 +226,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="ePackage" eType="#//EPackage"
         changeable="false" transient="true" eOpposite="#//EPackage/eClassifiers"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="classifierID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
-        defaultValueLiteral="-1">
+        transient="true" defaultValueLiteral="-1">
       <eAnnotations source="http://net.masagroup/soft/2018/GenCpp">
         <details key="setVisibility" value="no:public"/>
         <details key="lazy" value="function"/>

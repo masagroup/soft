@@ -118,14 +118,14 @@ func (r *EResourceImpl) SetURI(uri *url.URL) {
 
 func (r *EResourceImpl) GetContents() EList {
 	if r.contents == nil {
-		r.contents = newResourceContents(r)
+		r.contents = newResourceContents(r.GetInterfaces().(EResource))
 	}
 	return r.contents
 }
 
 func (r *EResourceImpl) GetAllContents() EIterator {
 	return newTreeIterator(r, false, func(o interface{}) EIterator {
-		if o == r {
+		if o == r.GetInterfaces() {
 			return o.(EResource).GetContents().Iterator()
 		}
 		return o.(EObject).EContents().Iterator()
@@ -172,7 +172,7 @@ func (r *EResourceImpl) GetURIFragment(eObject EObject) string {
 				}
 			}
 			if !isContained {
-				fragmentPath = append([]string{"/-1"}, fragmentPath...)
+				return "/-1"
 			}
 			if len(id) == 0 {
 				fragmentPath = append([]string{r.getURIFragmentRootSegment(internalEObject)}, fragmentPath...)
@@ -187,10 +187,10 @@ func (r *EResourceImpl) GetURIFragment(eObject EObject) string {
 
 func (r *EResourceImpl) getURIFragmentRootSegment(eObject EObject) string {
 	contents := r.GetContents()
-	if contents.Empty() {
-		return ""
-	} else {
+	if contents.Size() > 1 {
 		return strconv.Itoa(contents.IndexOf(eObject))
+	} else {
+		return ""
 	}
 }
 
@@ -296,11 +296,18 @@ func (r *EResourceImpl) IsLoaded() bool {
 }
 
 func (r *EResourceImpl) Save() {
-
+	uriConverter := r.getURIConverter()
+	if uriConverter != nil {
+		w := uriConverter.CreateWriter(r.uri)
+		if w != nil {
+			r.SaveWithWriter(w)
+			w.Close()
+		}
+	}
 }
 
 func (r *EResourceImpl) SaveWithWriter(w io.Writer) {
-
+	r.GetInterfaces().(EResourceInternal).DoSave(w)
 }
 
 func (r *EResourceImpl) DoSave(rd io.Writer) {
