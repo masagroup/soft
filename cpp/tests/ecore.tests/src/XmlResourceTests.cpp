@@ -9,6 +9,7 @@
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/Stream.hpp"
 #include "ecore/impl/XmlResource.hpp"
+#include "Memory.hpp"
 
 #include <fstream>
 #include <streambuf>
@@ -120,10 +121,9 @@ BOOST_AUTO_TEST_CASE( Save )
     BOOST_CHECK_EQUAL( replaceAll( ss.str(), "\r\n", "\n" ), replaceAll( expected, "\r\n", "\n" ) );
 }
 
-
-
-BOOST_AUTO_TEST_CASE( Performance, *boost::unit_test::disabled() )
+BOOST_AUTO_TEST_CASE( Performance )
 {
+    auto currentSize = getCurrentRSS();
     auto start = std::chrono::steady_clock::now();
     for( int i = 0; i < NB_ITERATIONS; ++i )
     {
@@ -135,9 +135,10 @@ BOOST_AUTO_TEST_CASE( Performance, *boost::unit_test::disabled() )
         resource->save( ss );
     }
     auto end = std::chrono::steady_clock::now();
-    auto times = std::chrono::duration_cast<std::chrono::microseconds>( end - start ).count();
+    auto times = std::chrono::duration_cast<std::chrono::microseconds>( end - start ).count();    
 #if LOG
-    std::cout << "Load/Save:" << (double)times / NB_ITERATIONS << " us" << std::endl;
+    std::cout << "Load/Save:" << (double)times / NB_ITERATIONS << " us" << std::endl
+              << "Allocated Memory:" << getCurrentRSS() - currentSize << " bytes" << std::endl;
 #endif
 }
 

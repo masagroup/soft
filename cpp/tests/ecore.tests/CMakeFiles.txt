@@ -19,6 +19,7 @@ set(SOURCE_FILES
     src/EPackageTests.cpp
     src/FileURIHandlerTests.cpp
     src/LazyTests.cpp
+    src/Memory.cpp
     src/NotificationTests.cpp
     src/NotificationChainTests.cpp
     src/NotifierTests.cpp
@@ -29,6 +30,10 @@ set(SOURCE_FILES
     src/URITests.cpp
     src/XmlNamespacesTests.cpp
     src/XmlResourceTests.cpp
+)
+
+set(HEADER_FILES
+    src/Memory.hpp
 )
 
 set(SOURCE_ECORE_TESTS_FILES
