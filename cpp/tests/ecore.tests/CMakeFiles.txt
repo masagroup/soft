@@ -28,8 +28,8 @@ set(SOURCE_FILES
     src/ResourceSetTests.cpp
     src/StringUtilsTests.cpp
     src/URITests.cpp
-    src/XmlNamespacesTests.cpp
-    src/XmlResourceTests.cpp
+    src/XMLNamespacesTests.cpp
+    src/XMLResourceTests.cpp
 )
 
 set(HEADER_FILES

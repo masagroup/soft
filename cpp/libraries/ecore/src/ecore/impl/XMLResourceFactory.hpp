@@ -15,12 +15,12 @@
 
 namespace ecore::impl
 {
-    class ECORE_API XmlResourceFactory : public EResourceFactory
+    class ECORE_API XMLResourceFactory : public EResourceFactory
     {
     public:
-        XmlResourceFactory();
+        XMLResourceFactory();
 
-        virtual ~XmlResourceFactory();
+        virtual ~XMLResourceFactory();
 
         virtual std::shared_ptr<EResource> createResource( const URI & uri ) const override;
 

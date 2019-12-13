@@ -16,14 +16,14 @@
 
 namespace ecore::impl
 {
-    class ECORE_API XmlResource : public AbstractResource
+    class ECORE_API XMLResource : public AbstractResource
     {
     public:
-        XmlResource();
+        XMLResource();
 
-        XmlResource(const URI& uri);
+        XMLResource(const URI& uri);
 
-        virtual ~XmlResource();
+        virtual ~XMLResource();
 
     protected:
         // Inherited via AbstractResource

@@ -1,16 +1,16 @@
-#include "ecore/impl/XmlNamespaces.hpp"
+#include "ecore/impl/XMLNamespaces.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
 
-void XmlNamespaces::pushContext()
+void XMLNamespaces::pushContext()
 {
     if( currentContext_ + 1 == contexts_.size() )
         contexts_.resize( contexts_.size() * 2 );
     contexts_[++currentContext_] = namespacesSize_;
 }
 
-std::vector<std::pair<std::string, std::string>> XmlNamespaces::popContext()
+std::vector<std::pair<std::string, std::string>> XMLNamespaces::popContext()
 {
     int oldPrefixSize = namespacesSize_;
     namespacesSize_ = contexts_[currentContext_--];
@@ -18,7 +18,7 @@ std::vector<std::pair<std::string, std::string>> XmlNamespaces::popContext()
                                                                    namespaces_.begin() + oldPrefixSize );
 }
 
-bool XmlNamespaces::declarePrefix( const std::string& prefix, const std::string& uri )
+bool XMLNamespaces::declarePrefix( const std::string& prefix, const std::string& uri )
 {
     for( int i = namespacesSize_; i > contexts_[currentContext_]; --i )
     {
@@ -35,7 +35,7 @@ bool XmlNamespaces::declarePrefix( const std::string& prefix, const std::string&
     return false;
 }
 
-std::string XmlNamespaces::getPrefix( const std::string& uri )
+std::string XMLNamespaces::getPrefix( const std::string& uri )
 {
     for( int i = namespacesSize_; i > 0; --i )
     {
@@ -46,7 +46,7 @@ std::string XmlNamespaces::getPrefix( const std::string& uri )
     return std::string();
 }
 
-std::string XmlNamespaces::getURI( const std::string& prefix )
+std::string XMLNamespaces::getURI( const std::string& prefix )
 {
     for( int i = namespacesSize_; i > 0; --i )
     {

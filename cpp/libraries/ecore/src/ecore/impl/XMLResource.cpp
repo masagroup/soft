@@ -1,40 +1,40 @@
-#include "ecore/impl/XmlResource.hpp"
+#include "ecore/impl/XMLResource.hpp"
 #include "ecore/impl/SaxParserPool.hpp"
-#include "ecore/impl/XmlLoad.hpp"
-#include "ecore/impl/XmlInputSource.hpp"
-#include "ecore/impl/XmlSave.hpp"
+#include "ecore/impl/XMLLoad.hpp"
+#include "ecore/impl/XMLInputSource.hpp"
+#include "ecore/impl/XMLSave.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
 
-XmlResource::XmlResource()
+XMLResource::XMLResource()
     : AbstractResource()
 {
 }
 
-XmlResource::XmlResource( const URI& uri )
+XMLResource::XMLResource( const URI& uri )
     : AbstractResource( uri )
 {
 }
 
-XmlResource::~XmlResource()
+XMLResource::~XMLResource()
 {
 }
 
-void XmlResource::doLoad( std::istream& is )
+void XMLResource::doLoad( std::istream& is )
 {
     auto& pool = SaxParserPool::getInstance();
     auto parser = pool.getParser();
 
-    XmlLoad handler( *this );
+    XMLLoad handler( *this );
     parser->setContentHandler( &handler );
 
-    XmlInputSource source( is );
+    XMLInputSource source( is );
     parser->parse( source );
 }
 
-void XmlResource::doSave( std::ostream& os )
+void XMLResource::doSave( std::ostream& os )
 {
-    XmlSave s(*this);
+    XMLSave s(*this);
     s.save(os);
 }

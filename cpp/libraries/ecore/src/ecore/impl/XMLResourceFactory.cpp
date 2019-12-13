@@ -1,20 +1,20 @@
-#include "ecore/impl/XmlResourceFactory.hpp"
-#include "ecore/impl/XmlResource.hpp"
+#include "ecore/impl/XMLResourceFactory.hpp"
+#include "ecore/impl/XMLResource.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
 
-XmlResourceFactory::XmlResourceFactory()
+XMLResourceFactory::XMLResourceFactory()
 {
 }
 
-XmlResourceFactory::~XmlResourceFactory()
+XMLResourceFactory::~XMLResourceFactory()
 {
 }
 
-std::shared_ptr<EResource> XmlResourceFactory::createResource( const URI& uri ) const
+std::shared_ptr<EResource> XMLResourceFactory::createResource( const URI& uri ) const
 {
-    auto resource = std::make_shared<XmlResource>();
+    auto resource = std::make_shared<XMLResource>();
     resource->setThisPtr(resource);
     return resource;
 }

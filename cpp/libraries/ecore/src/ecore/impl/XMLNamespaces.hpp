@@ -16,7 +16,7 @@
 
 namespace ecore::impl
 {
-    class ECORE_API XmlNamespaces
+    class ECORE_API XMLNamespaces
     {
     public:
         void pushContext();

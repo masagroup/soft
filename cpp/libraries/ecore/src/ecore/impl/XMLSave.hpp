@@ -11,8 +11,8 @@
 #define ECORE_XMLSAVE_HPP_
 
 #include "ecore/Any.hpp"
-#include "ecore/impl/XmlNamespaces.hpp"
-#include "ecore/impl/XmlString.hpp"
+#include "ecore/impl/XMLNamespaces.hpp"
+#include "ecore/impl/XMLString.hpp"
 
 #include <map>
 
@@ -28,20 +28,20 @@ namespace ecore::impl
 {
     class EObjectInternal;
 
-    class XmlResource;
+    class XMLResource;
 
-    class XmlSave
+    class XMLSave
     {
     public:
-        XmlSave(XmlResource& resource);
+        XMLSave(XMLResource& resource);
 
-        virtual ~XmlSave();
+        virtual ~XMLSave();
 
         void save(std::ostream& o);
 
     private:
         void saveHeader();
-        std::shared_ptr<XmlString::Segment> saveTopObject(const std::shared_ptr<EObject>& eObject);
+        std::shared_ptr<XMLString::Segment> saveTopObject(const std::shared_ptr<EObject>& eObject);
         void saveNamespaces();
         void saveElementID(const std::shared_ptr<EObject>& eObject);
         bool saveFeatures(const std::shared_ptr<EObject>& eObject, bool attributesOnly);
@@ -125,9 +125,9 @@ namespace ecore::impl
         std::string getIDRef(const std::shared_ptr<EObject>& eObject);
 
     private:
-        XmlResource& resource_;
-        XmlNamespaces namespaces_;
-        XmlString str_;
+        XMLResource& resource_;
+        XMLNamespaces namespaces_;
+        XMLString str_;
         std::map<std::shared_ptr<EPackage>, std::string> packages_;
         std::map<std::string, std::vector<std::string>> uriToPrefixes_;
         std::map<std::string, std::string> prefixesToURI_;

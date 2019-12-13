@@ -11,7 +11,7 @@
 #define ECORE_XMLHANDLER_HPP_
 
 #include "ecore/Any.hpp"
-#include "ecore/impl/XmlNamespaces.hpp"
+#include "ecore/impl/XMLNamespaces.hpp"
 
 #include <xercesc/sax/Locator.hpp>
 #include <xercesc/sax2/Attributes.hpp>
@@ -35,14 +35,14 @@ namespace ecore
 
 namespace ecore::impl
 {
-    class XmlResource;
+    class XMLResource;
 
-    class XmlLoad : public xercesc::DefaultHandler
+    class XMLLoad : public xercesc::DefaultHandler
     {
     public:
-        XmlLoad( XmlResource& resource );
+        XMLLoad( XMLResource& resource );
 
-        virtual ~XmlLoad();
+        virtual ~XMLLoad();
 
         virtual void setDocumentLocator( const xercesc::Locator* const locator );
 
@@ -132,8 +132,8 @@ namespace ecore::impl
     private:
         struct Reference;
 
-        XmlResource& resource_;
-        XmlNamespaces namespaces_;
+        XMLResource& resource_;
+        XMLNamespaces namespaces_;
         const xercesc::Locator* locator_{nullptr};
         const xercesc::Attributes* attributes_{nullptr};
         bool isResolveDeferred_{false};

@@ -1,4 +1,4 @@
-#include "ecore/impl/XmlLoad.hpp"
+#include "ecore/impl/XMLLoad.hpp"
 #include "ecore/Any.hpp"
 #include "ecore/AnyCast.hpp"
 #include "ecore/EClass.hpp"
@@ -12,7 +12,7 @@
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/impl/Diagnostic.hpp"
 #include "ecore/impl/StringUtils.hpp"
-#include "ecore/impl/XmlResource.hpp"
+#include "ecore/impl/XMLResource.hpp"
 
 #include <iostream>
 #include <unordered_set>
@@ -48,35 +48,35 @@ namespace utf16
     static constexpr char16_t* NO_NAMESPACE_SCHEMA_LOCATION = u"noNamespaceSchemaLocation";
 } // namespace utf16
 
-XmlLoad::XmlLoad( XmlResource& resource )
+XMLLoad::XMLLoad( XMLResource& resource )
     : resource_( resource )
     , packageRegistry_( resource_.getResourceSet() ? resource_.getResourceSet()->getPackageRegistry() : EPackageRegistry::getInstance() )
 {
 }
 
-XmlLoad::~XmlLoad()
+XMLLoad::~XMLLoad()
 {
 }
 
-void XmlLoad::setDocumentLocator( const Locator* const locator )
+void XMLLoad::setDocumentLocator( const Locator* const locator )
 {
     locator_ = locator;
 }
 
-void XmlLoad::startDocument()
+void XMLLoad::startDocument()
 {
     isRoot_ = true;
     isPushContext_ = true;
     namespaces_.pushContext();
 }
 
-void XmlLoad::endDocument()
+void XMLLoad::endDocument()
 {
     auto _ = namespaces_.popContext();
     handleReferences();
 }
 
-void XmlLoad::startElement( const XMLCh* const uri,
+void XMLLoad::startElement( const XMLCh* const uri,
                                const XMLCh* const localname,
                                const XMLCh* const qname,
                                const xercesc::Attributes& attrs )
@@ -85,7 +85,7 @@ void XmlLoad::startElement( const XMLCh* const uri,
     startElement( utf16_to_utf8( uri ), utf16_to_utf8( localname ), utf16_to_utf8( qname ) );
 }
 
-void XmlLoad::startElement( const std::string uri, const std::string& localName, const std::string& qname )
+void XMLLoad::startElement( const std::string uri, const std::string& localName, const std::string& qname )
 {
     if( isPushContext_ )
         namespaces_.pushContext();
@@ -99,7 +99,7 @@ void XmlLoad::startElement( const std::string uri, const std::string& localName,
     processElement( qname, namespaces_.getPrefix( uri ), localName );
 }
 
-void XmlLoad::endElement( const XMLCh* const uri, const XMLCh* const localname, const XMLCh* const qname )
+void XMLLoad::endElement( const XMLCh* const uri, const XMLCh* const localname, const XMLCh* const qname )
 {
     objects_.pop();
 
@@ -109,7 +109,7 @@ void XmlLoad::endElement( const XMLCh* const uri, const XMLCh* const localname, 
         auto _ =  prefixesToFactories_.extract( p.first );
 }
 
-void XmlLoad::startPrefixMapping( const XMLCh* const prefix, const XMLCh* const uri )
+void XMLLoad::startPrefixMapping( const XMLCh* const prefix, const XMLCh* const uri )
 {
     isNamespaceAware_ = true;
     if( isPushContext_ )
@@ -124,33 +124,33 @@ void XmlLoad::startPrefixMapping( const XMLCh* const prefix, const XMLCh* const 
     
 }
 
-void XmlLoad::endPrefixMapping( const XMLCh* const prefix )
+void XMLLoad::endPrefixMapping( const XMLCh* const prefix )
 {
 }
 
-void XmlLoad::characters( const XMLCh* const chars, const XMLSize_t length )
+void XMLLoad::characters( const XMLCh* const chars, const XMLSize_t length )
 {
 }
 
-void XmlLoad::error( const SAXParseException& exc )
-{
-    error( std::make_shared<Diagnostic>(
-        utf16_to_utf8( exc.getMessage() ), "", static_cast<int>( exc.getLineNumber() ), static_cast<int>( exc.getColumnNumber() ) ) );
-}
-
-void XmlLoad::fatalError( const SAXParseException& exc )
+void XMLLoad::error( const SAXParseException& exc )
 {
     error( std::make_shared<Diagnostic>(
         utf16_to_utf8( exc.getMessage() ), "", static_cast<int>( exc.getLineNumber() ), static_cast<int>( exc.getColumnNumber() ) ) );
 }
 
-void XmlLoad::warning( const SAXParseException& exc )
+void XMLLoad::fatalError( const SAXParseException& exc )
+{
+    error( std::make_shared<Diagnostic>(
+        utf16_to_utf8( exc.getMessage() ), "", static_cast<int>( exc.getLineNumber() ), static_cast<int>( exc.getColumnNumber() ) ) );
+}
+
+void XMLLoad::warning( const SAXParseException& exc )
 {
     warning( std::make_shared<Diagnostic>(
         utf16_to_utf8( exc.getMessage() ), "", static_cast<int>( exc.getLineNumber() ), static_cast<int>( exc.getColumnNumber() ) ) );
 }
 
-void XmlLoad::processElement( const std::string& name, const std::string& prefix, const std::string& localName )
+void XMLLoad::processElement( const std::string& name, const std::string& prefix, const std::string& localName )
 {
     isRoot_ = false;
 
@@ -167,7 +167,7 @@ void XmlLoad::processElement( const std::string& name, const std::string& prefix
         handleFeature( prefix, localName );
 }
 
-std::shared_ptr<EObject> XmlLoad::createObject( const std::string& prefix, const std::string& name )
+std::shared_ptr<EObject> XMLLoad::createObject( const std::string& prefix, const std::string& name )
 {
     std::shared_ptr<EFactory> eFactory = getFactoryForPrefix( prefix );
     if( eFactory )
@@ -183,7 +183,7 @@ std::shared_ptr<EObject> XmlLoad::createObject( const std::string& prefix, const
     }
 }
 
-std::shared_ptr<EObject> XmlLoad::createObject( const std::shared_ptr<EFactory>& eFactory, const std::shared_ptr<EClassifier>& eType )
+std::shared_ptr<EObject> XMLLoad::createObject( const std::shared_ptr<EFactory>& eFactory, const std::shared_ptr<EClassifier>& eType )
 {
     if( eFactory )
     {
@@ -199,7 +199,7 @@ std::shared_ptr<EObject> XmlLoad::createObject( const std::shared_ptr<EFactory>&
     return nullptr;
 }
 
-std::shared_ptr<EObject> XmlLoad::createObjectFromFeatureType( const std::shared_ptr<EObject>& eObject,
+std::shared_ptr<EObject> XMLLoad::createObjectFromFeatureType( const std::shared_ptr<EObject>& eObject,
                                                                   const std::shared_ptr<EStructuralFeature>& eFeature )
 {
     std::shared_ptr<EObject> eResult;
@@ -217,7 +217,7 @@ std::shared_ptr<EObject> XmlLoad::createObjectFromFeatureType( const std::shared
     return eResult;
 }
 
-std::shared_ptr<EObject> XmlLoad::createObjectFromTypeName( const std::shared_ptr<EObject>& eObject,
+std::shared_ptr<EObject> XMLLoad::createObjectFromTypeName( const std::shared_ptr<EObject>& eObject,
                                                                const std::string& typeQName,
                                                                const std::shared_ptr<EStructuralFeature>& eFeature )
 {
@@ -247,7 +247,7 @@ std::shared_ptr<EObject> XmlLoad::createObjectFromTypeName( const std::shared_pt
     return eResult;
 }
 
-XmlLoad::FeatureKind XmlLoad::getFeatureKind( const std::shared_ptr<EStructuralFeature>& eFeature ) const
+XMLLoad::FeatureKind XMLLoad::getFeatureKind( const std::shared_ptr<EStructuralFeature>& eFeature ) const
 {
     auto eClassifier = eFeature->getEType();
     auto eDataType = std::dynamic_pointer_cast<EDataType>( eClassifier );
@@ -271,7 +271,7 @@ XmlLoad::FeatureKind XmlLoad::getFeatureKind( const std::shared_ptr<EStructuralF
         return Other;
 }
 
-void XmlLoad::setFeatureValue( const std::shared_ptr<EObject>& eObject,
+void XMLLoad::setFeatureValue( const std::shared_ptr<EObject>& eObject,
                                   const std::shared_ptr<EStructuralFeature>& eFeature,
                                   const Any& value,
                                   int position )
@@ -339,7 +339,7 @@ void XmlLoad::setFeatureValue( const std::shared_ptr<EObject>& eObject,
     }
 }
 
-void XmlLoad::setAttributeValue( const std::shared_ptr<EObject>& eObject, const std::string& name, const std::string& value )
+void XMLLoad::setAttributeValue( const std::shared_ptr<EObject>& eObject, const std::string& name, const std::string& value )
 {
 
     std::size_t index = name.find( ':' );
@@ -363,7 +363,7 @@ void XmlLoad::setAttributeValue( const std::shared_ptr<EObject>& eObject, const 
         handleUnknownFeature( localName );
 }
 
-struct XmlLoad::Reference
+struct XMLLoad::Reference
 {
     std::shared_ptr<EObject> object_;
     std::shared_ptr<EStructuralFeature> feature_;
@@ -373,7 +373,7 @@ struct XmlLoad::Reference
     int column_;
 };
 
-void XmlLoad::setValueFromId( const std::shared_ptr<EObject>& eObject,
+void XMLLoad::setValueFromId( const std::shared_ptr<EObject>& eObject,
                                  const std::shared_ptr<EReference>& eReference,
                                  const std::string& ids )
 {
@@ -458,22 +458,22 @@ void XmlLoad::setValueFromId( const std::shared_ptr<EObject>& eObject,
         references_ = references;
 }
 
-std::string XmlLoad::getLocation() const
+std::string XMLLoad::getLocation() const
 {
     return locator_ && locator_->getSystemId() ? utf16_to_utf8( locator_->getSystemId() ) : resource_.getURI().toString();
 }
 
-int XmlLoad::getLineNumber() const
+int XMLLoad::getLineNumber() const
 {
     return locator_ ? static_cast<int>( locator_->getLineNumber() ) : -1;
 }
 
-int XmlLoad::getColumnNumber() const
+int XMLLoad::getColumnNumber() const
 {
     return locator_ ? static_cast<int>( locator_->getColumnNumber() ) : -1;
 }
 
-void XmlLoad::handleFeature( const std::string& prefix, const std::string& name )
+void XMLLoad::handleFeature( const std::string& prefix, const std::string& name )
 {
     std::shared_ptr<EObject> eObject;
     if( !objects_.empty() )
@@ -501,17 +501,17 @@ void XmlLoad::handleFeature( const std::string& prefix, const std::string& name 
         handleUnknownFeature( name );
 }
 
-void XmlLoad::handleUnknownFeature( const std::string& name )
+void XMLLoad::handleUnknownFeature( const std::string& name )
 {
     error( std::make_shared<Diagnostic>( "Feature " + name + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
 }
 
-void XmlLoad::handleUnknownPackage( const std::string& name )
+void XMLLoad::handleUnknownPackage( const std::string& name )
 {
     error( std::make_shared<Diagnostic>( "Package " + name + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
 }
 
-void XmlLoad::handleReferences()
+void XMLLoad::handleReferences()
 {
     for( auto eProxy : sameDocumentProxies_ )
     {
@@ -594,14 +594,14 @@ void XmlLoad::handleReferences()
     }
 }
 
-const Attributes* XmlLoad::setAttributes( const xercesc::Attributes* attrs )
+const Attributes* XMLLoad::setAttributes( const xercesc::Attributes* attrs )
 {
     const Attributes* oldAttributes = attributes_;
     attributes_ = attrs;
     return oldAttributes;
 }
 
-void XmlLoad::handleAttributes( const std::shared_ptr<EObject>& eObject )
+void XMLLoad::handleAttributes( const std::shared_ptr<EObject>& eObject )
 {
     using namespace utf8;
     if( attributes_ )
@@ -624,7 +624,7 @@ void XmlLoad::handleAttributes( const std::shared_ptr<EObject>& eObject )
     }
 }
 
-void XmlLoad::handleProxy( const std::shared_ptr<EObject>& eProxy, const std::string& id )
+void XMLLoad::handleProxy( const std::shared_ptr<EObject>& eProxy, const std::string& id )
 {
     eProxy->eSetProxyURI( URI( id ) );
 
@@ -633,7 +633,7 @@ void XmlLoad::handleProxy( const std::shared_ptr<EObject>& eProxy, const std::st
         sameDocumentProxies_.push_back( eProxy );
 }
 
-void XmlLoad::handleSchemaLocation()
+void XMLLoad::handleSchemaLocation()
 {
     if( attributes_ )
     {
@@ -648,15 +648,15 @@ void XmlLoad::handleSchemaLocation()
     }
 }
 
-void XmlLoad::handleXSISchemaLocation( const std::string& schemaLocation )
+void XMLLoad::handleXSISchemaLocation( const std::string& schemaLocation )
 {
 }
 
-void XmlLoad::handleXSINoNamespaceSchemaLocation( const std::string& schemaLocation )
+void XMLLoad::handleXSINoNamespaceSchemaLocation( const std::string& schemaLocation )
 {
 }
 
-std::shared_ptr<EFactory> XmlLoad::getFactoryForPrefix( const std::string& prefix )
+std::shared_ptr<EFactory> XMLLoad::getFactoryForPrefix( const std::string& prefix )
 {
     std::shared_ptr<EFactory> factory;
     auto found = prefixesToFactories_.find( prefix );
@@ -672,19 +672,19 @@ std::shared_ptr<EFactory> XmlLoad::getFactoryForPrefix( const std::string& prefi
     return factory;
 }
 
-std::shared_ptr<EStructuralFeature> XmlLoad::getFeature( const std::shared_ptr<EObject>& eObject, const std::string& name )
+std::shared_ptr<EStructuralFeature> XMLLoad::getFeature( const std::shared_ptr<EObject>& eObject, const std::string& name )
 {
     auto eClass = eObject->eClass();
     auto eFeature = eClass->getEStructuralFeature( name );
     return eFeature;
 }
 
-void XmlLoad::error( const std::shared_ptr<EDiagnostic>& diagnostic )
+void XMLLoad::error( const std::shared_ptr<EDiagnostic>& diagnostic )
 {
     resource_.getErrors()->add( diagnostic );
 }
 
-void XmlLoad::warning( const std::shared_ptr<EDiagnostic>& diagnostic )
+void XMLLoad::warning( const std::shared_ptr<EDiagnostic>& diagnostic )
 {
     resource_.getWarnings()->add( diagnostic );
 }
