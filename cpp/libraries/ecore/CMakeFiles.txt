@@ -37,6 +37,8 @@ set(HEADER_ECORE_FILES
 )
 
 set(HEADER_ECORE_IMPL_FILES 
+    src/ecore/impl/AbstractXMILoad.hpp
+    src/ecore/impl/AbstractXMLLoad.hpp
     src/ecore/impl/AbstractAdapter.hpp
     src/ecore/impl/AbstractArrayEList.hpp
     src/ecore/impl/ArrayEList.hpp
@@ -76,6 +78,8 @@ set(HEADER_ECORE_IMPL_FILES
 )
 
 set(SOURCE_ECORE_IMPL_FILES 
+    src/ecore/impl/AbstractXMILoad.cpp
+    src/ecore/impl/AbstractXMLLoad.cpp
     src/ecore/impl/AbstractAdapter.cpp
     src/ecore/impl/AbstractNotification.cpp
     src/ecore/impl/AbstractResource.cpp
