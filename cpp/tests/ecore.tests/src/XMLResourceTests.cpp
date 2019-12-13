@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE( Save )
     BOOST_CHECK_EQUAL( replaceAll( ss.str(), "\r\n", "\n" ), replaceAll( expected, "\r\n", "\n" ) );
 }
 
-BOOST_AUTO_TEST_CASE( Performance )
+BOOST_AUTO_TEST_CASE( Performance, *boost::unit_test::disabled() )
 {
     auto currentSize = getCurrentRSS();
     auto start = std::chrono::steady_clock::now();
