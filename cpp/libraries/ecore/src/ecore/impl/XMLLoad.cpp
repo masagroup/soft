@@ -503,12 +503,12 @@ void XMLLoad::handleFeature( const std::string& prefix, const std::string& name 
 
 void XMLLoad::handleUnknownFeature( const std::string& name )
 {
-    error( std::make_shared<Diagnostic>( "Feature " + name + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
+    error( std::make_shared<Diagnostic>( "Feature " + name + " not found", getLocation(), getLineNumber(), getColumnNumber() ) );
 }
 
 void XMLLoad::handleUnknownPackage( const std::string& name )
 {
-    error( std::make_shared<Diagnostic>( "Package " + name + "not found", getLocation(), getLineNumber(), getColumnNumber() ) );
+    error( std::make_shared<Diagnostic>( "Package " + name + " not found", getLocation(), getLineNumber(), getColumnNumber() ) );
 }
 
 void XMLLoad::handleReferences()

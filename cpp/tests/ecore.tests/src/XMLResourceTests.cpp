@@ -1,20 +1,21 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/test/execution_monitor.hpp>
 
+#include "Memory.hpp"
 #include "ecore/EAttribute.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/EClassifier.hpp"
+#include "ecore/EDiagnostic.hpp"
 #include "ecore/EPackage.hpp"
 #include "ecore/EReference.hpp"
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/Stream.hpp"
 #include "ecore/impl/XMLResource.hpp"
-#include "Memory.hpp"
 
+#include <chrono>
 #include <fstream>
 #include <streambuf>
 #include <string>
-#include <chrono>
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -24,7 +25,7 @@ using namespace ecore::impl;
 
 BOOST_AUTO_TEST_SUITE( XMLResourceTests )
 
-BOOST_AUTO_TEST_CASE( Load )
+BOOST_AUTO_TEST_CASE( Load_Simple )
 {
     auto resource = std::make_shared<XMLResource>( URI( "data/bookStore.ecore" ) );
     resource->setThisPtr( resource );
@@ -88,6 +89,24 @@ BOOST_AUTO_TEST_CASE( Load )
     BOOST_CHECK_EQUAL( eBooksReference->getEReferenceType(), eBookClass );
 }
 
+BOOST_AUTO_TEST_CASE( Load_Complex )
+{
+    auto resource = std::make_shared<XMLResource>( URI( "data/library.ecore" ) );
+    resource->setThisPtr( resource );
+    resource->load();
+
+    for( auto warning : *resource->getWarnings() )
+        std::cout << warning->getMessage() << std::endl;
+
+    for( auto error : *resource->getErrors() )
+        std::cout << error->getMessage() << std::endl;
+
+
+    /*BOOST_CHECK( resource->isLoaded() );
+    BOOST_CHECK( resource->getWarnings()->empty() );
+    BOOST_CHECK( resource->getErrors()->empty() );*/
+}
+
 namespace
 {
     std::string replaceAll( std::string str, const std::string& from, const std::string& to )
@@ -100,7 +119,7 @@ namespace
         }
         return str;
     }
-}
+} // namespace
 
 BOOST_AUTO_TEST_CASE( Save )
 {
@@ -114,7 +133,7 @@ BOOST_AUTO_TEST_CASE( Save )
 
     std::ifstream ifs( "data/bookStore.ecore" );
     std::string expected( ( std::istreambuf_iterator<char>( ifs ) ), std::istreambuf_iterator<char>() );
-    
+
     std::stringstream ss;
     resource->save( ss );
 
@@ -135,12 +154,11 @@ BOOST_AUTO_TEST_CASE( Performance, *boost::unit_test::disabled() )
         resource->save( ss );
     }
     auto end = std::chrono::steady_clock::now();
-    auto times = std::chrono::duration_cast<std::chrono::microseconds>( end - start ).count();    
+    auto times = std::chrono::duration_cast<std::chrono::microseconds>( end - start ).count();
 #if LOG
     std::cout << "Load/Save:" << (double)times / NB_ITERATIONS << " us" << std::endl
               << "Allocated Memory:" << getCurrentRSS() - currentSize << " bytes" << std::endl;
 #endif
 }
-
 
 BOOST_AUTO_TEST_SUITE_END()
