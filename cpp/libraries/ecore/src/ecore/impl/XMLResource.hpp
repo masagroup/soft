@@ -14,8 +14,12 @@
 #include "ecore/impl/AbstractResource.hpp"
 #include "ecore/URI.hpp"
 
+#include <memory>
+
 namespace ecore::impl
 {
+    class AbstractXMLLoad;
+
     class ECORE_API XMLResource : public AbstractResource
     {
     public:
@@ -30,6 +34,9 @@ namespace ecore::impl
         virtual void doLoad( std::istream & is ) override;
 
         virtual void doSave( std::ostream & os ) override;
+
+        virtual std::unique_ptr<AbstractXMLLoad> createXMLLoad();
+
     };
 
 } // namespace ecore::impl

@@ -1,5 +1,6 @@
 #include "ecore/impl/AbstractXMILoad.hpp"
 #include "ecore/impl/StringUtils.hpp"
+#include "ecore/impl/XMIResource.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -11,7 +12,7 @@ namespace utf16
     static constexpr char16_t* XMI_TYPE_ATTRIB = u"xmi:type";
 }
 
-AbstractXMILoad::AbstractXMILoad( XMLResource& resource )
+AbstractXMILoad::AbstractXMILoad( XMIResource& resource )
     : AbstractXMLLoad( resource )
 {
 }

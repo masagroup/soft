@@ -13,7 +13,7 @@ namespace utf8
     static std::unordered_set<std::string> NOT_FEATURES = {TYPE_ATTRIB, VERSION_ATTRIB, UUID_ATTRIB};
 } // namespace utf8
 
-XMILoad::XMILoad( XMLResource& resource )
+XMILoad::XMILoad( XMIResource& resource )
     : AbstractXMILoad( resource )
 {
     using namespace utf8;

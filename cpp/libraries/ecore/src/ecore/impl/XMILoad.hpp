@@ -17,7 +17,7 @@ namespace ecore::impl
     class XMILoad : public AbstractXMILoad
     {
     public:
-        XMILoad( XMLResource& resource );
+        XMILoad( XMIResource& resource );
 
         virtual ~XMILoad();
     

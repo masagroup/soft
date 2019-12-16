@@ -14,10 +14,12 @@
 
 namespace ecore::impl
 {
+    class XMIResource;
+
     class AbstractXMILoad : public AbstractXMLLoad
     {
     public:
-        AbstractXMILoad( XMLResource& resource );
+        AbstractXMILoad( XMIResource& resource );
 
         virtual ~AbstractXMILoad();
 
