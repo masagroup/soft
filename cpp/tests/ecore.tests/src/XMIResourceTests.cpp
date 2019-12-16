@@ -10,7 +10,7 @@
 #include "ecore/EReference.hpp"
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/Stream.hpp"
-#include "ecore/impl/XMLResource.hpp"
+#include "ecore/impl/XMIResource.hpp"
 
 #include <chrono>
 #include <fstream>
@@ -23,11 +23,11 @@ using namespace ecore::impl;
 #define NB_ITERATIONS 8
 #define LOG 1
 
-BOOST_AUTO_TEST_SUITE( XMLResourceTests )
+BOOST_AUTO_TEST_SUITE( XMIResourceTests )
 
 BOOST_AUTO_TEST_CASE( Load_Simple )
 {
-    auto resource = std::make_shared<XMLResource>( URI( "data/bookStore.ecore" ) );
+    auto resource = std::make_shared<XMIResource>( URI( "data/bookStore.ecore" ) );
     resource->setThisPtr( resource );
     resource->load();
 
@@ -91,7 +91,7 @@ BOOST_AUTO_TEST_CASE( Load_Simple )
 
 BOOST_AUTO_TEST_CASE( Load_Complex )
 {
-    auto resource = std::make_shared<XMLResource>( URI( "data/library.ecore" ) );
+    auto resource = std::make_shared<XMIResource>( URI( "data/library.ecore" ) );
     resource->setThisPtr( resource );
     resource->load();
 
@@ -123,7 +123,7 @@ namespace
 
 BOOST_AUTO_TEST_CASE( Save )
 {
-    auto resource = std::make_shared<XMLResource>( URI( "data/bookStore.ecore" ) );
+    auto resource = std::make_shared<XMIResource>( URI( "data/bookStore.ecore" ) );
     resource->setThisPtr( resource );
     resource->load();
 
@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE( Performance, *boost::unit_test::disabled() )
     auto start = std::chrono::steady_clock::now();
     for( int i = 0; i < NB_ITERATIONS; ++i )
     {
-        auto resource = std::make_shared<XMLResource>( URI( "data/bookStore.ecore" ) );
+        auto resource = std::make_shared<XMIResource>( URI( "data/bookStore.ecore" ) );
         resource->setThisPtr( resource );
         resource->load();
 

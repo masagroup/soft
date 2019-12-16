@@ -29,7 +29,7 @@ set(SOURCE_FILES
     src/StringUtilsTests.cpp
     src/URITests.cpp
     src/XMLNamespacesTests.cpp
-    src/XMLResourceTests.cpp
+    src/XMIResourceTests.cpp
 )
 
 set(HEADER_FILES
