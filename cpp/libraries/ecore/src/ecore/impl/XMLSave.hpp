@@ -39,10 +39,10 @@ namespace ecore::impl
 
         void save(std::ostream& o);
 
-    private:
+    protected:
         void saveHeader();
         std::shared_ptr<XMLString::Segment> saveTopObject(const std::shared_ptr<EObject>& eObject);
-        void saveNamespaces();
+        virtual void saveNamespaces();
         void saveElementID(const std::shared_ptr<EObject>& eObject);
         bool saveFeatures(const std::shared_ptr<EObject>& eObject, bool attributesOnly);
 
@@ -124,7 +124,7 @@ namespace ecore::impl
         std::string getHRef(const std::shared_ptr<EResource>& eResource, const std::shared_ptr<EObject>& eObject);
         std::string getIDRef(const std::shared_ptr<EObject>& eObject);
 
-    private:
+    protected:
         XMLResource& resource_;
         XMLNamespaces namespaces_;
         XMLString str_;

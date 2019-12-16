@@ -70,6 +70,7 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/XMILoad.hpp
     src/ecore/impl/XMIResource.hpp
     src/ecore/impl/XMIResourceFactory.hpp
+    src/ecore/impl/XMISave.hpp
     src/ecore/impl/XMLInputSource.hpp
     src/ecore/impl/XMLLoad.hpp
     src/ecore/impl/XMLNamespaces.hpp
@@ -98,6 +99,7 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/XMILoad.cpp
     src/ecore/impl/XMIResource.cpp
     src/ecore/impl/XMIResourceFactory.cpp
+    src/ecore/impl/XMISave.cpp
     src/ecore/impl/XMLLoad.cpp
     src/ecore/impl/XMLNamespaces.cpp
     src/ecore/impl/XMLResource.cpp
