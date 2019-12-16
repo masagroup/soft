@@ -20,6 +20,7 @@
 #include <stack>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace ecore
 {
@@ -70,7 +71,9 @@ namespace ecore::impl
         virtual void warning( const xercesc::SAXParseException& exc );
 
     protected:
-    private:
+
+    
+
         const xercesc::Attributes* setAttributes( const xercesc::Attributes* attrs );
         void startElement( const std::string uri, const std::string& localName, const std::string& qname );
         void processElement( const std::string& name, const std::string& prefix, const std::string& localName );
@@ -78,12 +81,15 @@ namespace ecore::impl
         void handleSchemaLocation();
         void handleXSISchemaLocation( const std::string& schemaLocation );
         void handleXSINoNamespaceSchemaLocation( const std::string& schemaLocation );
-        void handleAttributes( const std::shared_ptr<EObject>& eObject );
         void handleProxy( const std::shared_ptr<EObject>& eObject, const std::string& id );
+        void handleAttributes( const std::shared_ptr<EObject>& eObject );        
+        
 
         std::shared_ptr<EFactory> getFactoryForPrefix( const std::string& prefix );
         std::shared_ptr<EStructuralFeature> getFeature( const std::shared_ptr<EObject>& eObject, const std::string& name );
 
+        std::shared_ptr<EObject> createObject( const std::shared_ptr<EObject> eObject,
+                                               const std::shared_ptr<EStructuralFeature>& eFeature );
         std::shared_ptr<EObject> createObject( const std::string& prefix, const std::string& localName );
         std::shared_ptr<EObject> createObject( const std::shared_ptr<EFactory>& eFactory, const std::shared_ptr<EClassifier>& type );
         std::shared_ptr<EObject> createObjectFromFeatureType( const std::shared_ptr<EObject>& eObject,
@@ -117,6 +123,7 @@ namespace ecore::impl
         std::string getLocation() const;
         int getLineNumber() const;
         int getColumnNumber() const;
+        virtual std::string getXSIType() const;
 
         void handleFeature( const std::string& prefix, const std::string& localName );
         void handleUnknownFeature( const std::string& name );
@@ -127,7 +134,7 @@ namespace ecore::impl
         void error( const std::shared_ptr<EDiagnostic>& diagnostic );
         void warning( const std::shared_ptr<EDiagnostic>& diagnostic );
 
-    private:
+    protected:
         struct Reference;
 
         XMLResource& resource_;
@@ -144,6 +151,7 @@ namespace ecore::impl
         std::stack<std::shared_ptr<EObject>> objects_;
         std::vector<std::shared_ptr<EObject>> sameDocumentProxies_;
         std::vector<Reference> references_;
+        std::unordered_set<std::string> notFeatures_;
     };
 } // namespace ecore::impl
 

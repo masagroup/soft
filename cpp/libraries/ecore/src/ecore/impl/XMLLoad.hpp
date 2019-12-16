@@ -20,6 +20,8 @@ namespace ecore::impl
         XMLLoad( XMLResource& resource );
 
         virtual ~XMLLoad();
+
+        
     };
      
 } // namespace ecore::impl

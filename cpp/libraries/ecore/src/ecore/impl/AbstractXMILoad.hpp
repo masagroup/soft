@@ -20,6 +20,9 @@ namespace ecore::impl
         AbstractXMILoad( XMLResource& resource );
 
         virtual ~AbstractXMILoad();
+
+    protected:
+        virtual std::string getXSIType() const;
     };
 
 } // namespace ecore::impl

@@ -10,18 +10,17 @@
 #ifndef ECORE_XMILOAD_HPP_
 #define ECORE_XMILOAD_HPP_
 
-#include "ecore/impl/XMLLoad.hpp"
+#include "ecore/impl/AbstractXMILoad.hpp"
 
 namespace ecore::impl
 {
-    class XMILoad : public XMLLoad
+    class XMILoad : public AbstractXMILoad
     {
     public:
         XMILoad( XMLResource& resource );
 
         virtual ~XMILoad();
-
-       
+    
     };
 } // namespace ecore::impl
 

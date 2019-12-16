@@ -15,7 +15,7 @@
 #include "ecore/impl/XMLResource.hpp"
 
 #include <iostream>
-#include <unordered_set>
+
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -23,22 +23,14 @@ using namespace xercesc;
 
 namespace utf8
 {
-
     static constexpr char* XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
     static constexpr char* XSI_NS = "xsi";
     static constexpr char* XML_NS = "xmlns";
     static constexpr char* NIL = "nil";
     static constexpr char* TYPE = "type";
     static constexpr char* HREF = "href";
-    static constexpr char* SCHEMA_LOCATION = "schemaLocation";
-    static constexpr char* NO_NAMESPACE_SCHEMA_LOCATION = "noNamespaceSchemaLocation";
-    static constexpr char* TYPE_ATTRIB = "xsi:type";
-    static constexpr char* NIL_ATTRIB = "xsi:nil";
-    static constexpr char* SCHEMA_LOCATION_ATTRIB = "xsi:schemaLocation";
-    static constexpr char* NO_NAMESPACE_SCHEMA_LOCATION_ATTRIB = "xsi:noNamespaceSchemaLocation";
-    static std::unordered_set<std::string> NOT_FEATURES = {TYPE_ATTRIB, SCHEMA_LOCATION_ATTRIB, NO_NAMESPACE_SCHEMA_LOCATION_ATTRIB};
+}
 
-} // namespace utf8
 namespace utf16
 {
     static constexpr char16_t* XSI_URI = u"http://www.w3.org/2001/XMLSchema-instance";
@@ -46,7 +38,7 @@ namespace utf16
     static constexpr char16_t* TYPE = u"type";
     static constexpr char16_t* TYPE_ATTRIB = u"xsi:type";
     static constexpr char16_t* NO_NAMESPACE_SCHEMA_LOCATION = u"noNamespaceSchemaLocation";
-} // namespace utf16
+}
 
 AbstractXMLLoad::AbstractXMLLoad( XMLResource& resource )
     : resource_( resource )
@@ -164,6 +156,13 @@ void AbstractXMLLoad::processElement( const std::string& name, const std::string
     }
     else
         handleFeature( prefix, localName );
+}
+
+std::shared_ptr<EObject> ecore::impl::AbstractXMLLoad::createObject( const std::shared_ptr<EObject> eObject,
+                                                                     const std::shared_ptr<EStructuralFeature>& eFeature )
+{
+    auto xsiType = getXSIType();
+    return xsiType.empty() ? createObjectFromFeatureType( eObject, eFeature ) : createObjectFromTypeName( eObject, xsiType, eFeature );    
 }
 
 std::shared_ptr<EObject> AbstractXMLLoad::createObject( const std::string& prefix, const std::string& name )
@@ -483,15 +482,8 @@ void AbstractXMLLoad::handleFeature( const std::string& prefix, const std::strin
         auto eFeature = getFeature( eObject, name );
         if( eFeature )
         {
-            using namespace utf16;
-            auto xsiType = isNamespaceAware_
-                               ? ( attributes_ ? attributes_->getValue( XSI_URI, TYPE ) : attributes_->getValue( TYPE_ATTRIB ) )
-                               : nullptr;
-            if( xsiType )
-                auto _ = createObjectFromTypeName( eObject, utf16_to_utf8( xsiType ), eFeature );
-
-            else
-                auto _ = createObjectFromFeatureType( eObject, eFeature );
+            auto _ = createObject( eObject, eFeature );
+            
         }
         else
             handleUnknownFeature( name );
@@ -600,6 +592,17 @@ const Attributes* AbstractXMLLoad::setAttributes( const xercesc::Attributes* att
     return oldAttributes;
 }
 
+
+
+void AbstractXMLLoad::handleProxy( const std::shared_ptr<EObject>& eProxy, const std::string& id )
+{
+    eProxy->eSetProxyURI( URI( id ) );
+
+    auto uri = URI( id );
+    if( uri.trimFragment() == resource_.getURI() )
+        sameDocumentProxies_.push_back( eProxy );
+}
+
 void AbstractXMLLoad::handleAttributes( const std::shared_ptr<EObject>& eObject )
 {
     using namespace utf8;
@@ -617,26 +620,24 @@ void AbstractXMLLoad::handleAttributes( const std::shared_ptr<EObject>& eObject 
                 if( uri != XSI_URI )
                     setAttributeValue( eObject, name, value );
             }
-            else if( !startsWith( name, XML_NS ) && NOT_FEATURES.find( name ) == NOT_FEATURES.end() )
+            else if( !startsWith( name, XML_NS ) && notFeatures_.find( name ) == notFeatures_.end() )
                 setAttributeValue( eObject, name, value );
         }
     }
 }
 
-void AbstractXMLLoad::handleProxy( const std::shared_ptr<EObject>& eProxy, const std::string& id )
+std::string AbstractXMLLoad::getXSIType() const
 {
-    eProxy->eSetProxyURI( URI( id ) );
-
-    auto uri = URI( id );
-    if( uri.trimFragment() == resource_.getURI() )
-        sameDocumentProxies_.push_back( eProxy );
+    using namespace utf16;
+    auto xsiType =  isNamespaceAware_ ? ( attributes_ ? attributes_->getValue( XSI_URI, TYPE ) : attributes_->getValue( TYPE_ATTRIB ) ) : nullptr;
+    return xsiType ? utf16_to_utf8( xsiType ) : "";
 }
 
 void AbstractXMLLoad::handleSchemaLocation()
 {
+    using namespace utf16;
     if( attributes_ )
     {
-        using namespace utf16;
         auto xsiSchemaLocation = attributes_->getValue( XSI_URI, SCHEMA_LOCATION );
         if( xsiSchemaLocation )
             handleXSISchemaLocation( utf16_to_utf8( xsiSchemaLocation ) );
