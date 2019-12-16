@@ -34,7 +34,7 @@ void ecore::impl::XMIResource::setXMIVersion( const std::string& version )
     xmiVersion_ = version;
 }
 
-std::unique_ptr<AbstractXMLLoad> ecore::impl::XMIResource::createXMLLoad()
+std::unique_ptr<XMLLoad> XMIResource::createXMLLoad()
 {
     return std::move( std::make_unique<XMILoad>( *this ) );
 }

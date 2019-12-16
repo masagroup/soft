@@ -16,12 +16,19 @@ namespace utf8
 
 namespace utf16
 {
+    static constexpr char16_t* XMI_URI = u"http://www.omg.org/XMI";
+    static constexpr char16_t* TYPE = u"type";
+    static constexpr char16_t* XMI_TYPE_ATTRIB = u"xmi:type";
+} // namespace utf16
+
+namespace utf16
+{
     static constexpr char16_t* VERSION_ATTRIB = u"xmi:version";
 
 } // namespace utf16
 
 XMILoad::XMILoad( XMIResource& resource )
-    : AbstractXMILoad( resource )
+    : XMLLoad( resource )
     , resource_( resource )
 {
     using namespace utf8;
@@ -30,6 +37,20 @@ XMILoad::XMILoad( XMIResource& resource )
 
 XMILoad::~XMILoad()
 {
+}
+
+std::string ecore::impl::XMILoad::getXSIType() const
+{
+    using namespace utf16;
+    auto xsiType = XMLLoad::getXSIType();
+    if( xsiType.empty() )
+    {
+        auto xmiType = isNamespaceAware_
+                           ? ( attributes_ ? attributes_->getValue( XMI_URI, TYPE ) : attributes_->getValue( XMI_TYPE_ATTRIB ) )
+                           : nullptr;
+        xsiType = xmiType ? utf16_to_utf8( xmiType ) : "";
+    }
+    return xsiType;
 }
 
 void XMILoad::handleAttributes( const std::shared_ptr<EObject>& eObject )
@@ -41,5 +62,5 @@ void XMILoad::handleAttributes( const std::shared_ptr<EObject>& eObject )
         if( xmiVersion )
             resource_.setXMIVersion( utf16_to_utf8( xmiVersion ) );
     }
-    AbstractXMILoad::handleAttributes( eObject );
+    XMLLoad::handleAttributes( eObject );
 }

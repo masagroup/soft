@@ -10,11 +10,13 @@
 #ifndef ECORE_XMILOAD_HPP_
 #define ECORE_XMILOAD_HPP_
 
-#include "ecore/impl/AbstractXMILoad.hpp"
+#include "ecore/impl/XMLLoad.hpp"
 
 namespace ecore::impl
 {
-    class XMILoad : public AbstractXMILoad
+    class XMIResource;
+
+    class XMILoad : public XMLLoad
     {
     public:
         XMILoad( XMIResource& resource );
@@ -22,6 +24,8 @@ namespace ecore::impl
         virtual ~XMILoad();
     
     protected:
+        virtual std::string getXSIType() const;
+
         virtual void handleAttributes( const std::shared_ptr<EObject>& eObject ); 
 
     private:

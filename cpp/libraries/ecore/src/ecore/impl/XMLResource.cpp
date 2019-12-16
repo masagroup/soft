@@ -35,12 +35,17 @@ void XMLResource::doLoad( std::istream& is )
 
 void XMLResource::doSave( std::ostream& os )
 {
-    XMLSave s(*this);
-    s.save(os);
+    auto xmlSave = createXMLSave();
+    xmlSave->save( os );
 }
 
-std::unique_ptr<AbstractXMLLoad> XMLResource::createXMLLoad()
+std::unique_ptr<XMLLoad> XMLResource::createXMLLoad()
 {
     return std::move( std::make_unique<XMLLoad>(*this) );
+}
+
+std::unique_ptr<XMLSave> ecore::impl::XMLResource::createXMLSave()
+{
+    return std::move( std::make_unique<XMLSave>( *this ) );
 }
 

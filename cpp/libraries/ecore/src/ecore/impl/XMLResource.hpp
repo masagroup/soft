@@ -18,7 +18,8 @@
 
 namespace ecore::impl
 {
-    class AbstractXMLLoad;
+    class XMLLoad;
+    class XMLSave;
 
     class ECORE_API XMLResource : public AbstractResource
     {
@@ -35,7 +36,9 @@ namespace ecore::impl
 
         virtual void doSave( std::ostream & os ) override;
 
-        virtual std::unique_ptr<AbstractXMLLoad> createXMLLoad();
+        virtual std::unique_ptr<XMLLoad> createXMLLoad();
+
+        virtual std::unique_ptr<XMLSave> createXMLSave();
 
     };
 

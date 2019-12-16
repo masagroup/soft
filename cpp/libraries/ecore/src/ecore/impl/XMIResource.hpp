@@ -30,7 +30,7 @@ namespace ecore::impl
         void setXMIVersion( const std::string& version );
 
     protected:
-        virtual std::unique_ptr<AbstractXMLLoad> createXMLLoad() override;
+        virtual std::unique_ptr<XMLLoad> createXMLLoad() override;
 
     private:
         std::string xmiVersion_;
