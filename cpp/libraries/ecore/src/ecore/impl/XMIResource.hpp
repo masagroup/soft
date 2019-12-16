@@ -32,6 +32,8 @@ namespace ecore::impl
     protected:
         virtual std::unique_ptr<XMLLoad> createXMLLoad() override;
 
+        virtual std::unique_ptr<XMLSave> createXMLSave() override;
+
     private:
         std::string xmiVersion_;
     };

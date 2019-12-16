@@ -133,6 +133,25 @@ BOOST_AUTO_TEST_CASE( Save_Simple )
     BOOST_CHECK_EQUAL( replaceAll( ss.str(), "\r\n", "\n" ), replaceAll( expected, "\r\n", "\n" ) );
 }
 
+BOOST_AUTO_TEST_CASE( Save_Complex )
+{
+    auto resource = std::make_shared<XMIResource>( URI( "data/library.ecore" ) );
+    resource->setThisPtr( resource );
+    resource->load();
+
+    BOOST_CHECK( resource->isLoaded() );
+    BOOST_CHECK( resource->getWarnings()->empty() );
+    BOOST_CHECK( resource->getErrors()->empty() );
+
+    std::ifstream ifs( "data/library.ecore" );
+    std::string expected( ( std::istreambuf_iterator<char>( ifs ) ), std::istreambuf_iterator<char>() );
+
+    std::stringstream ss;
+    resource->save( ss );
+
+    BOOST_CHECK_EQUAL( replaceAll( ss.str(), "\r\n", "\n" ), replaceAll( expected, "\r\n", "\n" ) );
+}
+
 BOOST_AUTO_TEST_CASE( Performance, *boost::unit_test::disabled() )
 {
     auto currentSize = getCurrentRSS();

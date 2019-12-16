@@ -7,7 +7,7 @@ using namespace ecore::impl;
 namespace utf8
 {
     const char* XMI_VERSION = "xmi:version";
-    const char* XMI_NS = "xmi";
+    const char* XMI_NS = "xmlns:xmi";
     const char* XMI_URI = "http://www.omg.org/XMI";
 }
 
