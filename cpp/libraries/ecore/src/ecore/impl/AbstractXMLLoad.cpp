@@ -1,3 +1,4 @@
+#include "ecore/impl/AbstractXMLLoad.hpp"
 #include "ecore/Any.hpp"
 #include "ecore/AnyCast.hpp"
 #include "ecore/EClass.hpp"
@@ -11,11 +12,9 @@
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/impl/Diagnostic.hpp"
 #include "ecore/impl/StringUtils.hpp"
-#include "ecore/impl/AbstractXMLLoad.hpp"
 #include "ecore/impl/XMLResource.hpp"
 
 #include <iostream>
-
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -29,7 +28,14 @@ namespace utf8
     static constexpr char* NIL = "nil";
     static constexpr char* TYPE = "type";
     static constexpr char* HREF = "href";
-}
+
+    static constexpr char* NO_NAMESPACE_SCHEMA_LOCATION = "noNamespaceSchemaLocation";
+    static constexpr char* TYPE_ATTRIB = "xsi:type";
+    static constexpr char* NIL_ATTRIB = "xsi:nil";
+    static constexpr char* SCHEMA_LOCATION_ATTRIB = "xsi:schemaLocation";
+    static constexpr char* NO_NAMESPACE_SCHEMA_LOCATION_ATTRIB = "xsi:noNamespaceSchemaLocation";
+    static std::unordered_set<std::string> NOT_FEATURES = {TYPE_ATTRIB, SCHEMA_LOCATION_ATTRIB, NO_NAMESPACE_SCHEMA_LOCATION_ATTRIB};
+} // namespace utf8
 
 namespace utf16
 {
@@ -38,12 +44,14 @@ namespace utf16
     static constexpr char16_t* TYPE = u"type";
     static constexpr char16_t* TYPE_ATTRIB = u"xsi:type";
     static constexpr char16_t* NO_NAMESPACE_SCHEMA_LOCATION = u"noNamespaceSchemaLocation";
-}
+} // namespace utf16
 
 AbstractXMLLoad::AbstractXMLLoad( XMLResource& resource )
     : resource_( resource )
     , packageRegistry_( resource_.getResourceSet() ? resource_.getResourceSet()->getPackageRegistry() : EPackageRegistry::getInstance() )
 {
+    using namespace utf8;
+    notFeatures_.insert( NOT_FEATURES.begin(), NOT_FEATURES.end() );
 }
 
 AbstractXMLLoad::~AbstractXMLLoad()
@@ -69,9 +77,9 @@ void AbstractXMLLoad::endDocument()
 }
 
 void AbstractXMLLoad::startElement( const XMLCh* const uri,
-                            const XMLCh* const localname,
-                            const XMLCh* const qname,
-                            const xercesc::Attributes& attrs )
+                                    const XMLCh* const localname,
+                                    const XMLCh* const qname,
+                                    const xercesc::Attributes& attrs )
 {
     setAttributes( &attrs );
     startElement( utf16_to_utf8( uri ), utf16_to_utf8( localname ), utf16_to_utf8( qname ) );
@@ -162,7 +170,7 @@ std::shared_ptr<EObject> ecore::impl::AbstractXMLLoad::createObject( const std::
                                                                      const std::shared_ptr<EStructuralFeature>& eFeature )
 {
     auto xsiType = getXSIType();
-    return xsiType.empty() ? createObjectFromFeatureType( eObject, eFeature ) : createObjectFromTypeName( eObject, xsiType, eFeature );    
+    return xsiType.empty() ? createObjectFromFeatureType( eObject, eFeature ) : createObjectFromTypeName( eObject, xsiType, eFeature );
 }
 
 std::shared_ptr<EObject> AbstractXMLLoad::createObject( const std::string& prefix, const std::string& name )
@@ -181,7 +189,8 @@ std::shared_ptr<EObject> AbstractXMLLoad::createObject( const std::string& prefi
     }
 }
 
-std::shared_ptr<EObject> AbstractXMLLoad::createObject( const std::shared_ptr<EFactory>& eFactory, const std::shared_ptr<EClassifier>& eType )
+std::shared_ptr<EObject> AbstractXMLLoad::createObject( const std::shared_ptr<EFactory>& eFactory,
+                                                        const std::shared_ptr<EClassifier>& eType )
 {
     if( eFactory )
     {
@@ -198,7 +207,7 @@ std::shared_ptr<EObject> AbstractXMLLoad::createObject( const std::shared_ptr<EF
 }
 
 std::shared_ptr<EObject> AbstractXMLLoad::createObjectFromFeatureType( const std::shared_ptr<EObject>& eObject,
-                                                               const std::shared_ptr<EStructuralFeature>& eFeature )
+                                                                       const std::shared_ptr<EStructuralFeature>& eFeature )
 {
     std::shared_ptr<EObject> eResult;
     if( eFeature && eFeature->getEType() )
@@ -216,8 +225,8 @@ std::shared_ptr<EObject> AbstractXMLLoad::createObjectFromFeatureType( const std
 }
 
 std::shared_ptr<EObject> AbstractXMLLoad::createObjectFromTypeName( const std::shared_ptr<EObject>& eObject,
-                                                            const std::string& typeQName,
-                                                            const std::shared_ptr<EStructuralFeature>& eFeature )
+                                                                    const std::string& typeQName,
+                                                                    const std::shared_ptr<EStructuralFeature>& eFeature )
 {
     std::string typeName;
     std::string prefix = "";
@@ -270,9 +279,9 @@ AbstractXMLLoad::FeatureKind AbstractXMLLoad::getFeatureKind( const std::shared_
 }
 
 void AbstractXMLLoad::setFeatureValue( const std::shared_ptr<EObject>& eObject,
-                               const std::shared_ptr<EStructuralFeature>& eFeature,
-                               const Any& value,
-                               int position )
+                                       const std::shared_ptr<EStructuralFeature>& eFeature,
+                                       const Any& value,
+                                       int position )
 {
     int kind = getFeatureKind( eFeature );
     switch( kind )
@@ -372,8 +381,8 @@ struct AbstractXMLLoad::Reference
 };
 
 void AbstractXMLLoad::setValueFromId( const std::shared_ptr<EObject>& eObject,
-                              const std::shared_ptr<EReference>& eReference,
-                              const std::string& ids )
+                                      const std::shared_ptr<EReference>& eReference,
+                                      const std::string& ids )
 {
     bool mustAdd = isResolveDeferred_;
     bool mustAddOrNotOppositeIsMany = false;
@@ -483,7 +492,6 @@ void AbstractXMLLoad::handleFeature( const std::string& prefix, const std::strin
         if( eFeature )
         {
             auto _ = createObject( eObject, eFeature );
-            
         }
         else
             handleUnknownFeature( name );
@@ -592,8 +600,6 @@ const Attributes* AbstractXMLLoad::setAttributes( const xercesc::Attributes* att
     return oldAttributes;
 }
 
-
-
 void AbstractXMLLoad::handleProxy( const std::shared_ptr<EObject>& eProxy, const std::string& id )
 {
     eProxy->eSetProxyURI( URI( id ) );
@@ -614,14 +620,17 @@ void AbstractXMLLoad::handleAttributes( const std::shared_ptr<EObject>& eObject 
             auto value = utf16_to_utf8( attributes_->getValue( i ) );
             if( name == HREF )
                 handleProxy( eObject, value );
-            else if( isNamespaceAware_ )
+            else if( notFeatures_.find( name ) == notFeatures_.end() )
             {
-                auto uri = utf16_to_utf8( attributes_->getURI( i ) );
-                if( uri != XSI_URI )
+                if( isNamespaceAware_ )
+                {
+                    auto uri = utf16_to_utf8( attributes_->getURI( i ) );
+                    if( uri != XSI_URI )
+                        setAttributeValue( eObject, name, value );
+                }
+                else if( !startsWith( name, XML_NS ) )
                     setAttributeValue( eObject, name, value );
             }
-            else if( !startsWith( name, XML_NS ) && notFeatures_.find( name ) == notFeatures_.end() )
-                setAttributeValue( eObject, name, value );
         }
     }
 }
@@ -629,7 +638,8 @@ void AbstractXMLLoad::handleAttributes( const std::shared_ptr<EObject>& eObject 
 std::string AbstractXMLLoad::getXSIType() const
 {
     using namespace utf16;
-    auto xsiType =  isNamespaceAware_ ? ( attributes_ ? attributes_->getValue( XSI_URI, TYPE ) : attributes_->getValue( TYPE_ATTRIB ) ) : nullptr;
+    auto xsiType
+        = isNamespaceAware_ ? ( attributes_ ? attributes_->getValue( XSI_URI, TYPE ) : attributes_->getValue( TYPE_ATTRIB ) ) : nullptr;
     return xsiType ? utf16_to_utf8( xsiType ) : "";
 }
 
