@@ -95,16 +95,9 @@ BOOST_AUTO_TEST_CASE( Load_Complex )
     resource->setThisPtr( resource );
     resource->load();
 
-    for( auto warning : *resource->getWarnings() )
-        std::cout << warning->getMessage() << std::endl;
-
-    for( auto error : *resource->getErrors() )
-        std::cout << error->getMessage() << std::endl;
-
-
-    /*BOOST_CHECK( resource->isLoaded() );
+    BOOST_CHECK( resource->isLoaded() );
     BOOST_CHECK( resource->getWarnings()->empty() );
-    BOOST_CHECK( resource->getErrors()->empty() );*/
+    BOOST_CHECK( resource->getErrors()->empty() );
 }
 
 namespace
@@ -121,7 +114,7 @@ namespace
     }
 } // namespace
 
-BOOST_AUTO_TEST_CASE( Save )
+BOOST_AUTO_TEST_CASE( Save_Simple )
 {
     auto resource = std::make_shared<XMIResource>( URI( "data/bookStore.ecore" ) );
     resource->setThisPtr( resource );

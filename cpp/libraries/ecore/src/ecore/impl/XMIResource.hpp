@@ -25,8 +25,15 @@ namespace ecore::impl
 
         virtual ~XMIResource();
 
+        std::string getXMIVersion() const;
+
+        void setXMIVersion( const std::string& version );
+
     protected:
         virtual std::unique_ptr<AbstractXMLLoad> createXMLLoad() override;
+
+    private:
+        std::string xmiVersion_;
     };
 
 } // namespace ecore::impl

@@ -21,6 +21,11 @@ namespace ecore::impl
 
         virtual ~XMILoad();
     
+    protected:
+        virtual void handleAttributes( const std::shared_ptr<EObject>& eObject ); 
+
+    private:
+        XMIResource& resource_;
     };
 } // namespace ecore::impl
 

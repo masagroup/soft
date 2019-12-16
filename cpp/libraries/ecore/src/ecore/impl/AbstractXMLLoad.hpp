@@ -82,7 +82,7 @@ namespace ecore::impl
         void handleXSISchemaLocation( const std::string& schemaLocation );
         void handleXSINoNamespaceSchemaLocation( const std::string& schemaLocation );
         void handleProxy( const std::shared_ptr<EObject>& eObject, const std::string& id );
-        void handleAttributes( const std::shared_ptr<EObject>& eObject );        
+        virtual void handleAttributes( const std::shared_ptr<EObject>& eObject );        
         
 
         std::shared_ptr<EFactory> getFactoryForPrefix( const std::string& prefix );
