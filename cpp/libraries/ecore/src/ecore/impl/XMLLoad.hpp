@@ -78,6 +78,8 @@ namespace ecore::impl
         void startElement( const std::string uri, const std::string& localName, const std::string& qname );
         void processElement( const std::string& name, const std::string& prefix, const std::string& localName );
 
+        void handleNamespaces();
+        void handleNamespace( const std::string prefix, const std::string& uri );
         void handleSchemaLocation();
         void handleXSISchemaLocation( const std::string& schemaLocation );
         void handleXSINoNamespaceSchemaLocation( const std::string& schemaLocation );

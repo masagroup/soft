@@ -15,6 +15,7 @@
 #include "ecore/impl/XMLResource.hpp"
 
 #include <iostream>
+#include <string>
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -77,9 +78,9 @@ void XMLLoad::endDocument()
 }
 
 void XMLLoad::startElement( const XMLCh* const uri,
-                                    const XMLCh* const localname,
-                                    const XMLCh* const qname,
-                                    const xercesc::Attributes& attrs )
+                            const XMLCh* const localname,
+                            const XMLCh* const qname,
+                            const xercesc::Attributes& attrs )
 {
     setAttributes( &attrs );
     startElement( utf16_to_utf8( uri ), utf16_to_utf8( localname ), utf16_to_utf8( qname ) );
@@ -87,15 +88,19 @@ void XMLLoad::startElement( const XMLCh* const uri,
 
 void XMLLoad::startElement( const std::string uri, const std::string& localName, const std::string& qname )
 {
+    // create a new context in the namespaces
     if( isPushContext_ )
         namespaces_.pushContext();
     isPushContext_ = true;
 
+    // handle namespaces from the element attributes
+    // if startPrefixMapping is not called
+    handleNamespaces();
+
+    //
     elements_.push( qname );
 
-    if( isRoot_ )
-        handleSchemaLocation();
-
+    // process element
     processElement( qname, namespaces_.getPrefix( uri ), localName );
 }
 
@@ -117,10 +122,7 @@ void XMLLoad::startPrefixMapping( const XMLCh* const prefix, const XMLCh* const 
         namespaces_.pushContext();
         isPushContext_ = false;
     }
-    auto uri_utf8 = utf16_to_utf8( uri );
-    auto prefix_utf8 = utf16_to_utf8( prefix );
-    auto _ = prefixesToFactories_.extract( prefix_utf8 );
-    namespaces_.declarePrefix( prefix_utf8, uri_utf8 );
+    handleNamespace( utf16_to_utf8( prefix ), utf16_to_utf8( uri ) );
 }
 
 void XMLLoad::endPrefixMapping( const XMLCh* const prefix )
@@ -167,7 +169,7 @@ void XMLLoad::processElement( const std::string& name, const std::string& prefix
 }
 
 std::shared_ptr<EObject> ecore::impl::XMLLoad::createObject( const std::shared_ptr<EObject> eObject,
-                                                                     const std::shared_ptr<EStructuralFeature>& eFeature )
+                                                             const std::shared_ptr<EStructuralFeature>& eFeature )
 {
     auto xsiType = getXSIType();
     return xsiType.empty() ? createObjectFromFeatureType( eObject, eFeature ) : createObjectFromTypeName( eObject, xsiType, eFeature );
@@ -189,8 +191,7 @@ std::shared_ptr<EObject> XMLLoad::createObject( const std::string& prefix, const
     }
 }
 
-std::shared_ptr<EObject> XMLLoad::createObject( const std::shared_ptr<EFactory>& eFactory,
-                                                        const std::shared_ptr<EClassifier>& eType )
+std::shared_ptr<EObject> XMLLoad::createObject( const std::shared_ptr<EFactory>& eFactory, const std::shared_ptr<EClassifier>& eType )
 {
     if( eFactory )
     {
@@ -207,7 +208,7 @@ std::shared_ptr<EObject> XMLLoad::createObject( const std::shared_ptr<EFactory>&
 }
 
 std::shared_ptr<EObject> XMLLoad::createObjectFromFeatureType( const std::shared_ptr<EObject>& eObject,
-                                                                       const std::shared_ptr<EStructuralFeature>& eFeature )
+                                                               const std::shared_ptr<EStructuralFeature>& eFeature )
 {
     std::shared_ptr<EObject> eResult;
     if( eFeature && eFeature->getEType() )
@@ -225,8 +226,8 @@ std::shared_ptr<EObject> XMLLoad::createObjectFromFeatureType( const std::shared
 }
 
 std::shared_ptr<EObject> XMLLoad::createObjectFromTypeName( const std::shared_ptr<EObject>& eObject,
-                                                                    const std::string& typeQName,
-                                                                    const std::shared_ptr<EStructuralFeature>& eFeature )
+                                                            const std::string& typeQName,
+                                                            const std::shared_ptr<EStructuralFeature>& eFeature )
 {
     std::string typeName;
     std::string prefix = "";
@@ -279,9 +280,9 @@ XMLLoad::FeatureKind XMLLoad::getFeatureKind( const std::shared_ptr<EStructuralF
 }
 
 void XMLLoad::setFeatureValue( const std::shared_ptr<EObject>& eObject,
-                                       const std::shared_ptr<EStructuralFeature>& eFeature,
-                                       const Any& value,
-                                       int position )
+                               const std::shared_ptr<EStructuralFeature>& eFeature,
+                               const Any& value,
+                               int position )
 {
     int kind = getFeatureKind( eFeature );
     switch( kind )
@@ -381,8 +382,8 @@ struct XMLLoad::Reference
 };
 
 void XMLLoad::setValueFromId( const std::shared_ptr<EObject>& eObject,
-                                      const std::shared_ptr<EReference>& eReference,
-                                      const std::string& ids )
+                              const std::shared_ptr<EReference>& eReference,
+                              const std::string& ids )
 {
     bool mustAdd = isResolveDeferred_;
     bool mustAddOrNotOppositeIsMany = false;
@@ -641,6 +642,32 @@ std::string XMLLoad::getXSIType() const
     auto xsiType
         = isNamespaceAware_ ? ( attributes_ ? attributes_->getValue( XSI_URI, TYPE ) : attributes_->getValue( TYPE_ATTRIB ) ) : nullptr;
     return xsiType ? utf16_to_utf8( xsiType ) : "";
+}
+
+void XMLLoad::handleNamespaces()
+{
+    using namespace utf8;
+    if( attributes_ )
+    {
+        for( int i = 0; i < attributes_->getLength(); ++i )
+        {
+
+            auto name = utf16_to_utf8( attributes_->getQName( i ) );
+            auto value = utf16_to_utf8( attributes_->getValue( i ) );
+            if( name.find( XML_NS ) != -1 )
+                handleNamespace( name.substr( 6 ), value );
+            else if( name == SCHEMA_LOCATION_ATTRIB )
+                handleXSISchemaLocation( value );
+            else if( name == NO_NAMESPACE_SCHEMA_LOCATION_ATTRIB )
+                handleXSINoNamespaceSchemaLocation( value );
+        }
+    }
+}
+
+void XMLLoad::handleNamespace( const std::string prefix, const std::string& uri )
+{
+    auto _ = prefixesToFactories_.extract( prefix );
+    namespaces_.declarePrefix( prefix, uri );
 }
 
 void XMLLoad::handleSchemaLocation()
