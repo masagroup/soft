@@ -463,7 +463,7 @@ void XMLLoad::setValueFromId( const std::shared_ptr<EObject>& eObject,
     if( position == 0 )
         setFeatureValue( eObject, eReference, Any(), -2 );
     else
-        references_ = references;
+        references_.insert( references_.end(), references.begin(), references.end() );
 }
 
 std::string XMLLoad::getLocation() const
