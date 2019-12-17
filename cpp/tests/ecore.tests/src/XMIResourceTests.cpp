@@ -98,6 +98,23 @@ BOOST_AUTO_TEST_CASE( Load_Complex )
     BOOST_CHECK( resource->isLoaded() );
     BOOST_CHECK( resource->getWarnings()->empty() );
     BOOST_CHECK( resource->getErrors()->empty() );
+
+    auto contents = resource->getContents();
+    BOOST_CHECK_EQUAL( contents->size(), 1 );
+
+    auto ePackage = std::dynamic_pointer_cast<EPackage>( contents->get( 0 ) );
+    BOOST_CHECK( ePackage );
+
+     auto eClassifiers = ePackage->getEClassifiers();
+     auto eBook = eClassifiers->get( 0 );
+     BOOST_CHECK_EQUAL( eBook->getName(), "Book" );
+     auto eBookClass = std::dynamic_pointer_cast<EClass>( eBook );
+     BOOST_CHECK( eBookClass );
+     auto superTypes = eBookClass->getESuperTypes();
+     BOOST_CHECK_EQUAL( superTypes->size(), 1 );
+     auto eCirculationItemClass = superTypes->get( 0 );
+     BOOST_CHECK_EQUAL( eCirculationItemClass->getName(), "CirculatingItem" );
+
 }
 
 namespace
