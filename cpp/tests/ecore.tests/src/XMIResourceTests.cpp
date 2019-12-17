@@ -5,6 +5,7 @@
 #include "ecore/EAttribute.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/EClassifier.hpp"
+#include "ecore/EDataType.hpp"
 #include "ecore/EDiagnostic.hpp"
 #include "ecore/EPackage.hpp"
 #include "ecore/EReference.hpp"
@@ -105,15 +106,22 @@ BOOST_AUTO_TEST_CASE( Load_Complex )
     auto ePackage = std::dynamic_pointer_cast<EPackage>( contents->get( 0 ) );
     BOOST_CHECK( ePackage );
 
-     auto eClassifiers = ePackage->getEClassifiers();
-     auto eBook = eClassifiers->get( 0 );
-     BOOST_CHECK_EQUAL( eBook->getName(), "Book" );
-     auto eBookClass = std::dynamic_pointer_cast<EClass>( eBook );
-     BOOST_CHECK( eBookClass );
-     auto superTypes = eBookClass->getESuperTypes();
-     BOOST_CHECK_EQUAL( superTypes->size(), 1 );
-     auto eCirculationItemClass = superTypes->get( 0 );
-     BOOST_CHECK_EQUAL( eCirculationItemClass->getName(), "CirculatingItem" );
+    auto eClassifiers = ePackage->getEClassifiers();
+    auto eBook = eClassifiers->get( 0 );
+    BOOST_CHECK_EQUAL( eBook->getName(), "Book" );
+    auto eBookClass = std::dynamic_pointer_cast<EClass>( eBook );
+    BOOST_CHECK( eBookClass );
+    auto superTypes = eBookClass->getESuperTypes();
+    BOOST_CHECK_EQUAL( superTypes->size(), 1 );
+    auto eCirculationItemClass = superTypes->get( 0 );
+    BOOST_CHECK_EQUAL( eCirculationItemClass->getName(), "CirculatingItem" );
+
+    auto eBookAttributes = eBookClass->getEAttributes();
+    BOOST_CHECK_EQUAL( eBookAttributes->size(), 3 );
+    auto eTitleAttribute = eBookAttributes->get( 0 );
+    BOOST_CHECK_EQUAL( eTitleAttribute->getName(), "title" );
+    auto eTitleAttributeType = eTitleAttribute->getEAttributeType();
+    BOOST_CHECK_EQUAL( eTitleAttributeType->getName(), "EString" );
 
 }
 
