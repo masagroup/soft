@@ -113,7 +113,9 @@ namespace ecore::impl
             CROSS,
         };
 
-        ResourceKind getResourceKind(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature);
+        ResourceKind getResourceKindSingle(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature);
+        ResourceKind getResourceKindMany( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature );
+
 
         std::string getQName(const std::shared_ptr<EClass>& eClass);
         std::string getQName(const std::shared_ptr<EPackage>& ePackage , const std::string& name, bool mustHavePrefix);

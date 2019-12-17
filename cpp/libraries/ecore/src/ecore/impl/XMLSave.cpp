@@ -97,6 +97,9 @@ bool XMLSave::saveFeatures( const std::shared_ptr<EObject>& eObject, bool attrib
         // current feature
         auto eFeature = *it;
         
+        /*if( eFeature->getName() == "eSuperTypes" )
+            __debugbreak();*/
+
         FeatureKind kind;
         auto itFound = featureKinds_.find( eFeature );
         if( itFound == featureKinds_.end() )
@@ -138,7 +141,7 @@ bool XMLSave::saveFeatures( const std::shared_ptr<EObject>& eObject, bool attrib
                 if( isNil( eObject, eFeature ) )
                     break;
             case OBJECT_HREF_SINGLE:
-                switch( getResourceKind( eObject, eFeature ) )
+                switch( getResourceKindSingle( eObject, eFeature ) )
                 {
                 case CROSS:
                     break;
@@ -156,7 +159,7 @@ bool XMLSave::saveFeatures( const std::shared_ptr<EObject>& eObject, bool attrib
                     continue;
                 }
             case OBJECT_HREF_MANY:
-                switch( getResourceKind( eObject, eFeature ) )
+                switch( getResourceKindMany( eObject, eFeature ) )
                 {
                 case CROSS:
                     break;
@@ -482,7 +485,7 @@ XMLSave::FeatureKind XMLSave::getFeatureKind( const std::shared_ptr<EStructuralF
     }
 }
 
-XMLSave::ResourceKind XMLSave::getResourceKind( const std::shared_ptr<EObject>& eObject,
+XMLSave::ResourceKind XMLSave::getResourceKindSingle( const std::shared_ptr<EObject>& eObject,
                                                 const std::shared_ptr<EStructuralFeature>& eFeature )
 {
     auto val = eObject->eGet( eFeature );
@@ -499,6 +502,31 @@ XMLSave::ResourceKind XMLSave::getResourceKind( const std::shared_ptr<EObject>& 
         else
             return CROSS;
     }
+}
+
+XMLSave::ResourceKind XMLSave::getResourceKindMany( const std::shared_ptr<EObject>& eObject,
+                                                      const std::shared_ptr<EStructuralFeature>& eFeature )
+{
+    auto val = eObject->eGet( eFeature );
+    auto list = anyListCast<std::shared_ptr<EObject>>( val );
+    if( !list || list->empty() )
+        return SKIP;
+    for( auto eObject : *list )
+    {
+        auto internal = std::dynamic_pointer_cast<EObjectInternal>( eObject );
+        if( !internal )
+            return SKIP;
+        else if( internal->eIsProxy() )
+            return CROSS;
+        else
+        {
+            auto resource = internal->eResource();
+            if( resource && resource != resource_.getThisPtr() )
+                return CROSS;
+           
+        } 
+    }
+    return SAME;
 }
 
 std::string XMLSave::getQName( const std::shared_ptr<EClass>& eClass )
