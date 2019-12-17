@@ -641,5 +641,5 @@ std::string XMLSave::getHRef( const std::shared_ptr<EResource>& eResource, const
 
 std::string XMLSave::getIDRef( const std::shared_ptr<EObject>& eObject )
 {
-    return resource_.getURIFragment( eObject );
+    return "#" + resource_.getURIFragment( eObject );
 }

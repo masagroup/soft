@@ -398,7 +398,7 @@ void XMLLoad::setValueFromId( const std::shared_ptr<EObject>& eObject,
     {
         std::string id( token );
         std::size_t index = id.find( '#' );
-        if( index != std::string_view::npos )
+        if( index != std::string::npos )
         {
             if( index == 0 )
                 id = token.substr( 1 );
@@ -416,7 +416,7 @@ void XMLLoad::setValueFromId( const std::shared_ptr<EObject>& eObject,
                 continue;
             }
         }
-        else if( id.find( ':' ) != std::string_view::npos )
+        else if( id.find( ':' ) != std::string::npos )
         {
             qName = id;
             continue;
