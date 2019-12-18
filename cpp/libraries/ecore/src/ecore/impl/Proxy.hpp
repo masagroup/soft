@@ -92,9 +92,15 @@ namespace ecore::impl
             if( ref )
             {
                 if( ref->eIsProxy() )
+                {
+                    ref_.reset();
                     proxy_ = std::move( ref );
+                }
                 else
+                {
                     ref_ = ref;
+                    proxy_.reset();
+                }
             }
             else
             {
