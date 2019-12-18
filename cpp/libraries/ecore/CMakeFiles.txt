@@ -57,6 +57,7 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/Notification.hpp
     src/ecore/impl/NotificationChain.hpp
     src/ecore/impl/PackageRegistry.hpp
+    src/ecore/impl/PackageResourceRegistry.hpp
     src/ecore/impl/Proxy.hpp
     src/ecore/impl/ResourceFactoryRegistry.hpp
     src/ecore/impl/ResourceSet.hpp
@@ -88,6 +89,7 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/Notification.cpp
     src/ecore/impl/NotificationChain.cpp
     src/ecore/impl/PackageRegistry.cpp
+    src/ecore/impl/PackageResourceRegistry.cpp
     src/ecore/impl/ResourceFactoryRegistry.cpp
     src/ecore/impl/ResourceSet.cpp
     src/ecore/impl/ResourceURIConverter.cpp
