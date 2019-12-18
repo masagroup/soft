@@ -202,4 +202,25 @@ BOOST_AUTO_TEST_CASE( Performance, *boost::unit_test::disabled() )
 #endif
 }
 
+BOOST_AUTO_TEST_CASE( Performance_Complex, *boost::unit_test::disabled() )
+{
+    auto currentSize = getCurrentRSS();
+    auto start = std::chrono::steady_clock::now();
+    for( int i = 0; i < NB_ITERATIONS; ++i )
+    {
+        auto resource = std::make_shared<XMIResource>( URI( "data/library.ecore" ) );
+        resource->setThisPtr( resource );
+        resource->load();
+
+        std::stringstream ss;
+        resource->save( ss );
+    }
+    auto end = std::chrono::steady_clock::now();
+    auto times = std::chrono::duration_cast<std::chrono::microseconds>( end - start ).count();
+#if LOG
+    std::cout << "Load/Save:" << (double)times / NB_ITERATIONS << " us" << std::endl
+              << "Allocated Memory:" << getCurrentRSS() - currentSize << " bytes" << std::endl;
+#endif
+}
+
 BOOST_AUTO_TEST_SUITE_END()
