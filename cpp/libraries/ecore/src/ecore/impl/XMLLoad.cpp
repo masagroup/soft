@@ -409,7 +409,11 @@ void XMLLoad::setValueFromId( const std::shared_ptr<EObject>& eObject,
                                                                 : createObjectFromTypeName( eObject, qName, eReference );
                 setAttributes( oldAttributes );
                 if( eProxy )
+                {
                     handleProxy( eProxy, id );
+                    setFeatureValue( eObject, eReference , eProxy );
+                }
+                    
                 objects_.pop();
                 qName.clear();
                 ++position;

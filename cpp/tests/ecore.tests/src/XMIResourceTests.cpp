@@ -58,6 +58,9 @@ BOOST_AUTO_TEST_CASE( Load_Simple )
     BOOST_CHECK_EQUAL( eOwnerFeature->getName(), "owner" );
     auto eOwnerAttribute = std::dynamic_pointer_cast<EAttribute>( eOwnerFeature );
     BOOST_CHECK( eOwnerAttribute );
+    auto eOwnerAttributeType = eOwnerAttribute->getEAttributeType();
+    BOOST_CHECK( eOwnerAttributeType );
+    BOOST_CHECK_EQUAL( eOwnerAttributeType->getName(), "EString" );
 
     auto eLocationFeature = eBookStoreClass->getEStructuralFeature( 1 );
     BOOST_CHECK_EQUAL( eLocationFeature->getName(), "location" );
