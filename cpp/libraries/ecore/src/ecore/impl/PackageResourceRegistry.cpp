@@ -16,7 +16,8 @@ std::shared_ptr<EResource> PackageResourceRegistry::getResource( const std::shar
     auto itFound = packageToResources_.find( ePackage );
     if( itFound == packageToResources_.end() )
     {
-        auto eResource = std::make_shared<XMIResource>( URI(ePackage->getNsURI()) );
+        auto uri = URI( ePackage->getNsURI() );
+        auto eResource = std::make_shared<XMIResource>( uri );
         eResource->setThisPtr( eResource );
         eResource->getContents()->add( ePackage );
         return packageToResources_[ePackage] = eResource;
