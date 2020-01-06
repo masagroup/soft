@@ -607,9 +607,8 @@ const Attributes* XMLLoad::setAttributes( const xercesc::Attributes* attrs )
 
 void XMLLoad::handleProxy( const std::shared_ptr<EObject>& eProxy, const std::string& id )
 {
-    eProxy->eSetProxyURI( URI( id ) );
-
-    auto uri = URI( id );
+    auto uri = URI(id);
+    eProxy->eSetProxyURI( uri );
     if( uri.trimFragment() == resource_.getURI() )
         sameDocumentProxies_.push_back( eProxy );
 }
