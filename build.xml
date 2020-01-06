@@ -399,6 +399,7 @@
             <arg value="${vcpkg.dir}"/>
             <arg value="install"/>
             <arg value="boost-test"/>
+			<arg value="boost-regex"/>
             <arg value="turtle"/>
             <arg value="xerces-c"/>
         </exec>
