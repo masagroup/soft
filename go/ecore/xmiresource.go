@@ -1,8 +1,12 @@
 package ecore
 
+import "encoding/xml"
+
 const (
-	xmiURI = "http://www.w3.org/2001/XMLSchema-instance"
-	xmiNS  = "xmi"
+	xmiURI        = "http://www.w3.org/2001/XMLSchema-instance"
+	xmiNS         = "xmi"
+	versionAttrib = "version"
+	uuidAttrib    = "uuid"
 )
 
 type xmiLoadImpl struct {
@@ -11,8 +15,9 @@ type xmiLoadImpl struct {
 
 func newXMILoadImpl() *xmiLoadImpl {
 	l := new(xmiLoadImpl)
-	l.interfaces = l
 	l.xmlLoadImpl = newXMLLoadImpl()
+	l.notFeatures = append(l.notFeatures, xml.Name{Space: xmiURI, Local: typeAttrib}, xml.Name{Space: xmiURI, Local: versionAttrib}, xml.Name{Space: xmiURI, Local: uuidAttrib})
+	l.interfaces = l
 	return l
 }
 
@@ -25,7 +30,11 @@ func (l *xmiLoadImpl) getXSIType() string {
 }
 
 func (l *xmiLoadImpl) handleAttributes(object EObject) {
-
+	version := l.getAttributeValue(xmiURI, versionAttrib)
+	if len(version) > 0 {
+		// l.resource.setXMIVersion(version)
+	}
+	l.xmlLoadImpl.handleAttributes(object)
 }
 
 type xmiSaveImpl struct {

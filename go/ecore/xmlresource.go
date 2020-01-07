@@ -100,16 +100,14 @@ func (n *xmlNamespaces) getURI(prefix string) (response string, ok bool) {
 }
 
 const (
-	xsiURI                    = "http://www.w3.org/2001/XMLSchema-instance"
-	xsiNS                     = "xsi"
-	xmlNS                     = "xmlns"
-	schemaLocation            = "schemaLocation"
-	noNamespaceSchemaLocation = "noNamespaceSchemaLocation"
-	typeAttrib                = "type"
-	href                      = "href"
+	href                            = "href"
+	typeAttrib                      = "type"
+	schemaLocationAttrib            = "schemaLocation"
+	noNamespaceSchemaLocationAttrib = "noNamespaceSchemaLocation"
+	xsiURI                          = "http://www.w3.org/2001/XMLSchema-instance"
+	xsiNS                           = "xsi"
+	xmlNS                           = "xmlns"
 )
-
-var notFeatures = [...]string{typeAttrib, schemaLocation, noNamespaceSchemaLocation}
 
 const (
 	single   = iota
@@ -138,6 +136,7 @@ type xmlLoadImpl struct {
 	namespaces          *xmlNamespaces
 	spacesToFactories   map[string]EFactory
 	sameDocumentProxies []EObject
+	notFeatures         []xml.Name
 }
 
 func newXMLLoadImpl() *xmlLoadImpl {
@@ -145,6 +144,7 @@ func newXMLLoadImpl() *xmlLoadImpl {
 	l.interfaces = l
 	l.namespaces = newXmlNamespaces()
 	l.spacesToFactories = make(map[string]EFactory)
+	l.notFeatures = append(l.notFeatures, xml.Name{Space: xsiURI, Local: typeAttrib}, xml.Name{Space: xsiURI, Local: schemaLocationAttrib}, xml.Name{Space: xsiURI, Local: noNamespaceSchemaLocationAttrib})
 	return l
 }
 
@@ -226,12 +226,12 @@ func (l *xmlLoadImpl) getXSIType() string {
 }
 
 func (l *xmlLoadImpl) handleSchemaLocation() {
-	xsiSchemaLocation := l.getAttributeValue(xsiURI, schemaLocation)
+	xsiSchemaLocation := l.getAttributeValue(xsiURI, schemaLocationAttrib)
 	if len(xsiSchemaLocation) > 0 {
 		l.handleXSISchemaLocation(xsiSchemaLocation)
 	}
 
-	xsiNoNamespaceSchemaLocation := l.getAttributeValue(xsiURI, noNamespaceSchemaLocation)
+	xsiNoNamespaceSchemaLocation := l.getAttributeValue(xsiURI, noNamespaceSchemaLocationAttrib)
 	if len(xsiNoNamespaceSchemaLocation) > 0 {
 		l.handleXSINoNamespaceSchemaLocation(xsiNoNamespaceSchemaLocation)
 	}
@@ -437,15 +437,15 @@ func (l *xmlLoadImpl) handleAttributes(eObject EObject) {
 			value := attr.Value
 			if name == href {
 				l.handleProxy(eObject, value)
-			} else if uri != xmlNS && isUserAttribute(name) {
+			} else if uri != xmlNS && l.isUserAttribute(attr.Name) {
 				l.setAttributeValue(eObject, name, value)
 			}
 		}
 	}
 }
 
-func isUserAttribute(name string) bool {
-	for _, notFeature := range notFeatures {
+func (l *xmlLoadImpl) isUserAttribute(name xml.Name) bool {
+	for _, notFeature := range l.notFeatures {
 		if notFeature == name {
 			return false
 		}
