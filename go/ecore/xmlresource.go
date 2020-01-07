@@ -1505,14 +1505,14 @@ func newXMLResourceImpl() *xmlResourceImpl {
 
 func (r *xmlResourceImpl) DoLoad(rd io.Reader) {
 	resource := r.GetInterfaces().(xmlResource)
-	xmlLoad := resource.createLoad()
-	xmlLoad.load(resource, rd)
+	l := resource.createLoad()
+	l.load(resource, rd)
 }
 
 func (r *xmlResourceImpl) DoSave(w io.Writer) {
 	resource := r.GetInterfaces().(xmlResource)
-	xmlSave := resource.createSave()
-	xmlSave.save(resource, w)
+	s := resource.createSave()
+	s.save(resource, w)
 }
 
 func (r *xmlResourceImpl) createLoad() xmlLoad {
