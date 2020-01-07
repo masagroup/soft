@@ -15,6 +15,11 @@ type xmlLoad interface {
 	load(resource XMLResource, w io.Reader)
 }
 
+type xmlLoadInternal interface {
+	getXSIType() string
+	handleAttributes(object EObject)
+}
+
 type xmlSave interface {
 	save(resource XMLResource, w io.Writer)
 }
@@ -122,6 +127,7 @@ type reference struct {
 }
 
 type xmlLoadImpl struct {
+	interfaces          interface{}
 	decoder             *xml.Decoder
 	resource            XMLResource
 	isResolveDeferred   bool
@@ -135,10 +141,11 @@ type xmlLoadImpl struct {
 }
 
 func newXMLLoadImpl() *xmlLoadImpl {
-	return &xmlLoadImpl{
-		namespaces:        newXmlNamespaces(),
-		spacesToFactories: make(map[string]EFactory),
-	}
+	l := new(xmlLoadImpl)
+	l.interfaces = l
+	l.namespaces = newXmlNamespaces()
+	l.spacesToFactories = make(map[string]EFactory)
+	return l
 }
 
 func (l *xmlLoadImpl) load(resource XMLResource, r io.Reader) {
@@ -214,6 +221,10 @@ func (l *xmlLoadImpl) getAttributeValue(uri string, local string) string {
 	return ""
 }
 
+func (l *xmlLoadImpl) getXSIType() string {
+	return l.getAttributeValue(xsiURI, typeAttrib)
+}
+
 func (l *xmlLoadImpl) handleSchemaLocation() {
 	xsiSchemaLocation := l.getAttributeValue(xsiURI, schemaLocation)
 	if len(xsiSchemaLocation) > 0 {
@@ -278,7 +289,7 @@ func (l *xmlLoadImpl) createObjectWithFactory(eFactory EFactory, eType EClassifi
 		if eClass != nil && !eClass.IsAbstract() {
 			eObject := eFactory.Create(eClass)
 			if eObject != nil {
-				l.handleAttributes(eObject)
+				l.interfaces.(xmlLoadInternal).handleAttributes(eObject)
 			}
 			return eObject
 		}
@@ -333,7 +344,7 @@ func (l *xmlLoadImpl) handleFeature(space string, local string) {
 	if eObject != nil {
 		eFeature := l.getFeature(eObject, local)
 		if eFeature != nil {
-			xsiType := l.getAttributeValue(xsiURI, typeAttrib)
+			xsiType := l.interfaces.(xmlLoadInternal).getXSIType()
 			if len(xsiType) > 0 {
 				l.createObjectFromTypeName(eObject, xsiType, eFeature)
 			} else {
