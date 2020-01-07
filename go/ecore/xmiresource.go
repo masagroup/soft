@@ -1,11 +1,31 @@
 package ecore
 
+const (
+	xmiURI = "http://www.w3.org/2001/XMLSchema-instance"
+	xmiNS  = "xmi"
+)
+
 type xmiLoadImpl struct {
 	*xmlLoadImpl
 }
 
 func newXMILoadImpl() *xmiLoadImpl {
-	return &xmiLoadImpl{xmlLoadImpl: newXMLLoadImpl()}
+	l := new(xmiLoadImpl)
+	l.interfaces = l
+	l.xmlLoadImpl = newXMLLoadImpl()
+	return l
+}
+
+func (l *xmiLoadImpl) getXSIType() string {
+	xsiType := l.xmlLoadImpl.getXSIType()
+	if len(xsiType) == 0 && l.attributes != nil {
+		return l.getAttributeValue(xmiURI, typeAttrib)
+	}
+	return xsiType
+}
+
+func (l *xmiLoadImpl) handleAttributes(object EObject) {
+
 }
 
 type xmiSaveImpl struct {
