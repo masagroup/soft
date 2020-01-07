@@ -16,6 +16,10 @@ func newXMISaveImpl() *xmiSaveImpl {
 	return &xmiSaveImpl{xmlSaveImpl: newXMLSaveImpl()}
 }
 
+type XMIResource interface {
+	XMLResource
+}
+
 type xmiResourceImpl struct {
 	*xmlResourceImpl
 }
