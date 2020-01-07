@@ -41,6 +41,8 @@ func TestXMIResourceLoad(t *testing.T) {
 	assert.Equal(t, "owner", eOwnerFeature.GetName())
 	eOwnerAttribute, _ := eOwnerFeature.(EAttribute)
 	assert.NotNil(t, eOwnerAttribute)
+	eOwnerAttributeType := eOwnerAttribute.GetEAttributeType()
+	assert.Equal(t, "EString", eOwnerAttributeType.GetName())
 
 	eLocationFeature := eBookStoreClass.GetEStructuralFeature(1)
 	assert.Equal(t, "location", eLocationFeature.GetName())

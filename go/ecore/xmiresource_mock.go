@@ -326,3 +326,22 @@ func (_m *MockXMIResource) createSave() xmlSave {
 
 	return r0
 }
+
+// getXMIVersion provides a mock function with given fields:
+func (_m *MockXMIResource) getXMIVersion() string {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// setXMIVersion provides a mock function with given fields: version
+func (_m *MockXMIResource) setXMIVersion(version string) {
+	_m.Called(version)
+}
