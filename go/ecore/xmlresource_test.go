@@ -75,7 +75,7 @@ func TestXmlNamespacesContextNoRemap(t *testing.T) {
 }
 
 func TestXMLResourceLoad(t *testing.T) {
-	resource := NewXMLResource()
+	resource := newXMLResourceImpl()
 	resource.SetURI(&url.URL{Path: "testdata/bookStore.ecore"})
 	resource.Load()
 	assert.True(t, resource.IsLoaded())
@@ -142,7 +142,7 @@ func TestXMLResourceLoad(t *testing.T) {
 
 func TestXMLResourceSave(t *testing.T) {
 
-	resource := NewXMLResource()
+	resource := newXMLResourceImpl()
 	resource.SetURI(&url.URL{Path: "testdata/bookStore.ecore"})
 	resource.Load()
 
@@ -157,7 +157,7 @@ func TestXMLResourceSave(t *testing.T) {
 func BenchmarkXMLResourceLoadSave(b *testing.B) {
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
-		resource := NewXMLResource()
+		resource := newXMLResourceImpl()
 		resource.SetURI(&url.URL{Path: "testdata/bookStore.ecore"})
 		resource.Load()
 

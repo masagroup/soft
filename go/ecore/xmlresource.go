@@ -11,6 +11,20 @@ import (
 	"golang.org/x/net/html/charset"
 )
 
+type xmlLoad interface {
+	load(resource xmlResource, w io.Reader)
+}
+
+type xmlSave interface {
+	save(resource xmlResource, w io.Writer)
+}
+
+type xmlResource interface {
+	EResourceInternal
+	createLoad() xmlLoad
+	createSave() xmlSave
+}
+
 type pair [2]interface{}
 
 type xmlNamespaces struct {
@@ -107,9 +121,9 @@ type reference struct {
 	pos     int
 }
 
-type xmlResourceLoad struct {
+type xmlLoadImpl struct {
 	decoder             *xml.Decoder
-	resource            *XMLResource
+	resource            xmlResource
 	isResolveDeferred   bool
 	elements            []string
 	objects             []EObject
@@ -120,7 +134,44 @@ type xmlResourceLoad struct {
 	sameDocumentProxies []EObject
 }
 
-func (l *xmlResourceLoad) startElement(e xml.StartElement) {
+func newXMLLoadImpl() *xmlLoadImpl {
+	return &xmlLoadImpl{
+		namespaces:        newXmlNamespaces(),
+		spacesToFactories: make(map[string]EFactory),
+	}
+}
+
+func (l *xmlLoadImpl) load(resource xmlResource, r io.Reader) {
+	l.decoder = xml.NewDecoder(r)
+	l.decoder.CharsetReader = charset.NewReaderLabel
+	l.resource = resource
+
+	for {
+		t, tokenErr := l.decoder.Token()
+		if tokenErr != nil {
+			if tokenErr == io.EOF {
+				break
+			}
+			// handle error
+		}
+		switch t := t.(type) {
+		case xml.StartElement:
+			l.startElement(t)
+		case xml.EndElement:
+			l.endElement(t)
+		case xml.CharData:
+			l.text(string([]byte(t)))
+		case xml.Comment:
+			l.comment(string([]byte(t)))
+		case xml.ProcInst:
+			l.processingInstruction(t)
+		case xml.Directive:
+			l.directive(string([]byte(t)))
+		}
+	}
+}
+
+func (l *xmlLoadImpl) startElement(e xml.StartElement) {
 	l.setAttributes(e.Attr)
 	l.namespaces.pushContext()
 	l.handlePrefixMapping()
@@ -130,7 +181,7 @@ func (l *xmlResourceLoad) startElement(e xml.StartElement) {
 	l.processElement(e.Name.Space, e.Name.Local)
 }
 
-func (l *xmlResourceLoad) endElement(e xml.EndElement) {
+func (l *xmlLoadImpl) endElement(e xml.EndElement) {
 
 	if len(l.objects) > 0 {
 		l.objects = l.objects[:len(l.objects)-1]
@@ -146,13 +197,13 @@ func (l *xmlResourceLoad) endElement(e xml.EndElement) {
 
 }
 
-func (l *xmlResourceLoad) setAttributes(attributes []xml.Attr) []xml.Attr {
+func (l *xmlLoadImpl) setAttributes(attributes []xml.Attr) []xml.Attr {
 	old := l.attributes
 	l.attributes = attributes
 	return old
 }
 
-func (l *xmlResourceLoad) getAttributeValue(uri string, local string) string {
+func (l *xmlLoadImpl) getAttributeValue(uri string, local string) string {
 	if l.attributes != nil {
 		for _, attr := range l.attributes {
 			if attr.Name.Space == uri && attr.Name.Local == local {
@@ -163,7 +214,7 @@ func (l *xmlResourceLoad) getAttributeValue(uri string, local string) string {
 	return ""
 }
 
-func (l *xmlResourceLoad) handleSchemaLocation() {
+func (l *xmlLoadImpl) handleSchemaLocation() {
 	xsiSchemaLocation := l.getAttributeValue(xsiURI, schemaLocation)
 	if len(xsiSchemaLocation) > 0 {
 		l.handleXSISchemaLocation(xsiSchemaLocation)
@@ -175,13 +226,13 @@ func (l *xmlResourceLoad) handleSchemaLocation() {
 	}
 }
 
-func (l *xmlResourceLoad) handleXSISchemaLocation(loc string) {
+func (l *xmlLoadImpl) handleXSISchemaLocation(loc string) {
 }
 
-func (l *xmlResourceLoad) handleXSINoNamespaceSchemaLocation(loc string) {
+func (l *xmlLoadImpl) handleXSINoNamespaceSchemaLocation(loc string) {
 }
 
-func (l *xmlResourceLoad) handlePrefixMapping() {
+func (l *xmlLoadImpl) handlePrefixMapping() {
 	if l.attributes != nil {
 		for _, attr := range l.attributes {
 			if attr.Name.Space == xmlNS {
@@ -191,12 +242,12 @@ func (l *xmlResourceLoad) handlePrefixMapping() {
 	}
 }
 
-func (l *xmlResourceLoad) startPrefixMapping(prefix string, uri string) {
+func (l *xmlLoadImpl) startPrefixMapping(prefix string, uri string) {
 	l.namespaces.declarePrefix(prefix, uri)
 	delete(l.spacesToFactories, uri)
 }
 
-func (l *xmlResourceLoad) processElement(space string, local string) {
+func (l *xmlLoadImpl) processElement(space string, local string) {
 	if len(l.objects) == 0 {
 		eObject := l.createObject(space, local)
 		if eObject != nil {
@@ -208,7 +259,7 @@ func (l *xmlResourceLoad) processElement(space string, local string) {
 	}
 }
 
-func (l *xmlResourceLoad) createObject(space string, local string) EObject {
+func (l *xmlLoadImpl) createObject(space string, local string) EObject {
 	eFactory := l.getFactoryForSpace(space)
 	if eFactory != nil {
 		ePackage := eFactory.GetEPackage()
@@ -221,7 +272,7 @@ func (l *xmlResourceLoad) createObject(space string, local string) EObject {
 	}
 }
 
-func (l *xmlResourceLoad) createObjectWithFactory(eFactory EFactory, eType EClassifier) EObject {
+func (l *xmlLoadImpl) createObjectWithFactory(eFactory EFactory, eType EClassifier) EObject {
 	if eFactory != nil {
 		eClass, _ := eType.(EClass)
 		if eClass != nil && !eClass.IsAbstract() {
@@ -235,7 +286,7 @@ func (l *xmlResourceLoad) createObjectWithFactory(eFactory EFactory, eType EClas
 	return nil
 }
 
-func (l *xmlResourceLoad) createObjectFromFeatureType(eObject EObject, eFeature EStructuralFeature) EObject {
+func (l *xmlLoadImpl) createObjectFromFeatureType(eObject EObject, eFeature EStructuralFeature) EObject {
 	var eResult EObject
 	if eFeature != nil && eFeature.GetEType() != nil {
 		eType := eFeature.GetEType()
@@ -249,7 +300,7 @@ func (l *xmlResourceLoad) createObjectFromFeatureType(eObject EObject, eFeature 
 	return eResult
 }
 
-func (l *xmlResourceLoad) createObjectFromTypeName(eObject EObject, qname string, eFeature EStructuralFeature) EObject {
+func (l *xmlLoadImpl) createObjectFromTypeName(eObject EObject, qname string, eFeature EStructuralFeature) EObject {
 	prefix := ""
 	local := qname
 	if index := strings.Index(qname, ":"); index > 0 {
@@ -273,7 +324,7 @@ func (l *xmlResourceLoad) createObjectFromTypeName(eObject EObject, qname string
 	return eResult
 }
 
-func (l *xmlResourceLoad) handleFeature(space string, local string) {
+func (l *xmlLoadImpl) handleFeature(space string, local string) {
 	var eObject EObject
 	if len(l.objects) > 0 {
 		eObject = l.objects[len(l.objects)-1]
@@ -297,7 +348,7 @@ func (l *xmlResourceLoad) handleFeature(space string, local string) {
 
 }
 
-func (l *xmlResourceLoad) setFeatureValue(eObject EObject,
+func (l *xmlLoadImpl) setFeatureValue(eObject EObject,
 	eFeature EStructuralFeature,
 	value interface{},
 	position int) {
@@ -349,7 +400,7 @@ func (l *xmlResourceLoad) setFeatureValue(eObject EObject,
 	}
 }
 
-func (l *xmlResourceLoad) getLoadFeatureKind(eFeature EStructuralFeature) int {
+func (l *xmlLoadImpl) getLoadFeatureKind(eFeature EStructuralFeature) int {
 	eClassifier := eFeature.GetEType()
 	if eDataType, _ := eClassifier.(EDataType); eDataType != nil {
 		if eFeature.IsMany() {
@@ -367,7 +418,7 @@ func (l *xmlResourceLoad) getLoadFeatureKind(eFeature EStructuralFeature) int {
 	return other
 }
 
-func (l *xmlResourceLoad) handleAttributes(eObject EObject) {
+func (l *xmlLoadImpl) handleAttributes(eObject EObject) {
 	if l.attributes != nil {
 		for _, attr := range l.attributes {
 			name := attr.Name.Local
@@ -391,7 +442,7 @@ func isUserAttribute(name string) bool {
 	return true
 }
 
-func (l *xmlResourceLoad) getFactoryForSpace(space string) EFactory {
+func (l *xmlLoadImpl) getFactoryForSpace(space string) EFactory {
 	factory, _ := l.spacesToFactories[space]
 	if factory == nil {
 		packageRegistry := GetPackageRegistry()
@@ -406,7 +457,7 @@ func (l *xmlResourceLoad) getFactoryForSpace(space string) EFactory {
 	return factory
 }
 
-func (l *xmlResourceLoad) setAttributeValue(eObject EObject, qname string, value string) {
+func (l *xmlLoadImpl) setAttributeValue(eObject EObject, qname string, value string) {
 	local := qname
 	if index := strings.Index(qname, ":"); index > 0 {
 		local = qname[index+1:]
@@ -424,7 +475,7 @@ func (l *xmlResourceLoad) setAttributeValue(eObject EObject, qname string, value
 	}
 }
 
-func (l *xmlResourceLoad) setValueFromId(eObject EObject, eReference EReference, ids string) {
+func (l *xmlLoadImpl) setValueFromId(eObject EObject, eReference EReference, ids string) {
 	mustAdd := l.isResolveDeferred
 	mustAddOrNotOppositeIsMany := false
 	isFirstID := true
@@ -498,7 +549,7 @@ func (l *xmlResourceLoad) setValueFromId(eObject EObject, eReference EReference,
 	}
 }
 
-func (l *xmlResourceLoad) handleProxy(eProxy EObject, id string) {
+func (l *xmlLoadImpl) handleProxy(eProxy EObject, id string) {
 	uri, ok := url.Parse(id)
 	if ok != nil {
 		return
@@ -517,7 +568,7 @@ func (l *xmlResourceLoad) handleProxy(eProxy EObject, id string) {
 	}
 }
 
-func (l *xmlResourceLoad) handleReferences() {
+func (l *xmlLoadImpl) handleReferences() {
 	for _, eProxy := range l.sameDocumentProxies {
 		for itRef := eProxy.EClass().GetEAllReferences().Iterator(); itRef.HasNext(); {
 			eReference := itRef.Next().(EReference)
@@ -589,38 +640,38 @@ func (l *xmlResourceLoad) handleReferences() {
 	}
 }
 
-func (l *xmlResourceLoad) getFeature(eObject EObject, name string) EStructuralFeature {
+func (l *xmlLoadImpl) getFeature(eObject EObject, name string) EStructuralFeature {
 	eClass := eObject.EClass()
 	eFeature := eClass.GetEStructuralFeatureFromString(name)
 	return eFeature
 }
 
-func (l *xmlResourceLoad) handleUnknownFeature(name string) {
+func (l *xmlLoadImpl) handleUnknownFeature(name string) {
 	l.error(NewEDiagnosticImpl("Feature "+name+" not found", l.resource.GetURI().String(), int(l.decoder.InputOffset()), 0))
 }
 
-func (l *xmlResourceLoad) handleUnknownPackage(name string) {
+func (l *xmlLoadImpl) handleUnknownPackage(name string) {
 	l.error(NewEDiagnosticImpl("Package "+name+" not found", l.resource.GetURI().String(), int(l.decoder.InputOffset()), 0))
 }
 
-func (l *xmlResourceLoad) error(diagnostic EDiagnostic) {
+func (l *xmlLoadImpl) error(diagnostic EDiagnostic) {
 	l.resource.GetErrors().Add(diagnostic)
 }
 
-func (l *xmlResourceLoad) warning(diagnostic EDiagnostic) {
+func (l *xmlLoadImpl) warning(diagnostic EDiagnostic) {
 	l.resource.GetWarnings().Add(diagnostic)
 }
 
-func (l *xmlResourceLoad) text(data string) {
+func (l *xmlLoadImpl) text(data string) {
 }
 
-func (l *xmlResourceLoad) comment(comment string) {
+func (l *xmlLoadImpl) comment(comment string) {
 }
 
-func (l *xmlResourceLoad) processingInstruction(procInst xml.ProcInst) {
+func (l *xmlLoadImpl) processingInstruction(procInst xml.ProcInst) {
 }
 
-func (l *xmlResourceLoad) directive(directive string) {
+func (l *xmlLoadImpl) directive(directive string) {
 }
 
 type xmlStringSegment struct {
@@ -854,8 +905,8 @@ const (
 	datatype_attribute_many                = iota
 )
 
-type xmlResourceSave struct {
-	resource      *XMLResource
+type xmlSaveImpl struct {
+	resource      xmlResource
 	str           *xmlString
 	packages      map[EPackage]string
 	uriToPrefixes map[string][]string
@@ -865,12 +916,44 @@ type xmlResourceSave struct {
 	keepDefaults  bool
 }
 
-func (s *xmlResourceSave) saveHeader() {
+func newXMLSaveImpl() *xmlSaveImpl {
+	return &xmlSaveImpl{
+		str:           newXmlString(),
+		packages:      make(map[EPackage]string),
+		uriToPrefixes: make(map[string][]string),
+		prefixesToURI: make(map[string]string),
+		featureKinds:  make(map[EStructuralFeature]int),
+		namespaces:    newXmlNamespaces()}
+}
+
+func (s *xmlSaveImpl) save(resource xmlResource, w io.Writer) {
+	s.resource = resource
+	c := s.resource.GetContents()
+	if c.Empty() {
+		return
+	}
+
+	// header
+	s.saveHeader()
+
+	// top object
+	object := c.Get(0).(EObject)
+	mark := s.saveTopObject(object)
+
+	// namespaces
+	s.str.resetToMark(mark)
+	s.saveNamespaces()
+
+	// write result
+	s.str.write(w)
+}
+
+func (s *xmlSaveImpl) saveHeader() {
 	s.str.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
 	s.str.addLine()
 }
 
-func (s *xmlResourceSave) saveTopObject(eObject EObject) *xmlStringSegment {
+func (s *xmlSaveImpl) saveTopObject(eObject EObject) *xmlStringSegment {
 	eClass := eObject.EClass()
 	name := s.getQName(eClass)
 	s.str.startElement(name)
@@ -880,7 +963,7 @@ func (s *xmlResourceSave) saveTopObject(eObject EObject) *xmlStringSegment {
 	return mark
 }
 
-func (s *xmlResourceSave) saveNamespaces() {
+func (s *xmlSaveImpl) saveNamespaces() {
 	var prefixes []string
 	for prefix, _ := range s.prefixesToURI {
 		prefixes = append(prefixes, prefix)
@@ -891,10 +974,10 @@ func (s *xmlResourceSave) saveNamespaces() {
 	}
 }
 
-func (s *xmlResourceSave) saveElementID(eObject EObject) {
+func (s *xmlSaveImpl) saveElementID(eObject EObject) {
 }
 
-func (s *xmlResourceSave) saveFeatures(eObject EObject, attributesOnly bool) bool {
+func (s *xmlSaveImpl) saveFeatures(eObject EObject, attributesOnly bool) bool {
 	eClass := eObject.EClass()
 	eAllFeatures := eClass.GetEAllStructuralFeatures()
 	var elementFeatures []int
@@ -1030,7 +1113,7 @@ func (s *xmlResourceSave) saveFeatures(eObject EObject, attributesOnly bool) boo
 	return true
 }
 
-func (s *xmlResourceSave) saveDataTypeSingle(eObject EObject, eFeature EStructuralFeature) {
+func (s *xmlSaveImpl) saveDataTypeSingle(eObject EObject, eFeature EStructuralFeature) {
 	val := eObject.EGet(eFeature)
 	str, ok := s.getDataType(val, eFeature, true)
 	if ok {
@@ -1038,7 +1121,7 @@ func (s *xmlResourceSave) saveDataTypeSingle(eObject EObject, eFeature EStructur
 	}
 }
 
-func (s *xmlResourceSave) saveDataTypeMany(eObject EObject, eFeature EStructuralFeature) {
+func (s *xmlSaveImpl) saveDataTypeMany(eObject EObject, eFeature EStructuralFeature) {
 	l := eObject.EGet(eFeature).(EList)
 	d := eFeature.GetEType().(EDataType)
 	p := d.GetEPackage()
@@ -1059,11 +1142,11 @@ func (s *xmlResourceSave) saveDataTypeMany(eObject EObject, eFeature EStructural
 	}
 }
 
-func (s *xmlResourceSave) saveManyEmpty(eObject EObject, eFeature EStructuralFeature) {
+func (s *xmlSaveImpl) saveManyEmpty(eObject EObject, eFeature EStructuralFeature) {
 	s.str.addAttribute(s.getFeatureQName(eFeature), "")
 }
 
-func (s *xmlResourceSave) saveEObjectSingle(eObject EObject, eFeature EStructuralFeature) {
+func (s *xmlSaveImpl) saveEObjectSingle(eObject EObject, eFeature EStructuralFeature) {
 	value, _ := eObject.EGet(eFeature).(EObject)
 	if value != nil {
 		id := s.getHRef(value)
@@ -1071,7 +1154,7 @@ func (s *xmlResourceSave) saveEObjectSingle(eObject EObject, eFeature EStructura
 	}
 }
 
-func (s *xmlResourceSave) saveEObjectMany(eObject EObject, eFeature EStructuralFeature) {
+func (s *xmlSaveImpl) saveEObjectMany(eObject EObject, eFeature EStructuralFeature) {
 	l := eObject.EGet(eFeature).(EList)
 	failure := false
 	var buffer strings.Builder
@@ -1099,18 +1182,18 @@ func (s *xmlResourceSave) saveEObjectMany(eObject EObject, eFeature EStructuralF
 	}
 }
 
-func (s *xmlResourceSave) saveNil(eObject EObject, eFeature EStructuralFeature) {
+func (s *xmlSaveImpl) saveNil(eObject EObject, eFeature EStructuralFeature) {
 	s.str.addNil(s.getFeatureQName(eFeature))
 }
 
-func (s *xmlResourceSave) saveContainedSingle(eObject EObject, eFeature EStructuralFeature) {
+func (s *xmlSaveImpl) saveContainedSingle(eObject EObject, eFeature EStructuralFeature) {
 	value, _ := eObject.EGet(eFeature).(EObjectInternal)
 	if value != nil {
 		s.saveEObjectInternal(value, eFeature)
 	}
 }
 
-func (s *xmlResourceSave) saveContainedMany(eObject EObject, eFeature EStructuralFeature) {
+func (s *xmlSaveImpl) saveContainedMany(eObject EObject, eFeature EStructuralFeature) {
 	l := eObject.EGet(eFeature).(EList)
 	for it := l.Iterator(); it.HasNext(); {
 		value, _ := it.Next().(EObjectInternal)
@@ -1120,7 +1203,7 @@ func (s *xmlResourceSave) saveContainedMany(eObject EObject, eFeature EStructura
 	}
 }
 
-func (s *xmlResourceSave) saveEObjectInternal(o EObjectInternal, f EStructuralFeature) {
+func (s *xmlSaveImpl) saveEObjectInternal(o EObjectInternal, f EStructuralFeature) {
 	if o.EDirectResource() != nil || o.EIsProxy() {
 		s.saveHRef(o, f)
 	} else {
@@ -1128,7 +1211,7 @@ func (s *xmlResourceSave) saveEObjectInternal(o EObjectInternal, f EStructuralFe
 	}
 }
 
-func (s *xmlResourceSave) saveEObject(o EObject, f EStructuralFeature) {
+func (s *xmlSaveImpl) saveEObject(o EObject, f EStructuralFeature) {
 	s.str.startElement(s.getFeatureQName(f))
 	eClass := o.EClass()
 	eType := f.GetEType()
@@ -1139,20 +1222,20 @@ func (s *xmlResourceSave) saveEObject(o EObject, f EStructuralFeature) {
 	s.saveFeatures(o, false)
 }
 
-func (s *xmlResourceSave) saveTypeAttribute(eClass EClass) {
+func (s *xmlSaveImpl) saveTypeAttribute(eClass EClass) {
 	s.str.addAttribute("xsi:type", s.getQName(eClass))
 	s.uriToPrefixes[xsiURI] = []string{xsiNS}
 	s.prefixesToURI[xsiNS] = xsiURI
 }
 
-func (s *xmlResourceSave) saveHRefSingle(eObject EObject, eFeature EStructuralFeature) {
+func (s *xmlSaveImpl) saveHRefSingle(eObject EObject, eFeature EStructuralFeature) {
 	value, _ := eObject.EGet(eFeature).(EObject)
 	if value != nil {
 		s.saveHRef(value, eFeature)
 	}
 }
 
-func (s *xmlResourceSave) saveHRefMany(eObject EObject, eFeature EStructuralFeature) {
+func (s *xmlSaveImpl) saveHRefMany(eObject EObject, eFeature EStructuralFeature) {
 	l := eObject.EGet(eFeature).(EList)
 	for it := l.Iterator(); it.HasNext(); {
 		value, _ := it.Next().(EObject)
@@ -1162,7 +1245,7 @@ func (s *xmlResourceSave) saveHRefMany(eObject EObject, eFeature EStructuralFeat
 	}
 }
 
-func (s *xmlResourceSave) saveHRef(eObject EObject, eFeature EStructuralFeature) {
+func (s *xmlSaveImpl) saveHRef(eObject EObject, eFeature EStructuralFeature) {
 	href := s.getHRef(eObject)
 	if href != "" {
 		s.str.startElement(s.getFeatureQName(eFeature))
@@ -1176,7 +1259,7 @@ func (s *xmlResourceSave) saveHRef(eObject EObject, eFeature EStructuralFeature)
 	}
 }
 
-func (s *xmlResourceSave) saveIDRefSingle(eObject EObject, eFeature EStructuralFeature) {
+func (s *xmlSaveImpl) saveIDRefSingle(eObject EObject, eFeature EStructuralFeature) {
 	value, _ := eObject.EGet(eFeature).(EObject)
 	if value != nil {
 		id := s.getIDRef(value)
@@ -1186,7 +1269,7 @@ func (s *xmlResourceSave) saveIDRefSingle(eObject EObject, eFeature EStructuralF
 	}
 }
 
-func (s *xmlResourceSave) saveIDRefMany(eObject EObject, eFeature EStructuralFeature) {
+func (s *xmlSaveImpl) saveIDRefMany(eObject EObject, eFeature EStructuralFeature) {
 	l := eObject.EGet(eFeature).(EList)
 	failure := false
 	var buffer strings.Builder
@@ -1214,19 +1297,19 @@ func (s *xmlResourceSave) saveIDRefMany(eObject EObject, eFeature EStructuralFea
 	}
 }
 
-func (s *xmlResourceSave) isNil(eObject EObject, eFeature EStructuralFeature) bool {
+func (s *xmlSaveImpl) isNil(eObject EObject, eFeature EStructuralFeature) bool {
 	return eObject.EGet(eFeature) == nil
 }
 
-func (s *xmlResourceSave) isEmpty(eObject EObject, eFeature EStructuralFeature) bool {
+func (s *xmlSaveImpl) isEmpty(eObject EObject, eFeature EStructuralFeature) bool {
 	return eObject.EGet(eFeature).(EList).Empty()
 }
 
-func (s *xmlResourceSave) shouldSaveFeature(o EObject, f EStructuralFeature) bool {
+func (s *xmlSaveImpl) shouldSaveFeature(o EObject, f EStructuralFeature) bool {
 	return o.EIsSet(f) || (s.keepDefaults && f.GetDefaultValueLiteral() != "")
 }
 
-func (s *xmlResourceSave) getSaveFeatureKind(f EStructuralFeature) int {
+func (s *xmlSaveImpl) getSaveFeatureKind(f EStructuralFeature) int {
 	if f.IsTransient() {
 		return transient
 	}
@@ -1291,7 +1374,7 @@ const (
 	cross = iota
 )
 
-func (s *xmlResourceSave) getResourceType(eObject EObject, eFeature EStructuralFeature) int {
+func (s *xmlSaveImpl) getResourceType(eObject EObject, eFeature EStructuralFeature) int {
 	value, _ := eObject.EGet(eFeature).(EObjectInternal)
 	if value == nil {
 		return skip
@@ -1306,11 +1389,11 @@ func (s *xmlResourceSave) getResourceType(eObject EObject, eFeature EStructuralF
 	}
 }
 
-func (s *xmlResourceSave) getQName(eClass EClass) string {
+func (s *xmlSaveImpl) getQName(eClass EClass) string {
 	return s.getElementQName(eClass.GetEPackage(), eClass.GetName(), false)
 }
 
-func (s *xmlResourceSave) getElementQName(ePackage EPackage, name string, mustHavePrefix bool) string {
+func (s *xmlSaveImpl) getElementQName(ePackage EPackage, name string, mustHavePrefix bool) string {
 	nsPrefix := s.getPrefix(ePackage, mustHavePrefix)
 	if nsPrefix == "" {
 		return name
@@ -1321,11 +1404,11 @@ func (s *xmlResourceSave) getElementQName(ePackage EPackage, name string, mustHa
 	}
 }
 
-func (s *xmlResourceSave) getFeatureQName(eFeature EStructuralFeature) string {
+func (s *xmlSaveImpl) getFeatureQName(eFeature EStructuralFeature) string {
 	return eFeature.GetName()
 }
 
-func (s *xmlResourceSave) getPrefix(ePackage EPackage, mustHavePrefix bool) string {
+func (s *xmlSaveImpl) getPrefix(ePackage EPackage, mustHavePrefix bool) string {
 	nsPrefix, ok := s.packages[ePackage]
 	if !ok {
 		nsURI := ePackage.GetNsURI()
@@ -1365,7 +1448,7 @@ func (s *xmlResourceSave) getPrefix(ePackage EPackage, mustHavePrefix bool) stri
 	return nsPrefix
 }
 
-func (s *xmlResourceSave) getDataType(value interface{}, f EStructuralFeature, isAttribute bool) (string, bool) {
+func (s *xmlSaveImpl) getDataType(value interface{}, f EStructuralFeature, isAttribute bool) (string, bool) {
 	if value == nil {
 		return "", false
 	} else {
@@ -1377,7 +1460,7 @@ func (s *xmlResourceSave) getDataType(value interface{}, f EStructuralFeature, i
 	}
 }
 
-func (s *xmlResourceSave) getHRef(eObject EObject) string {
+func (s *xmlSaveImpl) getHRef(eObject EObject) string {
 	eInternal, _ := eObject.(EObjectInternal)
 	if eInternal != nil {
 		uri := eInternal.EProxyURI()
@@ -1395,13 +1478,13 @@ func (s *xmlResourceSave) getHRef(eObject EObject) string {
 	return ""
 }
 
-func (s *xmlResourceSave) getResourceHRef(resource EResource, object EObject) string {
+func (s *xmlSaveImpl) getResourceHRef(resource EResource, object EObject) string {
 	uri := resource.GetURI()
 	uri.Fragment = resource.GetURIFragment(object)
 	return uri.String()
 }
 
-func (s *xmlResourceSave) getIDRef(eObject EObject) string {
+func (s *xmlSaveImpl) getIDRef(eObject EObject) string {
 	if s.resource == nil {
 		return ""
 	} else {
@@ -1409,80 +1492,33 @@ func (s *xmlResourceSave) getIDRef(eObject EObject) string {
 	}
 }
 
-type XMLResource struct {
+type xmlResourceImpl struct {
 	*EResourceImpl
 }
 
-func NewXMLResource() *XMLResource {
-	r := new(XMLResource)
+func newXMLResourceImpl() *xmlResourceImpl {
+	r := new(xmlResourceImpl)
 	r.EResourceImpl = NewEResourceImpl()
 	r.SetInterfaces(r)
 	return r
 }
 
-func (r *XMLResource) DoLoad(rd io.Reader) {
-
-	d := xml.NewDecoder(rd)
-	d.CharsetReader = charset.NewReaderLabel
-
-	loader := &xmlResourceLoad{
-		decoder:           d,
-		resource:          r,
-		namespaces:        newXmlNamespaces(),
-		spacesToFactories: make(map[string]EFactory),
-	}
-
-	for {
-		t, tokenErr := d.Token()
-		if tokenErr != nil {
-			if tokenErr == io.EOF {
-				break
-			}
-			// handle error
-		}
-		switch t := t.(type) {
-		case xml.StartElement:
-			loader.startElement(t)
-		case xml.EndElement:
-			loader.endElement(t)
-		case xml.CharData:
-			loader.text(string([]byte(t)))
-		case xml.Comment:
-			loader.comment(string([]byte(t)))
-		case xml.ProcInst:
-			loader.processingInstruction(t)
-		case xml.Directive:
-			loader.directive(string([]byte(t)))
-		}
-	}
+func (r *xmlResourceImpl) DoLoad(rd io.Reader) {
+	resource := r.GetInterfaces().(xmlResource)
+	xmlLoad := resource.createLoad()
+	xmlLoad.load(resource, rd)
 }
 
-func (r *XMLResource) DoSave(w io.Writer) {
-	c := r.GetContents()
-	if c.Empty() {
-		return
-	}
+func (r *xmlResourceImpl) DoSave(w io.Writer) {
+	resource := r.GetInterfaces().(xmlResource)
+	xmlSave := resource.createSave()
+	xmlSave.save(resource, w)
+}
 
-	s := &xmlResourceSave{
-		resource:      r,
-		str:           newXmlString(),
-		packages:      make(map[EPackage]string),
-		uriToPrefixes: make(map[string][]string),
-		prefixesToURI: make(map[string]string),
-		featureKinds:  make(map[EStructuralFeature]int),
-		namespaces:    newXmlNamespaces()}
+func (r *xmlResourceImpl) createLoad() xmlLoad {
+	return newXMLLoadImpl()
+}
 
-	// header
-	s.saveHeader()
-
-	// top object
-	object := c.Get(0).(EObject)
-	mark := s.saveTopObject(object)
-
-	// namespaces
-	s.str.resetToMark(mark)
-	s.saveNamespaces()
-
-	// write result
-	s.str.write(w)
+func (r *xmlResourceImpl) createSave() xmlSave {
+	return newXMLSaveImpl()
 }

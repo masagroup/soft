@@ -1,19 +1,11 @@
 package ecore
 
-type xmiResourceLoad struct {
-	xmlResourceLoad
+type xmiResourceImpl struct {
+	*xmlResourceImpl
 }
 
-type xmiResourceSave struct {
-	xmlResourceSave
-}
-
-type XMIResource struct {
-	*XMLResource
-}
-
-func NewXMIResource() *XMIResource {
-	r := new(XMIResource)
-	r.XMLResource = NewXMLResource()
+func newXMIResourceImpl() *xmiResourceImpl {
+	r := new(xmiResourceImpl)
+	r.xmlResourceImpl = newXMLResourceImpl()
 	return r
 }
