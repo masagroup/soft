@@ -46,96 +46,98 @@ namespace ecore::impl
 
         }
 
-        Proxy( const std::weak_ptr<EObject>& owner, int featureID , const T& ref )
+        Proxy( const std::weak_ptr<EObject>& owner, int featureID , const T& value )
             : owner_( owner )
             , featureID_( featureID )
         {
-            set( ref );
+            set( value );
         }
 
         Proxy( const Proxy& o )
             : owner_( o.owner_ )
             , featureID_( o.featureID_ )
-            , ref_( o.ref_ )
-            , proxy_( o.proxy_ )
+            , resolved_( o.resolved_ )
+            , value_( o.value_ )
         {
 
+        }
+
+        T value() const
+        {
+            auto resolved = resolved_.lock();
+            return resolved ? resolved : value_;
         }
 
         T get() const
         {
-            if( is_uninitialized( ref_ ) )
+            if( is_uninitialized( resolved_ ) )
             {
-                if( proxy_ )
+                if( value_ )
                 {
                     auto owner = owner_.lock();
                     if( owner )
                     {
-                        auto resolved = std::dynamic_pointer_cast<typename T::element_type>( owner->eResolveProxy( proxy_ ) );
-                        if( resolved && resolved != proxy_ )
+                        auto resolved = std::dynamic_pointer_cast<typename T::element_type>( owner->eResolveProxy( value_ ) );
+                        if( resolved && resolved != value_ )
                         {
-                            ref_ = resolved;
+                            resolved_ = resolved;
                             if( isNotificationRequired() )
-                                owner->eNotify( std::make_shared< Notification >( owner, Notification::RESOLVE, featureID_, proxy_, resolved ) );
+                                owner->eNotify(
+                                    std::make_shared<Notification>( owner, Notification::RESOLVE, featureID_, value_, resolved ) );
                             return resolved;
                         }
                     }
                 }
-                return proxy_;
+                return value_;
             }
             else
-                return ref_.lock();
+                return resolved_.lock();
         }
 
-        void set( const T& ref )
+        void set( const T& value )
         {
-            if( ref )
+            if( value )
             {
-                if( ref->eIsProxy() )
+                if( value->eIsProxy() )
                 {
-                    ref_.reset();
-                    proxy_ = std::move( ref );
+                    resolved_.reset();
+                    value_ = std::move( value );
                 }
                 else
                 {
-                    ref_ = ref;
-                    proxy_.reset();
+                    resolved_ = value;
+                    value_.reset();
                 }
             }
             else
             {
-                ref_.reset();
-                proxy_.reset();
+                resolved_.reset();
+                value_.reset();
             }
-        }
-
-        operator T() const
-        {
-            return get();
         }
 
         explicit operator bool() const
         {
-            return static_cast<bool>(is_uninitialized( ref_ ) ? proxy_ : ref_.lock());
+            return static_cast<bool>(is_uninitialized( resolved_ ) ? value_ : resolved_.lock());
         }
 
         typename T::element_type* operator->() const
         {   
-            return is_uninitialized( ref_ ) ? proxy_.operator ->() : ref_.lock().operator ->();
+            return is_uninitialized( resolved_ ) ? value_.operator ->() : resolved_.lock().operator ->();
         }
 
         Proxy& operator=( const Proxy& o )
         {
             owner_ = o.owner_;
             featureID_ = o.featureID_;
-            ref_ = o.ref_;
-            proxy_ = o.proxy_;
+            resolved_ = o.resolved_;
+            value_ = o.value_;
             return *this;
         }
 
-        Proxy& operator=( const T& ref )
+        Proxy& operator=( const T& value )
         {
-            set( ref );
+            set( value );
             return *this;
         }
 
@@ -143,19 +145,13 @@ namespace ecore::impl
         {
             return equals( owner_, o.owner_ )
                 && featureID_ == o.featureID_
-                && equals( ref_, o.ref_ )
-                && proxy_ == o.proxy_;
+                && equals( resolved_, o.resolved_ )
+                && value_ == o.value_;
         }
 
         bool operator !=( const Proxy& o ) const
         {
             return !operator ==( o );
-        }
-
-        T getUnResolved() const
-        {
-            auto ref = ref_.lock();
-            return ref ? ref : proxy_;
         }
 
     private:
@@ -175,20 +171,20 @@ namespace ecore::impl
     private:
         std::weak_ptr<EObject> owner_;
         int featureID_;
-        mutable std::weak_ptr<typename T::element_type> ref_;
-        T proxy_;
+        mutable std::weak_ptr<typename T::element_type> resolved_;
+        T value_;
     };
 
     template<typename T>
     bool operator==( std::nullptr_t, const Proxy<T>& right ) noexcept
     {	// test if nullptr == shared_ptr
-        return ( nullptr == right.getUnResolved() );
+        return ( nullptr == right.value() );
     }
 
     template<typename T>
     bool operator==( const Proxy<T>& left, nullptr_t ) noexcept
     {	// test if nullptr == shared_ptr
-        return ( left.getUnResolved() == nullptr );
+        return ( left.value() == nullptr );
     }
 
     template<typename T>
