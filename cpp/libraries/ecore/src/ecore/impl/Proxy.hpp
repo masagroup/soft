@@ -152,7 +152,7 @@ namespace ecore::impl
             return !operator ==( o );
         }
 
-        T getNoResolution() const
+        T getUnResolved() const
         {
             auto ref = ref_.lock();
             return ref ? ref : proxy_;
@@ -182,13 +182,13 @@ namespace ecore::impl
     template<typename T>
     bool operator==( std::nullptr_t, const Proxy<T>& right ) noexcept
     {	// test if nullptr == shared_ptr
-        return ( nullptr == right.getNoResolution() );
+        return ( nullptr == right.getUnResolved() );
     }
 
     template<typename T>
     bool operator==( const Proxy<T>& left, nullptr_t ) noexcept
     {	// test if nullptr == shared_ptr
-        return ( left.getNoResolution() == nullptr );
+        return ( left.getUnResolved() == nullptr );
     }
 
     template<typename T>
