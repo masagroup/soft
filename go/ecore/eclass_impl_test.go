@@ -105,10 +105,10 @@ func TestEClassAbstractEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -342,10 +342,10 @@ func TestEClassInterfaceEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -568,10 +568,10 @@ func TestEClassEStructuralFeaturesEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -794,10 +794,10 @@ func TestEClassEAttributesEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -1020,10 +1020,10 @@ func TestEClassEReferencesEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -1246,10 +1246,10 @@ func TestEClassESuperTypesEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -1472,10 +1472,10 @@ func TestEClassEOperationsEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -1698,10 +1698,10 @@ func TestEClassEContainmentsEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -1924,10 +1924,10 @@ func TestEClassECrossReferencesEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -2150,10 +2150,10 @@ func TestEClassEAllAttributesEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -2376,10 +2376,10 @@ func TestEClassEAllReferencesEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -2602,10 +2602,10 @@ func TestEClassEAllContainmentsEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -2828,10 +2828,10 @@ func TestEClassEAllOperationsEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -3054,10 +3054,10 @@ func TestEClassEAllStructuralFeaturesEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -3280,10 +3280,10 @@ func TestEClassEAllSuperTypesEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })
@@ -3501,10 +3501,10 @@ func TestEClassEIDAttributeEInvoke(t *testing.T) {
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_EOPERATION_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
 	}
 	{
-		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_EINT, nil) })
+		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING, nil) })
 	}
 	{
 		assert.Panics(t, func() { obj.EInvokeFromID(ECLASS__GET_FEATURE_COUNT, nil) })

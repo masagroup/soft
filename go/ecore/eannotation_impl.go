@@ -55,7 +55,6 @@ func (eAnnotation *eAnnotationImpl) GetContents() EList {
 		eAnnotation.contents = eAnnotation.getInitializers().initContents()
 	}
 	return eAnnotation.contents
-
 }
 
 // GetDetails get the value of details
@@ -64,7 +63,6 @@ func (eAnnotation *eAnnotationImpl) GetDetails() EList {
 		eAnnotation.details = eAnnotation.getInitializers().initDetails()
 	}
 	return eAnnotation.details
-
 }
 
 // GetEModelElement get the value of eModelElement
@@ -73,7 +71,6 @@ func (eAnnotation *eAnnotationImpl) GetEModelElement() EModelElement {
 		return eAnnotation.EContainer().(EModelElement)
 	}
 	return nil
-
 }
 
 // SetEModelElement set the value of eModelElement
@@ -105,13 +102,11 @@ func (eAnnotation *eAnnotationImpl) GetReferences() EList {
 		eAnnotation.references = eAnnotation.getInitializers().initReferences()
 	}
 	return eAnnotation.references
-
 }
 
 // GetSource get the value of source
 func (eAnnotation *eAnnotationImpl) GetSource() string {
 	return eAnnotation.source
-
 }
 
 // SetSource set the value of source

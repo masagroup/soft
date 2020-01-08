@@ -39,18 +39,15 @@ func (eAttribute *eAttributeImpl) EStaticClass() EClass {
 // GetEAttributeType get the value of eAttributeType
 func (eAttribute *eAttributeImpl) GetEAttributeType() EDataType {
 	panic("GetEAttributeType not implemented")
-
 }
 
 func (eAttribute *eAttributeImpl) basicGetEAttributeType() EDataType {
 	panic("GetEAttributeType not implemented")
-
 }
 
 // IsID get the value of isID
 func (eAttribute *eAttributeImpl) IsID() bool {
 	return eAttribute.isID
-
 }
 
 // SetID set the value of isID

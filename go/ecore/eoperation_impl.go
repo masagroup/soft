@@ -58,7 +58,6 @@ func (eOperation *eOperationImpl) GetEContainingClass() EClass {
 		return eOperation.EContainer().(EClass)
 	}
 	return nil
-
 }
 
 // GetEExceptions get the value of eExceptions
@@ -67,7 +66,6 @@ func (eOperation *eOperationImpl) GetEExceptions() EList {
 		eOperation.eExceptions = eOperation.getInitializers().initEExceptions()
 	}
 	return eOperation.eExceptions
-
 }
 
 // UnsetEExceptions unset the value of eExceptions
@@ -83,13 +81,11 @@ func (eOperation *eOperationImpl) GetEParameters() EList {
 		eOperation.eParameters = eOperation.getInitializers().initEParameters()
 	}
 	return eOperation.eParameters
-
 }
 
 // GetOperationID get the value of operationID
 func (eOperation *eOperationImpl) GetOperationID() int {
 	return eOperation.operationID
-
 }
 
 // SetOperationID set the value of operationID

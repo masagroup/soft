@@ -53,7 +53,6 @@ func (eModelElement *eModelElementImpl) GetEAnnotations() EList {
 		eModelElement.eAnnotations = eModelElement.getInitializers().initEAnnotations()
 	}
 	return eModelElement.eAnnotations
-
 }
 
 func (eModelElement *eModelElementImpl) initEAnnotations() EList {

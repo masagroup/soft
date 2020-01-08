@@ -48,7 +48,6 @@ func (eTypeParameter *eTypeParameterImpl) GetEBounds() EList {
 		eTypeParameter.eBounds = eTypeParameter.getInitializers().initEBounds()
 	}
 	return eTypeParameter.eBounds
-
 }
 
 func (eTypeParameter *eTypeParameterImpl) initEBounds() EList {

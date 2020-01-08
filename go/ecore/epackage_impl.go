@@ -61,13 +61,11 @@ func (ePackage *ePackageImpl) GetEClassifiers() EList {
 		ePackage.eClassifiers = ePackage.getInitializers().initEClassifiers()
 	}
 	return ePackage.eClassifiers
-
 }
 
 // GetEFactoryInstance get the value of eFactoryInstance
 func (ePackage *ePackageImpl) GetEFactoryInstance() EFactory {
 	return ePackage.eFactoryInstance
-
 }
 
 // SetEFactoryInstance set the value of eFactoryInstance
@@ -108,7 +106,6 @@ func (ePackage *ePackageImpl) GetESubPackages() EList {
 		ePackage.eSubPackages = ePackage.getInitializers().initESubPackages()
 	}
 	return ePackage.eSubPackages
-
 }
 
 // GetESuperPackage get the value of eSuperPackage
@@ -117,13 +114,11 @@ func (ePackage *ePackageImpl) GetESuperPackage() EPackage {
 		return ePackage.EContainer().(EPackage)
 	}
 	return nil
-
 }
 
 // GetNsPrefix get the value of nsPrefix
 func (ePackage *ePackageImpl) GetNsPrefix() string {
 	return ePackage.nsPrefix
-
 }
 
 // SetNsPrefix set the value of nsPrefix
@@ -138,7 +133,6 @@ func (ePackage *ePackageImpl) SetNsPrefix(newNsPrefix string) {
 // GetNsURI get the value of nsURI
 func (ePackage *ePackageImpl) GetNsURI() string {
 	return ePackage.nsURI
-
 }
 
 // SetNsURI set the value of nsURI

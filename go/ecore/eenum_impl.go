@@ -63,7 +63,6 @@ func (eEnum *eEnumImpl) GetELiterals() EList {
 		eEnum.eLiterals = eEnum.getInitializers().initELiterals()
 	}
 	return eEnum.eLiterals
-
 }
 
 func (eEnum *eEnumImpl) initELiterals() EList {

@@ -46,13 +46,11 @@ func (eEnumLiteral *eEnumLiteralImpl) GetEEnum() EEnum {
 		return eEnumLiteral.EContainer().(EEnum)
 	}
 	return nil
-
 }
 
 // GetInstance get the value of instance
 func (eEnumLiteral *eEnumLiteralImpl) GetInstance() interface{} {
 	return eEnumLiteral.instance
-
 }
 
 // SetInstance set the value of instance
@@ -67,7 +65,6 @@ func (eEnumLiteral *eEnumLiteralImpl) SetInstance(newInstance interface{}) {
 // GetLiteral get the value of literal
 func (eEnumLiteral *eEnumLiteralImpl) GetLiteral() string {
 	return eEnumLiteral.literal
-
 }
 
 // SetLiteral set the value of literal
@@ -82,7 +79,6 @@ func (eEnumLiteral *eEnumLiteralImpl) SetLiteral(newLiteral string) {
 // GetValue get the value of value
 func (eEnumLiteral *eEnumLiteralImpl) GetValue() int {
 	return eEnumLiteral.value
-
 }
 
 // SetValue set the value of value

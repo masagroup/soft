@@ -38,7 +38,6 @@ func (eNamedElement *eNamedElementImpl) EStaticClass() EClass {
 // GetName get the value of name
 func (eNamedElement *eNamedElementImpl) GetName() string {
 	return eNamedElement.name
-
 }
 
 // SetName set the value of name

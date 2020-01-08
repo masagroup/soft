@@ -40,7 +40,6 @@ func (eParameter *eParameterImpl) GetEOperation() EOperation {
 		return eParameter.EContainer().(EOperation)
 	}
 	return nil
-
 }
 
 func (eParameter *eParameterImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {

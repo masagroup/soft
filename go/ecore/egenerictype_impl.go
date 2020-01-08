@@ -54,13 +54,21 @@ func (eGenericType *eGenericTypeImpl) IsInstance(interface{}) bool {
 
 // GetEClassifier get the value of eClassifier
 func (eGenericType *eGenericTypeImpl) GetEClassifier() EClassifier {
+	if eGenericType.eClassifier != nil && eGenericType.eClassifier.EIsProxy() {
+		oldEClassifier := eGenericType.eClassifier
+		newEClassifier := eGenericType.EResolveProxy(oldEClassifier).(EClassifier)
+		eGenericType.eClassifier = newEClassifier
+		if newEClassifier != oldEClassifier {
+			if eGenericType.ENotificationRequired() {
+				eGenericType.ENotify(NewNotificationByFeatureID(eGenericType, RESOLVE, EGENERIC_TYPE__ECLASSIFIER, oldEClassifier, newEClassifier, NO_INDEX))
+			}
+		}
+	}
 	return eGenericType.eClassifier
-
 }
 
 func (eGenericType *eGenericTypeImpl) basicGetEClassifier() EClassifier {
 	return eGenericType.eClassifier
-
 }
 
 // SetEClassifier set the value of eClassifier
@@ -75,7 +83,6 @@ func (eGenericType *eGenericTypeImpl) SetEClassifier(newEClassifier EClassifier)
 // GetELowerBound get the value of eLowerBound
 func (eGenericType *eGenericTypeImpl) GetELowerBound() EGenericType {
 	return eGenericType.eLowerBound
-
 }
 
 // SetELowerBound set the value of eLowerBound
@@ -112,13 +119,21 @@ func (eGenericType *eGenericTypeImpl) basicSetELowerBound(newELowerBound EGeneri
 
 // GetERawType get the value of eRawType
 func (eGenericType *eGenericTypeImpl) GetERawType() EClassifier {
+	if eGenericType.eRawType != nil && eGenericType.eRawType.EIsProxy() {
+		oldERawType := eGenericType.eRawType
+		newERawType := eGenericType.EResolveProxy(oldERawType).(EClassifier)
+		eGenericType.eRawType = newERawType
+		if newERawType != oldERawType {
+			if eGenericType.ENotificationRequired() {
+				eGenericType.ENotify(NewNotificationByFeatureID(eGenericType, RESOLVE, EGENERIC_TYPE__ERAW_TYPE, oldERawType, newERawType, NO_INDEX))
+			}
+		}
+	}
 	return eGenericType.eRawType
-
 }
 
 func (eGenericType *eGenericTypeImpl) basicGetERawType() EClassifier {
 	return eGenericType.eRawType
-
 }
 
 // GetETypeArguments get the value of eTypeArguments
@@ -127,13 +142,11 @@ func (eGenericType *eGenericTypeImpl) GetETypeArguments() EList {
 		eGenericType.eTypeArguments = eGenericType.getInitializers().initETypeArguments()
 	}
 	return eGenericType.eTypeArguments
-
 }
 
 // GetETypeParameter get the value of eTypeParameter
 func (eGenericType *eGenericTypeImpl) GetETypeParameter() ETypeParameter {
 	return eGenericType.eTypeParameter
-
 }
 
 // SetETypeParameter set the value of eTypeParameter
@@ -148,7 +161,6 @@ func (eGenericType *eGenericTypeImpl) SetETypeParameter(newETypeParameter ETypeP
 // GetEUpperBound get the value of eUpperBound
 func (eGenericType *eGenericTypeImpl) GetEUpperBound() EGenericType {
 	return eGenericType.eUpperBound
-
 }
 
 // SetEUpperBound set the value of eUpperBound

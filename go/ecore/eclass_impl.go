@@ -77,14 +77,14 @@ func (eClass *eClassImpl) GetEOperation(int) EOperation {
 	panic("GetEOperation not implemented")
 }
 
-// GetEStructuralFeatureFromString default implementation
-func (eClass *eClassImpl) GetEStructuralFeatureFromString(string) EStructuralFeature {
-	panic("GetEStructuralFeatureFromString not implemented")
-}
-
 // GetEStructuralFeature default implementation
 func (eClass *eClassImpl) GetEStructuralFeature(int) EStructuralFeature {
 	panic("GetEStructuralFeature not implemented")
+}
+
+// GetEStructuralFeatureFromString default implementation
+func (eClass *eClassImpl) GetEStructuralFeatureFromString(string) EStructuralFeature {
+	panic("GetEStructuralFeatureFromString not implemented")
 }
 
 // GetFeatureCount default implementation
@@ -126,70 +126,60 @@ func (eClass *eClassImpl) IsSuperTypeOf(EClass) bool {
 func (eClass *eClassImpl) GetEAllAttributes() EList {
 	eClass.getInitializers().initEAllAttributes()
 	return eClass.eAllAttributes
-
 }
 
 // GetEAllContainments get the value of eAllContainments
 func (eClass *eClassImpl) GetEAllContainments() EList {
 	eClass.getInitializers().initEAllContainments()
 	return eClass.eAllContainments
-
 }
 
 // GetEAllOperations get the value of eAllOperations
 func (eClass *eClassImpl) GetEAllOperations() EList {
 	eClass.getInitializers().initEAllOperations()
 	return eClass.eAllOperations
-
 }
 
 // GetEAllReferences get the value of eAllReferences
 func (eClass *eClassImpl) GetEAllReferences() EList {
 	eClass.getInitializers().initEAllReferences()
 	return eClass.eAllReferences
-
 }
 
 // GetEAllStructuralFeatures get the value of eAllStructuralFeatures
 func (eClass *eClassImpl) GetEAllStructuralFeatures() EList {
 	eClass.getInitializers().initEAllStructuralFeatures()
 	return eClass.eAllStructuralFeatures
-
 }
 
 // GetEAllSuperTypes get the value of eAllSuperTypes
 func (eClass *eClassImpl) GetEAllSuperTypes() EList {
 	eClass.getInitializers().initEAllSuperTypes()
 	return eClass.eAllSuperTypes
-
 }
 
 // GetEAttributes get the value of eAttributes
 func (eClass *eClassImpl) GetEAttributes() EList {
 	eClass.getInitializers().initEAttributes()
 	return eClass.eAttributes
-
 }
 
 // GetEContainments get the value of eContainments
 func (eClass *eClassImpl) GetEContainments() EList {
 	eClass.getInitializers().initEContainments()
 	return eClass.eContainments
-
 }
 
 // GetECrossReferences get the value of eCrossReferences
 func (eClass *eClassImpl) GetECrossReferences() EList {
 	eClass.getInitializers().initECrossReferences()
 	return eClass.eCrossReferences
-
 }
 
 // GetEIDAttribute get the value of eIDAttribute
 func (eClass *eClassImpl) GetEIDAttribute() EAttribute {
 	eClass.getInitializers().initEIDAttribute()
 	return eClass.eIDAttribute
-
 }
 
 // GetEOperations get the value of eOperations
@@ -198,14 +188,12 @@ func (eClass *eClassImpl) GetEOperations() EList {
 		eClass.eOperations = eClass.getInitializers().initEOperations()
 	}
 	return eClass.eOperations
-
 }
 
 // GetEReferences get the value of eReferences
 func (eClass *eClassImpl) GetEReferences() EList {
 	eClass.getInitializers().initEReferences()
 	return eClass.eReferences
-
 }
 
 // GetEStructuralFeatures get the value of eStructuralFeatures
@@ -214,7 +202,6 @@ func (eClass *eClassImpl) GetEStructuralFeatures() EList {
 		eClass.eStructuralFeatures = eClass.getInitializers().initEStructuralFeatures()
 	}
 	return eClass.eStructuralFeatures
-
 }
 
 // GetESuperTypes get the value of eSuperTypes
@@ -223,13 +210,11 @@ func (eClass *eClassImpl) GetESuperTypes() EList {
 		eClass.eSuperTypes = eClass.getInitializers().initESuperTypes()
 	}
 	return eClass.eSuperTypes
-
 }
 
 // IsAbstract get the value of isAbstract
 func (eClass *eClassImpl) IsAbstract() bool {
 	return eClass.isAbstract
-
 }
 
 // SetAbstract set the value of isAbstract
@@ -244,7 +229,6 @@ func (eClass *eClassImpl) SetAbstract(newIsAbstract bool) {
 // IsInterface get the value of isInterface
 func (eClass *eClassImpl) IsInterface() bool {
 	return eClass.isInterface
-
 }
 
 // SetInterface set the value of isInterface
@@ -436,10 +420,10 @@ func (eClass *eClassImpl) EInvokeFromID(operationID int, arguments EList) interf
 	switch operationID {
 	case ECLASS__GET_EOPERATION_EINT:
 		return eClass.GetEOperation(arguments.Get(0).(int))
-	case ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING:
-		return eClass.GetEStructuralFeatureFromString(arguments.Get(0).(string))
 	case ECLASS__GET_ESTRUCTURAL_FEATURE_EINT:
 		return eClass.GetEStructuralFeature(arguments.Get(0).(int))
+	case ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING:
+		return eClass.GetEStructuralFeatureFromString(arguments.Get(0).(string))
 	case ECLASS__GET_FEATURE_COUNT:
 		return eClass.GetFeatureCount()
 	case ECLASS__GET_FEATURE_ID_ESTRUCTURALFEATURE:

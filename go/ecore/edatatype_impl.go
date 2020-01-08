@@ -38,7 +38,6 @@ func (eDataType *eDataTypeImpl) EStaticClass() EClass {
 // IsSerializable get the value of isSerializable
 func (eDataType *eDataTypeImpl) IsSerializable() bool {
 	return eDataType.isSerializable
-
 }
 
 // SetSerializable set the value of isSerializable

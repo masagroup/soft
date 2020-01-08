@@ -49,7 +49,6 @@ func (eClassifier *eClassifierImpl) IsInstance(interface{}) bool {
 // GetClassifierID get the value of classifierID
 func (eClassifier *eClassifierImpl) GetClassifierID() int {
 	return eClassifier.classifierID
-
 }
 
 // SetClassifierID set the value of classifierID
@@ -64,7 +63,6 @@ func (eClassifier *eClassifierImpl) SetClassifierID(newClassifierID int) {
 // GetDefaultValue get the value of defaultValue
 func (eClassifier *eClassifierImpl) GetDefaultValue() interface{} {
 	panic("GetDefaultValue not implemented")
-
 }
 
 // GetEPackage get the value of ePackage
@@ -73,13 +71,11 @@ func (eClassifier *eClassifierImpl) GetEPackage() EPackage {
 		return eClassifier.EContainer().(EPackage)
 	}
 	return nil
-
 }
 
 // GetInstanceClass get the value of instanceClass
 func (eClassifier *eClassifierImpl) GetInstanceClass() reflect.Type {
 	return eClassifier.instanceClass
-
 }
 
 // SetInstanceClass set the value of instanceClass

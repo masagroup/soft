@@ -59,7 +59,6 @@ func (eStructuralFeature *eStructuralFeatureImpl) GetContainerClass() reflect.Ty
 // GetDefaultValue get the value of defaultValue
 func (eStructuralFeature *eStructuralFeatureImpl) GetDefaultValue() interface{} {
 	panic("GetDefaultValue not implemented")
-
 }
 
 // SetDefaultValue set the value of defaultValue
@@ -70,7 +69,6 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetDefaultValue(newDefaultValu
 // GetDefaultValueLiteral get the value of defaultValueLiteral
 func (eStructuralFeature *eStructuralFeatureImpl) GetDefaultValueLiteral() string {
 	return eStructuralFeature.defaultValueLiteral
-
 }
 
 // SetDefaultValueLiteral set the value of defaultValueLiteral
@@ -88,13 +86,11 @@ func (eStructuralFeature *eStructuralFeatureImpl) GetEContainingClass() EClass {
 		return eStructuralFeature.EContainer().(EClass)
 	}
 	return nil
-
 }
 
 // GetFeatureID get the value of featureID
 func (eStructuralFeature *eStructuralFeatureImpl) GetFeatureID() int {
 	return eStructuralFeature.featureID
-
 }
 
 // SetFeatureID set the value of featureID
@@ -109,7 +105,6 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetFeatureID(newFeatureID int)
 // IsChangeable get the value of isChangeable
 func (eStructuralFeature *eStructuralFeatureImpl) IsChangeable() bool {
 	return eStructuralFeature.isChangeable
-
 }
 
 // SetChangeable set the value of isChangeable
@@ -124,7 +119,6 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetChangeable(newIsChangeable 
 // IsDerived get the value of isDerived
 func (eStructuralFeature *eStructuralFeatureImpl) IsDerived() bool {
 	return eStructuralFeature.isDerived
-
 }
 
 // SetDerived set the value of isDerived
@@ -139,7 +133,6 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetDerived(newIsDerived bool) 
 // IsTransient get the value of isTransient
 func (eStructuralFeature *eStructuralFeatureImpl) IsTransient() bool {
 	return eStructuralFeature.isTransient
-
 }
 
 // SetTransient set the value of isTransient
@@ -154,7 +147,6 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetTransient(newIsTransient bo
 // IsUnsettable get the value of isUnsettable
 func (eStructuralFeature *eStructuralFeatureImpl) IsUnsettable() bool {
 	return eStructuralFeature.isUnsettable
-
 }
 
 // SetUnsettable set the value of isUnsettable
@@ -169,7 +161,6 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetUnsettable(newIsUnsettable 
 // IsVolatile get the value of isVolatile
 func (eStructuralFeature *eStructuralFeatureImpl) IsVolatile() bool {
 	return eStructuralFeature.isVolatile
-
 }
 
 // SetVolatile set the value of isVolatile

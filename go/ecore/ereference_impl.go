@@ -55,18 +55,25 @@ func (eReference *eReferenceImpl) GetEKeys() EList {
 		eReference.eKeys = eReference.getInitializers().initEKeys()
 	}
 	return eReference.eKeys
-
 }
 
 // GetEOpposite get the value of eOpposite
 func (eReference *eReferenceImpl) GetEOpposite() EReference {
+	if eReference.eOpposite != nil && eReference.eOpposite.EIsProxy() {
+		oldEOpposite := eReference.eOpposite
+		newEOpposite := eReference.EResolveProxy(oldEOpposite).(EReference)
+		eReference.eOpposite = newEOpposite
+		if newEOpposite != oldEOpposite {
+			if eReference.ENotificationRequired() {
+				eReference.ENotify(NewNotificationByFeatureID(eReference, RESOLVE, EREFERENCE__EOPPOSITE, oldEOpposite, newEOpposite, NO_INDEX))
+			}
+		}
+	}
 	return eReference.eOpposite
-
 }
 
 func (eReference *eReferenceImpl) basicGetEOpposite() EReference {
 	return eReference.eOpposite
-
 }
 
 // SetEOpposite set the value of eOpposite
@@ -81,24 +88,20 @@ func (eReference *eReferenceImpl) SetEOpposite(newEOpposite EReference) {
 // GetEReferenceType get the value of eReferenceType
 func (eReference *eReferenceImpl) GetEReferenceType() EClass {
 	panic("GetEReferenceType not implemented")
-
 }
 
 func (eReference *eReferenceImpl) basicGetEReferenceType() EClass {
 	panic("GetEReferenceType not implemented")
-
 }
 
 // IsContainer get the value of isContainer
 func (eReference *eReferenceImpl) IsContainer() bool {
 	panic("IsContainer not implemented")
-
 }
 
 // IsContainment get the value of isContainment
 func (eReference *eReferenceImpl) IsContainment() bool {
 	return eReference.isContainment
-
 }
 
 // SetContainment set the value of isContainment
@@ -113,7 +116,6 @@ func (eReference *eReferenceImpl) SetContainment(newIsContainment bool) {
 // IsResolveProxies get the value of isResolveProxies
 func (eReference *eReferenceImpl) IsResolveProxies() bool {
 	return eReference.isResolveProxies
-
 }
 
 // SetResolveProxies set the value of isResolveProxies

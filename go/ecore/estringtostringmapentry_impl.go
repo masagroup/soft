@@ -40,7 +40,6 @@ func (eStringToStringMapEntry *eStringToStringMapEntryImpl) EStaticClass() EClas
 // GetKey get the value of key
 func (eStringToStringMapEntry *eStringToStringMapEntryImpl) GetKey() string {
 	return eStringToStringMapEntry.key
-
 }
 
 // SetKey set the value of key
@@ -55,7 +54,6 @@ func (eStringToStringMapEntry *eStringToStringMapEntryImpl) SetKey(newKey string
 // GetValue get the value of value
 func (eStringToStringMapEntry *eStringToStringMapEntryImpl) GetValue() string {
 	return eStringToStringMapEntry.value
-
 }
 
 // SetValue set the value of value

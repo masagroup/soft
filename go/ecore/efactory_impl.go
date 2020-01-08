@@ -55,7 +55,6 @@ func (eFactory *eFactoryImpl) GetEPackage() EPackage {
 		return eFactory.EContainer().(EPackage)
 	}
 	return nil
-
 }
 
 // SetEPackage set the value of ePackage
