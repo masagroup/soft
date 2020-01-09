@@ -102,6 +102,7 @@ BOOST_AUTO_TEST_CASE( Load_Complex )
     BOOST_CHECK( resource->isLoaded() );
     BOOST_CHECK( resource->getWarnings()->empty() );
     BOOST_CHECK( resource->getErrors()->empty() );
+    BOOST_CHECK_EQUAL(resource->getXMIVersion(), "2.0");
 
     auto contents = resource->getContents();
     BOOST_CHECK_EQUAL( contents->size(), 1 );
@@ -127,6 +128,7 @@ BOOST_AUTO_TEST_CASE( Load_Complex )
     BOOST_REQUIRE( eTitleAttribute );
     BOOST_CHECK_EQUAL( eTitleAttributeType->getName(), "EString" );
 
+    
 }
 
 namespace

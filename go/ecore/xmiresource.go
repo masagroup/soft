@@ -32,7 +32,7 @@ func (l *xmiLoadImpl) getXSIType() string {
 func (l *xmiLoadImpl) handleAttributes(object EObject) {
 	version := l.getAttributeValue(xmiURI, versionAttrib)
 	if len(version) > 0 {
-		l.resource.(XMIResource).setXMIVersion(version)
+		l.resource.(XMIResource).SetXMIVersion(version)
 	}
 	l.xmlLoadImpl.handleAttributes(object)
 }
@@ -48,8 +48,8 @@ func newXMISaveImpl() *xmiSaveImpl {
 type XMIResource interface {
 	XMLResource
 
-	setXMIVersion(version string)
-	getXMIVersion() string
+	SetXMIVersion(version string)
+	GetXMIVersion() string
 }
 
 type xmiResourceImpl struct {
@@ -64,11 +64,11 @@ func newXMIResourceImpl() *xmiResourceImpl {
 	return r
 }
 
-func (r *xmiResourceImpl) setXMIVersion(xmiVersion string) {
+func (r *xmiResourceImpl) SetXMIVersion(xmiVersion string) {
 	r.xmiVersion = xmiVersion
 }
 
-func (r *xmiResourceImpl) getXMIVersion() string {
+func (r *xmiResourceImpl) GetXMIVersion() string {
 	return r.xmiVersion
 }
 

@@ -84,6 +84,7 @@ func TestXMIResourceLoadComplex(t *testing.T) {
 	assert.True(t, resource.IsLoaded())
 	assert.True(t, resource.GetErrors().Empty())
 	assert.True(t, resource.GetWarnings().Empty())
+	assert.Equal(t, "2.0", resource.GetXMIVersion())
 
 	contents := resource.GetContents()
 	assert.Equal(t, 1, contents.Size())
@@ -102,6 +103,7 @@ func TestXMIResourceLoadComplex(t *testing.T) {
 	assert.Equal(t, 1, superTypes.Size())
 	eCirculationItemClass := superTypes.Get(0).(EClass)
 	assert.Equal(t, "CirculatingItem", eCirculationItemClass.GetName())
+
 }
 
 func TestXMIResourceSave(t *testing.T) {
