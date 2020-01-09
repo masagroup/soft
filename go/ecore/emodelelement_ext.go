@@ -110,7 +110,7 @@ func (eModelElement *eModelElementExt) EObjectForFragmentSegment(uriFragmentSegm
 			}
 
 			for it := eModelElement.AsEObject().EContents().Iterator(); it.HasNext(); {
-				eNamedElement := it.Next().(ENamedElement)
+				eNamedElement, _ := it.Next().(ENamedElement)
 				if eNamedElement != nil {
 					otherName := eNamedElement.GetName()
 					if name == otherName {
