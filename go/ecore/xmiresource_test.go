@@ -118,7 +118,7 @@ func TestXMIResourceSave(t *testing.T) {
 	assert.Equal(t, strings.ReplaceAll(string(bytes), "\r\n", "\n"), strings.ReplaceAll(strbuff.String(), "\r\n", "\n"))
 }
 
-func BenchmarkXMIResourceLoadSave(b *testing.B) {
+func BenchmarkXMIResourceLoadSaveSimple(b *testing.B) {
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		resource := newXMIResourceImpl()
@@ -128,5 +128,14 @@ func BenchmarkXMIResourceLoadSave(b *testing.B) {
 		var strbuff strings.Builder
 		resource.SaveWithWriter(&strbuff)
 		resource = nil
+	}
+}
+
+func BenchmarkXMIResourceLoadComplex(b *testing.B) {
+	b.ReportAllocs()
+	for i := 0; i < b.N; i++ {
+		resource := newXMIResourceImpl()
+		resource.SetURI(&url.URL{Path: "testdata/library.ecore"})
+		resource.Load()
 	}
 }
