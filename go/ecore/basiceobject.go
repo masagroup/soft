@@ -364,7 +364,7 @@ func (o *BasicEObject) ESetProxyURI(uri *url.URL) {
 
 // EResolveProxy ...
 func (o *BasicEObject) EResolveProxy(proxy EObject) EObject {
-	return proxy
+	return ResolveInObject(proxy, o.GetInterfaces().(EObject))
 }
 
 // EBasicInverseAdd ...
