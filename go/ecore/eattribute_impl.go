@@ -55,7 +55,7 @@ func (eAttribute *eAttributeImpl) SetID(newIsID bool) {
 	oldIsID := eAttribute.isID
 	eAttribute.isID = newIsID
 	if eAttribute.ENotificationRequired() {
-		eAttribute.ENotify(NewNotificationByFeatureID(eAttribute.GetEObject(), SET, EATTRIBUTE__ID, oldIsID, newIsID, NO_INDEX))
+		eAttribute.ENotify(NewNotificationByFeatureID(eAttribute.AsEObject(), SET, EATTRIBUTE__ID, oldIsID, newIsID, NO_INDEX))
 	}
 }
 

@@ -42,7 +42,7 @@ type eReferenceImplInitializers interface {
 }
 
 func (eReference *eReferenceImpl) getInitializers() eReferenceImplInitializers {
-	return eReference.GetEObject().(eReferenceImplInitializers)
+	return eReference.AsEObject().(eReferenceImplInitializers)
 }
 
 func (eReference *eReferenceImpl) EStaticClass() EClass {
@@ -81,7 +81,7 @@ func (eReference *eReferenceImpl) SetEOpposite(newEOpposite EReference) {
 	oldEOpposite := eReference.eOpposite
 	eReference.eOpposite = newEOpposite
 	if eReference.ENotificationRequired() {
-		eReference.ENotify(NewNotificationByFeatureID(eReference.GetEObject(), SET, EREFERENCE__EOPPOSITE, oldEOpposite, newEOpposite, NO_INDEX))
+		eReference.ENotify(NewNotificationByFeatureID(eReference.AsEObject(), SET, EREFERENCE__EOPPOSITE, oldEOpposite, newEOpposite, NO_INDEX))
 	}
 }
 
@@ -109,7 +109,7 @@ func (eReference *eReferenceImpl) SetContainment(newIsContainment bool) {
 	oldIsContainment := eReference.isContainment
 	eReference.isContainment = newIsContainment
 	if eReference.ENotificationRequired() {
-		eReference.ENotify(NewNotificationByFeatureID(eReference.GetEObject(), SET, EREFERENCE__CONTAINMENT, oldIsContainment, newIsContainment, NO_INDEX))
+		eReference.ENotify(NewNotificationByFeatureID(eReference.AsEObject(), SET, EREFERENCE__CONTAINMENT, oldIsContainment, newIsContainment, NO_INDEX))
 	}
 }
 
@@ -123,12 +123,12 @@ func (eReference *eReferenceImpl) SetResolveProxies(newIsResolveProxies bool) {
 	oldIsResolveProxies := eReference.isResolveProxies
 	eReference.isResolveProxies = newIsResolveProxies
 	if eReference.ENotificationRequired() {
-		eReference.ENotify(NewNotificationByFeatureID(eReference.GetEObject(), SET, EREFERENCE__RESOLVE_PROXIES, oldIsResolveProxies, newIsResolveProxies, NO_INDEX))
+		eReference.ENotify(NewNotificationByFeatureID(eReference.AsEObject(), SET, EREFERENCE__RESOLVE_PROXIES, oldIsResolveProxies, newIsResolveProxies, NO_INDEX))
 	}
 }
 
 func (eReference *eReferenceImpl) initEKeys() EList {
-	return NewEObjectEList(eReference.GetEObjectInternal(), EREFERENCE__EKEYS, -1, false, false, false, true, false)
+	return NewEObjectEList(eReference.AsEObjectInternal(), EREFERENCE__EKEYS, -1, false, false, false, true, false)
 }
 
 func (eReference *eReferenceImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {

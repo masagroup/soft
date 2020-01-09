@@ -13,7 +13,7 @@ func TestBasicEObjectGetInterfaces(t *testing.T) {
 
 func TestBasicEObjectGetEObject(t *testing.T) {
 	o := NewBasicEObject()
-	assert.Equal(t, o, o.GetEObject())
+	assert.Equal(t, o, o.AsEObject())
 }
 
 func TestBasicEObjectEClass(t *testing.T) {

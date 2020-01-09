@@ -45,7 +45,7 @@ func (eNamedElement *eNamedElementImpl) SetName(newName string) {
 	oldName := eNamedElement.name
 	eNamedElement.name = newName
 	if eNamedElement.ENotificationRequired() {
-		eNamedElement.ENotify(NewNotificationByFeatureID(eNamedElement.GetEObject(), SET, ENAMED_ELEMENT__NAME, oldName, newName, NO_INDEX))
+		eNamedElement.ENotify(NewNotificationByFeatureID(eNamedElement.AsEObject(), SET, ENAMED_ELEMENT__NAME, oldName, newName, NO_INDEX))
 	}
 }
 

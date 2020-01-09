@@ -42,7 +42,7 @@ type eAnnotationImplInitializers interface {
 }
 
 func (eAnnotation *eAnnotationImpl) getInitializers() eAnnotationImplInitializers {
-	return eAnnotation.GetEObject().(eAnnotationImplInitializers)
+	return eAnnotation.AsEObject().(eAnnotationImplInitializers)
 }
 
 func (eAnnotation *eAnnotationImpl) EStaticClass() EClass {
@@ -81,7 +81,7 @@ func (eAnnotation *eAnnotationImpl) SetEModelElement(newEModelElement EModelElem
 			notifications = eAnnotation.EBasicRemoveFromContainer(notifications)
 		}
 		if newEModelElement != nil {
-			notifications = newEModelElement.(EObjectInternal).EInverseAdd(eAnnotation.GetEObject(), EANNOTATION__EMODEL_ELEMENT, notifications)
+			notifications = newEModelElement.(EObjectInternal).EInverseAdd(eAnnotation.AsEObject(), EANNOTATION__EMODEL_ELEMENT, notifications)
 		}
 		notifications = eAnnotation.basicSetEModelElement(newEModelElement, notifications)
 		if notifications != nil {
@@ -114,20 +114,20 @@ func (eAnnotation *eAnnotationImpl) SetSource(newSource string) {
 	oldSource := eAnnotation.source
 	eAnnotation.source = newSource
 	if eAnnotation.ENotificationRequired() {
-		eAnnotation.ENotify(NewNotificationByFeatureID(eAnnotation.GetEObject(), SET, EANNOTATION__SOURCE, oldSource, newSource, NO_INDEX))
+		eAnnotation.ENotify(NewNotificationByFeatureID(eAnnotation.AsEObject(), SET, EANNOTATION__SOURCE, oldSource, newSource, NO_INDEX))
 	}
 }
 
 func (eAnnotation *eAnnotationImpl) initContents() EList {
-	return NewEObjectEList(eAnnotation.GetEObjectInternal(), EANNOTATION__CONTENTS, -1, true, true, false, false, false)
+	return NewEObjectEList(eAnnotation.AsEObjectInternal(), EANNOTATION__CONTENTS, -1, true, true, false, false, false)
 }
 
 func (eAnnotation *eAnnotationImpl) initDetails() EList {
-	return NewEObjectEList(eAnnotation.GetEObjectInternal(), EANNOTATION__DETAILS, -1, true, true, false, false, false)
+	return NewEObjectEList(eAnnotation.AsEObjectInternal(), EANNOTATION__DETAILS, -1, true, true, false, false, false)
 }
 
 func (eAnnotation *eAnnotationImpl) initReferences() EList {
-	return NewEObjectEList(eAnnotation.GetEObjectInternal(), EANNOTATION__REFERENCES, -1, false, false, false, true, false)
+	return NewEObjectEList(eAnnotation.AsEObjectInternal(), EANNOTATION__REFERENCES, -1, false, false, false, true, false)
 }
 
 func (eAnnotation *eAnnotationImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {

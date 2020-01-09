@@ -35,7 +35,7 @@ type eTypeParameterImplInitializers interface {
 }
 
 func (eTypeParameter *eTypeParameterImpl) getInitializers() eTypeParameterImplInitializers {
-	return eTypeParameter.GetEObject().(eTypeParameterImplInitializers)
+	return eTypeParameter.AsEObject().(eTypeParameterImplInitializers)
 }
 
 func (eTypeParameter *eTypeParameterImpl) EStaticClass() EClass {
@@ -51,7 +51,7 @@ func (eTypeParameter *eTypeParameterImpl) GetEBounds() EList {
 }
 
 func (eTypeParameter *eTypeParameterImpl) initEBounds() EList {
-	return NewEObjectEList(eTypeParameter.GetEObjectInternal(), ETYPE_PARAMETER__EBOUNDS, -1, true, true, false, false, false)
+	return NewEObjectEList(eTypeParameter.AsEObjectInternal(), ETYPE_PARAMETER__EBOUNDS, -1, true, true, false, false, false)
 }
 
 func (eTypeParameter *eTypeParameterImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {

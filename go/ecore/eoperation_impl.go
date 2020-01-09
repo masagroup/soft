@@ -40,7 +40,7 @@ type eOperationImplInitializers interface {
 }
 
 func (eOperation *eOperationImpl) getInitializers() eOperationImplInitializers {
-	return eOperation.GetEObject().(eOperationImplInitializers)
+	return eOperation.AsEObject().(eOperationImplInitializers)
 }
 
 func (eOperation *eOperationImpl) EStaticClass() EClass {
@@ -93,16 +93,16 @@ func (eOperation *eOperationImpl) SetOperationID(newOperationID int) {
 	oldOperationID := eOperation.operationID
 	eOperation.operationID = newOperationID
 	if eOperation.ENotificationRequired() {
-		eOperation.ENotify(NewNotificationByFeatureID(eOperation.GetEObject(), SET, EOPERATION__OPERATION_ID, oldOperationID, newOperationID, NO_INDEX))
+		eOperation.ENotify(NewNotificationByFeatureID(eOperation.AsEObject(), SET, EOPERATION__OPERATION_ID, oldOperationID, newOperationID, NO_INDEX))
 	}
 }
 
 func (eOperation *eOperationImpl) initEExceptions() EList {
-	return NewEObjectEList(eOperation.GetEObjectInternal(), EOPERATION__EEXCEPTIONS, -1, false, false, false, true, true)
+	return NewEObjectEList(eOperation.AsEObjectInternal(), EOPERATION__EEXCEPTIONS, -1, false, false, false, true, true)
 }
 
 func (eOperation *eOperationImpl) initEParameters() EList {
-	return NewEObjectEList(eOperation.GetEObjectInternal(), EOPERATION__EPARAMETERS, EPARAMETER__EOPERATION, true, true, true, false, false)
+	return NewEObjectEList(eOperation.AsEObjectInternal(), EOPERATION__EPARAMETERS, EPARAMETER__EOPERATION, true, true, true, false, false)
 }
 
 func (eOperation *eOperationImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {

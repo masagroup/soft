@@ -76,7 +76,7 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetDefaultValueLiteral(newDefa
 	oldDefaultValueLiteral := eStructuralFeature.defaultValueLiteral
 	eStructuralFeature.defaultValueLiteral = newDefaultValueLiteral
 	if eStructuralFeature.ENotificationRequired() {
-		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.GetEObject(), SET, ESTRUCTURAL_FEATURE__DEFAULT_VALUE_LITERAL, oldDefaultValueLiteral, newDefaultValueLiteral, NO_INDEX))
+		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.AsEObject(), SET, ESTRUCTURAL_FEATURE__DEFAULT_VALUE_LITERAL, oldDefaultValueLiteral, newDefaultValueLiteral, NO_INDEX))
 	}
 }
 
@@ -98,7 +98,7 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetFeatureID(newFeatureID int)
 	oldFeatureID := eStructuralFeature.featureID
 	eStructuralFeature.featureID = newFeatureID
 	if eStructuralFeature.ENotificationRequired() {
-		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.GetEObject(), SET, ESTRUCTURAL_FEATURE__FEATURE_ID, oldFeatureID, newFeatureID, NO_INDEX))
+		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.AsEObject(), SET, ESTRUCTURAL_FEATURE__FEATURE_ID, oldFeatureID, newFeatureID, NO_INDEX))
 	}
 }
 
@@ -112,7 +112,7 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetChangeable(newIsChangeable 
 	oldIsChangeable := eStructuralFeature.isChangeable
 	eStructuralFeature.isChangeable = newIsChangeable
 	if eStructuralFeature.ENotificationRequired() {
-		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.GetEObject(), SET, ESTRUCTURAL_FEATURE__CHANGEABLE, oldIsChangeable, newIsChangeable, NO_INDEX))
+		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.AsEObject(), SET, ESTRUCTURAL_FEATURE__CHANGEABLE, oldIsChangeable, newIsChangeable, NO_INDEX))
 	}
 }
 
@@ -126,7 +126,7 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetDerived(newIsDerived bool) 
 	oldIsDerived := eStructuralFeature.isDerived
 	eStructuralFeature.isDerived = newIsDerived
 	if eStructuralFeature.ENotificationRequired() {
-		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.GetEObject(), SET, ESTRUCTURAL_FEATURE__DERIVED, oldIsDerived, newIsDerived, NO_INDEX))
+		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.AsEObject(), SET, ESTRUCTURAL_FEATURE__DERIVED, oldIsDerived, newIsDerived, NO_INDEX))
 	}
 }
 
@@ -140,7 +140,7 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetTransient(newIsTransient bo
 	oldIsTransient := eStructuralFeature.isTransient
 	eStructuralFeature.isTransient = newIsTransient
 	if eStructuralFeature.ENotificationRequired() {
-		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.GetEObject(), SET, ESTRUCTURAL_FEATURE__TRANSIENT, oldIsTransient, newIsTransient, NO_INDEX))
+		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.AsEObject(), SET, ESTRUCTURAL_FEATURE__TRANSIENT, oldIsTransient, newIsTransient, NO_INDEX))
 	}
 }
 
@@ -154,7 +154,7 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetUnsettable(newIsUnsettable 
 	oldIsUnsettable := eStructuralFeature.isUnsettable
 	eStructuralFeature.isUnsettable = newIsUnsettable
 	if eStructuralFeature.ENotificationRequired() {
-		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.GetEObject(), SET, ESTRUCTURAL_FEATURE__UNSETTABLE, oldIsUnsettable, newIsUnsettable, NO_INDEX))
+		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.AsEObject(), SET, ESTRUCTURAL_FEATURE__UNSETTABLE, oldIsUnsettable, newIsUnsettable, NO_INDEX))
 	}
 }
 
@@ -168,7 +168,7 @@ func (eStructuralFeature *eStructuralFeatureImpl) SetVolatile(newIsVolatile bool
 	oldIsVolatile := eStructuralFeature.isVolatile
 	eStructuralFeature.isVolatile = newIsVolatile
 	if eStructuralFeature.ENotificationRequired() {
-		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.GetEObject(), SET, ESTRUCTURAL_FEATURE__VOLATILE, oldIsVolatile, newIsVolatile, NO_INDEX))
+		eStructuralFeature.ENotify(NewNotificationByFeatureID(eStructuralFeature.AsEObject(), SET, ESTRUCTURAL_FEATURE__VOLATILE, oldIsVolatile, newIsVolatile, NO_INDEX))
 	}
 }
 

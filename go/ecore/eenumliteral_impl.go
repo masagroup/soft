@@ -58,7 +58,7 @@ func (eEnumLiteral *eEnumLiteralImpl) SetInstance(newInstance interface{}) {
 	oldInstance := eEnumLiteral.instance
 	eEnumLiteral.instance = newInstance
 	if eEnumLiteral.ENotificationRequired() {
-		eEnumLiteral.ENotify(NewNotificationByFeatureID(eEnumLiteral.GetEObject(), SET, EENUM_LITERAL__INSTANCE, oldInstance, newInstance, NO_INDEX))
+		eEnumLiteral.ENotify(NewNotificationByFeatureID(eEnumLiteral.AsEObject(), SET, EENUM_LITERAL__INSTANCE, oldInstance, newInstance, NO_INDEX))
 	}
 }
 
@@ -72,7 +72,7 @@ func (eEnumLiteral *eEnumLiteralImpl) SetLiteral(newLiteral string) {
 	oldLiteral := eEnumLiteral.literal
 	eEnumLiteral.literal = newLiteral
 	if eEnumLiteral.ENotificationRequired() {
-		eEnumLiteral.ENotify(NewNotificationByFeatureID(eEnumLiteral.GetEObject(), SET, EENUM_LITERAL__LITERAL, oldLiteral, newLiteral, NO_INDEX))
+		eEnumLiteral.ENotify(NewNotificationByFeatureID(eEnumLiteral.AsEObject(), SET, EENUM_LITERAL__LITERAL, oldLiteral, newLiteral, NO_INDEX))
 	}
 }
 
@@ -86,7 +86,7 @@ func (eEnumLiteral *eEnumLiteralImpl) SetValue(newValue int) {
 	oldValue := eEnumLiteral.value
 	eEnumLiteral.value = newValue
 	if eEnumLiteral.ENotificationRequired() {
-		eEnumLiteral.ENotify(NewNotificationByFeatureID(eEnumLiteral.GetEObject(), SET, EENUM_LITERAL__VALUE, oldValue, newValue, NO_INDEX))
+		eEnumLiteral.ENotify(NewNotificationByFeatureID(eEnumLiteral.AsEObject(), SET, EENUM_LITERAL__VALUE, oldValue, newValue, NO_INDEX))
 	}
 }
 

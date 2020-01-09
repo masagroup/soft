@@ -56,7 +56,7 @@ func (eClassifier *eClassifierImpl) SetClassifierID(newClassifierID int) {
 	oldClassifierID := eClassifier.classifierID
 	eClassifier.classifierID = newClassifierID
 	if eClassifier.ENotificationRequired() {
-		eClassifier.ENotify(NewNotificationByFeatureID(eClassifier.GetEObject(), SET, ECLASSIFIER__CLASSIFIER_ID, oldClassifierID, newClassifierID, NO_INDEX))
+		eClassifier.ENotify(NewNotificationByFeatureID(eClassifier.AsEObject(), SET, ECLASSIFIER__CLASSIFIER_ID, oldClassifierID, newClassifierID, NO_INDEX))
 	}
 }
 
@@ -83,7 +83,7 @@ func (eClassifier *eClassifierImpl) SetInstanceClass(newInstanceClass reflect.Ty
 	oldInstanceClass := eClassifier.instanceClass
 	eClassifier.instanceClass = newInstanceClass
 	if eClassifier.ENotificationRequired() {
-		eClassifier.ENotify(NewNotificationByFeatureID(eClassifier.GetEObject(), SET, ECLASSIFIER__INSTANCE_CLASS, oldInstanceClass, newInstanceClass, NO_INDEX))
+		eClassifier.ENotify(NewNotificationByFeatureID(eClassifier.AsEObject(), SET, ECLASSIFIER__INSTANCE_CLASS, oldInstanceClass, newInstanceClass, NO_INDEX))
 	}
 }
 

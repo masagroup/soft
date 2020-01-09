@@ -47,7 +47,7 @@ func (eStringToStringMapEntry *eStringToStringMapEntryImpl) SetKey(newKey string
 	oldKey := eStringToStringMapEntry.key
 	eStringToStringMapEntry.key = newKey
 	if eStringToStringMapEntry.ENotificationRequired() {
-		eStringToStringMapEntry.ENotify(NewNotificationByFeatureID(eStringToStringMapEntry.GetEObject(), SET, ESTRING_TO_STRING_MAP_ENTRY__KEY, oldKey, newKey, NO_INDEX))
+		eStringToStringMapEntry.ENotify(NewNotificationByFeatureID(eStringToStringMapEntry.AsEObject(), SET, ESTRING_TO_STRING_MAP_ENTRY__KEY, oldKey, newKey, NO_INDEX))
 	}
 }
 
@@ -61,7 +61,7 @@ func (eStringToStringMapEntry *eStringToStringMapEntryImpl) SetValue(newValue st
 	oldValue := eStringToStringMapEntry.value
 	eStringToStringMapEntry.value = newValue
 	if eStringToStringMapEntry.ENotificationRequired() {
-		eStringToStringMapEntry.ENotify(NewNotificationByFeatureID(eStringToStringMapEntry.GetEObject(), SET, ESTRING_TO_STRING_MAP_ENTRY__VALUE, oldValue, newValue, NO_INDEX))
+		eStringToStringMapEntry.ENotify(NewNotificationByFeatureID(eStringToStringMapEntry.AsEObject(), SET, ESTRING_TO_STRING_MAP_ENTRY__VALUE, oldValue, newValue, NO_INDEX))
 	}
 }
 
