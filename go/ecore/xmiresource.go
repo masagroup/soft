@@ -3,7 +3,7 @@ package ecore
 import "encoding/xml"
 
 const (
-	xmiURI        = "http://www.w3.org/2001/XMLSchema-instance"
+	xmiURI        = "http://www.omg.org/XMI"
 	xmiNS         = "xmi"
 	versionAttrib = "version"
 	uuidAttrib    = "uuid"
@@ -32,7 +32,7 @@ func (l *xmiLoadImpl) getXSIType() string {
 func (l *xmiLoadImpl) handleAttributes(object EObject) {
 	version := l.getAttributeValue(xmiURI, versionAttrib)
 	if len(version) > 0 {
-		l.interfaces.(XMIResource).setXMIVersion(version)
+		l.resource.(XMIResource).setXMIVersion(version)
 	}
 	l.xmlLoadImpl.handleAttributes(object)
 }
