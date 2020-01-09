@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestXMIResourceLoad(t *testing.T) {
+func TestXMIResourceLoadSimple(t *testing.T) {
 	resource := newXMIResourceImpl()
 	resource.SetURI(&url.URL{Path: "testdata/bookStore.ecore"})
 	resource.Load()
@@ -75,6 +75,33 @@ func TestXMIResourceLoad(t *testing.T) {
 
 	// check resolved reference
 	assert.Equal(t, eBookClass, eBooksReference.GetEReferenceType())
+}
+
+func TestXMIResourceLoadComplex(t *testing.T) {
+	resource := newXMIResourceImpl()
+	resource.SetURI(&url.URL{Path: "testdata/library.ecore"})
+	resource.Load()
+	assert.True(t, resource.IsLoaded())
+	assert.True(t, resource.GetErrors().Empty())
+	assert.True(t, resource.GetWarnings().Empty())
+
+	contents := resource.GetContents()
+	assert.Equal(t, 1, contents.Size())
+
+	ePackage, _ := contents.Get(0).(EPackage)
+	assert.NotNil(t, ePackage)
+
+	eClassifiers := ePackage.GetEClassifiers()
+	eBook, _ := eClassifiers.Get(0).(EClassifier)
+	assert.NotNil(t, eBook)
+	assert.Equal(t, "Book", eBook.GetName())
+
+	eBookClass, _ := eBook.(EClass)
+	assert.NotNil(t, eBookClass)
+	superTypes := eBookClass.GetESuperTypes()
+	assert.Equal(t, 1, superTypes.Size())
+	eCirculationItemClass := superTypes.Get(0).(EClass)
+	assert.Equal(t, "CirculatingItem", eCirculationItemClass.GetName())
 }
 
 func TestXMIResourceSave(t *testing.T) {
