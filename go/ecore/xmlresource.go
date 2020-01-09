@@ -556,7 +556,7 @@ func (l *xmlLoadImpl) setValueFromId(eObject EObject, eReference EReference, ids
 	if position == 0 {
 		l.setFeatureValue(eObject, eReference, nil, -2)
 	} else {
-		l.references = references
+		l.references = append(l.references, references...)
 	}
 }
 
