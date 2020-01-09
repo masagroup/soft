@@ -11,7 +11,7 @@ func GetEObjectID(eObject EObject) string {
 	if eIDAttribute == nil || !eObject.EIsSet(eIDAttribute) {
 		return ""
 	} else {
-		return convertToString(eIDAttribute.GetEAttributeType(), eObject.EGet(eIDAttribute))
+		return ConvertToString(eIDAttribute.GetEAttributeType(), eObject.EGet(eIDAttribute))
 	}
 }
 
@@ -23,16 +23,16 @@ func SetEObjectID(eObject EObject, id string) {
 	} else if len(id) == 0 {
 		eObject.EUnset(eIDAttribute)
 	} else {
-		eObject.ESet(eIDAttribute, createFromString(eIDAttribute.GetEAttributeType(), id))
+		eObject.ESet(eIDAttribute, CreateFromString(eIDAttribute.GetEAttributeType(), id))
 	}
 }
 
-func convertToString(eDataType EDataType, value interface{}) string {
+func ConvertToString(eDataType EDataType, value interface{}) string {
 	eFactory := eDataType.GetEPackage().GetEFactoryInstance()
 	return eFactory.ConvertToString(eDataType, value)
 }
 
-func createFromString(eDataType EDataType, literal string) interface{} {
+func CreateFromString(eDataType EDataType, literal string) interface{} {
 	eFactory := eDataType.GetEPackage().GetEFactoryInstance()
 	return eFactory.CreateFromString(eDataType, literal)
 }
@@ -93,4 +93,57 @@ func GetEObject(rootEObject EObject, relativeFragmentPath string) EObject {
 		eObject = eObject.EObjectForFragmentSegment(segments[i]).(EObjectInternal)
 	}
 	return eObject
+}
+
+func ResolveInObject(proxy EObject, context EObject) EObject {
+	var resource EResource
+	if context != nil {
+		resource = context.EResource()
+	}
+	if resource != nil {
+		return ResolveInResourceSet(proxy, resource.GetResourceSet())
+	} else {
+		return ResolveInResourceSet(proxy, nil)
+	}
+
+}
+
+func ResolveInResource(proxy EObject, resource EResource) EObject {
+	if resource != nil {
+		return ResolveInResourceSet(proxy, resource.GetResourceSet())
+	} else {
+		return ResolveInResourceSet(proxy, nil)
+	}
+
+}
+
+func ResolveInResourceSet(proxy EObject, resourceSet EResourceSet) EObject {
+	proxyURI := proxy.(EObjectInternal).EProxyURI()
+	if proxyURI != nil {
+		var resolved EObject
+		if resourceSet != nil {
+			resolved = resourceSet.GetEObject(proxyURI, true)
+		} else {
+			trim := &url.URL{
+				Scheme:     proxyURI.Scheme,
+				User:       proxyURI.User,
+				Host:       proxyURI.Host,
+				Path:       proxyURI.Path,
+				RawPath:    proxyURI.RawPath,
+				ForceQuery: proxyURI.ForceQuery,
+				RawQuery:   proxyURI.RawQuery,
+			}
+			ePackage := GetPackageRegistry().GetPackage(trim.String())
+			if ePackage != nil {
+				eResource := ePackage.EResource()
+				if eResource != nil {
+					resolved = eResource.GetEObject(proxyURI.Fragment)
+				}
+			}
+		}
+		if resolved != nil && resolved != proxy {
+			return ResolveInResourceSet(resolved, resourceSet)
+		}
+	}
+	return proxy
 }
