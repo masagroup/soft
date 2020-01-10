@@ -42,7 +42,16 @@ type xmiSaveImpl struct {
 }
 
 func newXMISaveImpl() *xmiSaveImpl {
-	return &xmiSaveImpl{xmlSaveImpl: newXMLSaveImpl()}
+	s := new(xmiSaveImpl)
+	s.xmlSaveImpl = newXMLSaveImpl()
+	s.interfaces = s
+	return s
+}
+
+func (s *xmiSaveImpl) saveNamespaces() {
+	s.str.addAttribute(xmiNS+":"+versionAttrib, s.resource.(XMIResource).GetXMIVersion())
+	s.str.addAttribute(xmlNS+":"+xmiNS, xmiURI)
+	s.xmlSaveImpl.saveNamespaces()
 }
 
 type XMIResource interface {

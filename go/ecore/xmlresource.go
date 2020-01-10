@@ -24,6 +24,10 @@ type xmlSave interface {
 	save(resource XMLResource, w io.Writer)
 }
 
+type xmlSaveInternal interface {
+	saveNamespaces()
+}
+
 type XMLResource interface {
 	EResourceInternal
 	createLoad() xmlLoad
@@ -917,6 +921,7 @@ const (
 )
 
 type xmlSaveImpl struct {
+	interfaces    interface{}
 	resource      XMLResource
 	str           *xmlString
 	packages      map[EPackage]string
@@ -928,13 +933,15 @@ type xmlSaveImpl struct {
 }
 
 func newXMLSaveImpl() *xmlSaveImpl {
-	return &xmlSaveImpl{
-		str:           newXmlString(),
-		packages:      make(map[EPackage]string),
-		uriToPrefixes: make(map[string][]string),
-		prefixesToURI: make(map[string]string),
-		featureKinds:  make(map[EStructuralFeature]int),
-		namespaces:    newXmlNamespaces()}
+	s := new(xmlSaveImpl)
+	s.interfaces = s
+	s.str = newXmlString()
+	s.packages = make(map[EPackage]string)
+	s.uriToPrefixes = make(map[string][]string)
+	s.prefixesToURI = make(map[string]string)
+	s.featureKinds = make(map[EStructuralFeature]int)
+	s.namespaces = newXmlNamespaces()
+	return s
 }
 
 func (s *xmlSaveImpl) save(resource XMLResource, w io.Writer) {
@@ -953,7 +960,7 @@ func (s *xmlSaveImpl) save(resource XMLResource, w io.Writer) {
 
 	// namespaces
 	s.str.resetToMark(mark)
-	s.saveNamespaces()
+	s.interfaces.(xmlSaveInternal).saveNamespaces()
 
 	// write result
 	s.str.write(w)
