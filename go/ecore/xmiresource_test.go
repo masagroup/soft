@@ -106,7 +106,7 @@ func TestXMIResourceLoadComplex(t *testing.T) {
 
 }
 
-func TestXMIResourceSave(t *testing.T) {
+func TestXMIResourceSaveSimple(t *testing.T) {
 
 	resource := newXMIResourceImpl()
 	resource.SetURI(&url.URL{Path: "testdata/bookStore.ecore"})
@@ -118,6 +118,16 @@ func TestXMIResourceSave(t *testing.T) {
 	bytes, err := ioutil.ReadFile("testdata/bookStore.ecore")
 	assert.Nil(t, err)
 	assert.Equal(t, strings.ReplaceAll(string(bytes), "\r\n", "\n"), strings.ReplaceAll(strbuff.String(), "\r\n", "\n"))
+}
+
+func TestXMIResourceSaveComplex(t *testing.T) {
+
+	resource := newXMIResourceImpl()
+	resource.SetURI(&url.URL{Path: "testdata/library.ecore"})
+	resource.Load()
+
+	resource.SetURI(&url.URL{Path: "testdata/library2.ecore"})
+	resource.Save()
 }
 
 func BenchmarkXMIResourceLoadSaveSimple(b *testing.B) {
