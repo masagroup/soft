@@ -1506,7 +1506,7 @@ func (s *xmlSaveImpl) getIDRef(eObject EObject) string {
 	if s.resource == nil {
 		return ""
 	} else {
-		return s.resource.GetURIFragment(eObject)
+		return "#" + s.resource.GetURIFragment(eObject)
 	}
 }
 

@@ -219,6 +219,20 @@ func (_m *MockXMIResource) GetWarnings() EList {
 	return r0
 }
 
+// GetXMIVersion provides a mock function with given fields:
+func (_m *MockXMIResource) GetXMIVersion() string {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
 // IsLoaded provides a mock function with given fields:
 func (_m *MockXMIResource) IsLoaded() bool {
 	ret := _m.Called()
@@ -256,6 +270,11 @@ func (_m *MockXMIResource) SaveWithWriter(w io.Writer) {
 // SetURI provides a mock function with given fields: _a0
 func (_m *MockXMIResource) SetURI(_a0 *url.URL) {
 	_m.Called(_a0)
+}
+
+// SetXMIVersion provides a mock function with given fields: version
+func (_m *MockXMIResource) SetXMIVersion(version string) {
+	_m.Called(version)
 }
 
 // Unload provides a mock function with given fields:
@@ -325,23 +344,4 @@ func (_m *MockXMIResource) createSave() xmlSave {
 	}
 
 	return r0
-}
-
-// getXMIVersion provides a mock function with given fields:
-func (_m *MockXMIResource) getXMIVersion() string {
-	ret := _m.Called()
-
-	var r0 string
-	if rf, ok := ret.Get(0).(func() string); ok {
-		r0 = rf()
-	} else {
-		r0 = ret.Get(0).(string)
-	}
-
-	return r0
-}
-
-// setXMIVersion provides a mock function with given fields: version
-func (_m *MockXMIResource) setXMIVersion(version string) {
-	_m.Called(version)
 }
