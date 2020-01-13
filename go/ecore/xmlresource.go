@@ -1033,7 +1033,7 @@ func (s *xmlSaveImpl) saveFeatures(eObject EObject, attributesOnly bool) bool {
 			case object_contain_many:
 			case object_href_single_unsettable:
 				if !s.isNil(eObject, eFeature) {
-					switch s.getResourceType(eObject, eFeature) {
+					switch s.getSaveResourceKindSingle(eObject, eFeature) {
 					case cross:
 					case same:
 						s.saveIDRefSingle(eObject, eFeature)
@@ -1043,7 +1043,7 @@ func (s *xmlSaveImpl) saveFeatures(eObject EObject, attributesOnly bool) bool {
 					}
 				}
 			case object_href_single:
-				switch s.getResourceType(eObject, eFeature) {
+				switch s.getSaveResourceKindSingle(eObject, eFeature) {
 				case cross:
 				case same:
 					s.saveIDRefSingle(eObject, eFeature)
@@ -1056,7 +1056,7 @@ func (s *xmlSaveImpl) saveFeatures(eObject EObject, attributesOnly bool) bool {
 					s.saveManyEmpty(eObject, eFeature)
 					continue
 				} else {
-					switch s.getResourceType(eObject, eFeature) {
+					switch s.getSaveResourceKindMany(eObject, eFeature) {
 					case cross:
 					case same:
 						s.saveIDRefMany(eObject, eFeature)
@@ -1067,7 +1067,7 @@ func (s *xmlSaveImpl) saveFeatures(eObject EObject, attributesOnly bool) bool {
 				}
 
 			case object_href_many:
-				switch s.getResourceType(eObject, eFeature) {
+				switch s.getSaveResourceKindMany(eObject, eFeature) {
 				case cross:
 				case same:
 					s.saveIDRefMany(eObject, eFeature)
@@ -1392,7 +1392,7 @@ const (
 	cross = iota
 )
 
-func (s *xmlSaveImpl) getResourceType(eObject EObject, eFeature EStructuralFeature) int {
+func (s *xmlSaveImpl) getSaveResourceKindSingle(eObject EObject, eFeature EStructuralFeature) int {
 	value, _ := eObject.EGet(eFeature).(EObjectInternal)
 	if value == nil {
 		return skip
@@ -1405,6 +1405,28 @@ func (s *xmlSaveImpl) getResourceType(eObject EObject, eFeature EStructuralFeatu
 		}
 		return cross
 	}
+}
+
+func (s *xmlSaveImpl) getSaveResourceKindMany(eObject EObject, eFeature EStructuralFeature) int {
+	list, _ := eObject.EGet(eFeature).(EList)
+	if list == nil || list.Empty() {
+		return skip
+	}
+	for it := list.Iterator(); it.HasNext(); {
+		o, _ := it.Next().(EObjectInternal)
+		if o == nil {
+			return skip
+		} else if o.EIsProxy() {
+			return cross
+		} else {
+			r := o.EResource()
+			if r != nil && r != s.resource {
+				return cross
+			}
+		}
+
+	}
+	return same
 }
 
 func (s *xmlSaveImpl) getQName(eClass EClass) string {
