@@ -12,6 +12,7 @@
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/Stream.hpp"
 #include "ecore/impl/XMIResource.hpp"
+#include "ecore/impl/SaxParserPool.hpp"
 
 #include <chrono>
 #include <fstream>
@@ -185,6 +186,7 @@ BOOST_AUTO_TEST_CASE( Save_Complex )
 
 BOOST_AUTO_TEST_CASE( Performance, *boost::unit_test::disabled() )
 {
+    SaxParserPool::getInstance();
     auto currentSize = getCurrentRSS();
     auto start = std::chrono::steady_clock::now();
     for( int i = 0; i < NB_ITERATIONS; ++i )
@@ -206,6 +208,7 @@ BOOST_AUTO_TEST_CASE( Performance, *boost::unit_test::disabled() )
 
 BOOST_AUTO_TEST_CASE( Performance_Complex, *boost::unit_test::disabled() )
 {
+    SaxParserPool::getInstance();
     auto currentSize = getCurrentRSS();
     auto start = std::chrono::steady_clock::now();
     for( int i = 0; i < NB_ITERATIONS; ++i )

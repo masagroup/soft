@@ -10,6 +10,7 @@
 #ifndef ECORE_SAXPARSERPOOL_HPP_
 #define ECORE_SAXPARSERPOOL_HPP_
 
+#include "ecore/Exports.hpp"
 #include <list>
 #include <map>
 #include <memory>
@@ -18,7 +19,7 @@
 
 namespace ecore::impl
 {
-    class SaxParserPool
+    class ECORE_API SaxParserPool
     {
     public:
         static SaxParserPool& getInstance();
