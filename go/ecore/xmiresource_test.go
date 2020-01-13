@@ -147,11 +147,15 @@ func BenchmarkXMIResourceLoadSaveSimple(b *testing.B) {
 	}
 }
 
-func BenchmarkXMIResourceLoadComplex(b *testing.B) {
+func BenchmarkXMIResourceLoadSaveComplex(b *testing.B) {
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		resource := newXMIResourceImpl()
 		resource.SetURI(&url.URL{Path: "testdata/library.ecore"})
 		resource.Load()
+
+		var strbuff strings.Builder
+		resource.SaveWithWriter(&strbuff)
+		resource = nil
 	}
 }
