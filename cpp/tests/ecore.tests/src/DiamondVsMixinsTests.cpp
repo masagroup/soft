@@ -73,7 +73,9 @@ namespace diamond
         A() {}
         virtual ~A() {}
 
-        virtual void testA() {}
+        virtual void testA() { a++; }
+    private:
+        int a{ 0 };
     };
 
     class B : public virtual A<II>
@@ -82,9 +84,11 @@ namespace diamond
         B() {}
         virtual ~B() {}
 
-        virtual void testB() {}
+        virtual void testB() { b++; }
 
         virtual void testI() {}
+    private:
+        int b{ 0 };
     };
 
 
@@ -94,7 +98,9 @@ namespace diamond
         C() {}
         virtual ~C() {}
 
-        virtual void tesC() {};
+        virtual void tesC() { c++; };
+    private:
+        int c{ 0 };
     };
 
     class CExt : public virtual C {
@@ -102,8 +108,9 @@ namespace diamond
         CExt() {}
         virtual ~CExt() {}
 
-        virtual void tesC() {};
-
+        virtual void tesC() { ce++; };
+    private:
+        int ce{ 0 };
     };
 
     class D : public virtual CExt, public virtual ID
@@ -112,7 +119,9 @@ namespace diamond
         D() {}
         virtual ~D() {}
 
-        virtual void testD() {}
+        virtual void testD() { d++; }
+    private:
+        int d{ 0 };
     };
 
 
@@ -122,7 +131,9 @@ namespace diamond
         E() {}
         virtual ~E() {}
 
-        virtual void testE() {}
+        virtual void testE() { e++; }
+    private:
+        int e{ 0 };
     };
 
     class F : public virtual E, public virtual IF
@@ -131,7 +142,9 @@ namespace diamond
         F() {}
         virtual ~F() {}
 
-        virtual void testF() {}
+        virtual void testF() { f++; }
+    private:
+        int f{ 0 };
     };
 
     class FExt : public virtual F
@@ -140,7 +153,9 @@ namespace diamond
         FExt() {}
         virtual ~FExt() {}
 
-        virtual void testF() {}
+        virtual void testF() { fe++; }
+    private:
+        int fe{ 0 };
     };
 }
 
@@ -209,7 +224,9 @@ namespace mixins
     public:
         AbstractA() {}
 
-        virtual void testA() {}
+        virtual void testA() { a++; }
+    private:
+        int a{ 0 };
     };
 
     typedef AbstractA<IA> A;
@@ -220,9 +237,11 @@ namespace mixins
         AbstractB(){}
         virtual ~AbstractB() {}
 
-        virtual void testB() {}
+        virtual void testB() { b++; }
 
         virtual void testI(){}
+    private:
+        int b{ 0 };
     };
 
     typedef AbstractB<II> B;
@@ -233,7 +252,9 @@ namespace mixins
         AbstractC() {}
         virtual ~AbstractC() {}
 
-        virtual void testC() {}
+        virtual void testC() { c++; }
+    private:
+        int c{ 0 };
     };
 
     typedef AbstractC<IC> C;
@@ -244,7 +265,9 @@ namespace mixins
         AbstractCExt() {}
         virtual ~AbstractCExt() {}
 
-        virtual void testC() {}
+        virtual void testC() { ce++; }
+    private:
+        int ce{ 0 };
     };
 
     typedef AbstractCExt<IC> CExt;
@@ -270,7 +293,9 @@ namespace mixins
         AbstractE() {}
         virtual ~AbstractE() {}
 
-        virtual void testE() {}
+        virtual void testE() { e++; }
+    private:
+        int e{ 0 };
     };
 
     typedef AbstractE<IE> E;
@@ -282,9 +307,9 @@ namespace mixins
         AbstractF() {}
         virtual ~AbstractF() {}
 
-        virtual void testF() { n++; }
+        virtual void testF() { f++; }
     private:
-        int n{ 0 };
+        int f{ 0 };
     };
 
     typedef AbstractF<IF> F;
@@ -296,7 +321,9 @@ namespace mixins
         AbstractFExt() {}
         virtual ~AbstractFExt() {}
 
-        virtual void testF() {}
+        virtual void testF() { fe++;  }
+    private:
+        int fe{ 0 };
     };
 
     typedef AbstractFExt<IF> FExt;
@@ -401,6 +428,10 @@ BOOST_AUTO_TEST_CASE( Performance )
 #endif
     }
     BOOST_CHECK_GE( diamondTimes, mixinTimes );
+
+    std::cout << "Size:" << sizeof(diamond::B) << " " << sizeof(mixins::B) << std::endl;
+    std::cout << "Size:" << sizeof(diamond::D) << " " << sizeof(mixins::D) << std::endl;
+    std::cout << "Size:" << sizeof(diamond::FExt) << " " << sizeof(mixins::FExt) << std::endl;
 }
 
 BOOST_AUTO_TEST_SUITE_END()
