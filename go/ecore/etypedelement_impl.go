@@ -46,13 +46,21 @@ func (eTypedElement *eTypedElementImpl) EStaticClass() EClass {
 
 // GetEType get the value of eType
 func (eTypedElement *eTypedElementImpl) GetEType() EClassifier {
+	if eTypedElement.eType != nil && eTypedElement.eType.EIsProxy() {
+		oldEType := eTypedElement.eType
+		newEType := eTypedElement.EResolveProxy(oldEType).(EClassifier)
+		eTypedElement.eType = newEType
+		if newEType != oldEType {
+			if eTypedElement.ENotificationRequired() {
+				eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement, RESOLVE, ETYPED_ELEMENT__ETYPE, oldEType, newEType, NO_INDEX))
+			}
+		}
+	}
 	return eTypedElement.eType
-
 }
 
 func (eTypedElement *eTypedElementImpl) basicGetEType() EClassifier {
 	return eTypedElement.eType
-
 }
 
 // SetEType set the value of eType
@@ -60,27 +68,25 @@ func (eTypedElement *eTypedElementImpl) SetEType(newEType EClassifier) {
 	oldEType := eTypedElement.eType
 	eTypedElement.eType = newEType
 	if eTypedElement.ENotificationRequired() {
-		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.GetEObject(), SET, ETYPED_ELEMENT__ETYPE, oldEType, newEType, NO_INDEX))
+		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.AsEObject(), SET, ETYPED_ELEMENT__ETYPE, oldEType, newEType, NO_INDEX))
 	}
 }
 
 // UnsetEType unset the value of eType
 func (eTypedElement *eTypedElementImpl) UnsetEType() {
 	if eTypedElement.ENotificationRequired() {
-		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.GetEObject(), UNSET, ETYPED_ELEMENT__ETYPE, nil, nil, NO_INDEX))
+		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.AsEObject(), UNSET, ETYPED_ELEMENT__ETYPE, nil, nil, NO_INDEX))
 	}
 }
 
 // IsMany get the value of isMany
 func (eTypedElement *eTypedElementImpl) IsMany() bool {
 	panic("IsMany not implemented")
-
 }
 
 // IsOrdered get the value of isOrdered
 func (eTypedElement *eTypedElementImpl) IsOrdered() bool {
 	return eTypedElement.isOrdered
-
 }
 
 // SetOrdered set the value of isOrdered
@@ -88,20 +94,18 @@ func (eTypedElement *eTypedElementImpl) SetOrdered(newIsOrdered bool) {
 	oldIsOrdered := eTypedElement.isOrdered
 	eTypedElement.isOrdered = newIsOrdered
 	if eTypedElement.ENotificationRequired() {
-		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.GetEObject(), SET, ETYPED_ELEMENT__ORDERED, oldIsOrdered, newIsOrdered, NO_INDEX))
+		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.AsEObject(), SET, ETYPED_ELEMENT__ORDERED, oldIsOrdered, newIsOrdered, NO_INDEX))
 	}
 }
 
 // IsRequired get the value of isRequired
 func (eTypedElement *eTypedElementImpl) IsRequired() bool {
 	panic("IsRequired not implemented")
-
 }
 
 // IsUnique get the value of isUnique
 func (eTypedElement *eTypedElementImpl) IsUnique() bool {
 	return eTypedElement.isUnique
-
 }
 
 // SetUnique set the value of isUnique
@@ -109,14 +113,13 @@ func (eTypedElement *eTypedElementImpl) SetUnique(newIsUnique bool) {
 	oldIsUnique := eTypedElement.isUnique
 	eTypedElement.isUnique = newIsUnique
 	if eTypedElement.ENotificationRequired() {
-		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.GetEObject(), SET, ETYPED_ELEMENT__UNIQUE, oldIsUnique, newIsUnique, NO_INDEX))
+		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.AsEObject(), SET, ETYPED_ELEMENT__UNIQUE, oldIsUnique, newIsUnique, NO_INDEX))
 	}
 }
 
 // GetLowerBound get the value of lowerBound
 func (eTypedElement *eTypedElementImpl) GetLowerBound() int {
 	return eTypedElement.lowerBound
-
 }
 
 // SetLowerBound set the value of lowerBound
@@ -124,14 +127,13 @@ func (eTypedElement *eTypedElementImpl) SetLowerBound(newLowerBound int) {
 	oldLowerBound := eTypedElement.lowerBound
 	eTypedElement.lowerBound = newLowerBound
 	if eTypedElement.ENotificationRequired() {
-		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.GetEObject(), SET, ETYPED_ELEMENT__LOWER_BOUND, oldLowerBound, newLowerBound, NO_INDEX))
+		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.AsEObject(), SET, ETYPED_ELEMENT__LOWER_BOUND, oldLowerBound, newLowerBound, NO_INDEX))
 	}
 }
 
 // GetUpperBound get the value of upperBound
 func (eTypedElement *eTypedElementImpl) GetUpperBound() int {
 	return eTypedElement.upperBound
-
 }
 
 // SetUpperBound set the value of upperBound
@@ -139,7 +141,7 @@ func (eTypedElement *eTypedElementImpl) SetUpperBound(newUpperBound int) {
 	oldUpperBound := eTypedElement.upperBound
 	eTypedElement.upperBound = newUpperBound
 	if eTypedElement.ENotificationRequired() {
-		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.GetEObject(), SET, ETYPED_ELEMENT__UPPER_BOUND, oldUpperBound, newUpperBound, NO_INDEX))
+		eTypedElement.ENotify(NewNotificationByFeatureID(eTypedElement.AsEObject(), SET, ETYPED_ELEMENT__UPPER_BOUND, oldUpperBound, newUpperBound, NO_INDEX))
 	}
 }
 

@@ -70,7 +70,7 @@ func (eModelElement *eModelElementExt) EObjectForFragmentSegment(uriFragmentSegm
 						}
 
 						// Look for the annotation with the matching source.
-						for it := eModelElement.GetEObject().EContents().Iterator(); it.HasNext(); {
+						for it := eModelElement.AsEObject().EContents().Iterator(); it.HasNext(); {
 							eAnnotation, _ := it.Next().(EAnnotation)
 							if eAnnotation != nil {
 								otherSource := eAnnotation.GetSource()
@@ -109,8 +109,8 @@ func (eModelElement *eModelElementExt) EObjectForFragmentSegment(uriFragmentSegm
 				name = url.PathEscape(name)
 			}
 
-			for it := eModelElement.GetEObject().EContents().Iterator(); it.HasNext(); {
-				eNamedElement := it.Next().(ENamedElement)
+			for it := eModelElement.AsEObject().EContents().Iterator(); it.HasNext(); {
+				eNamedElement, _ := it.Next().(ENamedElement)
 				if eNamedElement != nil {
 					otherName := eNamedElement.GetName()
 					if name == otherName {

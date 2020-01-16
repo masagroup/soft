@@ -46,13 +46,11 @@ func (eEnumLiteral *eEnumLiteralImpl) GetEEnum() EEnum {
 		return eEnumLiteral.EContainer().(EEnum)
 	}
 	return nil
-
 }
 
 // GetInstance get the value of instance
 func (eEnumLiteral *eEnumLiteralImpl) GetInstance() interface{} {
 	return eEnumLiteral.instance
-
 }
 
 // SetInstance set the value of instance
@@ -60,14 +58,13 @@ func (eEnumLiteral *eEnumLiteralImpl) SetInstance(newInstance interface{}) {
 	oldInstance := eEnumLiteral.instance
 	eEnumLiteral.instance = newInstance
 	if eEnumLiteral.ENotificationRequired() {
-		eEnumLiteral.ENotify(NewNotificationByFeatureID(eEnumLiteral.GetEObject(), SET, EENUM_LITERAL__INSTANCE, oldInstance, newInstance, NO_INDEX))
+		eEnumLiteral.ENotify(NewNotificationByFeatureID(eEnumLiteral.AsEObject(), SET, EENUM_LITERAL__INSTANCE, oldInstance, newInstance, NO_INDEX))
 	}
 }
 
 // GetLiteral get the value of literal
 func (eEnumLiteral *eEnumLiteralImpl) GetLiteral() string {
 	return eEnumLiteral.literal
-
 }
 
 // SetLiteral set the value of literal
@@ -75,14 +72,13 @@ func (eEnumLiteral *eEnumLiteralImpl) SetLiteral(newLiteral string) {
 	oldLiteral := eEnumLiteral.literal
 	eEnumLiteral.literal = newLiteral
 	if eEnumLiteral.ENotificationRequired() {
-		eEnumLiteral.ENotify(NewNotificationByFeatureID(eEnumLiteral.GetEObject(), SET, EENUM_LITERAL__LITERAL, oldLiteral, newLiteral, NO_INDEX))
+		eEnumLiteral.ENotify(NewNotificationByFeatureID(eEnumLiteral.AsEObject(), SET, EENUM_LITERAL__LITERAL, oldLiteral, newLiteral, NO_INDEX))
 	}
 }
 
 // GetValue get the value of value
 func (eEnumLiteral *eEnumLiteralImpl) GetValue() int {
 	return eEnumLiteral.value
-
 }
 
 // SetValue set the value of value
@@ -90,7 +86,7 @@ func (eEnumLiteral *eEnumLiteralImpl) SetValue(newValue int) {
 	oldValue := eEnumLiteral.value
 	eEnumLiteral.value = newValue
 	if eEnumLiteral.ENotificationRequired() {
-		eEnumLiteral.ENotify(NewNotificationByFeatureID(eEnumLiteral.GetEObject(), SET, EENUM_LITERAL__VALUE, oldValue, newValue, NO_INDEX))
+		eEnumLiteral.ENotify(NewNotificationByFeatureID(eEnumLiteral.AsEObject(), SET, EENUM_LITERAL__VALUE, oldValue, newValue, NO_INDEX))
 	}
 }
 

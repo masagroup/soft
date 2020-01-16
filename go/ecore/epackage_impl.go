@@ -43,7 +43,7 @@ type ePackageImplInitializers interface {
 }
 
 func (ePackage *ePackageImpl) getInitializers() ePackageImplInitializers {
-	return ePackage.GetEObject().(ePackageImplInitializers)
+	return ePackage.AsEObject().(ePackageImplInitializers)
 }
 
 func (ePackage *ePackageImpl) EStaticClass() EClass {
@@ -61,13 +61,11 @@ func (ePackage *ePackageImpl) GetEClassifiers() EList {
 		ePackage.eClassifiers = ePackage.getInitializers().initEClassifiers()
 	}
 	return ePackage.eClassifiers
-
 }
 
 // GetEFactoryInstance get the value of eFactoryInstance
 func (ePackage *ePackageImpl) GetEFactoryInstance() EFactory {
 	return ePackage.eFactoryInstance
-
 }
 
 // SetEFactoryInstance set the value of eFactoryInstance
@@ -78,7 +76,7 @@ func (ePackage *ePackageImpl) SetEFactoryInstance(newEFactoryInstance EFactory) 
 			notifications = ePackage.eFactoryInstance.(EObjectInternal).EInverseRemove(ePackage, EFACTORY__EPACKAGE, notifications)
 		}
 		if newEFactoryInstance != nil {
-			notifications = newEFactoryInstance.(EObjectInternal).EInverseAdd(ePackage.GetEObject(), EFACTORY__EPACKAGE, notifications)
+			notifications = newEFactoryInstance.(EObjectInternal).EInverseAdd(ePackage.AsEObject(), EFACTORY__EPACKAGE, notifications)
 		}
 		notifications = ePackage.basicSetEFactoryInstance(newEFactoryInstance, notifications)
 		if notifications != nil {
@@ -92,7 +90,7 @@ func (ePackage *ePackageImpl) basicSetEFactoryInstance(newEFactoryInstance EFact
 	ePackage.eFactoryInstance = newEFactoryInstance
 	notifications := msgs
 	if ePackage.ENotificationRequired() {
-		notification := NewNotificationByFeatureID(ePackage.GetEObject(), SET, EPACKAGE__EFACTORY_INSTANCE, oldEFactoryInstance, newEFactoryInstance, NO_INDEX)
+		notification := NewNotificationByFeatureID(ePackage.AsEObject(), SET, EPACKAGE__EFACTORY_INSTANCE, oldEFactoryInstance, newEFactoryInstance, NO_INDEX)
 		if notifications != nil {
 			notifications.Add(notification)
 		} else {
@@ -108,7 +106,6 @@ func (ePackage *ePackageImpl) GetESubPackages() EList {
 		ePackage.eSubPackages = ePackage.getInitializers().initESubPackages()
 	}
 	return ePackage.eSubPackages
-
 }
 
 // GetESuperPackage get the value of eSuperPackage
@@ -117,13 +114,11 @@ func (ePackage *ePackageImpl) GetESuperPackage() EPackage {
 		return ePackage.EContainer().(EPackage)
 	}
 	return nil
-
 }
 
 // GetNsPrefix get the value of nsPrefix
 func (ePackage *ePackageImpl) GetNsPrefix() string {
 	return ePackage.nsPrefix
-
 }
 
 // SetNsPrefix set the value of nsPrefix
@@ -131,14 +126,13 @@ func (ePackage *ePackageImpl) SetNsPrefix(newNsPrefix string) {
 	oldNsPrefix := ePackage.nsPrefix
 	ePackage.nsPrefix = newNsPrefix
 	if ePackage.ENotificationRequired() {
-		ePackage.ENotify(NewNotificationByFeatureID(ePackage.GetEObject(), SET, EPACKAGE__NS_PREFIX, oldNsPrefix, newNsPrefix, NO_INDEX))
+		ePackage.ENotify(NewNotificationByFeatureID(ePackage.AsEObject(), SET, EPACKAGE__NS_PREFIX, oldNsPrefix, newNsPrefix, NO_INDEX))
 	}
 }
 
 // GetNsURI get the value of nsURI
 func (ePackage *ePackageImpl) GetNsURI() string {
 	return ePackage.nsURI
-
 }
 
 // SetNsURI set the value of nsURI
@@ -146,16 +140,16 @@ func (ePackage *ePackageImpl) SetNsURI(newNsURI string) {
 	oldNsURI := ePackage.nsURI
 	ePackage.nsURI = newNsURI
 	if ePackage.ENotificationRequired() {
-		ePackage.ENotify(NewNotificationByFeatureID(ePackage.GetEObject(), SET, EPACKAGE__NS_URI, oldNsURI, newNsURI, NO_INDEX))
+		ePackage.ENotify(NewNotificationByFeatureID(ePackage.AsEObject(), SET, EPACKAGE__NS_URI, oldNsURI, newNsURI, NO_INDEX))
 	}
 }
 
 func (ePackage *ePackageImpl) initEClassifiers() EList {
-	return NewEObjectEList(ePackage.GetEObjectInternal(), EPACKAGE__ECLASSIFIERS, ECLASSIFIER__EPACKAGE, true, true, true, false, false)
+	return NewEObjectEList(ePackage.AsEObjectInternal(), EPACKAGE__ECLASSIFIERS, ECLASSIFIER__EPACKAGE, true, true, true, false, false)
 }
 
 func (ePackage *ePackageImpl) initESubPackages() EList {
-	return NewEObjectEList(ePackage.GetEObjectInternal(), EPACKAGE__ESUB_PACKAGES, EPACKAGE__ESUPER_PACKAGE, true, true, true, false, false)
+	return NewEObjectEList(ePackage.AsEObjectInternal(), EPACKAGE__ESUB_PACKAGES, EPACKAGE__ESUPER_PACKAGE, true, true, true, false, false)
 }
 
 func (ePackage *ePackageImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {
@@ -254,7 +248,7 @@ func (ePackage *ePackageImpl) EBasicInverseAdd(otherEnd EObject, featureID int, 
 	case EPACKAGE__EFACTORY_INSTANCE:
 		msgs := notifications
 		if ePackage.eFactoryInstance != nil {
-			msgs = ePackage.eFactoryInstance.(EObjectInternal).EInverseRemove(ePackage.GetEObject(), EOPPOSITE_FEATURE_BASE-EPACKAGE__EFACTORY_INSTANCE, msgs)
+			msgs = ePackage.eFactoryInstance.(EObjectInternal).EInverseRemove(ePackage.AsEObject(), EOPPOSITE_FEATURE_BASE-EPACKAGE__EFACTORY_INSTANCE, msgs)
 		}
 		return ePackage.basicSetEFactoryInstance(otherEnd.(EFactory), msgs)
 	case EPACKAGE__ESUB_PACKAGES:

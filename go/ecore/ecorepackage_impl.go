@@ -212,6 +212,9 @@ func newEcorePackageImpl() *ecorePackageImpl {
 	p := new(ecorePackageImpl)
 	p.EPackageExt = NewEPackageExt()
 	p.SetInterfaces(p)
+	p.SetName(NAME)
+	p.SetNsPrefix(NS_PREFIX)
+	p.SetNsURI(NS_URI)
 	p.SetEFactoryInstance(GetFactory())
 	p.createPackageContents()
 	p.initializePackageContents()
@@ -1365,11 +1368,6 @@ func (p *ecorePackageImpl) createPackageEDataTypes(factory EcoreFactory) {
 }
 
 func (p *ecorePackageImpl) initializePackageContents() {
-	// Initialize package
-	p.SetName(NAME)
-	p.SetNsPrefix(NS_PREFIX)
-	p.SetNsURI(NS_URI)
-
 	// Add supertypes to classes
 	p.eAnnotation.GetESuperTypes().Add(p.GetEModelElement())
 	p.eAttribute.GetESuperTypes().Add(p.GetEStructuralFeature())
@@ -3382,4 +3380,12 @@ func (p *ecorePackageImpl) initializePackageEDataTypes() {
 	//p.eTreeIterator.SetInstanceClass( reflect.TypeOf(org.eclipse.emf.common.util.TreeIterator))
 	p.eTreeIterator.SetSerializable(false)
 
+}
+
+func (p *ecorePackageImpl) EResource() EResource {
+	resource := p.EPackageExt.EResource()
+	if resource == nil {
+		resource = GetPackageResourceRegistry().GetResource(p.GetInterfaces().(EPackage))
+	}
+	return resource
 }

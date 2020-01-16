@@ -39,18 +39,15 @@ func (eAttribute *eAttributeImpl) EStaticClass() EClass {
 // GetEAttributeType get the value of eAttributeType
 func (eAttribute *eAttributeImpl) GetEAttributeType() EDataType {
 	panic("GetEAttributeType not implemented")
-
 }
 
 func (eAttribute *eAttributeImpl) basicGetEAttributeType() EDataType {
 	panic("GetEAttributeType not implemented")
-
 }
 
 // IsID get the value of isID
 func (eAttribute *eAttributeImpl) IsID() bool {
 	return eAttribute.isID
-
 }
 
 // SetID set the value of isID
@@ -58,7 +55,7 @@ func (eAttribute *eAttributeImpl) SetID(newIsID bool) {
 	oldIsID := eAttribute.isID
 	eAttribute.isID = newIsID
 	if eAttribute.ENotificationRequired() {
-		eAttribute.ENotify(NewNotificationByFeatureID(eAttribute.GetEObject(), SET, EATTRIBUTE__ID, oldIsID, newIsID, NO_INDEX))
+		eAttribute.ENotify(NewNotificationByFeatureID(eAttribute.AsEObject(), SET, EATTRIBUTE__ID, oldIsID, newIsID, NO_INDEX))
 	}
 }
 

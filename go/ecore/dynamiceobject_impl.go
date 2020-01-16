@@ -97,14 +97,14 @@ func (o *DynamicEObjectImpl) ESetFromID(featureID int, newValue interface{}) {
 					notifications = o.EBasicRemoveFromContainer(notifications)
 				}
 				if newContainer != nil {
-					notifications = newContainer.(EObjectInternal).EInverseAdd(o.GetEObject(), featureID, notifications)
+					notifications = newContainer.(EObjectInternal).EInverseAdd(o.AsEObject(), featureID, notifications)
 				}
 				notifications = o.EBasicSetContainer(newContainer, featureID, notifications)
 				if notifications != nil {
 					notifications.Dispatch()
 				}
 			} else if o.ENotificationRequired() {
-				o.ENotify(NewNotificationByFeatureID(o.GetEObject(), SET, featureID, newValue, newValue, NO_INDEX))
+				o.ENotify(NewNotificationByFeatureID(o.AsEObject(), SET, featureID, newValue, newValue, NO_INDEX))
 			}
 		} else if o.isBidirectional(dynamicFeature) || o.isContains(dynamicFeature) {
 			// inverse - opposite
@@ -116,19 +116,19 @@ func (o *DynamicEObjectImpl) ESetFromID(featureID int, newValue interface{}) {
 
 				if !o.isBidirectional(dynamicFeature) {
 					if oldObject != nil {
-						notifications = oldObject.(EObjectInternal).EInverseRemove(o.GetEObject(), EOPPOSITE_FEATURE_BASE-featureID, notifications)
+						notifications = oldObject.(EObjectInternal).EInverseRemove(o.AsEObject(), EOPPOSITE_FEATURE_BASE-featureID, notifications)
 					}
 					if newObject != nil {
-						notifications = newObject.(EObjectInternal).EInverseAdd(o.GetEObject(), EOPPOSITE_FEATURE_BASE-featureID, notifications)
+						notifications = newObject.(EObjectInternal).EInverseAdd(o.AsEObject(), EOPPOSITE_FEATURE_BASE-featureID, notifications)
 					}
 				} else {
 					dynamicReference := dynamicFeature.(EReference)
 					reverseFeature := dynamicReference.GetEOpposite()
 					if oldObject != nil {
-						notifications = oldObject.(EObjectInternal).EInverseRemove(o.GetEObject(), reverseFeature.GetFeatureID(), notifications)
+						notifications = oldObject.(EObjectInternal).EInverseRemove(o.AsEObject(), reverseFeature.GetFeatureID(), notifications)
 					}
 					if newObject != nil {
-						notifications = newObject.(EObjectInternal).EInverseAdd(o.GetEObject(), reverseFeature.GetFeatureID(), notifications)
+						notifications = newObject.(EObjectInternal).EInverseAdd(o.AsEObject(), reverseFeature.GetFeatureID(), notifications)
 					}
 				}
 				// basic set
@@ -136,7 +136,7 @@ func (o *DynamicEObjectImpl) ESetFromID(featureID int, newValue interface{}) {
 
 				// create notification
 				if o.ENotificationRequired() {
-					notification := NewNotificationByFeatureID(o.GetEObject(), SET, featureID, oldValue, newValue, NO_INDEX)
+					notification := NewNotificationByFeatureID(o.AsEObject(), SET, featureID, oldValue, newValue, NO_INDEX)
 					if notifications != nil {
 						notifications.Add(notification)
 					} else {
@@ -156,7 +156,7 @@ func (o *DynamicEObjectImpl) ESetFromID(featureID int, newValue interface{}) {
 
 			// notify
 			if o.ENotificationRequired() {
-				o.ENotify(NewNotificationByFeatureID(o.GetEObject(), SET, featureID, oldValue, newValue, NO_INDEX))
+				o.ENotify(NewNotificationByFeatureID(o.AsEObject(), SET, featureID, oldValue, newValue, NO_INDEX))
 			}
 		}
 	} else {
@@ -182,7 +182,7 @@ func (o *DynamicEObjectImpl) EUnsetFromID(featureID int) {
 		o.properties[dynamicFeatureID] = nil
 
 		if o.ENotificationRequired() {
-			o.ENotify(NewNotificationByFeatureID(o.GetEObject(), UNSET, featureID, oldValue, nil, NO_INDEX))
+			o.ENotify(NewNotificationByFeatureID(o.AsEObject(), UNSET, featureID, oldValue, nil, NO_INDEX))
 		}
 	} else {
 		o.EObjectImpl.EUnsetFromID(featureID)
@@ -284,7 +284,7 @@ func (o *DynamicEObjectImpl) createList(feature EStructuralFeature) EList {
 			inverse = true
 			opposite = false
 		}
-		return NewEObjectEList(o.GetEObjectInternal(), ref.GetFeatureID(), reverseID, ref.IsContainment(), inverse, opposite, ref.EIsProxy(), ref.IsUnsettable())
+		return NewEObjectEList(o.AsEObjectInternal(), ref.GetFeatureID(), reverseID, ref.IsContainment(), inverse, opposite, ref.EIsProxy(), ref.IsUnsettable())
 	}
 	return nil
 }

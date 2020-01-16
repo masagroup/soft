@@ -57,6 +57,7 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/Notification.hpp
     src/ecore/impl/NotificationChain.hpp
     src/ecore/impl/PackageRegistry.hpp
+    src/ecore/impl/PackageResourceRegistry.hpp
     src/ecore/impl/Proxy.hpp
     src/ecore/impl/ResourceFactoryRegistry.hpp
     src/ecore/impl/ResourceSet.hpp
@@ -65,13 +66,17 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/StringUtils.hpp
     src/ecore/impl/TypeTraits.hpp
     src/ecore/impl/WeakPtr.hpp
-    src/ecore/impl/XmlInputSource.hpp
-    src/ecore/impl/XmlLoad.hpp
-    src/ecore/impl/XmlNamespaces.hpp
-    src/ecore/impl/XmlResource.hpp
-    src/ecore/impl/XmlResourceFactory.hpp
-    src/ecore/impl/XmlSave.hpp
-    src/ecore/impl/XmlString.hpp
+    src/ecore/impl/XMILoad.hpp
+    src/ecore/impl/XMIResource.hpp
+    src/ecore/impl/XMIResourceFactory.hpp
+    src/ecore/impl/XMISave.hpp
+    src/ecore/impl/XMLInputSource.hpp
+    src/ecore/impl/XMLLoad.hpp
+    src/ecore/impl/XMLNamespaces.hpp
+    src/ecore/impl/XMLResource.hpp
+    src/ecore/impl/XMLResourceFactory.hpp
+    src/ecore/impl/XMLSave.hpp
+    src/ecore/impl/XMLString.hpp
 )
 
 set(SOURCE_ECORE_IMPL_FILES 
@@ -84,16 +89,21 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/Notification.cpp
     src/ecore/impl/NotificationChain.cpp
     src/ecore/impl/PackageRegistry.cpp
+    src/ecore/impl/PackageResourceRegistry.cpp
     src/ecore/impl/ResourceFactoryRegistry.cpp
     src/ecore/impl/ResourceSet.cpp
     src/ecore/impl/ResourceURIConverter.cpp
     src/ecore/impl/SaxParserPool.cpp
-    src/ecore/impl/XmlLoad.cpp
-    src/ecore/impl/XmlNamespaces.cpp
-    src/ecore/impl/XmlResource.cpp
-    src/ecore/impl/XmlResourceFactory.cpp
-    src/ecore/impl/XmlSave.cpp
-    src/ecore/impl/XmlString.cpp
+    src/ecore/impl/XMILoad.cpp
+    src/ecore/impl/XMIResource.cpp
+    src/ecore/impl/XMIResourceFactory.cpp
+    src/ecore/impl/XMISave.cpp
+    src/ecore/impl/XMLLoad.cpp
+    src/ecore/impl/XMLNamespaces.cpp
+    src/ecore/impl/XMLResource.cpp
+    src/ecore/impl/XMLResourceFactory.cpp
+    src/ecore/impl/XMLSave.cpp
+    src/ecore/impl/XMLString.cpp
 )
 
 set(HEADER_ECORE_EXT_FILES 

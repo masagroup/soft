@@ -16,13 +16,13 @@
 
 namespace ecore::impl
 {
-    class XmlString
+    class XMLString
     {
     public:
         struct Segment;
 
     public:
-        XmlString();
+        XMLString();
 
         void write(std::ostream& os);
 

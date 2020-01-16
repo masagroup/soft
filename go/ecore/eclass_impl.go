@@ -65,7 +65,7 @@ type eClassImplInitializers interface {
 }
 
 func (eClass *eClassImpl) getInitializers() eClassImplInitializers {
-	return eClass.GetEObject().(eClassImplInitializers)
+	return eClass.AsEObject().(eClassImplInitializers)
 }
 
 func (eClass *eClassImpl) EStaticClass() EClass {
@@ -77,14 +77,14 @@ func (eClass *eClassImpl) GetEOperation(int) EOperation {
 	panic("GetEOperation not implemented")
 }
 
-// GetEStructuralFeatureFromString default implementation
-func (eClass *eClassImpl) GetEStructuralFeatureFromString(string) EStructuralFeature {
-	panic("GetEStructuralFeatureFromString not implemented")
-}
-
 // GetEStructuralFeature default implementation
 func (eClass *eClassImpl) GetEStructuralFeature(int) EStructuralFeature {
 	panic("GetEStructuralFeature not implemented")
+}
+
+// GetEStructuralFeatureFromString default implementation
+func (eClass *eClassImpl) GetEStructuralFeatureFromString(string) EStructuralFeature {
+	panic("GetEStructuralFeatureFromString not implemented")
 }
 
 // GetFeatureCount default implementation
@@ -126,70 +126,60 @@ func (eClass *eClassImpl) IsSuperTypeOf(EClass) bool {
 func (eClass *eClassImpl) GetEAllAttributes() EList {
 	eClass.getInitializers().initEAllAttributes()
 	return eClass.eAllAttributes
-
 }
 
 // GetEAllContainments get the value of eAllContainments
 func (eClass *eClassImpl) GetEAllContainments() EList {
 	eClass.getInitializers().initEAllContainments()
 	return eClass.eAllContainments
-
 }
 
 // GetEAllOperations get the value of eAllOperations
 func (eClass *eClassImpl) GetEAllOperations() EList {
 	eClass.getInitializers().initEAllOperations()
 	return eClass.eAllOperations
-
 }
 
 // GetEAllReferences get the value of eAllReferences
 func (eClass *eClassImpl) GetEAllReferences() EList {
 	eClass.getInitializers().initEAllReferences()
 	return eClass.eAllReferences
-
 }
 
 // GetEAllStructuralFeatures get the value of eAllStructuralFeatures
 func (eClass *eClassImpl) GetEAllStructuralFeatures() EList {
 	eClass.getInitializers().initEAllStructuralFeatures()
 	return eClass.eAllStructuralFeatures
-
 }
 
 // GetEAllSuperTypes get the value of eAllSuperTypes
 func (eClass *eClassImpl) GetEAllSuperTypes() EList {
 	eClass.getInitializers().initEAllSuperTypes()
 	return eClass.eAllSuperTypes
-
 }
 
 // GetEAttributes get the value of eAttributes
 func (eClass *eClassImpl) GetEAttributes() EList {
 	eClass.getInitializers().initEAttributes()
 	return eClass.eAttributes
-
 }
 
 // GetEContainments get the value of eContainments
 func (eClass *eClassImpl) GetEContainments() EList {
 	eClass.getInitializers().initEContainments()
 	return eClass.eContainments
-
 }
 
 // GetECrossReferences get the value of eCrossReferences
 func (eClass *eClassImpl) GetECrossReferences() EList {
 	eClass.getInitializers().initECrossReferences()
 	return eClass.eCrossReferences
-
 }
 
 // GetEIDAttribute get the value of eIDAttribute
 func (eClass *eClassImpl) GetEIDAttribute() EAttribute {
 	eClass.getInitializers().initEIDAttribute()
 	return eClass.eIDAttribute
-
 }
 
 // GetEOperations get the value of eOperations
@@ -198,14 +188,12 @@ func (eClass *eClassImpl) GetEOperations() EList {
 		eClass.eOperations = eClass.getInitializers().initEOperations()
 	}
 	return eClass.eOperations
-
 }
 
 // GetEReferences get the value of eReferences
 func (eClass *eClassImpl) GetEReferences() EList {
 	eClass.getInitializers().initEReferences()
 	return eClass.eReferences
-
 }
 
 // GetEStructuralFeatures get the value of eStructuralFeatures
@@ -214,7 +202,6 @@ func (eClass *eClassImpl) GetEStructuralFeatures() EList {
 		eClass.eStructuralFeatures = eClass.getInitializers().initEStructuralFeatures()
 	}
 	return eClass.eStructuralFeatures
-
 }
 
 // GetESuperTypes get the value of eSuperTypes
@@ -223,13 +210,11 @@ func (eClass *eClassImpl) GetESuperTypes() EList {
 		eClass.eSuperTypes = eClass.getInitializers().initESuperTypes()
 	}
 	return eClass.eSuperTypes
-
 }
 
 // IsAbstract get the value of isAbstract
 func (eClass *eClassImpl) IsAbstract() bool {
 	return eClass.isAbstract
-
 }
 
 // SetAbstract set the value of isAbstract
@@ -237,14 +222,13 @@ func (eClass *eClassImpl) SetAbstract(newIsAbstract bool) {
 	oldIsAbstract := eClass.isAbstract
 	eClass.isAbstract = newIsAbstract
 	if eClass.ENotificationRequired() {
-		eClass.ENotify(NewNotificationByFeatureID(eClass.GetEObject(), SET, ECLASS__ABSTRACT, oldIsAbstract, newIsAbstract, NO_INDEX))
+		eClass.ENotify(NewNotificationByFeatureID(eClass.AsEObject(), SET, ECLASS__ABSTRACT, oldIsAbstract, newIsAbstract, NO_INDEX))
 	}
 }
 
 // IsInterface get the value of isInterface
 func (eClass *eClassImpl) IsInterface() bool {
 	return eClass.isInterface
-
 }
 
 // SetInterface set the value of isInterface
@@ -252,44 +236,44 @@ func (eClass *eClassImpl) SetInterface(newIsInterface bool) {
 	oldIsInterface := eClass.isInterface
 	eClass.isInterface = newIsInterface
 	if eClass.ENotificationRequired() {
-		eClass.ENotify(NewNotificationByFeatureID(eClass.GetEObject(), SET, ECLASS__INTERFACE, oldIsInterface, newIsInterface, NO_INDEX))
+		eClass.ENotify(NewNotificationByFeatureID(eClass.AsEObject(), SET, ECLASS__INTERFACE, oldIsInterface, newIsInterface, NO_INDEX))
 	}
 }
 
 func (eClass *eClassImpl) initEAllAttributes() {
-	eClass.eAllAttributes = NewEObjectEList(eClass.GetEObjectInternal(), ECLASS__EALL_ATTRIBUTES, -1, false, false, false, true, false)
+	eClass.eAllAttributes = NewEObjectEList(eClass.AsEObjectInternal(), ECLASS__EALL_ATTRIBUTES, -1, false, false, false, true, false)
 }
 
 func (eClass *eClassImpl) initEAllContainments() {
-	eClass.eAllContainments = NewEObjectEList(eClass.GetEObjectInternal(), ECLASS__EALL_CONTAINMENTS, -1, false, false, false, true, false)
+	eClass.eAllContainments = NewEObjectEList(eClass.AsEObjectInternal(), ECLASS__EALL_CONTAINMENTS, -1, false, false, false, true, false)
 }
 
 func (eClass *eClassImpl) initEAllOperations() {
-	eClass.eAllOperations = NewEObjectEList(eClass.GetEObjectInternal(), ECLASS__EALL_OPERATIONS, -1, false, false, false, true, false)
+	eClass.eAllOperations = NewEObjectEList(eClass.AsEObjectInternal(), ECLASS__EALL_OPERATIONS, -1, false, false, false, true, false)
 }
 
 func (eClass *eClassImpl) initEAllReferences() {
-	eClass.eAllReferences = NewEObjectEList(eClass.GetEObjectInternal(), ECLASS__EALL_REFERENCES, -1, false, false, false, true, false)
+	eClass.eAllReferences = NewEObjectEList(eClass.AsEObjectInternal(), ECLASS__EALL_REFERENCES, -1, false, false, false, true, false)
 }
 
 func (eClass *eClassImpl) initEAllStructuralFeatures() {
-	eClass.eAllStructuralFeatures = NewEObjectEList(eClass.GetEObjectInternal(), ECLASS__EALL_STRUCTURAL_FEATURES, -1, false, false, false, true, false)
+	eClass.eAllStructuralFeatures = NewEObjectEList(eClass.AsEObjectInternal(), ECLASS__EALL_STRUCTURAL_FEATURES, -1, false, false, false, true, false)
 }
 
 func (eClass *eClassImpl) initEAllSuperTypes() {
-	eClass.eAllSuperTypes = NewEObjectEList(eClass.GetEObjectInternal(), ECLASS__EALL_SUPER_TYPES, -1, false, false, false, true, false)
+	eClass.eAllSuperTypes = NewEObjectEList(eClass.AsEObjectInternal(), ECLASS__EALL_SUPER_TYPES, -1, false, false, false, true, false)
 }
 
 func (eClass *eClassImpl) initEAttributes() {
-	eClass.eAttributes = NewEObjectEList(eClass.GetEObjectInternal(), ECLASS__EATTRIBUTES, -1, false, false, false, true, false)
+	eClass.eAttributes = NewEObjectEList(eClass.AsEObjectInternal(), ECLASS__EATTRIBUTES, -1, false, false, false, true, false)
 }
 
 func (eClass *eClassImpl) initEContainments() {
-	eClass.eContainments = NewEObjectEList(eClass.GetEObjectInternal(), ECLASS__ECONTAINMENTS, -1, false, false, false, true, false)
+	eClass.eContainments = NewEObjectEList(eClass.AsEObjectInternal(), ECLASS__ECONTAINMENTS, -1, false, false, false, true, false)
 }
 
 func (eClass *eClassImpl) initECrossReferences() {
-	eClass.eCrossReferences = NewEObjectEList(eClass.GetEObjectInternal(), ECLASS__ECROSS_REFERENCES, -1, false, false, false, true, false)
+	eClass.eCrossReferences = NewEObjectEList(eClass.AsEObjectInternal(), ECLASS__ECROSS_REFERENCES, -1, false, false, false, true, false)
 }
 
 func (eClass *eClassImpl) initEIDAttribute() {
@@ -297,19 +281,19 @@ func (eClass *eClassImpl) initEIDAttribute() {
 }
 
 func (eClass *eClassImpl) initEOperations() EList {
-	return NewEObjectEList(eClass.GetEObjectInternal(), ECLASS__EOPERATIONS, EOPERATION__ECONTAINING_CLASS, true, true, true, false, false)
+	return NewEObjectEList(eClass.AsEObjectInternal(), ECLASS__EOPERATIONS, EOPERATION__ECONTAINING_CLASS, true, true, true, false, false)
 }
 
 func (eClass *eClassImpl) initEReferences() {
-	eClass.eReferences = NewEObjectEList(eClass.GetEObjectInternal(), ECLASS__EREFERENCES, -1, false, false, false, true, false)
+	eClass.eReferences = NewEObjectEList(eClass.AsEObjectInternal(), ECLASS__EREFERENCES, -1, false, false, false, true, false)
 }
 
 func (eClass *eClassImpl) initEStructuralFeatures() EList {
-	return NewEObjectEList(eClass.GetEObjectInternal(), ECLASS__ESTRUCTURAL_FEATURES, ESTRUCTURAL_FEATURE__ECONTAINING_CLASS, true, true, true, false, false)
+	return NewEObjectEList(eClass.AsEObjectInternal(), ECLASS__ESTRUCTURAL_FEATURES, ESTRUCTURAL_FEATURE__ECONTAINING_CLASS, true, true, true, false, false)
 }
 
 func (eClass *eClassImpl) initESuperTypes() EList {
-	return NewEObjectEList(eClass.GetEObjectInternal(), ECLASS__ESUPER_TYPES, -1, false, false, false, true, false)
+	return NewEObjectEList(eClass.AsEObjectInternal(), ECLASS__ESUPER_TYPES, -1, false, false, false, true, false)
 }
 
 func (eClass *eClassImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {
@@ -436,10 +420,10 @@ func (eClass *eClassImpl) EInvokeFromID(operationID int, arguments EList) interf
 	switch operationID {
 	case ECLASS__GET_EOPERATION_EINT:
 		return eClass.GetEOperation(arguments.Get(0).(int))
-	case ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING:
-		return eClass.GetEStructuralFeatureFromString(arguments.Get(0).(string))
 	case ECLASS__GET_ESTRUCTURAL_FEATURE_EINT:
 		return eClass.GetEStructuralFeature(arguments.Get(0).(int))
+	case ECLASS__GET_ESTRUCTURAL_FEATURE_ESTRING:
+		return eClass.GetEStructuralFeatureFromString(arguments.Get(0).(string))
 	case ECLASS__GET_FEATURE_COUNT:
 		return eClass.GetFeatureCount()
 	case ECLASS__GET_FEATURE_ID_ESTRUCTURALFEATURE:

@@ -49,7 +49,6 @@ func (eClassifier *eClassifierImpl) IsInstance(interface{}) bool {
 // GetClassifierID get the value of classifierID
 func (eClassifier *eClassifierImpl) GetClassifierID() int {
 	return eClassifier.classifierID
-
 }
 
 // SetClassifierID set the value of classifierID
@@ -57,14 +56,13 @@ func (eClassifier *eClassifierImpl) SetClassifierID(newClassifierID int) {
 	oldClassifierID := eClassifier.classifierID
 	eClassifier.classifierID = newClassifierID
 	if eClassifier.ENotificationRequired() {
-		eClassifier.ENotify(NewNotificationByFeatureID(eClassifier.GetEObject(), SET, ECLASSIFIER__CLASSIFIER_ID, oldClassifierID, newClassifierID, NO_INDEX))
+		eClassifier.ENotify(NewNotificationByFeatureID(eClassifier.AsEObject(), SET, ECLASSIFIER__CLASSIFIER_ID, oldClassifierID, newClassifierID, NO_INDEX))
 	}
 }
 
 // GetDefaultValue get the value of defaultValue
 func (eClassifier *eClassifierImpl) GetDefaultValue() interface{} {
 	panic("GetDefaultValue not implemented")
-
 }
 
 // GetEPackage get the value of ePackage
@@ -73,13 +71,11 @@ func (eClassifier *eClassifierImpl) GetEPackage() EPackage {
 		return eClassifier.EContainer().(EPackage)
 	}
 	return nil
-
 }
 
 // GetInstanceClass get the value of instanceClass
 func (eClassifier *eClassifierImpl) GetInstanceClass() reflect.Type {
 	return eClassifier.instanceClass
-
 }
 
 // SetInstanceClass set the value of instanceClass
@@ -87,7 +83,7 @@ func (eClassifier *eClassifierImpl) SetInstanceClass(newInstanceClass reflect.Ty
 	oldInstanceClass := eClassifier.instanceClass
 	eClassifier.instanceClass = newInstanceClass
 	if eClassifier.ENotificationRequired() {
-		eClassifier.ENotify(NewNotificationByFeatureID(eClassifier.GetEObject(), SET, ECLASSIFIER__INSTANCE_CLASS, oldInstanceClass, newInstanceClass, NO_INDEX))
+		eClassifier.ENotify(NewNotificationByFeatureID(eClassifier.AsEObject(), SET, ECLASSIFIER__INSTANCE_CLASS, oldInstanceClass, newInstanceClass, NO_INDEX))
 	}
 }
 

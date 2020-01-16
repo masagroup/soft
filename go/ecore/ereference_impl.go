@@ -42,7 +42,7 @@ type eReferenceImplInitializers interface {
 }
 
 func (eReference *eReferenceImpl) getInitializers() eReferenceImplInitializers {
-	return eReference.GetEObject().(eReferenceImplInitializers)
+	return eReference.AsEObject().(eReferenceImplInitializers)
 }
 
 func (eReference *eReferenceImpl) EStaticClass() EClass {
@@ -55,18 +55,25 @@ func (eReference *eReferenceImpl) GetEKeys() EList {
 		eReference.eKeys = eReference.getInitializers().initEKeys()
 	}
 	return eReference.eKeys
-
 }
 
 // GetEOpposite get the value of eOpposite
 func (eReference *eReferenceImpl) GetEOpposite() EReference {
+	if eReference.eOpposite != nil && eReference.eOpposite.EIsProxy() {
+		oldEOpposite := eReference.eOpposite
+		newEOpposite := eReference.EResolveProxy(oldEOpposite).(EReference)
+		eReference.eOpposite = newEOpposite
+		if newEOpposite != oldEOpposite {
+			if eReference.ENotificationRequired() {
+				eReference.ENotify(NewNotificationByFeatureID(eReference, RESOLVE, EREFERENCE__EOPPOSITE, oldEOpposite, newEOpposite, NO_INDEX))
+			}
+		}
+	}
 	return eReference.eOpposite
-
 }
 
 func (eReference *eReferenceImpl) basicGetEOpposite() EReference {
 	return eReference.eOpposite
-
 }
 
 // SetEOpposite set the value of eOpposite
@@ -74,31 +81,27 @@ func (eReference *eReferenceImpl) SetEOpposite(newEOpposite EReference) {
 	oldEOpposite := eReference.eOpposite
 	eReference.eOpposite = newEOpposite
 	if eReference.ENotificationRequired() {
-		eReference.ENotify(NewNotificationByFeatureID(eReference.GetEObject(), SET, EREFERENCE__EOPPOSITE, oldEOpposite, newEOpposite, NO_INDEX))
+		eReference.ENotify(NewNotificationByFeatureID(eReference.AsEObject(), SET, EREFERENCE__EOPPOSITE, oldEOpposite, newEOpposite, NO_INDEX))
 	}
 }
 
 // GetEReferenceType get the value of eReferenceType
 func (eReference *eReferenceImpl) GetEReferenceType() EClass {
 	panic("GetEReferenceType not implemented")
-
 }
 
 func (eReference *eReferenceImpl) basicGetEReferenceType() EClass {
 	panic("GetEReferenceType not implemented")
-
 }
 
 // IsContainer get the value of isContainer
 func (eReference *eReferenceImpl) IsContainer() bool {
 	panic("IsContainer not implemented")
-
 }
 
 // IsContainment get the value of isContainment
 func (eReference *eReferenceImpl) IsContainment() bool {
 	return eReference.isContainment
-
 }
 
 // SetContainment set the value of isContainment
@@ -106,14 +109,13 @@ func (eReference *eReferenceImpl) SetContainment(newIsContainment bool) {
 	oldIsContainment := eReference.isContainment
 	eReference.isContainment = newIsContainment
 	if eReference.ENotificationRequired() {
-		eReference.ENotify(NewNotificationByFeatureID(eReference.GetEObject(), SET, EREFERENCE__CONTAINMENT, oldIsContainment, newIsContainment, NO_INDEX))
+		eReference.ENotify(NewNotificationByFeatureID(eReference.AsEObject(), SET, EREFERENCE__CONTAINMENT, oldIsContainment, newIsContainment, NO_INDEX))
 	}
 }
 
 // IsResolveProxies get the value of isResolveProxies
 func (eReference *eReferenceImpl) IsResolveProxies() bool {
 	return eReference.isResolveProxies
-
 }
 
 // SetResolveProxies set the value of isResolveProxies
@@ -121,12 +123,12 @@ func (eReference *eReferenceImpl) SetResolveProxies(newIsResolveProxies bool) {
 	oldIsResolveProxies := eReference.isResolveProxies
 	eReference.isResolveProxies = newIsResolveProxies
 	if eReference.ENotificationRequired() {
-		eReference.ENotify(NewNotificationByFeatureID(eReference.GetEObject(), SET, EREFERENCE__RESOLVE_PROXIES, oldIsResolveProxies, newIsResolveProxies, NO_INDEX))
+		eReference.ENotify(NewNotificationByFeatureID(eReference.AsEObject(), SET, EREFERENCE__RESOLVE_PROXIES, oldIsResolveProxies, newIsResolveProxies, NO_INDEX))
 	}
 }
 
 func (eReference *eReferenceImpl) initEKeys() EList {
-	return NewEObjectEList(eReference.GetEObjectInternal(), EREFERENCE__EKEYS, -1, false, false, false, true, false)
+	return NewEObjectEList(eReference.AsEObjectInternal(), EREFERENCE__EKEYS, -1, false, false, false, true, false)
 }
 
 func (eReference *eReferenceImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {

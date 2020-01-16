@@ -16,10 +16,10 @@
 
 namespace ecore::impl
 {
-    class XmlInputStream : public xercesc::BinInputStream
+    class XMLInputStream : public xercesc::BinInputStream
     {
     public:
-        XmlInputStream( std::istream& is )
+        XMLInputStream( std::istream& is )
             : is_( is )
         {
         }
@@ -69,37 +69,37 @@ namespace ecore::impl
         std::istream& is_;
     };
 
-    class XmlInputSource : public xercesc::InputSource
+    class XMLInputSource : public xercesc::InputSource
     {
     public:
-        XmlInputSource( std::istream& is )
+        XMLInputSource( std::istream& is )
             : is_( &is )
         {
         }
 
         template <typename C>
-        XmlInputSource( std::istream& is, const C* system_id )
+        XMLInputSource( std::istream& is, const C* system_id )
             : xercesc::InputSource( xml::string( system_id ).c_str() )
             , is_( &is )
         {
         }
 
         template <typename C>
-        XmlInputSource( std::istream& is, const std::basic_string<C>& system_id )
+        XMLInputSource( std::istream& is, const std::basic_string<C>& system_id )
             : xercesc::InputSource( xml::string( system_id ).c_str() )
             , is_( &is )
         {
         }
 
         template <typename C>
-        XmlInputSource( std::istream& is, const C* system_id, const C* public_id )
+        XMLInputSource( std::istream& is, const C* system_id, const C* public_id )
             : xercesc::InputSource( xml::string( system_id ).c_str(), xml::string( public_id ).c_str() )
             , is_( &is )
         {
         }
 
         template <typename C>
-        XmlInputSource( std::istream& is, const std::basic_string<C>& system_id, const std::basic_string<C>& public_id )
+        XMLInputSource( std::istream& is, const std::basic_string<C>& system_id, const std::basic_string<C>& public_id )
             : xercesc::InputSource( xml::string( system_id ).c_str(), xml::string( public_id ).c_str() )
             , is_( &is )
         {
@@ -121,7 +121,7 @@ namespace ecore::impl
 
             is_ = 0;
 
-            return new XmlInputStream( is );
+            return new XMLInputStream( is );
         }
 
     private:

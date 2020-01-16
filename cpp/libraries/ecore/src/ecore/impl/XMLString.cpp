@@ -1,4 +1,4 @@
-#include "ecore/impl/XmlString.hpp"
+#include "ecore/impl/XMLString.hpp"
 
 #include <sstream>
 #include <limits>
@@ -6,12 +6,12 @@
 using namespace ecore;
 using namespace ecore::impl;
 
-struct XmlString::Segment {
+struct XMLString::Segment {
     int lineWidth_;
     std::string buffer_;
 };
 
-XmlString::XmlString()
+XMLString::XMLString()
     : lineWidth_( std::numeric_limits<int>::max() )
     , depth_(0)
     , lastElementIsStart_(false)
@@ -22,26 +22,26 @@ XmlString::XmlString()
     segments_ = { currentSegment_ };
 }
 
-void XmlString::write(std::ostream& os)
+void XMLString::write(std::ostream& os)
 {
     for (auto s : segments_)
         os << s->buffer_;
 }
 
-void XmlString::add(const std::string& s)
+void XMLString::add(const std::string& s)
 {
     if (lineWidth_ != std::numeric_limits<int>::max())
         currentSegment_->lineWidth_ += int(s.length());
     currentSegment_->buffer_ += s;
 }
 
-void XmlString::addLine()
+void XMLString::addLine()
 {
     add("\n");
     currentSegment_->lineWidth_ = 0;
 }
 
-void XmlString::startElement(const std::string& name)
+void XMLString::startElement(const std::string& name)
 {
     if (lastElementIsStart_)
         closeStartElement();
@@ -57,14 +57,14 @@ void XmlString::startElement(const std::string& name)
     }
 }
 
-void XmlString::closeStartElement()
+void XMLString::closeStartElement()
 {
     add(">");
     addLine();
     lastElementIsStart_ = false;
 }
 
-void XmlString::endElement()
+void XMLString::endElement()
 {
     if ( lastElementIsStart_ )
         endEmptyElement();
@@ -80,7 +80,7 @@ void XmlString::endElement()
     }
 }
 
-void XmlString::endEmptyElement()
+void XMLString::endEmptyElement()
 {
     removeLast();
     add("/>");
@@ -88,14 +88,14 @@ void XmlString::endEmptyElement()
     lastElementIsStart_ = false;
 }
 
-void XmlString::addAttribute(const std::string& name, const std::string& value)
+void XMLString::addAttribute(const std::string& name, const std::string& value)
 {
     startAttribute(name);
     addAttributeContent(value);
     endAttribute();
 }
 
-void XmlString::startAttribute(const std::string& name)
+void XMLString::startAttribute(const std::string& name)
 {
     if (currentSegment_->lineWidth_ > lineWidth_ ){
         addLine();
@@ -108,17 +108,17 @@ void XmlString::startAttribute(const std::string& name)
     add("=\"");
 }
 
-void XmlString::addAttributeContent(const std::string& content)
+void XMLString::addAttributeContent(const std::string& content)
 {
     add(content);
 }
 
-void XmlString::endAttribute()
+void XMLString::endAttribute()
 {
     add("\"");
 }
 
-void XmlString::addNil(const std::string& name)
+void XMLString::addNil(const std::string& name)
 {
     if (lastElementIsStart_)
         closeStartElement();
@@ -139,7 +139,7 @@ void XmlString::addNil(const std::string& name)
     lastElementIsStart_ = false;
 }
 
-void XmlString::addContent(const std::string& name, const std::string& content)
+void XMLString::addContent(const std::string& name, const std::string& content)
 {
     if (lastElementIsStart_)
         closeStartElement();
@@ -157,7 +157,7 @@ void XmlString::addContent(const std::string& name, const std::string& content)
     lastElementIsStart_ = false;
 }
 
-std::shared_ptr<XmlString::Segment> XmlString::mark()
+std::shared_ptr<XMLString::Segment> XMLString::mark()
 {
     auto r = currentSegment_;
     currentSegment_ = std::make_shared<Segment>();
@@ -165,13 +165,13 @@ std::shared_ptr<XmlString::Segment> XmlString::mark()
     return r;
 }
 
-void XmlString::resetToMark(const std::shared_ptr<Segment>& m)
+void XMLString::resetToMark(const std::shared_ptr<Segment>& m)
 {
     if (m)
         currentSegment_ = m;
 }
 
-std::string XmlString::removeLast()
+std::string XMLString::removeLast()
 {
     auto end = elementNames_.back();
     elementNames_.pop_back();
@@ -181,12 +181,12 @@ std::string XmlString::removeLast()
     return end;
 }
 
-std::string XmlString::getElementIndent()
+std::string XMLString::getElementIndent()
 {
     return getElementIndent(0);
 }
 
-std::string XmlString::getElementIndent(int extra)
+std::string XMLString::getElementIndent(int extra)
 {
     auto nesting = depth_ + extra - 1;
     for (auto i = indents_.size() - 1; i < nesting; i++){
@@ -195,7 +195,7 @@ std::string XmlString::getElementIndent(int extra)
     return indents_[nesting];
 }
 
-std::string XmlString::getAttributeIndent()
+std::string XMLString::getAttributeIndent()
 {
     auto nesting = depth_ + + 1;
     for (auto i = indents_.size() - 1; i < nesting; i++) {

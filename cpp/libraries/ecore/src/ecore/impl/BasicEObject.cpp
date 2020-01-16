@@ -1,7 +1,7 @@
 #include "ecore/impl/BasicEObject.hpp"
-#include "ecore/Constants.hpp"
 #include "ecore/Any.hpp"
 #include "ecore/AnyCast.hpp"
+#include "ecore/Constants.hpp"
 #include "ecore/EAdapter.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/ECollectionView.hpp"
@@ -11,6 +11,7 @@
 #include "ecore/EResource.hpp"
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/EcorePackage.hpp"
+#include "ecore/EcoreUtils.hpp"
 #include "ecore/impl/ArrayEList.hpp"
 #include "ecore/impl/EClassImpl.hpp"
 #include "ecore/impl/Notification.hpp"
@@ -36,7 +37,8 @@ std::shared_ptr<const ECollectionView<std::shared_ptr<ecore::EObject>>> BasicEOb
     return std::make_shared<ECollectionView<std::shared_ptr<ecore::EObject>>>( eContents() );
 }
 
-std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eContents() const {
+std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eContents() const
+{
     return eContentsList( eClass()->getEContainments() );
 }
 
@@ -45,7 +47,8 @@ std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> BasicEObject::eCro
     return eContentsList( eClass()->getECrossReferences() );
 }
 
-std::shared_ptr<const EList<std::shared_ptr<EObject>>> BasicEObject::eContentsList(const std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>>& refs ) const
+std::shared_ptr<const EList<std::shared_ptr<EObject>>> BasicEObject::eContentsList(
+    const std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>>& refs ) const
 {
     std::vector<std::shared_ptr<EObject>> contents;
     for( auto ref : *refs )
@@ -69,8 +72,6 @@ std::shared_ptr<const EList<std::shared_ptr<EObject>>> BasicEObject::eContentsLi
     return std::make_shared<ImmutableEList<std::shared_ptr<EObject>>>( std::move( contents ) );
 }
 
-
-
 std::shared_ptr<ecore::EClass> BasicEObject::eClass() const
 {
     return eStaticClass();
@@ -90,52 +91,54 @@ int BasicEObject::eContainerFeatureID() const
     return eContainerFeatureID_;
 }
 
-std::shared_ptr<EObject> BasicEObject::eObjectForFragmentSegment( const std::string& uriSegment) const
+std::shared_ptr<EObject> BasicEObject::eObjectForFragmentSegment( const std::string& uriSegment ) const
 {
     std::size_t index = std::string::npos;
-    if (!uriSegment.empty() && std::isdigit(uriSegment.back()))
+    if( !uriSegment.empty() && std::isdigit( uriSegment.back() ) )
     {
-        index = uriSegment.find_last_of('.');
-        if (index != std::string::npos)
+        index = uriSegment.find_last_of( '.' );
+        if( index != std::string::npos )
         {
-            auto position = std::stoi(uriSegment.substr(index + 1 ));
-            auto eFeatureName = uriSegment.substr(0, index);
-            auto eFeature = eStructuralFeature(eFeatureName);
-            auto value = eGet(eFeature);
-            auto list = anyListCast<std::shared_ptr<EObject>>(value);
-            if (position < list->size())
-                return list->get(position);
+            auto position = std::stoi( uriSegment.substr( index + 1 ) );
+            auto eFeatureName = uriSegment.substr( 0, index );
+            auto eFeature = eStructuralFeature( eFeatureName );
+            auto value = eGet( eFeature );
+            auto list = anyListCast<std::shared_ptr<EObject>>( value );
+            if( position < list->size() )
+                return list->get( position );
         }
     }
-    if (index == std::string::npos)
+    if( index == std::string::npos )
     {
-        auto eFeature = eStructuralFeature(uriSegment);
-        auto value =  eGet(eFeature);
-        return anyCast<std::shared_ptr<EObject>>(value);
+        auto eFeature = eStructuralFeature( uriSegment );
+        auto value = eGet( eFeature );
+        return anyCast<std::shared_ptr<EObject>>( value );
     }
     return std::shared_ptr<EObject>();
 }
 
-std::string BasicEObject::eURIFragmentSegment(const std::shared_ptr<EStructuralFeature>& eFeature, const std::shared_ptr<EObject>& eObject) const
+std::string BasicEObject::eURIFragmentSegment( const std::shared_ptr<EStructuralFeature>& eFeature,
+                                               const std::shared_ptr<EObject>& eObject ) const
 {
     std::stringstream s;
     s << "@";
     s << eFeature->getName();
-    if (eFeature->isMany()) {
-        auto v = eGet(eFeature, false);
-        auto l = anyListCast<std::shared_ptr<EObject>>(v);
-        auto index = l->indexOf(eObject);
+    if( eFeature->isMany() )
+    {
+        auto v = eGet( eFeature, false );
+        auto l = anyListCast<std::shared_ptr<EObject>>( v );
+        auto index = l->indexOf( eObject );
         s << ".";
         s << index;
     }
     return s.str();
 }
 
-std::shared_ptr<EStructuralFeature> BasicEObject::eStructuralFeature(const std::string& name) const
+std::shared_ptr<EStructuralFeature> BasicEObject::eStructuralFeature( const std::string& name ) const
 {
-    auto eFeature = eClass()->getEStructuralFeature(name);
-    if (!eFeature)
-        throw std::runtime_error("The feature " + name + " is not a valid feature");
+    auto eFeature = eClass()->getEStructuralFeature( name );
+    if( !eFeature )
+        throw std::runtime_error( "The feature " + name + " is not a valid feature" );
     return eFeature;
 }
 
@@ -179,7 +182,6 @@ std::shared_ptr<EReference> BasicEObject::eContainmentFeature( const std::shared
     return std::shared_ptr<EReference>();
 }
 
-
 bool BasicEObject::eIsProxy() const
 {
     return static_cast<bool>( eProxyURI_ );
@@ -202,11 +204,10 @@ std::shared_ptr<EResource> BasicEObject::eDirectResource() const
     return eResource_.lock();
 }
 
-void BasicEObject::eSetDirectResource(const std::shared_ptr<EResource>& resource)
+void BasicEObject::eSetDirectResource( const std::shared_ptr<EResource>& resource )
 {
     eResource_ = resource;
 }
-
 
 std::shared_ptr<ENotificationChain> BasicEObject::eSetResource( const std::shared_ptr<EResource>& newResource,
                                                                 const std::shared_ptr<ENotificationChain>& n )
@@ -245,7 +246,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eSetResource( const std::share
             notifications = eBasicSetContainer( nullptr, -1, notifications );
         }
     }
-    eSetDirectResource(newResource);
+    eSetDirectResource( newResource );
     return notifications;
 }
 
@@ -400,7 +401,7 @@ void BasicEObject::eSetProxyURI( const URI& uri )
 
 std::shared_ptr<EObject> BasicEObject::eResolveProxy( const std::shared_ptr<EObject>& proxy ) const
 {
-    return std::shared_ptr<EObject>();
+    return EcoreUtils::resolve( proxy , getThisPtr() );
 }
 
 std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std::shared_ptr<EObject>& newContainer,
@@ -421,7 +422,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
             auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
             _ASSERTE( list );
             notifications = list->remove( thisPtr, notifications );
-            eSetDirectResource(nullptr);
+            eSetDirectResource( nullptr );
             newResource = newContainer->eResource();
         }
         else
@@ -446,7 +447,7 @@ std::shared_ptr<ENotificationChain> BasicEObject::eBasicSetContainer( const std:
     int oldContainerFeatureID = eContainerFeatureID_;
     eContainer_ = newContainer;
     eContainerFeatureID_ = newContainerFeatureID;
-    
+
     // notification
     if( eNotificationRequired() )
     {

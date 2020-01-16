@@ -18,6 +18,7 @@ set(CMAKE_CXX_STANDARD 17)
 #dependencies
 find_package(XercesC REQUIRED)
 find_package(Threads REQUIRED)
+find_package(Boost REQUIRED regex)
 
 #cmake files
 include( CMakeFiles.txt OPTIONAL)
@@ -62,7 +63,7 @@ target_include_directories(${PROJECT_NAME}
 target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4250 /wd4251 )
 target_compile_definitions( ${PROJECT_NAME} PRIVATE ECORE_EXPORTS)
 target_compile_definitions( ${PROJECT_NAME} PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
-target_link_libraries(${PROJECT_NAME} PUBLIC XercesC::XercesC)
+target_link_libraries(${PROJECT_NAME} PUBLIC XercesC::XercesC Boost::regex)
 
 # static library
 add_library(${PROJECT_NAME}.static STATIC ${PROJECT_SOURCES})
@@ -76,7 +77,7 @@ target_include_directories(${PROJECT_NAME}.static
 target_compile_options(${PROJECT_NAME}.static PRIVATE /MP /wd4250)
 target_compile_definitions(${PROJECT_NAME}.static PUBLIC ECORE_STATIC_LIB)
 target_compile_definitions(${PROJECT_NAME}.static PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
-target_link_libraries(${PROJECT_NAME}.static PRIVATE XercesC::XercesC)
+target_link_libraries(${PROJECT_NAME}.static PRIVATE XercesC::XercesC Boost::regex)
 
 # libraries names
 set_target_properties(${PROJECT_NAME}.static PROPERTIES PREFIX lib)

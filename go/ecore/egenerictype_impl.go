@@ -40,7 +40,7 @@ type eGenericTypeImplInitializers interface {
 }
 
 func (eGenericType *eGenericTypeImpl) getInitializers() eGenericTypeImplInitializers {
-	return eGenericType.GetEObject().(eGenericTypeImplInitializers)
+	return eGenericType.AsEObject().(eGenericTypeImplInitializers)
 }
 
 func (eGenericType *eGenericTypeImpl) EStaticClass() EClass {
@@ -54,13 +54,21 @@ func (eGenericType *eGenericTypeImpl) IsInstance(interface{}) bool {
 
 // GetEClassifier get the value of eClassifier
 func (eGenericType *eGenericTypeImpl) GetEClassifier() EClassifier {
+	if eGenericType.eClassifier != nil && eGenericType.eClassifier.EIsProxy() {
+		oldEClassifier := eGenericType.eClassifier
+		newEClassifier := eGenericType.EResolveProxy(oldEClassifier).(EClassifier)
+		eGenericType.eClassifier = newEClassifier
+		if newEClassifier != oldEClassifier {
+			if eGenericType.ENotificationRequired() {
+				eGenericType.ENotify(NewNotificationByFeatureID(eGenericType, RESOLVE, EGENERIC_TYPE__ECLASSIFIER, oldEClassifier, newEClassifier, NO_INDEX))
+			}
+		}
+	}
 	return eGenericType.eClassifier
-
 }
 
 func (eGenericType *eGenericTypeImpl) basicGetEClassifier() EClassifier {
 	return eGenericType.eClassifier
-
 }
 
 // SetEClassifier set the value of eClassifier
@@ -68,14 +76,13 @@ func (eGenericType *eGenericTypeImpl) SetEClassifier(newEClassifier EClassifier)
 	oldEClassifier := eGenericType.eClassifier
 	eGenericType.eClassifier = newEClassifier
 	if eGenericType.ENotificationRequired() {
-		eGenericType.ENotify(NewNotificationByFeatureID(eGenericType.GetEObject(), SET, EGENERIC_TYPE__ECLASSIFIER, oldEClassifier, newEClassifier, NO_INDEX))
+		eGenericType.ENotify(NewNotificationByFeatureID(eGenericType.AsEObject(), SET, EGENERIC_TYPE__ECLASSIFIER, oldEClassifier, newEClassifier, NO_INDEX))
 	}
 }
 
 // GetELowerBound get the value of eLowerBound
 func (eGenericType *eGenericTypeImpl) GetELowerBound() EGenericType {
 	return eGenericType.eLowerBound
-
 }
 
 // SetELowerBound set the value of eLowerBound
@@ -86,7 +93,7 @@ func (eGenericType *eGenericTypeImpl) SetELowerBound(newELowerBound EGenericType
 			notifications = eGenericType.eLowerBound.(EObjectInternal).EInverseRemove(eGenericType, EOPPOSITE_FEATURE_BASE-EGENERIC_TYPE__ELOWER_BOUND, notifications)
 		}
 		if newELowerBound != nil {
-			notifications = newELowerBound.(EObjectInternal).EInverseAdd(eGenericType.GetEObject(), EOPPOSITE_FEATURE_BASE-EGENERIC_TYPE__ELOWER_BOUND, notifications)
+			notifications = newELowerBound.(EObjectInternal).EInverseAdd(eGenericType.AsEObject(), EOPPOSITE_FEATURE_BASE-EGENERIC_TYPE__ELOWER_BOUND, notifications)
 		}
 		notifications = eGenericType.basicSetELowerBound(newELowerBound, notifications)
 		if notifications != nil {
@@ -100,7 +107,7 @@ func (eGenericType *eGenericTypeImpl) basicSetELowerBound(newELowerBound EGeneri
 	eGenericType.eLowerBound = newELowerBound
 	notifications := msgs
 	if eGenericType.ENotificationRequired() {
-		notification := NewNotificationByFeatureID(eGenericType.GetEObject(), SET, EGENERIC_TYPE__ELOWER_BOUND, oldELowerBound, newELowerBound, NO_INDEX)
+		notification := NewNotificationByFeatureID(eGenericType.AsEObject(), SET, EGENERIC_TYPE__ELOWER_BOUND, oldELowerBound, newELowerBound, NO_INDEX)
 		if notifications != nil {
 			notifications.Add(notification)
 		} else {
@@ -112,13 +119,21 @@ func (eGenericType *eGenericTypeImpl) basicSetELowerBound(newELowerBound EGeneri
 
 // GetERawType get the value of eRawType
 func (eGenericType *eGenericTypeImpl) GetERawType() EClassifier {
+	if eGenericType.eRawType != nil && eGenericType.eRawType.EIsProxy() {
+		oldERawType := eGenericType.eRawType
+		newERawType := eGenericType.EResolveProxy(oldERawType).(EClassifier)
+		eGenericType.eRawType = newERawType
+		if newERawType != oldERawType {
+			if eGenericType.ENotificationRequired() {
+				eGenericType.ENotify(NewNotificationByFeatureID(eGenericType, RESOLVE, EGENERIC_TYPE__ERAW_TYPE, oldERawType, newERawType, NO_INDEX))
+			}
+		}
+	}
 	return eGenericType.eRawType
-
 }
 
 func (eGenericType *eGenericTypeImpl) basicGetERawType() EClassifier {
 	return eGenericType.eRawType
-
 }
 
 // GetETypeArguments get the value of eTypeArguments
@@ -127,13 +142,11 @@ func (eGenericType *eGenericTypeImpl) GetETypeArguments() EList {
 		eGenericType.eTypeArguments = eGenericType.getInitializers().initETypeArguments()
 	}
 	return eGenericType.eTypeArguments
-
 }
 
 // GetETypeParameter get the value of eTypeParameter
 func (eGenericType *eGenericTypeImpl) GetETypeParameter() ETypeParameter {
 	return eGenericType.eTypeParameter
-
 }
 
 // SetETypeParameter set the value of eTypeParameter
@@ -141,14 +154,13 @@ func (eGenericType *eGenericTypeImpl) SetETypeParameter(newETypeParameter ETypeP
 	oldETypeParameter := eGenericType.eTypeParameter
 	eGenericType.eTypeParameter = newETypeParameter
 	if eGenericType.ENotificationRequired() {
-		eGenericType.ENotify(NewNotificationByFeatureID(eGenericType.GetEObject(), SET, EGENERIC_TYPE__ETYPE_PARAMETER, oldETypeParameter, newETypeParameter, NO_INDEX))
+		eGenericType.ENotify(NewNotificationByFeatureID(eGenericType.AsEObject(), SET, EGENERIC_TYPE__ETYPE_PARAMETER, oldETypeParameter, newETypeParameter, NO_INDEX))
 	}
 }
 
 // GetEUpperBound get the value of eUpperBound
 func (eGenericType *eGenericTypeImpl) GetEUpperBound() EGenericType {
 	return eGenericType.eUpperBound
-
 }
 
 // SetEUpperBound set the value of eUpperBound
@@ -159,7 +171,7 @@ func (eGenericType *eGenericTypeImpl) SetEUpperBound(newEUpperBound EGenericType
 			notifications = eGenericType.eUpperBound.(EObjectInternal).EInverseRemove(eGenericType, EOPPOSITE_FEATURE_BASE-EGENERIC_TYPE__EUPPER_BOUND, notifications)
 		}
 		if newEUpperBound != nil {
-			notifications = newEUpperBound.(EObjectInternal).EInverseAdd(eGenericType.GetEObject(), EOPPOSITE_FEATURE_BASE-EGENERIC_TYPE__EUPPER_BOUND, notifications)
+			notifications = newEUpperBound.(EObjectInternal).EInverseAdd(eGenericType.AsEObject(), EOPPOSITE_FEATURE_BASE-EGENERIC_TYPE__EUPPER_BOUND, notifications)
 		}
 		notifications = eGenericType.basicSetEUpperBound(newEUpperBound, notifications)
 		if notifications != nil {
@@ -173,7 +185,7 @@ func (eGenericType *eGenericTypeImpl) basicSetEUpperBound(newEUpperBound EGeneri
 	eGenericType.eUpperBound = newEUpperBound
 	notifications := msgs
 	if eGenericType.ENotificationRequired() {
-		notification := NewNotificationByFeatureID(eGenericType.GetEObject(), SET, EGENERIC_TYPE__EUPPER_BOUND, oldEUpperBound, newEUpperBound, NO_INDEX)
+		notification := NewNotificationByFeatureID(eGenericType.AsEObject(), SET, EGENERIC_TYPE__EUPPER_BOUND, oldEUpperBound, newEUpperBound, NO_INDEX)
 		if notifications != nil {
 			notifications.Add(notification)
 		} else {
@@ -184,7 +196,7 @@ func (eGenericType *eGenericTypeImpl) basicSetEUpperBound(newEUpperBound EGeneri
 }
 
 func (eGenericType *eGenericTypeImpl) initETypeArguments() EList {
-	return NewEObjectEList(eGenericType.GetEObjectInternal(), EGENERIC_TYPE__ETYPE_ARGUMENTS, -1, true, true, false, false, false)
+	return NewEObjectEList(eGenericType.AsEObjectInternal(), EGENERIC_TYPE__ETYPE_ARGUMENTS, -1, true, true, false, false, false)
 }
 
 func (eGenericType *eGenericTypeImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {

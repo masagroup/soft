@@ -11,8 +11,8 @@
 #define ECORE_XMLSAVE_HPP_
 
 #include "ecore/Any.hpp"
-#include "ecore/impl/XmlNamespaces.hpp"
-#include "ecore/impl/XmlString.hpp"
+#include "ecore/impl/XMLNamespaces.hpp"
+#include "ecore/impl/XMLString.hpp"
 
 #include <map>
 
@@ -28,21 +28,21 @@ namespace ecore::impl
 {
     class EObjectInternal;
 
-    class XmlResource;
+    class XMLResource;
 
-    class XmlSave
+    class XMLSave
     {
     public:
-        XmlSave(XmlResource& resource);
+        XMLSave(XMLResource& resource);
 
-        virtual ~XmlSave();
+        virtual ~XMLSave();
 
         void save(std::ostream& o);
 
-    private:
+    protected:
         void saveHeader();
-        std::shared_ptr<XmlString::Segment> saveTopObject(const std::shared_ptr<EObject>& eObject);
-        void saveNamespaces();
+        std::shared_ptr<XMLString::Segment> saveTopObject(const std::shared_ptr<EObject>& eObject);
+        virtual void saveNamespaces();
         void saveElementID(const std::shared_ptr<EObject>& eObject);
         bool saveFeatures(const std::shared_ptr<EObject>& eObject, bool attributesOnly);
 
@@ -113,7 +113,9 @@ namespace ecore::impl
             CROSS,
         };
 
-        ResourceKind getResourceKind(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature);
+        ResourceKind getResourceKindSingle(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature);
+        ResourceKind getResourceKindMany( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature );
+
 
         std::string getQName(const std::shared_ptr<EClass>& eClass);
         std::string getQName(const std::shared_ptr<EPackage>& ePackage , const std::string& name, bool mustHavePrefix);
@@ -124,10 +126,10 @@ namespace ecore::impl
         std::string getHRef(const std::shared_ptr<EResource>& eResource, const std::shared_ptr<EObject>& eObject);
         std::string getIDRef(const std::shared_ptr<EObject>& eObject);
 
-    private:
-        XmlResource& resource_;
-        XmlNamespaces namespaces_;
-        XmlString str_;
+    protected:
+        XMLResource& resource_;
+        XMLNamespaces namespaces_;
+        XMLString str_;
         std::map<std::shared_ptr<EPackage>, std::string> packages_;
         std::map<std::string, std::vector<std::string>> uriToPrefixes_;
         std::map<std::string, std::string> prefixesToURI_;

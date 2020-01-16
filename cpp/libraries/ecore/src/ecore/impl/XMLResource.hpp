@@ -14,22 +14,32 @@
 #include "ecore/impl/AbstractResource.hpp"
 #include "ecore/URI.hpp"
 
+#include <memory>
+
 namespace ecore::impl
 {
-    class ECORE_API XmlResource : public AbstractResource
+    class XMLLoad;
+    class XMLSave;
+
+    class ECORE_API XMLResource : public AbstractResource
     {
     public:
-        XmlResource();
+        XMLResource();
 
-        XmlResource(const URI& uri);
+        XMLResource(const URI& uri);
 
-        virtual ~XmlResource();
+        virtual ~XMLResource();
 
     protected:
         // Inherited via AbstractResource
         virtual void doLoad( std::istream & is ) override;
 
         virtual void doSave( std::ostream & os ) override;
+
+        virtual std::unique_ptr<XMLLoad> createXMLLoad();
+
+        virtual std::unique_ptr<XMLSave> createXMLSave();
+
     };
 
 } // namespace ecore::impl

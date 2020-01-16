@@ -2,10 +2,11 @@
 #include "ecore/Assert.hpp"
 #include "ecore/impl/StringUtils.hpp"
 
+#include <boost/regex.hpp>
+
 #include <algorithm>
 #include <array>
 #include <cctype>
-#include <regex>
 #include <sstream>
 #include <utility>
 
@@ -15,7 +16,7 @@ using namespace ecore::detail;
 
 namespace
 {
-    std::string submatch( const std::smatch& m, int idx )
+    std::string submatch( const boost::smatch& m, int idx )
     {
         const auto& sub = m[idx];
         return std::string( sub.first, sub.second );
@@ -432,22 +433,22 @@ URI::URI()
 
 URI::URI( const std::string& str )
 {
-    static const std::regex uriRegex( "(([a-zA-Z][a-zA-Z0-9+.-]*):)?" // scheme:
+    static const boost::regex uriRegex( "(([a-zA-Z][a-zA-Z0-9+.-]*):)?" // scheme:
                                       "([^?#]*)"                      // authority and path
                                       "(?:\\?([^#]*))?"               // ?query
                                       "(?:#(.*))?" );                 // #fragment
-    static const std::regex authorityAndPathRegex( "//([^/]*)(/.*)?" );
+    static const boost::regex authorityAndPathRegex( "//([^/]*)(/.*)?" );
 
-    std::smatch match;
-    if( !std::regex_match( str.begin(), str.end(), match, uriRegex ) )
+    boost::smatch  match;
+    if( !boost::regex_match( str.begin(), str.end(), match, uriRegex ) )
         throw std::invalid_argument( "invalid URI :'" + str + "'" );
 
     scheme_ = submatch( match, 2 );
     std::transform( scheme_.begin(), scheme_.end(), scheme_.begin(), ::tolower );
 
     const std::string authorityAndPath( match[3].first, match[3].second );
-    std::smatch authorityAndPathMatch;
-    if( !std::regex_match(
+    boost::smatch authorityAndPathMatch;
+    if( !boost::regex_match(
             authorityAndPath.begin(), authorityAndPath.end(), authorityAndPathMatch, authorityAndPathRegex ) )
     {
         // Does not start with //, doesn't have authority
@@ -455,14 +456,14 @@ URI::URI( const std::string& str )
     }
     else
     {
-        static const std::regex authorityRegex(
+        static const boost::regex authorityRegex(
             "(?:([^@:]*)(?::([^@]*))?@)?" // username, password
             "(\\[[^\\]]*\\]|[^\\[:]*)"    // host (IP-literal (e.g. '['+IPv6+']',dotted-IPv4, or named host)
             "(?::(\\d*))?" );             // port
 
         const auto authority = authorityAndPathMatch[1];
-        std::smatch authorityMatch;
-        if( !std::regex_match( authority.first, authority.second, authorityMatch, authorityRegex ) )
+        boost::smatch authorityMatch;
+        if( !boost::regex_match( authority.first, authority.second, authorityMatch, authorityRegex ) )
             throw std::invalid_argument( "invalid URI authority " + std::string( authority.first, authority.second ) );
 
         std::string port( authorityMatch[4].first, authorityMatch[4].second );
@@ -514,13 +515,13 @@ const std::vector<std::pair<std::string, std::string>>& URI::getQueryParams()
     if( !query_.empty() && queryParams_.empty() )
     {
         // Parse query string
-        static const std::regex queryParamRegex(
+        static const boost::regex queryParamRegex(
             "(^|&)"      /*start of query or start of parameter "&"*/
             "([^=&]*)=?" /*parameter name and "=" if value is expected*/
             "([^=&]*)"   /*parameter value*/
             "(?=(&|$))"  /*forward reference, next should be end of query or start of next parameter*/ );
-        const std::cregex_iterator paramBeginItr( query_.data(), query_.data() + query_.size(), queryParamRegex );
-        std::cregex_iterator paramEndItr;
+        const boost::cregex_iterator paramBeginItr( query_.data(), query_.data() + query_.size(), queryParamRegex );
+        boost::cregex_iterator paramEndItr;
         for( auto itr = paramBeginItr; itr != paramEndItr; ++itr )
         {
             if( itr->length( 2 ) == 0 )

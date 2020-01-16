@@ -38,7 +38,6 @@ func (eDataType *eDataTypeImpl) EStaticClass() EClass {
 // IsSerializable get the value of isSerializable
 func (eDataType *eDataTypeImpl) IsSerializable() bool {
 	return eDataType.isSerializable
-
 }
 
 // SetSerializable set the value of isSerializable
@@ -46,7 +45,7 @@ func (eDataType *eDataTypeImpl) SetSerializable(newIsSerializable bool) {
 	oldIsSerializable := eDataType.isSerializable
 	eDataType.isSerializable = newIsSerializable
 	if eDataType.ENotificationRequired() {
-		eDataType.ENotify(NewNotificationByFeatureID(eDataType.GetEObject(), SET, EDATA_TYPE__SERIALIZABLE, oldIsSerializable, newIsSerializable, NO_INDEX))
+		eDataType.ENotify(NewNotificationByFeatureID(eDataType.AsEObject(), SET, EDATA_TYPE__SERIALIZABLE, oldIsSerializable, newIsSerializable, NO_INDEX))
 	}
 }
 

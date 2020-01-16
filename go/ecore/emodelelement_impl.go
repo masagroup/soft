@@ -35,7 +35,7 @@ type eModelElementImplInitializers interface {
 }
 
 func (eModelElement *eModelElementImpl) getInitializers() eModelElementImplInitializers {
-	return eModelElement.GetEObject().(eModelElementImplInitializers)
+	return eModelElement.AsEObject().(eModelElementImplInitializers)
 }
 
 func (eModelElement *eModelElementImpl) EStaticClass() EClass {
@@ -53,11 +53,10 @@ func (eModelElement *eModelElementImpl) GetEAnnotations() EList {
 		eModelElement.eAnnotations = eModelElement.getInitializers().initEAnnotations()
 	}
 	return eModelElement.eAnnotations
-
 }
 
 func (eModelElement *eModelElementImpl) initEAnnotations() EList {
-	return NewEObjectEList(eModelElement.GetEObjectInternal(), EMODEL_ELEMENT__EANNOTATIONS, EANNOTATION__EMODEL_ELEMENT, true, true, true, false, false)
+	return NewEObjectEList(eModelElement.AsEObjectInternal(), EMODEL_ELEMENT__EANNOTATIONS, EANNOTATION__EMODEL_ELEMENT, true, true, true, false, false)
 }
 
 func (eModelElement *eModelElementImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {

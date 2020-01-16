@@ -35,7 +35,7 @@ type eEnumImplInitializers interface {
 }
 
 func (eEnum *eEnumImpl) getInitializers() eEnumImplInitializers {
-	return eEnum.GetEObject().(eEnumImplInitializers)
+	return eEnum.AsEObject().(eEnumImplInitializers)
 }
 
 func (eEnum *eEnumImpl) EStaticClass() EClass {
@@ -63,11 +63,10 @@ func (eEnum *eEnumImpl) GetELiterals() EList {
 		eEnum.eLiterals = eEnum.getInitializers().initELiterals()
 	}
 	return eEnum.eLiterals
-
 }
 
 func (eEnum *eEnumImpl) initELiterals() EList {
-	return NewEObjectEList(eEnum.GetEObjectInternal(), EENUM__ELITERALS, EENUM_LITERAL__EENUM, true, true, true, false, false)
+	return NewEObjectEList(eEnum.AsEObjectInternal(), EENUM__ELITERALS, EENUM_LITERAL__EENUM, true, true, true, false, false)
 }
 
 func (eEnum *eEnumImpl) EGetFromID(featureID int, resolve, coreType bool) interface{} {
