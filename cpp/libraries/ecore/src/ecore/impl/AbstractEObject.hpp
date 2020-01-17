@@ -7,8 +7,8 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_BASICEOBJECT_HPP_
-#define ECORE_BASICEOBJECT_HPP_
+#ifndef ECORE_ABSTRACTEOBJECT_HPP_
+#define ECORE_ABSTRACTEOBJECT_HPP_
 
 #include "ecore/EObject.hpp"
 #include "ecore/Exports.hpp"
@@ -25,11 +25,12 @@ namespace ecore
 namespace ecore::impl
 {
 
-    class ECORE_API BasicEObject : public virtual AbstractNotifier<EObjectInternal>
+    template<typename... I>
+    class AbstractEObject : public AbstractNotifier<I...> , public EObjectInternal
     {
     public:
-        BasicEObject();
-        virtual ~BasicEObject();
+        AbstractEObject();
+        virtual ~AbstractEObject();
 
         // Operations
         virtual std::shared_ptr<ecore::EClass> eClass() const;
@@ -115,7 +116,8 @@ namespace ecore::impl
         std::optional<URI> eProxyURI_;
     };
 
-
 } // namespace ecore::impl
 
-#endif /* ECORE_BASICEOBJECT_HPP_ */
+#include "ecore/impl/AbstractEObject.inl"
+
+#endif /* ECORE_ABSTRACTEOBJECT_HPP_ */

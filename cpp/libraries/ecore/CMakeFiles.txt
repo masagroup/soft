@@ -42,11 +42,12 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/ArrayEList.hpp
     src/ecore/impl/AbstractEList.hpp
     src/ecore/impl/AbstractENotifyingList.hpp
+    src/ecore/impl/AbstractEObject.hpp
+    src/ecore/impl/AbstractEObject.inl
     src/ecore/impl/AbstractEObjectEList.hpp
     src/ecore/impl/AbstractNotification.hpp
     src/ecore/impl/AbstractNotifier.hpp
     src/ecore/impl/AbstractResource.hpp
-    src/ecore/impl/BasicEObject.hpp
     src/ecore/impl/Diagnostic.hpp
     src/ecore/impl/DynamicEObjectImpl.hpp   
     src/ecore/impl/EObjectEList.hpp
@@ -83,7 +84,6 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/AbstractAdapter.cpp
     src/ecore/impl/AbstractNotification.cpp
     src/ecore/impl/AbstractResource.cpp
-    src/ecore/impl/BasicEObject.cpp
     src/ecore/impl/DynamicEObjectImpl.cpp
     src/ecore/impl/FileURIHandler.cpp
     src/ecore/impl/Notification.cpp
