@@ -66,7 +66,7 @@ namespace ecore
 
 namespace ecore 
 {
-    class ECORE_API EObject  : virtual public ENotifier
+    class EObject  : public ENotifier
     {
     public:
         virtual ~EObject() = default;

@@ -7,24 +7,24 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_ECLASSIFIER_ECLASSIFIEREXT_HPP
-#define ECORE_ECLASSIFIER_ECLASSIFIEREXT_HPP
+#ifndef ECORE_EXT_ECLASSIFIEREXT_HPP
+#define ECORE_EXT_ECLASSIFIEREXT_HPP
 
 #include "ecore/impl/EClassifierImpl.hpp"
 
 namespace ecore::ext
 {
-
-    class EClassifierExt : public virtual impl::EClassifierImpl
+    template <typename... I>
+    class EClassifierBaseExt : public ecore::impl::EClassifierBase<I...>
     {
     private:
-        EClassifierExt& operator=( EClassifierExt const& ) = delete;
+        EClassifierBaseExt& operator=( EClassifierBaseExt const& ) = delete;
 
     protected:
-        EClassifierExt();
+        EClassifierBaseExt();
 
     public:
-        virtual ~EClassifierExt();
+        virtual ~EClassifierBaseExt();
 
         virtual bool isInstance( const ecore::Any& object ) const;
 
@@ -32,6 +32,9 @@ namespace ecore::ext
         virtual int initClassifierID();
     };
 
+    typedef EClassifierBaseExt<EClassifier> EClassifierExt;
 }
+
+#include "ecore/ext/EClassifierExt.inl"
 
 #endif

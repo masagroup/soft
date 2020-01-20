@@ -3,12 +3,12 @@
 // This file is part of a MASA library or program.
 // Refer to the included end-user license agreement for restrictions.
 //
-// Copyright (c) 2018 MASA Group
+// Copyright (c) 2020 MASA Group
 //
 // *****************************************************************************
 
-#ifndef ECORE_ECLASS_ECLASSEXT_HPP
-#define ECORE_ECLASS_ECLASSEXT_HPP
+#ifndef ECORE_EXT_ECLASSEXT_HPP
+#define ECORE_EXT_ECLASSEXT_HPP
 
 #include "ecore/impl/EClassImpl.hpp"
 
@@ -16,18 +16,19 @@
 
 namespace ecore::ext
 {
-    class EClassExt : public virtual impl::EClassImpl
+    template <typename... I>
+    class EClassBaseExt : public ecore::impl::EClassBase<I...>
     {
     private:
-        EClassExt& operator=( EClassExt const& ) = delete;
+        EClassBaseExt& operator=( EClassBaseExt const& ) = delete;
 
     protected:
         friend class impl::EcoreFactoryImpl;
-        EClassExt();
-        void setThisPtr( const std::shared_ptr<EClassExt>& thisPtr );
+        EClassBaseExt();
+        void setThisPtr( const std::shared_ptr<EClassBaseExt>& thisPtr );
 
     public:
-        virtual ~EClassExt();
+        virtual ~EClassBaseExt();
 
         //*********************************
         // Operations
@@ -71,5 +72,10 @@ namespace ecore::ext
         std::unique_ptr< std::unordered_map< std::string, std::shared_ptr<EStructuralFeature>>> nameToFeatureMap_;
         std::unique_ptr< std::unordered_map< std::shared_ptr<EOperation>, std::shared_ptr<EOperation>>> operationToOverrideMap_;
     };
+
+    typedef EClassBaseExt<EClass> EClassExt;
 }
-#endif /* ECORE_ECLASS_ECLASSEXT_HPP */
+
+#include "ecore/ext/EClassExt.inl"
+
+#endif /* ECORE_EXT_ECLASSEXT_HPP */

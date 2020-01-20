@@ -3,12 +3,12 @@
 // This file is part of a MASA library or program.
 // Refer to the included end-user license agreement for restrictions.
 //
-// Copyright (c) 2018 MASA Group
+// Copyright (c) 2020 MASA Group
 //
 // *****************************************************************************
 
-#ifndef ECORE_ESTRUCTURALFEATURE_ESTRUCTURALFEATUREEXT_HPP
-#define ECORE_ESTRUCTURALFEATURE_ESTRUCTURALFEATUREEXT_HPP
+#ifndef ECORE_EXT_ESTRUCTURALFEATUREEXT_HPP
+#define ECORE_EXT_ESTRUCTURALFEATUREEXT_HPP
 
 #include "ecore/impl/EStructuralFeatureImpl.hpp"
 
@@ -19,17 +19,18 @@ namespace ecore
 
 namespace ecore::ext
 {
-    class EStructuralFeatureExt : public virtual impl::EStructuralFeatureImpl
+    template <typename... I>
+    class EStructuralFeatureBaseExt : public ecore::impl::EStructuralFeatureBase<I...>
     {
     private:
-        EStructuralFeatureExt& operator=( EStructuralFeatureExt const& ) = delete;
+        EStructuralFeatureBaseExt& operator=(EStructuralFeatureBaseExt const& ) = delete;
 
     protected:
         friend class impl::EcoreFactoryImpl;
-        EStructuralFeatureExt();
+        EStructuralFeatureBaseExt();
 
     public:
-        virtual ~EStructuralFeatureExt();
+        virtual ~EStructuralFeatureBaseExt();
 
         virtual const Any& getDefaultValue() const;
 
@@ -42,6 +43,10 @@ namespace ecore::ext
         mutable std::weak_ptr<EFactory> defaultValueFactory_;
     };
 
+    typedef EStructuralFeatureBaseExt<EStructuralFeature> EStructuralFeatureExt;
+
 }
+
+#include "ecore/ext/EStructuralFeatureExt.inl"
 
 #endif /* ECORE_ESTRUCTURALFEATURE_ESTRUCTURALFEATUREEXT_HPP */

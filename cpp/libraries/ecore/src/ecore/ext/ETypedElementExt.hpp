@@ -3,27 +3,29 @@
 // This file is part of a MASA library or program.
 // Refer to the included end-user license agreement for restrictions.
 //
-// Copyright (c) 2018 MASA Group
+// Copyright (c) 2020 MASA Group
 //
 // *****************************************************************************
-#ifndef ECORE_ETYPEDELEMENT_ETYPEDELEMENTEXT_HPP
-#define ECORE_ETYPEDELEMENT_ETYPEDELEMENTEXT_HPP
+
+#ifndef ECORE_EXT_ETYPEDELEMENTEXT_HPP
+#define ECORE_EXT_ETYPEDELEMENTEXT_HPP
 
 #include "ecore/impl/ETypedElementImpl.hpp"
 
 
 namespace ecore::ext
 {
-    class ETypedElementExt : public virtual impl::ETypedElementImpl
+    template <typename... I>
+    class ETypedElementBaseExt : public ecore::impl::ETypedElementBase<I...>
     {
     private:
-        ETypedElementExt& operator=( ETypedElementExt const& ) = delete;
+        ETypedElementBaseExt& operator=( ETypedElementBaseExt const& ) = delete;
 
     protected:
-        ETypedElementExt();
+        ETypedElementBaseExt();
 
     public:
-        virtual ~ETypedElementExt();
+        virtual ~ETypedElementBaseExt();
 
 
         //*********************************
@@ -34,6 +36,10 @@ namespace ecore::ext
         virtual bool isRequired() const;
     };
 
+    typedef ETypedElementBaseExt<ETypedElement> ETypedElementExt;
+
 }
 
-#endif // ECORE_ETYPEDELEMENT_ETYPEDELEMENTEXT_HPP
+#include "ecore/ext/ETypedElementExt.inl"
+
+#endif // ECORE_EXT_ETYPEDELEMENTEXT_HPP

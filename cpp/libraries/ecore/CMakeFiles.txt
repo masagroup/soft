@@ -108,30 +108,30 @@ set(SOURCE_ECORE_IMPL_FILES
 
 set(HEADER_ECORE_EXT_FILES 
     src/ecore/ext/EAttributeExt.hpp
+    src/ecore/ext/EAttributeExt.inl
     src/ecore/ext/EClassExt.hpp
+    src/ecore/ext/EClassExt.inl
     src/ecore/ext/EClassifierExt.hpp
+    src/ecore/ext/EClassifierExt.inl
     src/ecore/ext/EcoreFactoryExt.hpp
     src/ecore/ext/EFactoryExt.hpp
+    src/ecore/ext/EFactoryExt.inl
     src/ecore/ext/EModelElementExt.hpp
+    src/ecore/ext/EModelElementExt.inl
     src/ecore/ext/EOperationExt.hpp
+    src/ecore/ext/EOperationExt.inl
     src/ecore/ext/EPackageExt.hpp
+    src/ecore/ext/EPackageExt.inl
     src/ecore/ext/EReferenceExt.hpp
+    src/ecore/ext/EReferenceExt.inl
     src/ecore/ext/EStructuralFeatureExt.hpp
+    src/ecore/ext/EStructuralFeatureExt.inl
     src/ecore/ext/ETypedElementExt.hpp
+    src/ecore/ext/ETypedElementExt.inl
 )
 
 set(SOURCE_ECORE_EXT_FILES 
-    src/ecore/ext/EAttributeExt.cpp
-    src/ecore/ext/EClassExt.cpp
-    src/ecore/ext/EClassifierExt.cpp
     src/ecore/ext/EcoreFactoryExt.cpp
-    src/ecore/ext/EFactoryExt.cpp
-    src/ecore/ext/EModelElementExt.cpp
-    src/ecore/ext/EOperationExt.cpp
-    src/ecore/ext/EPackageExt.cpp
-    src/ecore/ext/EReferenceExt.cpp
-    src/ecore/ext/EStructuralFeatureExt.cpp
-    src/ecore/ext/ETypedElementExt.cpp
 )
 
 

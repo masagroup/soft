@@ -3,12 +3,12 @@
 // This file is part of a MASA library or program.
 // Refer to the included end-user license agreement for restrictions.
 //
-// Copyright (c) 2018 MASA Group
+// Copyright (c) 2020 MASA Group
 //
 // *****************************************************************************
 
-#ifndef ECORE_EREFERENCE_EREFERENCEEXT_HPP
-#define ECORE_EREFERENCE_EREFERENCEEXT_HPP
+#ifndef ECORE_EXT_EREFERENCEEXT_HPP
+#define ECORE_EXT_EREFERENCEEXT_HPP
 
 #include "ecore/impl/EReferenceImpl.hpp"
 
@@ -19,17 +19,18 @@ namespace ecore
 
 namespace ecore::ext
 {
-    class EReferenceExt : public virtual impl::EReferenceImpl
+    template <typename... I>
+    class EReferenceBaseExt : public ecore::impl::EReferenceBase<I...>
     {
     private:
-        EReferenceExt& operator=( EReferenceExt const& ) = delete;
+        EReferenceBaseExt& operator=( EReferenceBaseExt const& ) = delete;
 
     protected:
         friend class impl::EcoreFactoryImpl;
-        EReferenceExt();
+        EReferenceBaseExt();
 
     public:
-        virtual ~EReferenceExt();
+        virtual ~EReferenceBaseExt();
 
         virtual bool isContainer() const;
 
@@ -46,4 +47,6 @@ namespace ecore::ext
 
 }
 
-#endif /* ECORE_EREFERENCE_EREFERENCEEXT_HPP */
+#include "ecore/ext/EReferenceExt.inl"
+
+#endif /* ECORE_EXT_EREFERENCEEXT_HPP */

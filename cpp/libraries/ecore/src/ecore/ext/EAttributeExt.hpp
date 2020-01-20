@@ -7,24 +7,25 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EATTRIBUTE_EATTRIBUTEEXT_HPP
-#define ECORE_EATTRIBUTE_EATTRIBUTEEXT_HPP
+#ifndef ECORE_EXT_EATTRIBUTEEXT_HPP
+#define ECORE_EXT_EATTRIBUTEEXT_HPP
 
 #include "ecore/impl/EAttributeImpl.hpp"
 #include "ecore/impl/Lazy.hpp"
 
 namespace ecore::ext
 {
-    class EAttributeExt : public virtual impl::EAttributeImpl
+    template <typename... I>
+    class EAttributeBaseExt : public ecore::impl::EAttributeBase<I...>
     {
     public:
-        virtual ~EAttributeExt();
+        virtual ~EAttributeBaseExt();
 
         virtual std::shared_ptr<ecore::EDataType> getEAttributeType() const;
 
     protected:
         friend class impl::EcoreFactoryImpl;
-        EAttributeExt();
+        EAttributeBaseExt();
 
         //*********************************
         // Attributes
@@ -34,12 +35,17 @@ namespace ecore::ext
         virtual std::shared_ptr<ecore::EDataType> basicGetEAttributeType() const; 
     
     private:
-        EAttributeExt& operator=( EAttributeExt const& ) = delete;
+        EAttributeBaseExt& operator=( EAttributeBaseExt const& ) = delete;
 
         std::shared_ptr<EDataType> initAttributeType();
 
     private:
         impl::Lazy<std::shared_ptr<EDataType>> attributeType_;
     };
+
+    typedef EAttributeBaseExt<EAttribute> EAttributeExt;
 }
+
+#include "ecore/ext/EAttributeExt.inl"
+
 #endif /* ECORE_EATTRIBUTE_EATTRIBUTEEXT_HPP */

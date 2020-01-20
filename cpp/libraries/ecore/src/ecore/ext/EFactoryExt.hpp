@@ -7,23 +7,24 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EFACTORYEXT_HPP
-#define ECORE_EFACTORYEXT_HPP
+#ifndef ECORE_EXT_EFACTORYEXT_HPP
+#define ECORE_EXT_EFACTORYEXT_HPP
 
 #include "ecore/impl/EFactoryImpl.hpp"
 
 namespace ecore::ext
 {
 
-    class EFactoryExt : public impl::EFactoryImpl
+    template <typename... I>
+    class EFactoryBaseExt : public ecore::impl::EFactoryBase<I...>
     {
     private:
-        EFactoryExt( EFactoryExt const& ) = delete;
-        EFactoryExt& operator=( EFactoryExt const& ) = delete;
+        EFactoryBaseExt( EFactoryBaseExt const& ) = delete;
+        EFactoryBaseExt& operator=( EFactoryBaseExt const& ) = delete;
 
     public:
-        EFactoryExt();
-        virtual ~EFactoryExt();
+        EFactoryBaseExt();
+        virtual ~EFactoryBaseExt();
 
         //*********************************
         // Operations
@@ -32,6 +33,10 @@ namespace ecore::ext
 
     };
 
+    typedef EFactoryBaseExt<EFactory> EFactoryExt;
 }
+
+
+#include "ecore/ext/EFactoryExt.inl"
 
 #endif

@@ -7,8 +7,8 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EPACKAGEEXT_HPP
-#define ECORE_EPACKAGEEXT_HPP
+#ifndef ECORE_EXT_EPACKAGEEXT_HPP
+#define ECORE_EXT_EPACKAGEEXT_HPP
 
 #include "ecore/impl/EPackageImpl.hpp"
 
@@ -17,20 +17,20 @@
 
 namespace ecore::ext
 {
-
-    class EPackageExt : public impl::EPackageImpl
+    template<typename... I>
+    class EPackageBaseExt : public ecore::impl::EPackageBase<I...>
     {
     private:
-        EPackageExt( EPackageExt const& ) = delete;
-        EPackageExt& operator=( EPackageExt const& ) = delete;
+        EPackageBaseExt( EPackageBaseExt const& ) = delete;
+        EPackageBaseExt& operator=( EPackageBaseExt const& ) = delete;
 
     protected:
         friend class impl::EcoreFactoryImpl;
-        EPackageExt();
-        void setThisPtr( const std::shared_ptr<EPackageExt>& thisPtr );
+        EPackageBaseExt();
+        void setThisPtr( const std::shared_ptr<EPackageBaseExt>& thisPtr );
 
     public:
-        virtual ~EPackageExt();
+        virtual ~EPackageBaseExt();
 
         virtual std::shared_ptr<ecore::EClassifier> getEClassifier( const std::string& name );
 
@@ -42,4 +42,6 @@ namespace ecore::ext
 
 }
 
-#endif
+#include "ecore/ext/EPackageExt.inl"
+
+#endif // ECORE_EXT_EPACKAGEEXT_HPP
