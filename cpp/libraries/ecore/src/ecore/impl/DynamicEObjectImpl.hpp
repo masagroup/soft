@@ -3,7 +3,7 @@
 // This file is part of a MASA library or program.
 // Refer to the included end-user license agreement for restrictions.
 //
-// Copyright (c) 2018 MASA Group
+// Copyright (c) 2020 MASA Group
 //
 // *****************************************************************************
 
@@ -16,20 +16,20 @@
 
 namespace ecore::impl
 {
-
-    class ECORE_API DynamicEObjectImpl : public EObjectImpl
+    template <typename... I>
+    class DynamicEObjectBase : public EObjectBase<I...>
     {
     public:
-        DynamicEObjectImpl();
-        DynamicEObjectImpl( const std::shared_ptr<EClass>& eClass );
-        virtual ~DynamicEObjectImpl();
+        DynamicEObjectBase();
+        DynamicEObjectBase( const std::shared_ptr<EClass>& eClass );
+        virtual ~DynamicEObjectBase();
         
         virtual std::shared_ptr<ecore::EClass> eClass() const;
 
         void setEClass( const std::shared_ptr<EClass>& eClass );
 
-        std::shared_ptr<DynamicEObjectImpl> getThisPtr() const;
-        void setThisPtr( const std::shared_ptr<DynamicEObjectImpl>& thisPtr );
+        std::shared_ptr<DynamicEObjectBase> getThisPtr() const;
+        void setThisPtr( const std::shared_ptr<DynamicEObjectBase>& thisPtr );
 
     public:
         using EObject::eGet;
@@ -59,6 +59,8 @@ namespace ecore::impl
         void resizeProperties();
         std::shared_ptr<EList<std::shared_ptr<EObject>>> createList( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;
 
+        using EObjectProxy = Proxy< std::shared_ptr<EObject> >;
+
     private:
         class FeaturesAdapter;
         std::unique_ptr<FeaturesAdapter> featuresAdapter_;
@@ -68,6 +70,10 @@ namespace ecore::impl
         mutable std::vector< Any > properties_;
     };
 
+    typedef DynamicEObjectBase<EObject> DynamicEobjectImpl;
+
 }
+
+#include "ecore/impl/DynamicEObjectImpl.inl"
 
 #endif /* ECORE_DYNAMIC_EOBJECT_HPP_ */
