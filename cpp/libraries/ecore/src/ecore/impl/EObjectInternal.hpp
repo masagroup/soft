@@ -16,11 +16,10 @@
 #define ECORE_EOBJECTINTERNAL_HPP
 
 #include "ecore/Exports.hpp"
-#include "ecore/EObject.hpp"
 
 namespace ecore::impl
 {
-    class ECORE_API EObjectInternal : public virtual EObject
+    class ECORE_API EObjectInternal 
     {
     public:
         virtual ~EObjectInternal() = default;

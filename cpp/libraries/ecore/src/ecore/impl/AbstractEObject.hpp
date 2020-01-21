@@ -26,7 +26,7 @@ namespace ecore::impl
 {
 
     template<typename... I>
-    class AbstractEObject : public AbstractNotifier<I...> , public EObjectInternal
+    class AbstractEObject : public AbstractNotifier<I...>, public EObjectInternal
     {
     public:
         AbstractEObject();

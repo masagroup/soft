@@ -17,8 +17,8 @@
 namespace ecore::impl
 {
 
-    template <typename I>
-    class AbstractNotifier : public virtual I
+    template <typename... I>
+    class AbstractNotifier : public I...
     {
     public:
         virtual ~AbstractNotifier() = default;
