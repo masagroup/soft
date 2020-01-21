@@ -7,7 +7,7 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EXT_EREFERENCEEXT_HPP
+#ifndef ECORE_EXT_EREFERENCEBASEEXT_HPP
 #error This file may only be included from EReferenceExt.hpp
 #endif
 

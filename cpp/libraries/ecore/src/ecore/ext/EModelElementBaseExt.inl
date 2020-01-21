@@ -7,7 +7,7 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EXT_EMODELELEMENTEXT_HPP
+#ifndef ECORE_EXT_EMODELELEMENTBASEEXT_HPP
 #error This file may only be included from EModelElementBaseExt.hpp
 #endif
 

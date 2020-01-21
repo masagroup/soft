@@ -7,7 +7,7 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EXT_ECLASSEXT_HPP
+#ifndef ECORE_EXT_ECLASSBASEEXT_HPP
 #error This file may only be included from EClassExt.hpp
 #endif
 

@@ -7,7 +7,7 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EXT_EOPERATIONEXT_HPP
+#ifndef ECORE_EXT_EOPERATIONBASEEXT_HPP
 #error This file may only be included from EOperationExt.hpp
 #endif
 

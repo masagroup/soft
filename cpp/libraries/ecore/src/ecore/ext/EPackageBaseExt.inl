@@ -7,7 +7,7 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EXT_EPACKAGEEXT_HPP
+#ifndef ECORE_EXT_EPACKAGEBASEEXT_HPP
 #error This file may only be included from EPackageExt.hpp
 #endif
 

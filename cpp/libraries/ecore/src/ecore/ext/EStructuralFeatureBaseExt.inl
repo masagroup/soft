@@ -7,7 +7,7 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EXT_ESTRUCTURALFEATUREEXT_HPP
+#ifndef ECORE_EXT_ESTRUCTURALFEATUREBASEEXT_HPP
 #error This file may only be included from EStructuralFeatureExt.hpp
 #endif
 

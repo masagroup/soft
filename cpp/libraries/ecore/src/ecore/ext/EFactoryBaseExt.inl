@@ -7,7 +7,7 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EXT_EFACTORYEXT_HPP
+#ifndef ECORE_EXT_EFACTORYBASEEXT_HPP
 #error This file may only be included from EFactoryBaseExt.hpp
 #endif
 

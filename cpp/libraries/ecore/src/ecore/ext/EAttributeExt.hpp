@@ -10,42 +10,11 @@
 #ifndef ECORE_EXT_EATTRIBUTEEXT_HPP
 #define ECORE_EXT_EATTRIBUTEEXT_HPP
 
-#include "ecore/impl/EAttributeImpl.hpp"
-#include "ecore/impl/Lazy.hpp"
+#include "ecore/ext/EAttributeBaseExt.hpp"
 
 namespace ecore::ext
 {
-    template <typename... I>
-    class EAttributeBaseExt : public ecore::impl::EAttributeBase<I...>
-    {
-    public:
-        virtual ~EAttributeBaseExt();
-
-        virtual std::shared_ptr<ecore::EDataType> getEAttributeType() const;
-
-    protected:
-        friend class impl::EcoreFactoryImpl;
-        EAttributeBaseExt();
-
-        //*********************************
-        // Attributes
-        //*********************************
-        virtual void setID( bool newID );
-
-        virtual std::shared_ptr<ecore::EDataType> basicGetEAttributeType() const; 
-    
-    private:
-        EAttributeBaseExt& operator=( EAttributeBaseExt const& ) = delete;
-
-        std::shared_ptr<EDataType> initAttributeType();
-
-    private:
-        impl::Lazy<std::shared_ptr<EDataType>> attributeType_;
-    };
-
     typedef EAttributeBaseExt<EAttribute> EAttributeExt;
 }
-
-#include "ecore/ext/EAttributeExt.inl"
 
 #endif /* ECORE_EATTRIBUTE_EATTRIBUTEEXT_HPP */

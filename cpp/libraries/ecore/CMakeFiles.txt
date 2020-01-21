@@ -107,27 +107,37 @@ set(SOURCE_ECORE_IMPL_FILES
 )
 
 set(HEADER_ECORE_EXT_FILES 
+    src/ecore/ext/EAttributeBaseExt.hpp
+    src/ecore/ext/EAttributeBaseExt.inl
     src/ecore/ext/EAttributeExt.hpp
-    src/ecore/ext/EAttributeExt.inl
+    src/ecore/ext/EClassBaseExt.hpp
+    src/ecore/ext/EClassBaseExt.inl
     src/ecore/ext/EClassExt.hpp
-    src/ecore/ext/EClassExt.inl
+    src/ecore/ext/EClassifierBaseExt.hpp
+    src/ecore/ext/EClassifierBaseExt.inl
     src/ecore/ext/EClassifierExt.hpp
-    src/ecore/ext/EClassifierExt.inl
     src/ecore/ext/EcoreFactoryExt.hpp
+    src/ecore/ext/EFactoryBaseExt.hpp
+    src/ecore/ext/EFactoryBaseExt.inl
     src/ecore/ext/EFactoryExt.hpp
-    src/ecore/ext/EFactoryExt.inl
+    src/ecore/ext/EModelElementBaseExt.hpp
+    src/ecore/ext/EModelElementBaseExt.inl
     src/ecore/ext/EModelElementExt.hpp
-    src/ecore/ext/EModelElementExt.inl
+    src/ecore/ext/EOperationBaseExt.hpp
+    src/ecore/ext/EOperationBaseExt.inl
     src/ecore/ext/EOperationExt.hpp
-    src/ecore/ext/EOperationExt.inl
+    src/ecore/ext/EPackageBaseExt.hpp
+    src/ecore/ext/EPackageBaseExt.inl
     src/ecore/ext/EPackageExt.hpp
-    src/ecore/ext/EPackageExt.inl
+    src/ecore/ext/EReferenceBaseExt.hpp
+    src/ecore/ext/EReferenceBaseExt.inl
     src/ecore/ext/EReferenceExt.hpp
-    src/ecore/ext/EReferenceExt.inl
+    src/ecore/ext/EStructuralFeatureBaseExt.hpp
+    src/ecore/ext/EStructuralFeatureBaseExt.inl
     src/ecore/ext/EStructuralFeatureExt.hpp
-    src/ecore/ext/EStructuralFeatureExt.inl
+    src/ecore/ext/ETypedElementBaseExt.hpp
+    src/ecore/ext/ETypedElementBaseExt.inl
     src/ecore/ext/ETypedElementExt.hpp
-    src/ecore/ext/ETypedElementExt.inl
 )
 
 set(SOURCE_ECORE_EXT_FILES 

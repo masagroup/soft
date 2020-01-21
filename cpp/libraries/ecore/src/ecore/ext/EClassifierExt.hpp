@@ -10,31 +10,11 @@
 #ifndef ECORE_EXT_ECLASSIFIEREXT_HPP
 #define ECORE_EXT_ECLASSIFIEREXT_HPP
 
-#include "ecore/impl/EClassifierImpl.hpp"
+#include "ecore/ext/EClassifierBaseExt.hpp"
 
 namespace ecore::ext
 {
-    template <typename... I>
-    class EClassifierBaseExt : public ecore::impl::EClassifierBase<I...>
-    {
-    private:
-        EClassifierBaseExt& operator=( EClassifierBaseExt const& ) = delete;
-
-    protected:
-        EClassifierBaseExt();
-
-    public:
-        virtual ~EClassifierBaseExt();
-
-        virtual bool isInstance( const ecore::Any& object ) const;
-
-    protected:
-        virtual int initClassifierID();
-    };
-
     typedef EClassifierBaseExt<EClassifier> EClassifierExt;
 }
-
-#include "ecore/ext/EClassifierExt.inl"
 
 #endif

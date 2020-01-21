@@ -7,8 +7,8 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EXT_EATTRIBUTEEXT_HPP
-#error This file may only be included from EAttributeExt.hpp
+#ifndef ECORE_EXT_EATTRIBUTEBASEEXT_HPP
+#error This file may only be included from EAttributeBaseExt.hpp
 #endif
 
 #include "ecore/EDataType.hpp"

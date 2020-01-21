@@ -7,7 +7,7 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EXT_ETYPEDELEMENTEXT_HPP
+#ifndef ECORE_EXT_ETYPEDELEMENTBASEEXT_HPP
 #error This file may only be included from ETypedElementExt.hpp
 #endif
 
