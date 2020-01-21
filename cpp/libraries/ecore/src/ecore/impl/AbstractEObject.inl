@@ -1,3 +1,11 @@
+// *****************************************************************************
+//
+// This file is part of a MASA library or program.
+// Refer to the included end-user license agreement for restrictions.
+//
+// Copyright (c) 2020 MASA Group
+//
+// *****************************************************************************
 
 #ifndef ECORE_ABSTRACTEOBJECT_HPP_
 #error This file may only be included from AbstractEObject.hpp
@@ -16,8 +24,6 @@
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/EcorePackage.hpp"
 #include "ecore/EcoreUtils.hpp"
-#include "ecore/impl/ArrayEList.hpp"
-#include "ecore/impl/EClassImpl.hpp"
 #include "ecore/impl/Notification.hpp"
 
 #include <sstream>
