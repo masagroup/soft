@@ -10,13 +10,13 @@
 #ifndef ECORE_EXT_EOPERATIONBASEEXT_HPP
 #define ECORE_EXT_EOPERATIONBASEEXT_HPP
 
-#include "ecore/impl/EOperationImpl.hpp"
+#include "ecore/impl/EOperationBase.hpp"
 
 
 namespace ecore::ext
 {
     template <typename... I>
-    class EOperationBaseExt : public ecore::impl::EOperationImpl
+    class EOperationBaseExt : public ecore::impl::EOperationBase<I...>
     {
     private:
         EOperationBaseExt( EOperationBaseExt const& ) = delete;

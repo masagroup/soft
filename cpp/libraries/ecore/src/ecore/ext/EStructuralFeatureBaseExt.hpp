@@ -10,7 +10,7 @@
 #ifndef ECORE_EXT_ESTRUCTURALFEATUREBASEEXT_HPP
 #define ECORE_EXT_ESTRUCTURALFEATUREBASEEXT_HPP
 
-#include "ecore/impl/EStructuralFeatureImpl.hpp"
+#include "ecore/impl/EStructuralFeatureBase.hpp"
 
 namespace ecore
 {

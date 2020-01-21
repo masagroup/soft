@@ -10,7 +10,7 @@
 #ifndef ECORE_EXT_ECLASSBASEEXT_HPP
 #define ECORE_EXT_ECLASSBASEEXT_HPP
 
-#include "ecore/impl/EClassImpl.hpp"
+#include "ecore/impl/EClassBase.hpp"
 
 #include <unordered_map>
 

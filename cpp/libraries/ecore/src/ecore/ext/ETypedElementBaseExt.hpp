@@ -10,7 +10,7 @@
 #ifndef ECORE_EXT_ETYPEDELEMENTBASEEXT_HPP
 #define ECORE_EXT_ETYPEDELEMENTBASEEXT_HPP
 
-#include "ecore/impl/ETypedElementImpl.hpp"
+#include "ecore/impl/ETypedElementBase.hpp"
 
 
 namespace ecore::ext

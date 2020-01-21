@@ -8,7 +8,7 @@
 // *****************************************************************************
 
 #ifndef ECORE_EXT_EPACKAGEBASEEXT_HPP
-#error This file may only be included from EPackageExt.hpp
+#error This file may only be included from EPackageBaseExt.hpp
 #endif
 
 #include "ecore/ext/EFactoryExt.hpp"

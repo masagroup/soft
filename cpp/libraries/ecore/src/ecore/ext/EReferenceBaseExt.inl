@@ -8,7 +8,7 @@
 // *****************************************************************************
 
 #ifndef ECORE_EXT_EREFERENCEBASEEXT_HPP
-#error This file may only be included from EReferenceExt.hpp
+#error This file may only be included from EReferenceBaseExt.hpp
 #endif
 
 #include "ecore/EClass.hpp"

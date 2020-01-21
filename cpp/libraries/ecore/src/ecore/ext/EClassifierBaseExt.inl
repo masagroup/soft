@@ -7,8 +7,8 @@
 //
 // *****************************************************************************
 
-#ifndef #endif // ECORE_EXT_ECLASSIFIERBASEEXT_HPP
-#error This file may only be included from EClassifierExt.hpp
+#ifndef ECORE_EXT_ECLASSIFIERBASEEXT_HPP
+#error This file may only be included from EClassifierBaseExt.hpp
 #endif
 
 

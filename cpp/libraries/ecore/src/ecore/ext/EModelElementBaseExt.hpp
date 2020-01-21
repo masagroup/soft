@@ -10,12 +10,12 @@
 #ifndef ECORE_EXT_EMODELELEMENTBASEEXT_HPP
 #define ECORE_EXT_EMODELELEMENTBASEEXT_HPP
 
-#include "ecore/impl/EModelElementImpl.hpp"
+#include "ecore/impl/EModelElementBase.hpp"
 
 namespace ecore::ext
 {
     template <typename... I>
-    class EModelElementBaseExt : public ecore::impl::EModelElementImpl
+    class EModelElementBaseExt : public ecore::impl::EModelElementBase<I...>
     {
     private:
         EModelElementBaseExt& operator=( EModelElementBaseExt const& ) = delete;

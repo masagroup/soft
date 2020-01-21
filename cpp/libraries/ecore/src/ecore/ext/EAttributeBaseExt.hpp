@@ -10,7 +10,7 @@
 #ifndef ECORE_EXT_EATTRIBUTEBASEEXT_HPP
 #define ECORE_EXT_EATTRIBUTEBASEEXT_HPP
 
-#include "ecore/impl/EAttributeImpl.hpp"
+#include "ecore/impl/EAttributeBase.hpp"
 #include "ecore/impl/Lazy.hpp"
 
 namespace ecore::ext
@@ -40,7 +40,7 @@ namespace ecore::ext
         std::shared_ptr<EDataType> initAttributeType();
 
     private:
-        impl::Lazy<std::shared_ptr<EDataType>> attributeType_;
+        ecore::impl::Lazy<std::shared_ptr<EDataType>> attributeType_;
     };
 }
 

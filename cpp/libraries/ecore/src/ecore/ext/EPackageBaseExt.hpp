@@ -10,7 +10,7 @@
 #ifndef ECORE_EXT_EPACKAGEBASEEXT_HPP
 #define ECORE_EXT_EPACKAGEBASEEXT_HPP
 
-#include "ecore/impl/EPackageImpl.hpp"
+#include "ecore/impl/EPackageBase.hpp"
 
 #include <memory>
 #include <unordered_map>

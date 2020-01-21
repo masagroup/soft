@@ -10,7 +10,7 @@
 #ifndef ECORE_EXT_EREFERENCEBASEEXT_HPP
 #define ECORE_EXT_EREFERENCEBASEEXT_HPP
 
-#include "ecore/impl/EReferenceImpl.hpp"
+#include "ecore/impl/EReferenceBase.hpp"
 
 namespace ecore
 {

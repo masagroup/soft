@@ -28,8 +28,8 @@ namespace ecore::impl
 
         void setEClass( const std::shared_ptr<EClass>& eClass );
 
-        std::shared_ptr<DynamicEObjectBase> getThisPtr() const;
-        void setThisPtr( const std::shared_ptr<DynamicEObjectBase>& thisPtr );
+        std::shared_ptr<DynamicEObjectBase<I...>> getThisPtr() const;
+        void setThisPtr( const std::shared_ptr<DynamicEObjectBase<I...>>& thisPtr );
 
     public:
         using EObject::eGet;

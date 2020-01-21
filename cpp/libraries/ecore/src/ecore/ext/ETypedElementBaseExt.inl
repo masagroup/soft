@@ -8,7 +8,7 @@
 // *****************************************************************************
 
 #ifndef ECORE_EXT_ETYPEDELEMENTBASEEXT_HPP
-#error This file may only be included from ETypedElementExt.hpp
+#error This file may only be included from ETypedElementBaseExt.hpp
 #endif
 
 #include "ecore/Constants.hpp"

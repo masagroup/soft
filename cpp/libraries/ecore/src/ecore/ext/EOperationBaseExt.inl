@@ -8,7 +8,7 @@
 // *****************************************************************************
 
 #ifndef ECORE_EXT_EOPERATIONBASEEXT_HPP
-#error This file may only be included from EOperationExt.hpp
+#error This file may only be included from EOperationBaseExt.hpp
 #endif
 
 #include "ecore/EParameter.hpp"
