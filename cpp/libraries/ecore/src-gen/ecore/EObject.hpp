@@ -69,8 +69,6 @@ namespace ecore::impl
 }
 // End of user code
 
-
-
 namespace ecore 
 {
     class ECORE_API EObject  : public ENotifier
