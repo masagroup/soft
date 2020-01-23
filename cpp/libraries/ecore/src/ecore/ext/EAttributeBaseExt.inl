@@ -15,7 +15,7 @@
 #include "ecore/EcorePackage.hpp"
 #include "ecore/ext/EClassExt.hpp"
 
-namespace eccore::ext
+namespace ecore::ext
 {
     template <typename... I>
     EAttributeBaseExt<I...>::EAttributeBaseExt()

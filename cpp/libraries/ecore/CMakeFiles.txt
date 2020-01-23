@@ -116,6 +116,8 @@ set(HEADER_ECORE_EXT_FILES
     src/ecore/ext/EClassifierBaseExt.hpp
     src/ecore/ext/EClassifierBaseExt.inl
     src/ecore/ext/EClassifierExt.hpp
+    src/ecore/ext/EcoreFactoryBaseExt.hpp
+    src/ecore/ext/EcoreFactoryBaseExt.inl
     src/ecore/ext/EcoreFactoryExt.hpp
     src/ecore/ext/EFactoryBaseExt.hpp
     src/ecore/ext/EFactoryBaseExt.inl
@@ -140,8 +142,7 @@ set(HEADER_ECORE_EXT_FILES
     src/ecore/ext/ETypedElementExt.hpp
 )
 
-set(SOURCE_ECORE_EXT_FILES 
-    src/ecore/ext/EcoreFactoryExt.cpp
+set(SOURCE_ECORE_EXT_FILES     
 )
 
 
