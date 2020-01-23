@@ -55,7 +55,7 @@ Any EcoreUtils::createFromString( const std::shared_ptr<EDataType>& eDataType, c
 URI EcoreUtils::getURI( const std::shared_ptr<EObject>& eObject )
 {
     if( eObject->eIsProxy() )
-        return eObject->eProxyURI();
+        return eObject->getInternal().eProxyURI();
     else
     {
         std::shared_ptr<EResource> resource = eObject->eResource();
@@ -108,9 +108,9 @@ std::string EcoreUtils::getRelativeURIFragmentPath( const std::shared_ptr<EObjec
 std::shared_ptr<EObject> EcoreUtils::getEObject( const std::shared_ptr<EObject>& rootEObject, const std::string& relativeFragmentPath )
 {
     auto segments = split( relativeFragmentPath, "/" );
-    auto eObject = std::dynamic_pointer_cast<EObjectInternal>( rootEObject );
-    for( int i = 0; i < segments.size() && eObject; ++i )
-        eObject = std::dynamic_pointer_cast<EObjectInternal>( eObject->eObjectForFragmentSegment( std::string( segments[i] ) ) );
+    auto eObject = rootEObject;
+    for (int i = 0; i < segments.size() && eObject; ++i)
+        eObject = eObject->getInternal().eObjectForFragmentSegment(std::string(segments[i]));
     return eObject;
 }
 
@@ -127,7 +127,7 @@ std::shared_ptr<EObject> EcoreUtils::resolve( const std::shared_ptr<EObject>& pr
 
 std::shared_ptr<EObject> EcoreUtils::resolve( const std::shared_ptr<EObject>& proxy, const std::shared_ptr<EResourceSet>& resourceSet )
 {
-    URI proxyURI = proxy->eProxyURI();
+    URI proxyURI = proxy->getInternal().eProxyURI();
     if( !proxyURI.isEmpty() )
     {
         std::shared_ptr<EObject> resolved;

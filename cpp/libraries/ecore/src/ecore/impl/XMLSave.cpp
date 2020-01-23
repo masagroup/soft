@@ -319,42 +319,33 @@ void XMLSave::saveContainedSingle( const std::shared_ptr<EObject>& eObject, cons
 {
     auto val = eObject->eGet( eFeature );
     auto obj = anyObjectCast<std::shared_ptr<EObject>>( val );
-    auto internal = std::dynamic_pointer_cast<EObjectInternal>( obj );
-    if( internal )
-        saveEObjectInternal( internal, eFeature );
+    if (obj)
+        saveEObject(obj, eFeature);
 }
 
 void XMLSave::saveContainedMany( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature )
 {
     auto val = eObject->eGet( eFeature );
     auto l = anyListCast<std::shared_ptr<EObject>>( val );
-    for( auto obj : *l )
-    {
-        auto internal = std::dynamic_pointer_cast<EObjectInternal>( obj );
-        saveEObjectInternal( internal, eFeature );
-    }
-}
-
-void XMLSave::saveEObjectInternal( const std::shared_ptr<EObjectInternal>& eObjectInternal,
-                                   const std::shared_ptr<EStructuralFeature>& eFeature )
-{
-    if( eObjectInternal->eDirectResource() || eObjectInternal->eIsProxy() )
-        saveHRef( eObjectInternal, eFeature );
-    else
-        saveEObject( eObjectInternal, eFeature );
+    for (auto obj : *l)
+        saveEObject(obj, eFeature);
 }
 
 void XMLSave::saveEObject( const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature )
 {
-    str_.startElement( getQName( eFeature ) );
-    auto eClass = eObject->eClass();
-    auto eType = eFeature->getEType();
-    if( eType != eClass && eType != EcorePackage::eInstance()->getEObject() )
-    {
-        saveTypeAttribute( eClass );
+    if (eObject->eIsProxy() || eObject->getInternal().eDirectResource() )
+        saveHRef(eObject, eFeature);
+    else {
+        str_.startElement(getQName(eFeature));
+        auto eClass = eObject->eClass();
+        auto eType = eFeature->getEType();
+        if (eType != eClass && eType != EcorePackage::eInstance()->getEObject())
+        {
+            saveTypeAttribute(eClass);
+        }
+        saveElementID(eObject);
+        saveFeatures(eObject, false);
     }
-    saveElementID( eObject );
-    saveFeatures( eObject, false );
 }
 
 void XMLSave::saveTypeAttribute( const std::shared_ptr<EClass>& eClass )
@@ -513,14 +504,13 @@ XMLSave::ResourceKind XMLSave::getResourceKindMany( const std::shared_ptr<EObjec
         return SKIP;
     for( auto eObject : *list )
     {
-        auto internal = std::dynamic_pointer_cast<EObjectInternal>( eObject );
-        if( !internal )
+        if( !eObject)
             return SKIP;
-        else if( internal->eIsProxy() )
+        else if(eObject->eIsProxy() )
             return CROSS;
         else
         {
-            auto resource = internal->eResource();
+            auto resource = eObject->eResource();
             if( resource && resource != resource_.getThisPtr() )
                 return CROSS;
            

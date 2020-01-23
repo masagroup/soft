@@ -28,6 +28,7 @@
 
 #include <sstream>
 #include <string>
+#include "AbstractEObject.hpp"
 
 namespace ecore::impl
 {
@@ -41,6 +42,30 @@ namespace ecore::impl
     template <typename... I>
     AbstractEObject<I...>::~AbstractEObject()
     {
+    }
+
+    template<typename ...I>
+    inline EObject& AbstractEObject<I...>::getEObject()
+    {
+        return *this;
+    }
+
+    template<typename ...I>
+    inline const EObject& AbstractEObject<I...>::getEObject() const
+    {
+        return *this;
+    }
+
+    template<typename ...I>
+    inline const impl::EObjectInternal& AbstractEObject<I...>::getInternal() const
+    {
+        return *this;
+    }
+
+    template<typename ...I>
+    inline impl::EObjectInternal& AbstractEObject<I...>::getInternal()
+    {
+        return *this;
     }
 
     template <typename... I>
@@ -539,7 +564,7 @@ namespace ecore::impl
         {
             auto eContainer = eContainer_.lock();
             if( eContainer )
-                return eContainer->eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - eContainerFeatureID_, notifications );
+                return eContainer->getInternal().eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - eContainerFeatureID_, notifications );
         }
         return notifications;
     }
@@ -554,7 +579,7 @@ namespace ecore::impl
             auto inverseFeature = reference->getEOpposite();
             auto container = eContainer_.lock();
             if( container && inverseFeature )
-                return container->eInverseRemove( getThisPtr(), inverseFeature->getFeatureID(), notifications );
+                return container->getInternal().eInverseRemove( getThisPtr(), inverseFeature->getFeatureID(), notifications );
         }
         return notifications;
     }

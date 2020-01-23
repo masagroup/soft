@@ -59,7 +59,6 @@ namespace ecore::impl
         void saveContainedSingle(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature);
         void saveContainedMany(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature);
 
-        void saveEObjectInternal(const std::shared_ptr<EObjectInternal>& eObjectInternal, const std::shared_ptr<EStructuralFeature>& eFeature);
         void saveEObject(const std::shared_ptr<EObject>& eObject, const std::shared_ptr<EStructuralFeature>& eFeature);
         void saveTypeAttribute(const std::shared_ptr<EClass>& eClass);
 

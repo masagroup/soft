@@ -124,25 +124,24 @@ std::string AbstractResource::getURIFragment( const std::shared_ptr<EObject>& eO
     std::string id = EcoreUtils::getID( eObject );
     if( id.empty() )
     {
-        auto internalEObject = std::dynamic_pointer_cast<EObjectInternal>( eObject );
-        if( internalEObject->eDirectResource() == getThisPtr() )
+        auto eCurrent = eObject;
+        if(eCurrent->getInternal().eDirectResource() == getThisPtr() )
             return "/" + getURIFragmentRootSegment( eObject );
         else
         {
             std::deque<std::string> fragmentPath;
             auto isContained = false;
-            for( auto eContainer = std::dynamic_pointer_cast<EObjectInternal>( internalEObject->eContainer() ); eContainer;
-                 eContainer = std::dynamic_pointer_cast<EObjectInternal>( internalEObject->eContainer() ) )
+            for( auto eContainer = eCurrent->eContainer(); eContainer; eContainer = eCurrent->eContainer())
             {
                 if( id.empty() )
                 {
-                    auto segment = eContainer->eURIFragmentSegment( internalEObject->eContainingFeature(), internalEObject );
+                    auto segment = eContainer->getInternal().eURIFragmentSegment(eCurrent->eContainingFeature(), eCurrent);
                     fragmentPath.push_front( segment );
                 }
 
-                internalEObject = eContainer;
+                eCurrent = eContainer;
 
-                if( eContainer->eDirectResource() == getThisPtr() )
+                if( eContainer->getInternal().eDirectResource() == getThisPtr() )
                 {
                     isContained = true;
                     break;
@@ -151,7 +150,7 @@ std::string AbstractResource::getURIFragment( const std::shared_ptr<EObject>& eO
             if( !isContained )
                 return "/-1";
 
-            fragmentPath.push_front( id.empty() ? getURIFragmentRootSegment( internalEObject ) : "?" + id );
+            fragmentPath.push_front( id.empty() ? getURIFragmentRootSegment(eCurrent) : "?" + id );
             fragmentPath.push_front( "" );
             return join( fragmentPath, "/" );
         }
@@ -170,10 +169,7 @@ std::shared_ptr<EObject> AbstractResource::getObjectByPath( const std::vector<st
 {
     auto eObject = getObjectForRootSegment( uriFragmentPath.empty() ? "" : uriFragmentPath[0] );
     for( int i = 1; i < uriFragmentPath.size() && eObject; ++i )
-    {
-        auto internalEObject = std::dynamic_pointer_cast<EObjectInternal>( eObject );
-        eObject = internalEObject->eObjectForFragmentSegment( uriFragmentPath[i] );
-    }
+        eObject = eObject->getInternal().eObjectForFragmentSegment( uriFragmentPath[i] );
     return eObject;
 }
 
@@ -361,7 +357,7 @@ std::shared_ptr<EList<std::shared_ptr<EObject>>> AbstractResource::initContents(
                                                                 const std::shared_ptr<ENotificationChain>& n ) const
         {
             auto notifications = n;
-            notifications = eObject->eSetResource( resource_.getThisPtr(), notifications );
+            notifications = eObject->getInternal().eSetResource( resource_.getThisPtr(), notifications );
             resource_.attached( eObject );
             return notifications;
         }
@@ -371,7 +367,7 @@ std::shared_ptr<EList<std::shared_ptr<EObject>>> AbstractResource::initContents(
         {
             auto notifications = n;
             resource_.detached( eObject );
-            notifications = eObject->eSetResource( nullptr, notifications );
+            notifications = eObject->getInternal().eSetResource( nullptr, notifications );
             return notifications;
         }
 

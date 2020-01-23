@@ -60,9 +60,16 @@ namespace ecore
 
 namespace ecore
 {
-    class ENotificationChain;
+    class ENotificationChain;    
+}    
+
+namespace ecore::impl
+{
+    class EObjectInternal;
 }
 // End of user code
+
+
 
 namespace ecore 
 {
@@ -106,20 +113,8 @@ namespace ecore
         
         
         // Start of user code EObject
-        virtual std::shared_ptr<ENotificationChain> eInverseAdd( const std::shared_ptr<EObject>& otherEnd
-                                                               , int featureID
-                                                               , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
-        virtual std::shared_ptr<ENotificationChain> eInverseRemove( const std::shared_ptr<EObject>& otherEnd
-                                                                  , int featureID
-                                                                  , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
-        
-        virtual std::shared_ptr<ENotificationChain> eSetResource( const std::shared_ptr < EResource>& resource
-                                                                , const std::shared_ptr<ENotificationChain>& notifications ) = 0;
-        
-        // Proxy
-        virtual URI eProxyURI() const = 0;
-        virtual void eSetProxyURI( const URI& uri ) = 0;
-        virtual std::shared_ptr<EObject> eResolveProxy( const std::shared_ptr<EObject>& proxy ) const = 0;
+        virtual const impl::EObjectInternal& getInternal() const = 0;
+        virtual impl::EObjectInternal& getInternal() = 0;
         // End of user code
     };
 }

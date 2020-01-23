@@ -32,6 +32,14 @@ namespace ecore::impl
         AbstractEObject();
         virtual ~AbstractEObject();
 
+        // EObject
+        virtual EObject& getEObject();
+        virtual const EObject& getEObject() const;
+
+        // EObjectInternal
+        virtual const impl::EObjectInternal& getInternal() const;
+        virtual impl::EObjectInternal& getInternal();
+
         // Operations
         virtual std::shared_ptr<ecore::EClass> eClass() const;
         virtual std::shared_ptr<ecore::EObject> eContainer() const;
