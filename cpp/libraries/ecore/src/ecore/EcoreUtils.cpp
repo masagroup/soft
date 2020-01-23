@@ -86,20 +86,19 @@ std::string EcoreUtils::getRelativeURIFragmentPath( const std::shared_ptr<EObjec
 
     std::unordered_set<std::shared_ptr<EObject>> visited;
     std::deque<std::string> fragmentURIPath;
-    auto internalEObject = descendant;
-    for( auto eContainer = internalEObject->eContainer(); eContainer && visited.insert( eContainer ).second;
-         eContainer = internalEObject->eContainer() )
+    auto eObject = descendant;
+    for( auto eContainer = eObject->eContainer(); eContainer && visited.insert( eContainer ).second;
+         eContainer = eObject->eContainer() )
     {
-        auto internalEContainer = std::dynamic_pointer_cast<EObjectInternal>( eContainer );
-        fragmentURIPath.push_front( internalEContainer->eURIFragmentSegment( internalEObject->eContainingFeature(), internalEObject ) );
-        internalEObject = internalEContainer;
-        if( internalEContainer == ancestor )
+        fragmentURIPath.push_front(eContainer->getInternal().eURIFragmentSegment(eObject->eContainingFeature(), eObject ) );
+        eObject = eContainer;
+        if(eContainer == ancestor )
         {
             break;
         }
     }
 
-    if( internalEObject != ancestor && ancestor )
+    if(eObject != ancestor && ancestor )
         throw "The ancestor not found'";
 
     return join( fragmentURIPath, "/" );
