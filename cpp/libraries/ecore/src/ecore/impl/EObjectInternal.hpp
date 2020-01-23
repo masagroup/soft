@@ -29,10 +29,6 @@ namespace ecore::impl
     public:
         virtual ~EObjectInternal() = default;
 
-        // EObject
-        virtual EObject& getEObject() = 0;
-        virtual const EObject& getEObject() const= 0;
-
         // Resource
         virtual std::shared_ptr<EResource> eDirectResource() const = 0;
 

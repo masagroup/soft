@@ -45,18 +45,6 @@ namespace ecore::impl
     }
 
     template<typename ...I>
-    inline EObject& AbstractEObject<I...>::getEObject()
-    {
-        return *this;
-    }
-
-    template<typename ...I>
-    inline const EObject& AbstractEObject<I...>::getEObject() const
-    {
-        return *this;
-    }
-
-    template<typename ...I>
     inline const impl::EObjectInternal& AbstractEObject<I...>::getInternal() const
     {
         return *this;
