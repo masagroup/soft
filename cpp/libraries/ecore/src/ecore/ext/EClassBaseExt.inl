@@ -27,7 +27,7 @@
 namespace ecore::ext
 {
     template <typename... I>
-    class EClassBaseExt<I...>::ESuperAdapter : public AbstractAdapter
+    class EClassBaseExt<I...>::ESuperAdapter : public ecore::impl::AbstractAdapter
     {
     public:
         ESuperAdapter(EClassBaseExt& eClassExt)
@@ -160,7 +160,7 @@ namespace ecore::ext
 
     template <typename... I>
     EClassBaseExt<I...>::EClassBaseExt()
-        : EClassImpl()
+        : EClassBase<I...>()
         , eSuperAdapter_(new ESuperAdapter(*this))
     {
     }
@@ -289,8 +289,8 @@ namespace ecore::ext
         }
 
         eIDAttribute_ = eIDAttribute;
-        eAttributes_ = std::make_shared< ImmutableEList<std::shared_ptr<EAttribute>>>(std::move(attributes));
-        eAllAttributes_ = std::make_shared< ImmutableEList<std::shared_ptr<EAttribute>>>(std::move(allAttributes));
+        eAttributes_ = std::make_shared< impl::ImmutableEList<std::shared_ptr<EAttribute>>>(std::move(attributes));
+        eAllAttributes_ = std::make_shared< impl::ImmutableEList<std::shared_ptr<EAttribute>>>(std::move(allAttributes));
     }
 
     template <typename... I>
@@ -315,8 +315,8 @@ namespace ecore::ext
                 allReferences.push_back(reference);
             }
         }
-        eReferences_ = std::make_shared< ImmutableEList<std::shared_ptr<EReference>>>(std::move(references));
-        eAllReferences_ = std::make_shared< ImmutableEList<std::shared_ptr<EReference>>>(std::move(allReferences));
+        eReferences_ = std::make_shared< impl::ImmutableEList<std::shared_ptr<EReference>>>(std::move(references));
+        eAllReferences_ = std::make_shared< impl::ImmutableEList<std::shared_ptr<EReference>>>(std::move(allReferences));
     }
 
     template <typename... I>
@@ -355,7 +355,7 @@ namespace ecore::ext
             if (reference->isContainment())
                 allContainments.push_back(reference);
         }
-        eAllContainments_ = std::make_shared< ImmutableEList<std::shared_ptr<EReference>>>(std::move(allContainments));
+        eAllContainments_ = std::make_shared< impl::ImmutableEList<std::shared_ptr<EReference>>>(std::move(allContainments));
     }
 
     template <typename... I>
@@ -375,12 +375,12 @@ namespace ecore::ext
         int operationID = static_cast<int>(allOperations.size());
         for (const auto& operation : *getEOperations())
         {
-            auto operationImpl = std::dynamic_pointer_cast<EOperationImpl>(operation);
+            auto operationImpl = std::dynamic_pointer_cast<EOperationExt>(operation);
             _ASSERT(operationImpl);
             operationImpl->setOperationID(operationID++);
             allOperations.push_back(operationImpl);
         }
-        eAllOperations_ = std::make_shared< ImmutableEList<std::shared_ptr<EOperation>>>(std::move(allOperations));
+        eAllOperations_ = std::make_shared< impl::ImmutableEList<std::shared_ptr<EOperation>>>(std::move(allOperations));
     }
 
     template <typename... I>
@@ -402,12 +402,12 @@ namespace ecore::ext
         int featureID = static_cast<int>(allFeatures.size());
         for (const auto& feature : *getEStructuralFeatures())
         {
-            auto featureImpl = std::dynamic_pointer_cast<EStructuralFeatureImpl>(feature);
+            auto featureImpl = std::dynamic_pointer_cast<EStructuralFeatureExt>(feature);
             _ASSERT(featureImpl);
             featureImpl->setFeatureID(featureID++);
             allFeatures.push_back(featureImpl);
         }
-        eAllStructuralFeatures_ = std::make_shared< ImmutableEList<std::shared_ptr<EStructuralFeature>>>(std::move(allFeatures));
+        eAllStructuralFeatures_ = std::make_shared< impl::ImmutableEList<std::shared_ptr<EStructuralFeature>>>(std::move(allFeatures));
     }
 
     template <typename... I>
@@ -423,7 +423,7 @@ namespace ecore::ext
             allSuperTypes.insert(std::end(allSuperTypes), superTypes->begin(), superTypes->end());
             allSuperTypes.push_back(eClass);
         }
-        eAllSuperTypes_ = std::make_shared< ImmutableEList<std::shared_ptr<EClass>>>(std::move(allSuperTypes));
+        eAllSuperTypes_ = std::make_shared< impl::ImmutableEList<std::shared_ptr<EClass>>>(std::move(allSuperTypes));
     }
 
     template <typename... I>
@@ -511,8 +511,8 @@ namespace ecore::ext
                 }
             }
         }
-        eContainments_ = std::make_shared< ImmutableEList<std::shared_ptr<EReference>>>(std::move(containments));
-        eCrossReferences_ = std::make_shared< ImmutableEList<std::shared_ptr<EReference>>>(std::move(crossReferences));
+        eContainments_ = std::make_shared< impl::ImmutableEList<std::shared_ptr<EReference>>>(std::move(containments));
+        eCrossReferences_ = std::make_shared< impl::ImmutableEList<std::shared_ptr<EReference>>>(std::move(crossReferences));
     }
 
     template <typename... I>

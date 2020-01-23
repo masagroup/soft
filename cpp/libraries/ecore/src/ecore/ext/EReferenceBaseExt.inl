@@ -36,7 +36,7 @@ namespace ecore::ext {
     void ecore::ext::EReferenceBaseExt<I...>::setEType(const std::shared_ptr<ecore::EClassifier>& newEType)
     {
         eReferenceType_.reset();
-        EReferenceImpl::setEType(newEType);
+        EReferenceBase<I...>::setEType(newEType);
     }
 
     template <typename... I>

@@ -35,7 +35,7 @@ namespace ecore::ext {
         if (getEPackage() != eClass->getEPackage() || eClass->isAbstract())
             throw std::invalid_argument("The class '" + eClass->getName() + "' is not a valid classifier");
 
-        auto eObject = std::make_shared<DynamicEObjectImpl>(eClass);
+        auto eObject = std::make_shared<impl::DynamicEObjectImpl>(eClass);
         eObject->setThisPtr(eObject);
         return eObject;
     }

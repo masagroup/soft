@@ -23,7 +23,7 @@ namespace ecore::ext
         EOperationBaseExt& operator=( EOperationBaseExt const& ) = delete;
 
     protected:
-        friend class impl::EcoreFactoryImpl;
+        template<typename... I> friend class impl::EcoreFactoryBase;
         EOperationBaseExt();
     
     public:

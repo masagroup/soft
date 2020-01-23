@@ -23,7 +23,7 @@ namespace ecore::ext
         EClassBaseExt& operator=( EClassBaseExt const& ) = delete;
 
     protected:
-        friend class impl::EcoreFactoryImpl;
+        template<typename... I> friend class impl::EcoreFactoryBase;
         EClassBaseExt();
         void setThisPtr( const std::shared_ptr<EClassBaseExt>& thisPtr );
 

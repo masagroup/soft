@@ -157,7 +157,7 @@ namespace ecore::impl
 
             return result;
         }
-        return BasicEObject::eGet(featureID, resolve, coreType);
+        return EObjectBase<I...>::eGet(featureID, resolve, coreType);
     }
 
     template <typename... I>
@@ -167,7 +167,7 @@ namespace ecore::impl
         if (dynamicFeatureID >= 0)
             return !properties_[dynamicFeatureID].empty();
         else
-            return BasicEObject::eIsSet(featureID);
+            return EObjectBase<I...>::eIsSet(featureID);
     }
 
     template <typename... I>
@@ -189,7 +189,7 @@ namespace ecore::impl
                     if (eContainer())
                         notifications = eBasicRemoveFromContainer(notifications);
                     if (newContainer)
-                        notifications = newContainer->eInverseAdd(getThisPtr(), featureID, notifications);
+                        notifications = newContainer->getInternal().eInverseAdd(getThisPtr(), featureID, notifications);
                     notifications = eBasicSetContainer(newContainer, featureID, notifications);
                     if (notifications)
                         notifications->dispatch();
@@ -219,20 +219,20 @@ namespace ecore::impl
                     if (!isBidirectional(dynamicFeature))
                     {
                         if (oldObject)
-                            notifications = oldObject->eInverseRemove(getThisPtr(), EOPPOSITE_FEATURE_BASE - featureID, notifications);
+                            notifications = oldObject->getInternal().eInverseRemove(getThisPtr(), EOPPOSITE_FEATURE_BASE - featureID, notifications);
 
                         if (newObject)
-                            notifications = newObject->eInverseAdd(getThisPtr(), EOPPOSITE_FEATURE_BASE - featureID, notifications);
+                            notifications = newObject->getInternal().eInverseAdd(getThisPtr(), EOPPOSITE_FEATURE_BASE - featureID, notifications);
                     }
                     else
                     {
                         auto dynamicReference = std::dynamic_pointer_cast<EReference>(dynamicFeature);
                         auto reverseFeature = dynamicReference->getEOpposite();
                         if (oldObject)
-                            notifications = oldObject->eInverseRemove(getThisPtr(), reverseFeature->getFeatureID(), notifications);
+                            notifications = oldObject->getInternal().eInverseRemove(getThisPtr(), reverseFeature->getFeatureID(), notifications);
 
                         if (newObject)
-                            notifications = newObject->eInverseAdd(getThisPtr(), reverseFeature->getFeatureID(), notifications);
+                            notifications = newObject->getInternal().eInverseAdd(getThisPtr(), reverseFeature->getFeatureID(), notifications);
                     }
                     // basic set
                     if (isProxy(dynamicFeature))
@@ -294,7 +294,7 @@ namespace ecore::impl
             }
         }
         else
-            BasicEObject::eSet(featureID, newValue);
+            EObjectBase<I...>::eSet(featureID, newValue);
     }
 
     template <typename... I>
@@ -311,7 +311,7 @@ namespace ecore::impl
                 eNotify(std::make_shared<Notification>(getThisPtr(), Notification::UNSET, featureID, oldValue, NO_VALUE));
         }
         else
-            BasicEObject::eUnset(featureID);
+            EObjectBase<I...>::eUnset(featureID);
     }
 
     template <typename... I>

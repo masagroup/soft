@@ -26,7 +26,7 @@ namespace ecore::ext
         EStructuralFeatureBaseExt& operator=(EStructuralFeatureBaseExt const& ) = delete;
 
     protected:
-        friend class impl::EcoreFactoryImpl;
+        template<typename... I> friend class EcoreFactoryBase;
         EStructuralFeatureBaseExt();
 
     public:

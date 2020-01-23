@@ -77,7 +77,7 @@ namespace ecore::impl
                     auto owner = owner_.lock();
                     if( owner )
                     {
-                        auto resolved = std::dynamic_pointer_cast<typename T::element_type>( owner->eResolveProxy( value_ ) );
+                        auto resolved = std::dynamic_pointer_cast<typename T::element_type>( owner->getInternal().eResolveProxy( value_ ) );
                         if( resolved && resolved != value_ )
                         {
                             resolved_ = resolved;

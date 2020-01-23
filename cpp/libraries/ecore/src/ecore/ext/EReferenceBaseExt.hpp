@@ -26,7 +26,7 @@ namespace ecore::ext
         EReferenceBaseExt& operator=( EReferenceBaseExt const& ) = delete;
 
     protected:
-        friend class impl::EcoreFactoryImpl;
+        template<typename... I> friend class impl::EcoreFactoryBase;
         EReferenceBaseExt();
 
     public:

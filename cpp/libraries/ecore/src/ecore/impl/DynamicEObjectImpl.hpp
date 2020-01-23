@@ -70,7 +70,7 @@ namespace ecore::impl
         mutable std::vector< Any > properties_;
     };
 
-    typedef DynamicEObjectBase<EObject> DynamicEobjectImpl;
+    typedef DynamicEObjectBase<EObject> DynamicEObjectImpl;
 
 }
 

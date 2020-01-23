@@ -60,7 +60,7 @@ target_include_directories(${PROJECT_NAME}
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src-gen>
 )
-target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4250 /wd4251 )
+target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4250 /wd4251 /bigobj)
 target_compile_definitions( ${PROJECT_NAME} PRIVATE ECORE_EXPORTS)
 target_compile_definitions( ${PROJECT_NAME} PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 target_link_libraries(${PROJECT_NAME} PUBLIC XercesC::XercesC Boost::regex)
@@ -74,7 +74,7 @@ target_include_directories(${PROJECT_NAME}.static
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src-gen>
 )
-target_compile_options(${PROJECT_NAME}.static PRIVATE /MP /wd4250)
+target_compile_options(${PROJECT_NAME}.static PRIVATE /MP /wd4250 /bigobj)
 target_compile_definitions(${PROJECT_NAME}.static PUBLIC ECORE_STATIC_LIB)
 target_compile_definitions(${PROJECT_NAME}.static PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 target_link_libraries(${PROJECT_NAME}.static PRIVATE XercesC::XercesC Boost::regex)

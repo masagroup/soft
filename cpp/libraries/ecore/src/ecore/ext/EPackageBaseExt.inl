@@ -22,7 +22,7 @@
 namespace ecore::ext {
 
     template <typename... I>
-    class EPackageBaseExt<I...>::Adapter : public AbstractAdapter
+    class EPackageBaseExt<I...>::Adapter : public impl::AbstractAdapter
     {
     public:
         Adapter(EPackageBaseExt& ePackage)
@@ -56,7 +56,7 @@ namespace ecore::ext {
     template <typename... I>
     void EPackageBaseExt<I...>::setThisPtr(const std::shared_ptr<EPackageBaseExt>& thisPtr)
     {
-        EPackageImpl::setThisPtr(thisPtr);
+        EPackageBase<I...>::setThisPtr(thisPtr);
         eAdapters().add(adapter_.get());
     }
 

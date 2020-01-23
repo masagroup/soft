@@ -24,7 +24,7 @@ namespace ecore::ext
         virtual std::shared_ptr<ecore::EDataType> getEAttributeType() const;
 
     protected:
-        friend class impl::EcoreFactoryImpl;
+        template<typename... I> friend class impl::EcoreFactoryBase;
         EAttributeBaseExt();
 
         //*********************************
