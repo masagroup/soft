@@ -3,6 +3,7 @@
 #include "ecore/EcoreUtils.hpp"
 #include "ecore/Stream.hpp"
 #include "ecore/tests/MockObject.hpp"
+#include "ecore/tests/MockObjectInternal.hpp"
 #include "ecore/tests/MockResource.hpp"
 
 
@@ -20,8 +21,11 @@ BOOST_AUTO_TEST_CASE(getURI)
 {
     URI uri("test://file");
     auto mockObject = std::make_shared<MockObject>();
+    auto mockInternal = std::make_shared<MockObjectInternal>();
+
     MOCK_EXPECT(mockObject->eIsProxy).returns(true);
-    MOCK_EXPECT(mockObject->eProxyURI).returns(uri);
+    MOCK_EXPECT(mockObject->getInternalConst).returns(*mockInternal);
+    MOCK_EXPECT(mockInternal->eProxyURI).returns(uri);
     BOOST_CHECK_EQUAL(EcoreUtils::getURI(mockObject), uri); 
 }
 

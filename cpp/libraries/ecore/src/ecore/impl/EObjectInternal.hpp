@@ -32,6 +32,10 @@ namespace ecore::impl
         // Resource
         virtual std::shared_ptr<EResource> eDirectResource() const = 0;
 
+        virtual std::shared_ptr<ENotificationChain> eSetResource(const std::shared_ptr < EResource>& resource
+            , const std::shared_ptr<ENotificationChain>& notifications) = 0;
+
+
         // URI Fragment
         virtual std::shared_ptr<EObject> eObjectForFragmentSegment( const std::string& uriSegment) const= 0;
         
@@ -43,9 +47,6 @@ namespace ecore::impl
             , const std::shared_ptr<ENotificationChain>& notifications) = 0;
         virtual std::shared_ptr<ENotificationChain> eInverseRemove(const std::shared_ptr<EObject>& otherEnd
             , int featureID
-            , const std::shared_ptr<ENotificationChain>& notifications) = 0;
-
-        virtual std::shared_ptr<ENotificationChain> eSetResource(const std::shared_ptr < EResource>& resource
             , const std::shared_ptr<ENotificationChain>& notifications) = 0;
 
         // Proxy

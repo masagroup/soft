@@ -21,7 +21,8 @@
 namespace ecore::tests
 {
 
-    class MockObject : public virtual MockNotifier, public virtual EObject 
+	template <typename I>
+    class MockObjectBase : public MockNotifierBase<I> 
     {
     public:
         typedef EObject base_type;
@@ -43,14 +44,12 @@ namespace ecore::tests
         
         
         // Start of user code MockObject
-        MOCK_METHOD( eSetResource, 2 )
-        MOCK_METHOD( eInverseAdd, 3 )
-        MOCK_METHOD( eInverseRemove, 3 )
-        MOCK_METHOD( eProxyURI, 0 )
-        MOCK_METHOD( eSetProxyURI, 1 )
-        MOCK_METHOD( eResolveProxy, 1)
+        MOCK_CONST_METHOD(getInternal, 0, impl::EObjectInternal& (), getInternalConst);
+        MOCK_NON_CONST_METHOD(getInternal, 0, impl::EObjectInternal& (), getInternalNonConst);
         // End of user code
     };
+
+	typedef MockObjectBase<EObject> MockObject;
 } 
 
 #endif /* ECORE_EOBJECT_MOCKOBJECT_HPP */
