@@ -119,7 +119,7 @@ namespace ecore
             {
                 static inline B do_cast( const A& a )
                 {
-                    return std::static__pointer_cast<typename B::element_type>( a );
+                    return std::static_pointer_cast<typename B::element_type>( a );
                 }
             };
 
