@@ -114,13 +114,13 @@ namespace ecore::impl
     template <typename... I>
     std::shared_ptr<DynamicEObjectBase<I...>> DynamicEObjectBase<I...>::getThisPtr() const
     {
-        return std::static_pointer_cast<DynamicEObjectBase>(EObjectImpl::getThisPtr());
+        return std::static_pointer_cast<DynamicEObjectBase>(EObjectBase<I...>::getThisPtr());
     }
 
     template <typename... I>
     void DynamicEObjectBase<I...>::setThisPtr(const std::shared_ptr<DynamicEObjectBase<I...>>& thisPtr)
     {
-        EObjectImpl::setThisPtr(thisPtr);
+        EObjectBase<I...>::setThisPtr(thisPtr);
     }
 
     template <typename... I>
