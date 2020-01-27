@@ -49,7 +49,7 @@ namespace ecore::ext
         virtual void notifyChanged(const std::shared_ptr<ENotification>& notification)
         {
             int eventType = notification->getEventType();
-            auto eNotifier = std::dynamic_pointer_cast<EClassBaseExt>(notification->getNotifier());
+            auto eNotifier = std::static_pointer_cast<EClassBaseExt>(notification->getNotifier());
             if (eventType != ENotification::REMOVING_ADAPTER)
             {
                 int featureID = notification->getFeatureID();
@@ -64,7 +64,7 @@ namespace ecore::ext
                         if (!oldValue.empty())
                         {
                             auto eClass = anyCast<std::shared_ptr<EClass>>(oldValue);
-                            auto eClassImpl = std::dynamic_pointer_cast<EClassBaseExt>(eClass);
+                            auto eClassImpl = std::static_pointer_cast<EClassBaseExt>(eClass);
                             auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
                             auto it = std::find_if(subClasses.begin(), subClasses.end(), [=](const auto& w)
                                 {
@@ -77,7 +77,7 @@ namespace ecore::ext
                         if (!newValue.empty())
                         {
                             auto eClass = anyCast<std::shared_ptr<EClass>>(newValue);
-                            auto eClassImpl = std::dynamic_pointer_cast<EClassBaseExt>(eClass);
+                            auto eClassImpl = std::static_pointer_cast<EClassBaseExt>(eClass);
                             auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
                             subClasses.push_back(eNotifier);
                         }
@@ -89,7 +89,7 @@ namespace ecore::ext
                         if (!newValue.empty())
                         {
                             auto eClass = anyCast<std::shared_ptr<EClass>>(newValue);
-                            auto eClassImpl = std::dynamic_pointer_cast<EClassBaseExt>(eClass);
+                            auto eClassImpl = std::static_pointer_cast<EClassBaseExt>(eClass);
                             auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
                             subClasses.push_back(eNotifier);
                         }
@@ -103,7 +103,7 @@ namespace ecore::ext
                             auto eCollection = anyCast<std::shared_ptr<EList<std::shared_ptr<EClass>>>>(newValue);
                             for (const auto& eClass : *eCollection)
                             {
-                                auto eClassImpl = std::dynamic_pointer_cast<EClassBaseExt>(eClass);
+                                auto eClassImpl = std::static_pointer_cast<EClassBaseExt>(eClass);
                                 auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
                                 subClasses.push_back(eNotifier);
                             }
@@ -116,7 +116,7 @@ namespace ecore::ext
                         if (!oldValue.empty())
                         {
                             auto eClass = anyCast<std::shared_ptr<EClass>>(oldValue);
-                            auto eClassImpl = std::dynamic_pointer_cast<EClassBaseExt>(eClass);
+                            auto eClassImpl = std::static_pointer_cast<EClassBaseExt>(eClass);
                             auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
                             auto it = std::find_if(subClasses.begin(), subClasses.end(), [=](const auto& w)
                                 {
@@ -135,7 +135,7 @@ namespace ecore::ext
                             auto eCollection = anyCast<std::shared_ptr<EList<std::shared_ptr<EClass>>>>(oldValue);
                             for (const auto& eClass : *eCollection)
                             {
-                                auto eClassImpl = std::dynamic_pointer_cast<EClassBaseExt>(eClass);
+                                auto eClassImpl = std::static_pointer_cast<EClassBaseExt>(eClass);
                                 auto& subClasses = eClassImpl->eSuperAdapter_->getSubClasses();
                                 auto it = std::find_if(subClasses.begin(), subClasses.end(), [=](const auto& w)
                                     {
