@@ -402,10 +402,9 @@ namespace ecore::ext
         int featureID = static_cast<int>(allFeatures.size());
         for (const auto& feature : *getEStructuralFeatures())
         {
-            auto featureImpl = std::dynamic_pointer_cast<EStructuralFeatureExt>(feature);
-            _ASSERT(featureImpl);
-            featureImpl->setFeatureID(featureID++);
-            allFeatures.push_back(featureImpl);
+            auto featureInternal = static_cast<EStructuralFeatureInternal&>( feature->getInternal()  );
+            featureInternal->setFeatureID( featureID++ );
+            allFeatures.push_back(feature);
         }
         eAllStructuralFeatures_ = std::make_shared< impl::ImmutableEList<std::shared_ptr<EStructuralFeature>>>(std::move(allFeatures));
     }

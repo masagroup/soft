@@ -11,6 +11,7 @@
 #define ECORE_EXT_ESTRUCTURALFEATUREBASEEXT_HPP
 
 #include "ecore/impl/EStructuralFeatureBase.hpp"
+#include "ecore/ext/EStructuralFeatureInternal.hpp"
 
 namespace ecore
 {
@@ -37,6 +38,12 @@ namespace ecore::ext
         virtual void setDefaultValue( const Any& newDefaultValue );
 
         virtual void setDefaultValueLiteral( const std::string& newDefaultValueLiteral );
+
+    protected:
+        template <typename U>
+        class EObjectInternalAdapter;
+
+        virtual std::unique_ptr<impl::EObjectInternal> createInternal();
 
     private:
         mutable Any defaultValue_;
