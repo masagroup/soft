@@ -1,0 +1,22 @@
+---
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: None
+AlwaysBreakTemplateDeclarations: true
+BinPackParameters: false
+BinPackArguments: false
+BreakBeforeBinaryOperators: true
+BreakBeforeBraces: Allman
+BreakConstructorInitializersBeforeComma: true
+ColumnLimit: 140
+IndentCaseLabels: false
+IndentWidth: 4
+NamespaceIndentation: All
+PenaltyReturnTypeOnItsOwnLine: 9999
+PointerBindsToType: true
+SpaceAfterControlStatementKeyword: false
+SpaceInEmptyParentheses: false
+SpacesInParentheses: true
+SpacesInAngles: false
+Standard: Cpp11
+UseTab: Never
+...
