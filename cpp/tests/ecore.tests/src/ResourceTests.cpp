@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE( Contents )
 
     auto mockObject = std::make_shared<MockObject>();
     auto mockInternal = std::make_shared<MockObjectInternal>();
-    MOCK_EXPECT(mockObject->getInternalNonConst).returns(*mockInternal);
+    MOCK_EXPECT(mockObject->getInternal).returns(*mockInternal);
     MOCK_EXPECT(mockInternal->eSetResource ).once().with( resource, std::shared_ptr<ENotificationChain>() ).returns( std::shared_ptr<ENotificationChain>() );
 
     auto contents = resource->getContents();

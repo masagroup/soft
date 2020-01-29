@@ -45,7 +45,7 @@ namespace ecore::tests
         
         // Start of user code MockObject
         MOCK_CONST_METHOD(getInternal, 0, impl::EObjectInternal& (), getInternalConst);
-        MOCK_NON_CONST_METHOD(getInternal, 0, impl::EObjectInternal& (), getInternalNonConst);
+        MOCK_NON_CONST_METHOD(getInternal, 0, impl::EObjectInternal& (), getInternal);
         // End of user code
     };
 

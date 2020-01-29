@@ -25,7 +25,7 @@ namespace
             , mockInternal(new MockObjectInternal())
         {
             MOCK_EXPECT(owner->eDeliver).returns(notifications);
-            MOCK_EXPECT( object->getInternalNonConst ).returns( *mockInternal );
+            MOCK_EXPECT( object->getInternal ).returns( *mockInternal );
             
         }
 
@@ -155,7 +155,7 @@ BOOST_FIXTURE_TEST_CASE(Add_InverseOppositeNotifications, AddFixtureNotification
 
 BOOST_FIXTURE_TEST_CASE(Proxies, AddFixture)
 {
-    MOCK_EXPECT( owner->getInternalNonConst ).returns( *mockInternal );
+    MOCK_EXPECT( owner->getInternal ).returns( *mockInternal );
 
     EObjectEList<std::shared_ptr<EObject>, false, false, false, true> list(owner, 1, 2);
     auto proxy = std::make_shared<MockObject>();

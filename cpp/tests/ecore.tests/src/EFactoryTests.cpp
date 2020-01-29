@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE(Accessors_Package)
     auto eFactory = ecoreFactory->createEFactory();
     auto mockPackage = std::make_shared<MockPackage>();
     auto mockInternal = std::make_shared<MockObjectInternal>();
-    MOCK_EXPECT(mockPackage->getInternalNonConst).returns(*mockInternal);
+    MOCK_EXPECT(mockPackage->getInternal).returns(*mockInternal);
 
     MOCK_EXPECT(mockPackage->eResource).returns(nullptr);
     MOCK_EXPECT(mockInternal->eInverseAdd).with(eFactory, EcorePackage::EFACTORY__EPACKAGE, nullptr).returns(nullptr);
