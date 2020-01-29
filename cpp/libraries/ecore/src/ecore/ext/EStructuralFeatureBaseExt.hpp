@@ -38,12 +38,6 @@ namespace ecore::ext
 
         virtual void setDefaultValueLiteral( const std::string& newDefaultValueLiteral );
 
-    protected:
-        template <typename U>
-        class EObjectInternalAdapter;
-
-        virtual std::unique_ptr<impl::EObjectInternal> createInternal();
-
     private:
         mutable Any defaultValue_;
         mutable std::weak_ptr<EFactory> defaultValueFactory_;

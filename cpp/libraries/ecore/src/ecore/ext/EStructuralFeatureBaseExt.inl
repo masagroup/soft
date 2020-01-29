@@ -77,31 +77,4 @@ namespace ecore::ext
         defaultValueFactory_.reset();
     }
 
-    template <typename... I>
-    template <typename U>
-    class EStructuralFeatureBaseExt<I...>::EObjectInternalAdapter : public AbstractEObject<I...>::EObjectInternalAdapter<typename U>
-    {
-    public:
-        EObjectInternalAdapter( EStructuralFeatureBaseExt<I...>& obj )
-            : AbstractEObject<I...>::EObjectInternalAdapter<typename U>( obj )
-        {
-        }
-
-        virtual void setFeatureID( int newFeatureID )
-        {
-            getObject().setFeatureID( newFeatureID );
-        }
-
-        inline EStructuralFeatureBaseExt<I...>& getObject()
-        {
-            return static_cast<EStructuralFeatureBaseExt<I...>&>( AbstractEObject<I...>::EObjectInternalAdapter<typename U>::getObject() );
-        }
-    };
-
-    template <typename... I>
-    std::unique_ptr<impl::EObjectInternal> EStructuralFeatureBaseExt<I...>::createInternal()
-    {
-        return std::move( std::make_unique<EObjectInternalAdapter<EStructuralFeatureInternal>>( *this ) );
-    }
-
 } // namespace ecore::ext
