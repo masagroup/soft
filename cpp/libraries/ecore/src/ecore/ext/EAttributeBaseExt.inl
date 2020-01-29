@@ -44,7 +44,7 @@ namespace ecore::ext
     std::shared_ptr<EDataType> EAttributeBaseExt<I...>::initAttributeType()
     {
         auto eType = getEType();
-        auto eDataType = std::dynamic_pointer_cast<EDataType>(eType);
+        auto eDataType = std::static_pointer_cast<EDataType>(eType);
         return eDataType;
     }
 

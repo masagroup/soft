@@ -113,6 +113,7 @@ set(HEADER_ECORE_EXT_FILES
     src/ecore/ext/EClassBaseExt.hpp
     src/ecore/ext/EClassBaseExt.inl
     src/ecore/ext/EClassExt.hpp
+    src/ecore/ext/EClassInternal.hpp
     src/ecore/ext/EClassifierBaseExt.hpp
     src/ecore/ext/EClassifierBaseExt.inl
     src/ecore/ext/EClassifierExt.hpp

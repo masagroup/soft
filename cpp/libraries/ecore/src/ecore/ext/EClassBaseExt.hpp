@@ -61,6 +61,16 @@ namespace ecore::ext
         virtual void initEAllSuperTypes();
         virtual void initEIDAttribute();
    
+    protected:
+        //*********************************
+        // Internal
+        //*********************************
+        template <typename U>
+        class EObjectInternalAdapter;
+
+        virtual std::unique_ptr<impl::EObjectInternal> createInternal();
+
+
     private:
         void initFeaturesSubSet();
         void initNameToFeatureMap();
