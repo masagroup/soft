@@ -137,7 +137,6 @@ set(HEADER_ECORE_EXT_FILES
     src/ecore/ext/EStructuralFeatureBaseExt.hpp
     src/ecore/ext/EStructuralFeatureBaseExt.inl
     src/ecore/ext/EStructuralFeatureExt.hpp
-    src/ecore/ext/EStructuralFeatureInternal.hpp
     src/ecore/ext/ETypedElementBaseExt.hpp
     src/ecore/ext/ETypedElementBaseExt.inl
     src/ecore/ext/ETypedElementExt.hpp

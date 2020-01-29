@@ -15,6 +15,7 @@
 #include "ecore/EDataType.hpp"
 #include "ecore/EFactory.hpp"
 #include "ecore/EPackage.hpp"
+#include "ecore/impl/EStructuralFeatureInternal.hpp"
 
 namespace ecore::ext
 {

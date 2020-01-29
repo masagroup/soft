@@ -402,7 +402,7 @@ namespace ecore::ext
         int featureID = static_cast<int>(allFeatures.size());
         for (const auto& feature : *getEStructuralFeatures())
         {
-            auto featureInternal = static_cast<EStructuralFeatureInternal*>( &feature->getInternal()  );
+            auto featureInternal = static_cast<impl::EStructuralFeatureInternal*>( &feature->getInternal()  );
             featureInternal->setFeatureID( featureID++ );
             allFeatures.push_back(feature);
         }
