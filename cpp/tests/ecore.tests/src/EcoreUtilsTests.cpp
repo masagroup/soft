@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE(getURI)
     auto mockInternal = std::make_shared<MockObjectInternal>();
 
     MOCK_EXPECT(mockObject->eIsProxy).returns(true);
-    MOCK_EXPECT(mockObject->getInternalConst).returns(*mockInternal);
+    MOCK_EXPECT(mockObject->getInternalNonConst).returns(*mockInternal);
     MOCK_EXPECT(mockInternal->eProxyURI).returns(uri);
     BOOST_CHECK_EQUAL(EcoreUtils::getURI(mockObject), uri); 
 }
