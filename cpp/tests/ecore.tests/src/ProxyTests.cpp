@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(SetGeT_WithProxy)
     proxy.set(mockProxy);
 
     MOCK_EXPECT(mockOwner->eDeliver).returns(false);
-    MOCK_EXPECT(mockOwner->getInternalConst).returns(*mockInternal);
+    MOCK_EXPECT(mockOwner->getInternalNonConst).returns(*mockInternal);
     MOCK_EXPECT(mockInternal->eResolveProxy).with(mockProxy).returns(mockResolved);
     BOOST_CHECK_EQUAL(proxy.get(), mockResolved);
 }
