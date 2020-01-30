@@ -366,7 +366,7 @@ void XMLLoad::setAttributeValue( const std::shared_ptr<EObject>& eObject, const 
         if( kind == Single || kind == Many )
             setFeatureValue( eObject, eFeature, value, -2 );
         else
-            setValueFromId( eObject, std::dynamic_pointer_cast<EReference>( eFeature ), value );
+            setValueFromId( eObject, std::static_pointer_cast<EReference>( eFeature ), value );
     }
     else
         handleUnknownFeature( localName );
