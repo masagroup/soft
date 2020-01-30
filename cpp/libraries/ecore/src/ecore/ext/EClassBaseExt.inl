@@ -18,9 +18,11 @@
 #include "ecore/EcorePackage.hpp"
 #include "ecore/impl/AbstractAdapter.hpp"
 #include "ecore/impl/EOperationImpl.hpp"
+#include "ecore/impl/EOperationInternal.hpp"
 #include "ecore/impl/EStructuralFeatureImpl.hpp"
 #include "ecore/impl/ImmutableEList.hpp"
-#include "ecore/impl/EClassInternal.hpp"
+#include "ecore/ext/EClassInternal.hpp"
+
 
 #include "EClassBaseExt.hpp"
 #include <algorithm>
@@ -369,10 +371,9 @@ namespace ecore::ext
         int operationID = static_cast<int>( allOperations.size() );
         for( const auto& operation : *getEOperations() )
         {
-            auto operationImpl = std::dynamic_pointer_cast<EOperationExt>( operation );
-            _ASSERT( operationImpl );
-            operationImpl->setOperationID( operationID++ );
-            allOperations.push_back( operationImpl );
+            auto& operationInternal = static_cast<impl::EOperationInternal&>( operation->getInternal() );
+            operationInternal.setOperationID( operationID++ );
+            allOperations.push_back( operation );
         }
         eAllOperations_ = std::make_shared<impl::ImmutableEList<std::shared_ptr<EOperation>>>( std::move( allOperations ) );
     }
@@ -396,8 +397,8 @@ namespace ecore::ext
         int featureID = static_cast<int>( allFeatures.size() );
         for( const auto& feature : *getEStructuralFeatures() )
         {
-            auto featureInternal = static_cast<impl::EStructuralFeatureInternal*>( &feature->getInternal() );
-            featureInternal->setFeatureID( featureID++ );
+            auto& featureInternal = static_cast<impl::EStructuralFeatureInternal&>( feature->getInternal() );
+            featureInternal.setFeatureID( featureID++ );
             allFeatures.push_back( feature );
         }
         eAllStructuralFeatures_ = std::make_shared<impl::ImmutableEList<std::shared_ptr<EStructuralFeature>>>( std::move( allFeatures ) );
@@ -561,13 +562,13 @@ namespace ecore::ext
 
         inline EClassBaseExt<I...>& getObject()
         {
-            return static_cast<EStructuralFeatureBase<I...>&>(
+            return static_cast<EClassBaseExt<I...>&>(
                 ecore::impl::EClassBase<I...>::EObjectInternalAdapter<typename U>::getObject() );
         }
 
         inline const EClassBaseExt<I...>& getObject() const
         {
-            return static_cast<const EStructuralFeatureBase<I...>&>(
+            return static_cast<const EClassBaseExt<I...>&>(
                 ecore::impl::EClassBase<I...>::EObjectInternalAdapter<typename U>::getObject() );
         }
     };

@@ -188,7 +188,7 @@ namespace ecore::impl
         {
             return eContainerFeatureID_ <= EOPPOSITE_FEATURE_BASE
                        ? eContainer->eClass()->getEStructuralFeature( EOPPOSITE_FEATURE_BASE - eContainerFeatureID_ )
-                       : std::dynamic_pointer_cast<EReference>( eClass()->getEStructuralFeature( eContainerFeatureID_ ) )->getEOpposite();
+                       : std::static_pointer_cast<EReference>( eClass()->getEStructuralFeature( eContainerFeatureID_ ) )->getEOpposite();
         }
         return std::shared_ptr<ecore::EStructuralFeature>();
     }
@@ -263,8 +263,7 @@ namespace ecore::impl
         auto thisPtr = thisPtr_.lock();
         if( oldResource && newResource )
         {
-            auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
-            _ASSERTE( list );
+            auto list = std::static_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
             notifications = list->remove( thisPtr, notifications );
 
             oldResource->detached( getThisPtr() );
@@ -486,8 +485,7 @@ namespace ecore::impl
         {
             if( newContainer && !eContainmentFeature( thisPtr, newContainer, newContainerFeatureID ) )
             {
-                auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
-                _ASSERTE( list );
+                auto list = std::static_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
                 notifications = list->remove( thisPtr, notifications );
                 eSetDirectResource( nullptr );
                 newResource = newContainer->eResource();

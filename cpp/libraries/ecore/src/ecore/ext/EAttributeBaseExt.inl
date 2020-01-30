@@ -14,6 +14,7 @@
 #include "ecore/EDataType.hpp"
 #include "ecore/EcorePackage.hpp"
 #include "ecore/ext/EClassExt.hpp"
+#include "ecore/ext/EClassInternal.hpp"
 
 namespace ecore::ext
 {
@@ -52,9 +53,9 @@ namespace ecore::ext
     void EAttributeBaseExt<I...>::setID(bool newID)
     {
         EAttributeBase<I...>::setID(newID);
-        std::shared_ptr<EClassExt> eClass = std::dynamic_pointer_cast<EClassExt>(getEContainingClass());
-        if (eClass)
-            eClass->setModified(EcorePackage::ECLASS__EATTRIBUTES);
+        auto eClass = getEContainingClass();
+        if( eClass )
+            static_cast<EClassInternal&>( eClass->getInternal() ).setModified( EcorePackage::ECLASS__EATTRIBUTES );
     }
 
 }

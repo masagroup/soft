@@ -293,8 +293,7 @@ std::shared_ptr<ENotificationChain> AbstractResource::basicSetResourceSet( const
     auto oldAbstractResourceSet = resourceSet_.lock();
     if( oldAbstractResourceSet )
     {
-        auto list = std::dynamic_pointer_cast<ENotifyingList<std::shared_ptr<EResource>>>( oldAbstractResourceSet->getResources() );
-        _ASSERTE( list );
+        auto list = std::static_pointer_cast<ENotifyingList<std::shared_ptr<EResource>>>( oldAbstractResourceSet->getResources() );
         notifications = list->add( thisPtr_.lock(), notifications );
     }
     resourceSet_ = resourceSet;

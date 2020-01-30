@@ -60,7 +60,6 @@ namespace ecore::impl
         virtual void notifyChanged(const std::shared_ptr<ENotification>& notification)
         {
             int eventType = notification->getEventType();
-            auto eNotifier = std::dynamic_pointer_cast<DynamicEObjectBase>(notification->getNotifier());
             if (eventType != ENotification::REMOVING_ADAPTER)
             {
                 int featureID = notification->getFeatureID();
@@ -226,7 +225,7 @@ namespace ecore::impl
                     }
                     else
                     {
-                        auto dynamicReference = std::dynamic_pointer_cast<EReference>(dynamicFeature);
+                        auto dynamicReference = std::static_pointer_cast<EReference>(dynamicFeature);
                         auto reverseFeature = dynamicReference->getEOpposite();
                         if (oldObject)
                             notifications = oldObject->getInternal().eInverseRemove(getThisPtr(), reverseFeature->getFeatureID(), notifications);
