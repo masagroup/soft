@@ -97,7 +97,7 @@ bool XMLSave::saveFeatures( const std::shared_ptr<EObject>& eObject, bool attrib
         // current feature
         auto eFeature = *it;
         
-        /*if( eFeature->getName() == "eSuperTypes" )
+        /*if( eFeature->getName() == "eType" )
             __debugbreak();*/
 
         FeatureKind kind;
@@ -591,7 +591,7 @@ std::string XMLSave::getDataType( const Any& value, const std::shared_ptr<EStruc
         return "";
     else
     {
-        auto d = std::dynamic_pointer_cast<EDataType>( eFeature->getEType() );
+        auto d = std::static_pointer_cast<EDataType>( eFeature->getEType() );
         auto p = d->getEPackage();
         auto f = p->getEFactoryInstance();
         auto s = f->convertToString( d, value );
@@ -601,24 +601,20 @@ std::string XMLSave::getDataType( const Any& value, const std::shared_ptr<EStruc
 
 std::string XMLSave::getHRef( const std::shared_ptr<EObject>& eObject )
 {
-    auto internal = std::dynamic_pointer_cast<EObjectInternal>( eObject );
-    if( internal )
+    auto& internal = eObject->getInternal();
+    auto uri = internal.eProxyURI();
+    if( uri.isEmpty() )
     {
-        auto uri = internal->eProxyURI();
-        if( uri.isEmpty() )
-        {
-            auto eResource = eObject->eResource();
-            if( eResource )
-                return getHRef( eResource, eObject );
-            else
-                return std::string();
-        }
+        auto eResource = eObject->eResource();
+        if( eResource )
+            return getHRef( eResource, eObject );
         else
-        {
-            return uri.toString();
-        }
+            return std::string();
     }
-    return std::string();
+    else
+    {
+        return uri.toString();
+    }
 }
 
 std::string XMLSave::getHRef( const std::shared_ptr<EResource>& eResource, const std::shared_ptr<EObject>& eObject )
