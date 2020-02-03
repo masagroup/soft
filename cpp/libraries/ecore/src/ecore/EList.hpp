@@ -48,7 +48,7 @@ namespace ecore {
 
         virtual bool empty() const = 0;
 
-        bool contains(const T& e) const {
+        virtual bool contains(const T& e) const {
             return std::find(begin(), end(), e) != end();
         }
 

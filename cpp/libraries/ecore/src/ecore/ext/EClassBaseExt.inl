@@ -20,7 +20,7 @@
 #include "ecore/impl/EOperationImpl.hpp"
 #include "ecore/impl/EOperationInternal.hpp"
 #include "ecore/impl/EStructuralFeatureImpl.hpp"
-#include "ecore/impl/ImmutableEList.hpp"
+#include "ecore/impl/ImmutableHashEList.hpp"
 #include "ecore/ext/EClassInternal.hpp"
 
 
@@ -285,8 +285,8 @@ namespace ecore::ext
         }
 
         eIDAttribute_ = eIDAttribute;
-        eAttributes_ = std::make_shared<impl::ImmutableEList<std::shared_ptr<EAttribute>>>( std::move( attributes ) );
-        eAllAttributes_ = std::make_shared<impl::ImmutableEList<std::shared_ptr<EAttribute>>>( std::move( allAttributes ) );
+        eAttributes_ = std::make_shared<impl::ImmutableHashEList<std::shared_ptr<EAttribute>>>( std::move( attributes ) );
+        eAllAttributes_ = std::make_shared<impl::ImmutableHashEList<std::shared_ptr<EAttribute>>>( std::move( allAttributes ) );
     }
 
     template <typename... I>
@@ -311,8 +311,8 @@ namespace ecore::ext
                 allReferences.push_back( reference );
             }
         }
-        eReferences_ = std::make_shared<impl::ImmutableEList<std::shared_ptr<EReference>>>( std::move( references ) );
-        eAllReferences_ = std::make_shared<impl::ImmutableEList<std::shared_ptr<EReference>>>( std::move( allReferences ) );
+        eReferences_ = std::make_shared<impl::ImmutableHashEList<std::shared_ptr<EReference>>>( std::move( references ) );
+        eAllReferences_ = std::make_shared<impl::ImmutableHashEList<std::shared_ptr<EReference>>>( std::move( allReferences ) );
     }
 
     template <typename... I>
@@ -351,7 +351,7 @@ namespace ecore::ext
             if( reference->isContainment() )
                 allContainments.push_back( reference );
         }
-        eAllContainments_ = std::make_shared<impl::ImmutableEList<std::shared_ptr<EReference>>>( std::move( allContainments ) );
+        eAllContainments_ = std::make_shared<impl::ImmutableHashEList<std::shared_ptr<EReference>>>( std::move( allContainments ) );
     }
 
     template <typename... I>
@@ -375,7 +375,7 @@ namespace ecore::ext
             operationInternal.setOperationID( operationID++ );
             allOperations.push_back( operation );
         }
-        eAllOperations_ = std::make_shared<impl::ImmutableEList<std::shared_ptr<EOperation>>>( std::move( allOperations ) );
+        eAllOperations_ = std::make_shared<impl::ImmutableHashEList<std::shared_ptr<EOperation>>>( std::move( allOperations ) );
     }
 
     template <typename... I>
@@ -401,7 +401,8 @@ namespace ecore::ext
             featureInternal.setFeatureID( featureID++ );
             allFeatures.push_back( feature );
         }
-        eAllStructuralFeatures_ = std::make_shared<impl::ImmutableEList<std::shared_ptr<EStructuralFeature>>>( std::move( allFeatures ) );
+        eAllStructuralFeatures_
+            = std::make_shared<impl::ImmutableHashEList<std::shared_ptr<EStructuralFeature>>>( std::move( allFeatures ) );
     }
 
     template <typename... I>
@@ -417,7 +418,7 @@ namespace ecore::ext
             allSuperTypes.insert( std::end( allSuperTypes ), superTypes->begin(), superTypes->end() );
             allSuperTypes.push_back( eClass );
         }
-        eAllSuperTypes_ = std::make_shared<impl::ImmutableEList<std::shared_ptr<EClass>>>( std::move( allSuperTypes ) );
+        eAllSuperTypes_ = std::make_shared<impl::ImmutableHashEList<std::shared_ptr<EClass>>>( std::move( allSuperTypes ) );
     }
 
     template <typename... I>
@@ -505,8 +506,8 @@ namespace ecore::ext
                 }
             }
         }
-        eContainments_ = std::make_shared<impl::ImmutableEList<std::shared_ptr<EReference>>>( std::move( containments ) );
-        eCrossReferences_ = std::make_shared<impl::ImmutableEList<std::shared_ptr<EReference>>>( std::move( crossReferences ) );
+        eContainments_ = std::make_shared<impl::ImmutableHashEList<std::shared_ptr<EReference>>>( std::move( containments ) );
+        eCrossReferences_ = std::make_shared<impl::ImmutableHashEList<std::shared_ptr<EReference>>>( std::move( crossReferences ) );
     }
 
     template <typename... I>
