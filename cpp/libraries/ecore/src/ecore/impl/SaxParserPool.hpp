@@ -22,20 +22,33 @@ namespace ecore::impl
     class ECORE_API SaxParserPool
     {
     public:
+        class SaxParser
+        {
+        public:
+            SaxParser( SaxParserPool& pool );
+
+            ~SaxParser();
+
+            xercesc::SAX2XMLReader& getReader() const;
+
+            
+        private:
+            SaxParserPool& pool_;
+            std::shared_ptr<xercesc::SAX2XMLReader> reader_;
+        };
+
         static SaxParserPool& getInstance();
 
         ~SaxParserPool();
 
-        std::shared_ptr<xercesc::SAX2XMLReader> getParser( const std::map<std::string, bool>& features = std::map<std::string, bool>());
-
-        void releaseParser( std::shared_ptr<xercesc::SAX2XMLReader>& parser );
+        std::unique_ptr<SaxParser> getParser( const std::map<std::string, bool>& features = std::map<std::string, bool>());
 
     private:
         SaxParserPool();
 
 
     private:
-        std::list<std::shared_ptr<xercesc::SAX2XMLReader>> parsers_;
+        std::list<std::shared_ptr<xercesc::SAX2XMLReader>> readers_;
     };
 
 } // namespace ecore::impl
