@@ -2,6 +2,7 @@
 #include "ecore/EAttribute.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/EDataType.hpp"
+#include "ecore/EList.hpp"
 #include "ecore/EFactory.hpp"
 #include "ecore/EObject.hpp"
 #include "ecore/EPackage.hpp"
@@ -87,18 +88,17 @@ std::string EcoreUtils::getRelativeURIFragmentPath( const std::shared_ptr<EObjec
     std::unordered_set<std::shared_ptr<EObject>> visited;
     std::deque<std::string> fragmentURIPath;
     auto eObject = descendant;
-    for( auto eContainer = eObject->eContainer(); eContainer && visited.insert( eContainer ).second;
-         eContainer = eObject->eContainer() )
+    for( auto eContainer = eObject->eContainer(); eContainer && visited.insert( eContainer ).second; eContainer = eObject->eContainer() )
     {
-        fragmentURIPath.push_front(eContainer->getInternal().eURIFragmentSegment(eObject->eContainingFeature(), eObject ) );
+        fragmentURIPath.push_front( eContainer->getInternal().eURIFragmentSegment( eObject->eContainingFeature(), eObject ) );
         eObject = eContainer;
-        if(eContainer == ancestor )
+        if( eContainer == ancestor )
         {
             break;
         }
     }
 
-    if(eObject != ancestor && ancestor )
+    if( eObject != ancestor && ancestor )
         throw "The ancestor not found'";
 
     return join( fragmentURIPath, "/" );
@@ -108,8 +108,8 @@ std::shared_ptr<EObject> EcoreUtils::getEObject( const std::shared_ptr<EObject>&
 {
     auto segments = split( relativeFragmentPath, "/" );
     auto eObject = rootEObject;
-    for (int i = 0; i < segments.size() && eObject; ++i)
-        eObject = eObject->getInternal().eObjectForFragmentSegment(std::string(segments[i]));
+    for( int i = 0; i < segments.size() && eObject; ++i )
+        eObject = eObject->getInternal().eObjectForFragmentSegment( std::string( segments[i] ) );
     return eObject;
 }
 
@@ -151,9 +151,40 @@ std::shared_ptr<EObject> EcoreUtils::resolve( const std::shared_ptr<EObject>& pr
                     resolved = eResource->getEObject( proxyURI.getFragment() );
             }
         }
-        if(resolved && resolved != proxy)
-            return resolve(resolved,resourceSet);
+        if( resolved && resolved != proxy )
+            return resolve( resolved, resourceSet );
     }
     return proxy;
+}
 
+bool EcoreUtils::isAncestor( const std::shared_ptr<EObject>& ancestor, const std::shared_ptr<EObject>& object )
+{
+    if( object )
+    {
+        auto current = object;
+        while( current )
+        {
+            if( current == ancestor )
+                return true;
+
+            current = current->eContainer();
+        }
+    }
+    return false;
+}
+
+bool EcoreUtils::isAssignableFrom( const std::shared_ptr<EClass>& eSuper, const std::shared_ptr<EClass>& eClass )
+{
+    if( eClass == eSuper )
+        return true;
+    else if( eClass )
+    {
+        auto supers = eClass->getESuperTypes();
+        for( auto s : *supers )
+        {
+            if( isAssignableFrom( eSuper, s ) )
+                return true;
+        }
+    }
+    return false;
 }
