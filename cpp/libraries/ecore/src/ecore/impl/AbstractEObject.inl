@@ -24,6 +24,7 @@
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/EcorePackage.hpp"
 #include "ecore/EcoreUtils.hpp"
+#include "ecore/impl/AbstractAdapter.hpp"
 #include "ecore/impl/Notification.hpp"
 
 #include "AbstractEObject.hpp"
@@ -32,6 +33,35 @@
 
 namespace ecore::impl
 {
+    template <typename... I>
+    class AbstractEObject<I...>::EContentsAdapter : public AbstractAdapter
+    {
+    public:
+        EContentsAdapter( AbstractEObject<I...>& obj )
+            : obj_( obj )
+        {
+            obj_.eAdapters().add( this );
+        }
+
+        virtual void notifyChanged( const std::shared_ptr<ENotification>& notification )
+        {
+            auto feature = notification->getFeature();
+            auto ref = std::dynamic_pointer_cast<EReference>( feature );
+            if( ref )
+            {
+                auto containments = obj_.eClass()->getEContainments();
+                if( containments->contains( ref ) )
+                    obj_.eContents_.reset();
+                auto crossRerences = obj_.eClass()->getECrossReferences();
+                if( crossRerences->contains( ref ) )
+                    obj_.eCrossReferences_.reset();
+            }
+        }
+
+    private:
+        AbstractEObject<I...>& obj_;
+    };
+
     template <typename... I>
     AbstractEObject<I...>::AbstractEObject()
         : eContainer_()
@@ -67,13 +97,37 @@ namespace ecore::impl
     template <typename... I>
     std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> AbstractEObject<I...>::eContents() const
     {
-        return eContentsList( eClass()->getEContainments() );
+        return const_cast<AbstractEObject<I...>*>( this )->eContentsList();
     }
 
     template <typename... I>
     std::shared_ptr<const EList<std::shared_ptr<ecore::EObject>>> AbstractEObject<I...>::eCrossReferences() const
     {
-        return eContentsList( eClass()->getECrossReferences() );
+        return const_cast<AbstractEObject<I...>*>( this )->eCrossReferencesList();
+    }
+
+    template <typename... I>
+    inline typename AbstractEObject<I...>::EContentsList AbstractEObject<I...>::eContentsList()
+    {
+        if( !eContents_ )
+        {
+            eContents_ = eContentsList( eClass()->getEContainments() );
+            if( !eContentsAdapter_ )
+                eContentsAdapter_ = std::make_unique<EContentsAdapter>(*this);
+        }
+        return eContents_;
+    }
+
+    template <typename... I>
+    inline typename AbstractEObject<I...>::EContentsList AbstractEObject<I...>::eCrossReferencesList()
+    {
+        if( !eCrossReferences_ )
+        {
+            eCrossReferences_ = eContentsList( eClass()->getECrossReferences() );
+            if( !eContentsAdapter_ )
+                eContentsAdapter_ = std::make_unique<EContentsAdapter>(*this);
+        }
+        return eCrossReferences_;
     }
 
     template <typename... I>
