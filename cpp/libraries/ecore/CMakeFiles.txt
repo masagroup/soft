@@ -45,6 +45,7 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/AbstractEObject.hpp
     src/ecore/impl/AbstractEObject.inl
     src/ecore/impl/AbstractEObjectEList.hpp
+    src/ecore/impl/AbstractImmutableEList.hpp
     src/ecore/impl/AbstractNotification.hpp
     src/ecore/impl/AbstractNotifier.hpp
     src/ecore/impl/AbstractResource.hpp
