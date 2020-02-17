@@ -114,11 +114,9 @@ namespace ecore::impl
         int eContainerFeatureID() const;
 
     private:
-        class EContentsAdapter;
-        typedef std::shared_ptr<const EList<std::shared_ptr<EObject>>> EContentsList;
-        EContentsList eContentsList();
-        EContentsList eCrossReferencesList();
-        EContentsList eContentsList(const std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>>& refs ) const;        
+        class EContentsEList;
+        std::shared_ptr<const EList<std::shared_ptr<EObject>>> eContentsList();
+        std::shared_ptr<const EList<std::shared_ptr<EObject>>> eCrossReferencesList();
         std::shared_ptr<EStructuralFeature> eStructuralFeature( const std::string& name ) const;
 
     protected:
@@ -127,9 +125,8 @@ namespace ecore::impl
         std::weak_ptr<EObject> eContainer_;
         int eContainerFeatureID_;
         std::optional<URI> eProxyURI_;
-        std::unique_ptr<EContentsAdapter> eContentsAdapter_;
-        EContentsList eContents_;
-        EContentsList eCrossReferences_;
+        std::unique_ptr<EContentsEList> eContents_;
+        std::unique_ptr<EContentsEList> eCrossReferences_;
     };
 
 } // namespace ecore::impl

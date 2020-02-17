@@ -34,13 +34,21 @@
 namespace ecore::impl
 {
     template <typename... I>
-    class AbstractEObject<I...>::EContentsAdapter : public AbstractAdapter
+    class AbstractEObject<I...>::EContentsEList : public AbstractAdapter
     {
+        typedef std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>> ( EClass::*T_RefsGetter )() const;
+
     public:
-        EContentsAdapter( AbstractEObject<I...>& obj )
+        EContentsEList( AbstractEObject<I...>& obj, T_RefsGetter refsGetter )
             : obj_( obj )
+            , refsGetter_( refsGetter )
         {
             obj_.eAdapters().add( this );
+        }
+
+        virtual ~EContentsEList()
+        {
+            obj_.eAdapters().remove( this );
         }
 
         virtual void notifyChanged( const std::shared_ptr<ENotification>& notification )
@@ -49,17 +57,46 @@ namespace ecore::impl
             auto ref = std::dynamic_pointer_cast<EReference>( feature );
             if( ref )
             {
-                auto containments = obj_.eClass()->getEContainments();
-                if( containments->contains( ref ) )
-                    obj_.eContents_.reset();
-                auto crossRerences = obj_.eClass()->getECrossReferences();
-                if( crossRerences->contains( ref ) )
-                    obj_.eCrossReferences_.reset();
+                auto refs = std::invoke( refsGetter_, *obj_.eClass() );
+                if( refs->contains( ref ) )
+                    l_.reset();
             }
+        }
+
+        std::shared_ptr<const EList<std::shared_ptr<EObject>>> getList()
+        {
+            if( !l_ )
+            {
+                std::vector<std::shared_ptr<EObject>> v;
+                auto refs = std::invoke( refsGetter_, *obj_.eClass() );
+                for( auto ref : *refs )
+                {
+                    if( obj_.eIsSet( ref ) )
+                    {
+                        auto value = obj_.eGet( ref );
+                        if( ref->isMany() )
+                        {
+                            auto l = anyListCast<std::shared_ptr<EObject>>( value );
+                            v.reserve( v.size() + l->size() );
+                            std::copy( l->begin(), l->end(), std::back_inserter( v ) );
+                        }
+                        else if( !value.empty() )
+                        {
+                            auto object = anyObjectCast<std::shared_ptr<EObject>>( value );
+                            if( object )
+                                v.push_back( object );
+                        }
+                    }
+                }
+                l_ = std::make_shared<ImmutableEList<std::shared_ptr<EObject>>>( std::move( v ) );
+            }
+            return l_;
         }
 
     private:
         AbstractEObject<I...>& obj_;
+        T_RefsGetter refsGetter_;
+        std::shared_ptr<const EList<std::shared_ptr<EObject>>> l_;
     };
 
     template <typename... I>
@@ -107,53 +144,19 @@ namespace ecore::impl
     }
 
     template <typename... I>
-    inline typename AbstractEObject<I...>::EContentsList AbstractEObject<I...>::eContentsList()
+    typename std::shared_ptr<const EList<std::shared_ptr<EObject>>> AbstractEObject<I...>::eContentsList()
     {
         if( !eContents_ )
-        {
-            eContents_ = eContentsList( eClass()->getEContainments() );
-            if( !eContentsAdapter_ )
-                eContentsAdapter_ = std::make_unique<EContentsAdapter>(*this);
-        }
-        return eContents_;
+            eContents_ = std::make_unique<EContentsEList>( *this, &EClass::getEContainments );
+        return eContents_->getList();
     }
 
     template <typename... I>
-    inline typename AbstractEObject<I...>::EContentsList AbstractEObject<I...>::eCrossReferencesList()
+    typename std::shared_ptr<const EList<std::shared_ptr<EObject>>> AbstractEObject<I...>::eCrossReferencesList()
     {
         if( !eCrossReferences_ )
-        {
-            eCrossReferences_ = eContentsList( eClass()->getECrossReferences() );
-            if( !eContentsAdapter_ )
-                eContentsAdapter_ = std::make_unique<EContentsAdapter>(*this);
-        }
-        return eCrossReferences_;
-    }
-
-    template <typename... I>
-    std::shared_ptr<const EList<std::shared_ptr<EObject>>> AbstractEObject<I...>::eContentsList(
-        const std::shared_ptr<const EList<std::shared_ptr<ecore::EReference>>>& refs ) const
-    {
-        std::vector<std::shared_ptr<EObject>> contents;
-        for( auto ref : *refs )
-        {
-            if( eIsSet( ref ) )
-            {
-                auto value = eGet( ref );
-                if( ref->isMany() )
-                {
-                    auto l = anyListCast<std::shared_ptr<EObject>>( value );
-                    std::copy( l->begin(), l->end(), std::back_inserter( contents ) );
-                }
-                else if( !value.empty() )
-                {
-                    auto object = anyObjectCast<std::shared_ptr<EObject>>( value );
-                    if( object )
-                        contents.push_back( object );
-                }
-            }
-        }
-        return std::make_shared<ImmutableEList<std::shared_ptr<EObject>>>( std::move( contents ) );
+            eCrossReferences_ = std::make_unique<EContentsEList>( *this, &EClass::getECrossReferences );
+        return eCrossReferences_->getList();
     }
 
     template <typename... I>
