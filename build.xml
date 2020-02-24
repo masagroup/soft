@@ -624,6 +624,17 @@
     <target name="library" depends="library.go"/>
     
     <target name="all" depends="configure,generators,ecore,library"/>
+	
+	<target name="clean">
+		<attrib readonly="false" type="both" verbose="true">
+			<dirset dir="out/go">
+				<include name="**/*"/>
+			</dirset>
+		</attrib>
+		<exec executable="git" failonerror="true">
+            <arg line="clean -xfd" />
+        </exec>
+	</target>
 
 
 
