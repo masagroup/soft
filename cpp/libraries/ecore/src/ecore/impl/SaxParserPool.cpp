@@ -1,6 +1,6 @@
 #include "ecore/impl/SaxParserPool.hpp"
-#include <xercesc/sax2/XMLReaderFactory.hpp>
 #include <stdexcept>
+#include <xercesc/sax2/XMLReaderFactory.hpp>
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -11,7 +11,6 @@ SaxParserPool& SaxParserPool::getInstance()
     static SaxParserPool instance;
     return instance;
 }
-
 
 SaxParserPool::SaxParserPool()
 {
@@ -30,6 +29,8 @@ SaxParserPool::SaxParserPool()
 
 SaxParserPool::~SaxParserPool()
 {
+    readers_.clear();
+
     try
     {
         XMLPlatformUtils::Terminate();
@@ -39,30 +40,40 @@ SaxParserPool::~SaxParserPool()
     }
 }
 
-std::shared_ptr<SAX2XMLReader> SaxParserPool::getParser( const std::map<std::string, bool>& features )
+SaxParserPool::SaxParser::SaxParser( SaxParserPool& pool )
+    : pool_( pool )
 {
-    std::shared_ptr<SAX2XMLReader> result;
-    if( parsers_.empty()  )
-        result = std::shared_ptr<SAX2XMLReader>( XMLReaderFactory::createXMLReader() );
+    auto& readers = pool_.readers_;
+    if( readers.empty() )
+        reader_ = std::shared_ptr<SAX2XMLReader>( XMLReaderFactory::createXMLReader() );
     else
     {
-        result = parsers_.front();
-        parsers_.pop_front();
+        reader_ = readers.front();
+        readers.pop_front();
     }
-    for (auto feature : features)
+}
+
+SaxParserPool::SaxParser::~SaxParser()
+{
+    auto& readers = pool_.readers_;
+    readers.push_back( reader_ );
+    reader_.reset();
+}
+
+xercesc::SAX2XMLReader& SaxParserPool::SaxParser::getReader() const
+{
+    return *reader_;
+}
+
+std::unique_ptr<SaxParserPool::SaxParser> SaxParserPool::getParser( const std::map<std::string, bool>& features )
+{
+    auto parser = std::make_unique<SaxParser>( *this );
+    for( auto feature : features )
     {
         XMLCh* featureKey = XMLString::transcode( feature.first.c_str() );
         bool featureValue = feature.second;
-        result->setFeature( featureKey, featureValue );
+        parser->getReader().setFeature( featureKey, featureValue );
         XMLString::release( &featureKey );
-    }   
-    return result;
+    }
+    return parser;
 }
-
-void SaxParserPool::releaseParser( std::shared_ptr<xercesc::SAX2XMLReader>& parser )
-{
-    parsers_.push_back( parser );
-}
-
-
-

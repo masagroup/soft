@@ -7,31 +7,15 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EOPERATIONEXT_HPP
-#define ECORE_EOPERATIONEXT_HPP
+#ifndef ECORE_EXT_EOPERATIONEXT_HPP
+#define ECORE_EXT_EOPERATIONEXT_HPP
 
-#include "ecore/impl/EOperationImpl.hpp"
+#include "ecore/ext/EOperationBaseExt.hpp"
 
 
 namespace ecore::ext
 {
-
-    class EOperationExt : public impl::EOperationImpl
-    {
-    private:
-        EOperationExt( EOperationExt const& ) = delete;
-        EOperationExt& operator=( EOperationExt const& ) = delete;
-
-    protected:
-        friend class impl::EcoreFactoryImpl;
-        EOperationExt();
-    
-    public:
-        virtual ~EOperationExt();
-
-        virtual bool isOverrideOf( const std::shared_ptr<ecore::EOperation>& someOperation );
-    };
-
+    typedef EOperationBaseExt<EOperation> EOperationExt;
 }
 
 #endif

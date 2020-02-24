@@ -1,11 +1,11 @@
-#include <boost/test/auto_unit_test.hpp>
-#include <boost/test/execution_monitor.hpp>
+#include <boost/test/unit_test.hpp>
 
+#include "ecore/EList.hpp"
 #include "ecore/EcoreFactory.hpp"
 #include "ecore/EcorePackage.hpp"
-#include "ecore/EList.hpp"
 #include "ecore/tests/MockClassifier.hpp"
 #include "ecore/tests/MockFactory.hpp"
+#include "ecore/tests/MockObjectInternal.hpp"
 
 using namespace ecore;
 using namespace ecore::tests;
@@ -44,11 +44,12 @@ BOOST_AUTO_TEST_CASE( Accessors_FactoryInstance )
 
     auto ePackage = ecoreFactory->createEPackage();
     auto mockFactory = std::make_shared<MockFactory>();
-    MOCK_EXPECT( mockFactory->eInverseAdd ).with( ePackage, EcorePackage::EFACTORY__EPACKAGE, nullptr ).returns(nullptr);
+    auto mockInternal = std::make_shared<MockObjectInternal>();
+    MOCK_EXPECT( mockFactory->getInternal ).returns( *mockInternal );
+    MOCK_EXPECT( mockInternal->eInverseAdd ).with( ePackage, EcorePackage::EFACTORY__EPACKAGE, nullptr ).returns( nullptr );
     ePackage->setEFactoryInstance( mockFactory );
     BOOST_CHECK_EQUAL( ePackage->getEFactoryInstance(), mockFactory );
 }
-
 
 BOOST_AUTO_TEST_CASE( Accessors_Classifiers )
 {
@@ -61,12 +62,17 @@ BOOST_AUTO_TEST_CASE( Accessors_Classifiers )
     auto eClassifier1 = std::make_shared<MockClassifier>();
     auto eClassifier2 = std::make_shared<MockClassifier>();
     auto eClassifier3 = std::make_shared<MockClassifier>();
+    auto mockInternal = std::make_shared<MockObjectInternal>();
+
     MOCK_EXPECT( eClassifier1->getName ).returns( "eClassifier1" );
-    MOCK_EXPECT( eClassifier1->eInverseAdd ).with( ePackage , EcorePackage::ECLASSIFIER__EPACKAGE , nullptr ).returns(nullptr);
+    MOCK_EXPECT( eClassifier1->getInternal ).returns( *mockInternal );
+    MOCK_EXPECT( mockInternal->eInverseAdd ).with( ePackage, EcorePackage::ECLASSIFIER__EPACKAGE, nullptr ).returns( nullptr );
     MOCK_EXPECT( eClassifier2->getName ).returns( "eClassifier2" );
-    MOCK_EXPECT( eClassifier2->eInverseAdd ).with( ePackage, EcorePackage::ECLASSIFIER__EPACKAGE , nullptr ).returns( nullptr );
+    MOCK_EXPECT( eClassifier2->getInternal ).returns( *mockInternal );
+    MOCK_EXPECT( mockInternal->eInverseAdd ).with( ePackage, EcorePackage::ECLASSIFIER__EPACKAGE, nullptr ).returns( nullptr );
     MOCK_EXPECT( eClassifier3->getName ).returns( "eClassifier3" );
-    MOCK_EXPECT( eClassifier3->eInverseAdd ).with( ePackage, EcorePackage::ECLASSIFIER__EPACKAGE, nullptr ).returns( nullptr );
+    MOCK_EXPECT( eClassifier3->getInternal ).returns( *mockInternal );
+    MOCK_EXPECT( mockInternal->eInverseAdd ).with( ePackage, EcorePackage::ECLASSIFIER__EPACKAGE, nullptr ).returns( nullptr );
     ePackage->getEClassifiers()->add( eClassifier1 );
     ePackage->getEClassifiers()->add( eClassifier2 );
 
@@ -79,6 +85,5 @@ BOOST_AUTO_TEST_CASE( Accessors_Classifiers )
     ePackage->getEClassifiers()->add( eClassifier3 );
     BOOST_CHECK_EQUAL( ePackage->getEClassifier( "eClassifier3" ), eClassifier3 );
 }
-
 
 BOOST_AUTO_TEST_SUITE_END()

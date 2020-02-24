@@ -42,17 +42,21 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/ArrayEList.hpp
     src/ecore/impl/AbstractEList.hpp
     src/ecore/impl/AbstractENotifyingList.hpp
+    src/ecore/impl/AbstractEObject.hpp
+    src/ecore/impl/AbstractEObject.inl
     src/ecore/impl/AbstractEObjectEList.hpp
+    src/ecore/impl/AbstractImmutableEList.hpp
     src/ecore/impl/AbstractNotification.hpp
     src/ecore/impl/AbstractNotifier.hpp
     src/ecore/impl/AbstractResource.hpp
-    src/ecore/impl/BasicEObject.hpp
     src/ecore/impl/Diagnostic.hpp
-    src/ecore/impl/DynamicEObjectImpl.hpp   
+    src/ecore/impl/DynamicEObjectImpl.hpp
+    src/ecore/impl/DynamicEObjectImpl.inl
     src/ecore/impl/EObjectEList.hpp
     src/ecore/impl/EObjectInternal.hpp
     src/ecore/impl/FileURIHandler.hpp
     src/ecore/impl/ImmutableEList.hpp
+    src/ecore/impl/ImmutableHashEList.hpp
     src/ecore/impl/Lazy.hpp
     src/ecore/impl/Notification.hpp
     src/ecore/impl/NotificationChain.hpp
@@ -83,8 +87,6 @@ set(SOURCE_ECORE_IMPL_FILES
     src/ecore/impl/AbstractAdapter.cpp
     src/ecore/impl/AbstractNotification.cpp
     src/ecore/impl/AbstractResource.cpp
-    src/ecore/impl/BasicEObject.cpp
-    src/ecore/impl/DynamicEObjectImpl.cpp
     src/ecore/impl/FileURIHandler.cpp
     src/ecore/impl/Notification.cpp
     src/ecore/impl/NotificationChain.cpp
@@ -107,31 +109,43 @@ set(SOURCE_ECORE_IMPL_FILES
 )
 
 set(HEADER_ECORE_EXT_FILES 
+    src/ecore/ext/EAttributeBaseExt.hpp
+    src/ecore/ext/EAttributeBaseExt.inl
     src/ecore/ext/EAttributeExt.hpp
+    src/ecore/ext/EClassBaseExt.hpp
+    src/ecore/ext/EClassBaseExt.inl
     src/ecore/ext/EClassExt.hpp
+    src/ecore/ext/EClassInternal.hpp
+    src/ecore/ext/EClassifierBaseExt.hpp
+    src/ecore/ext/EClassifierBaseExt.inl
     src/ecore/ext/EClassifierExt.hpp
+    src/ecore/ext/EcoreFactoryBaseExt.hpp
+    src/ecore/ext/EcoreFactoryBaseExt.inl
     src/ecore/ext/EcoreFactoryExt.hpp
+    src/ecore/ext/EFactoryBaseExt.hpp
+    src/ecore/ext/EFactoryBaseExt.inl
     src/ecore/ext/EFactoryExt.hpp
+    src/ecore/ext/EModelElementBaseExt.hpp
+    src/ecore/ext/EModelElementBaseExt.inl
     src/ecore/ext/EModelElementExt.hpp
+    src/ecore/ext/EOperationBaseExt.hpp
+    src/ecore/ext/EOperationBaseExt.inl
     src/ecore/ext/EOperationExt.hpp
+    src/ecore/ext/EPackageBaseExt.hpp
+    src/ecore/ext/EPackageBaseExt.inl
     src/ecore/ext/EPackageExt.hpp
+    src/ecore/ext/EReferenceBaseExt.hpp
+    src/ecore/ext/EReferenceBaseExt.inl
     src/ecore/ext/EReferenceExt.hpp
+    src/ecore/ext/EStructuralFeatureBaseExt.hpp
+    src/ecore/ext/EStructuralFeatureBaseExt.inl
     src/ecore/ext/EStructuralFeatureExt.hpp
+    src/ecore/ext/ETypedElementBaseExt.hpp
+    src/ecore/ext/ETypedElementBaseExt.inl
     src/ecore/ext/ETypedElementExt.hpp
 )
 
-set(SOURCE_ECORE_EXT_FILES 
-    src/ecore/ext/EAttributeExt.cpp
-    src/ecore/ext/EClassExt.cpp
-    src/ecore/ext/EClassifierExt.cpp
-    src/ecore/ext/EcoreFactoryExt.cpp
-    src/ecore/ext/EFactoryExt.cpp
-    src/ecore/ext/EModelElementExt.cpp
-    src/ecore/ext/EOperationExt.cpp
-    src/ecore/ext/EPackageExt.cpp
-    src/ecore/ext/EReferenceExt.cpp
-    src/ecore/ext/EStructuralFeatureExt.cpp
-    src/ecore/ext/ETypedElementExt.cpp
+set(SOURCE_ECORE_EXT_FILES     
 )
 
 

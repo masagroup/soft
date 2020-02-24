@@ -7,39 +7,14 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EPACKAGEEXT_HPP
-#define ECORE_EPACKAGEEXT_HPP
+#ifndef ECORE_EXT_EPACKAGEEXT_HPP
+#define ECORE_EXT_EPACKAGEEXT_HPP
 
-#include "ecore/impl/EPackageImpl.hpp"
-
-#include <memory>
-#include <unordered_map>
+#include "ecore/ext/EPackageBaseExt.hpp"
 
 namespace ecore::ext
 {
-
-    class EPackageExt : public impl::EPackageImpl
-    {
-    private:
-        EPackageExt( EPackageExt const& ) = delete;
-        EPackageExt& operator=( EPackageExt const& ) = delete;
-
-    protected:
-        friend class impl::EcoreFactoryImpl;
-        EPackageExt();
-        void setThisPtr( const std::shared_ptr<EPackageExt>& thisPtr );
-
-    public:
-        virtual ~EPackageExt();
-
-        virtual std::shared_ptr<ecore::EClassifier> getEClassifier( const std::string& name );
-
-    private:
-        class Adapter;
-        std::unique_ptr<EAdapter> adapter_;
-        std::unique_ptr<std::unordered_map<std::string, std::shared_ptr<ecore::EClassifier>>> nameToClassifierMap_;
-    };
-
+    typedef EPackageBaseExt<EPackage> EPackageExt;
 }
 
-#endif
+#endif // ECORE_EXT_EPACKAGEEXT_HPP

@@ -20,8 +20,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 # dependencies
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.68.0 REQUIRED COMPONENTS unit_test_framework)
-find_package(Turtle 2.3.0)
+find_package(Boost REQUIRED unit_test_framework)
+find_package(Turtle)
 
 include( CMakeFiles.txt OPTIONAL)
 include( CMakeGenerated.txt OPTIONAL)

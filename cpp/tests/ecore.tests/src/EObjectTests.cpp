@@ -1,5 +1,4 @@
-#include <boost/test/auto_unit_test.hpp>
-#include <boost/test/execution_monitor.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include "ecore/EAdapter.hpp"
 #include "ecore/EcoreFactory.hpp"
@@ -7,7 +6,6 @@
 #include "ecore/EAttribute.hpp"
 #include "ecore/EOperation.hpp"
 #include "ecore/Stream.hpp"
-#include "ecore/impl/ImmutableEList.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -43,10 +41,16 @@ BOOST_AUTO_TEST_CASE( Contents )
     auto a1 = f->createEAttribute();
     auto a2 = f->createEAttribute();
     auto o1 = f->createEOperation();
+    auto o2 = f->createEOperation();
+    BOOST_CHECK_EQUAL( c->eContents(), std::vector<std::shared_ptr<EObject>>( {} ) );
     c->getEStructuralFeatures()->add(a1);
+    BOOST_CHECK_EQUAL( c->eContents(), std::vector<std::shared_ptr<EObject>>( {a1} ) );
     c->getEStructuralFeatures()->add(a2);
+    BOOST_CHECK_EQUAL( c->eContents(), std::vector<std::shared_ptr<EObject>>( {a1, a2} ) );
     c->getEOperations()->add( o1 );
     BOOST_CHECK_EQUAL( c->eContents(), std::vector<std::shared_ptr<EObject>>( {a1, a2, o1} ) );
+    c->getEOperations()->add( o2 );
+    BOOST_CHECK_EQUAL( c->eContents(), std::vector<std::shared_ptr<EObject>>( {a1, a2, o1, o2} ) );
 }
 
 BOOST_AUTO_TEST_SUITE_END()

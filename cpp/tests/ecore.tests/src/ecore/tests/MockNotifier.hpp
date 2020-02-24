@@ -15,15 +15,19 @@
 
 namespace ecore::tests
 {
-    class MockNotifier : public virtual ENotifier, public mock::object
+    template <typename... I>
+    class MockNotifierBase : public mock::object, public I...
     {
     public:
         typedef ENotifier base_type;
+
         MOCK_METHOD( eAdapters, 0 , EList<EAdapter*>&() );
         MOCK_METHOD( eDeliver, 0 );
         MOCK_METHOD( eSetDeliver, 1 );
         MOCK_METHOD( eNotify, 1 );
     };
+
+    typedef MockNotifierBase<ENotifier> MockNotifier;
 }
 
 #endif

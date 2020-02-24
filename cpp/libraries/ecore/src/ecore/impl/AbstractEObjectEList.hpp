@@ -105,13 +105,13 @@ namespace ecore::impl
         template <bool inv = inverse , bool op = opposite>
         typename std::enable_if< inv && !op, std::shared_ptr<ENotificationChain> >::type doInverseAdd( const ValueType& object, const std::shared_ptr<ENotificationChain>& notifications ) const
         {
-            return object->eInverseAdd( getOwner(), EOPPOSITE_FEATURE_BASE - featureID_, notifications );
+            return object->getInternal().eInverseAdd( getOwner(), EOPPOSITE_FEATURE_BASE - featureID_, notifications );
         }
 
         template <bool inv = inverse, bool op = opposite>
         typename std::enable_if< inv && op, std::shared_ptr<ENotificationChain> >::type doInverseAdd( const ValueType& object, const std::shared_ptr<ENotificationChain>& notifications ) const
         {
-            return object->eInverseAdd( getOwner(), inverseFeatureID_, notifications );
+            return object->getInternal().eInverseAdd( getOwner(), inverseFeatureID_, notifications );
         }
 
         template <bool inv = inverse, bool op = opposite>
@@ -123,13 +123,13 @@ namespace ecore::impl
         template <bool inv = inverse, bool op = opposite>
         typename std::enable_if< inv && !op, std::shared_ptr<ENotificationChain> >::type doInverseRemove( const ValueType& object, const std::shared_ptr<ENotificationChain>& notifications ) const
         {
-            return object->eInverseRemove( getOwner(), EOPPOSITE_FEATURE_BASE - featureID_, notifications );
+            return object->getInternal().eInverseRemove( getOwner(), EOPPOSITE_FEATURE_BASE - featureID_, notifications );
         }
 
         template <bool inv = inverse, bool op = opposite>
         typename std::enable_if< inv && op, std::shared_ptr<ENotificationChain> >::type doInverseRemove( const ValueType& object, const std::shared_ptr<ENotificationChain>& notifications ) const
         {
-            return object->eInverseRemove( getOwner(), inverseFeatureID_, notifications );
+            return object->getInternal().eInverseRemove( getOwner(), inverseFeatureID_, notifications );
         }
 
         template <bool inv = inverse, bool op = opposite>

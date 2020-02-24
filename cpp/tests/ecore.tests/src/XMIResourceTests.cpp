@@ -1,5 +1,4 @@
-#include <boost/test/auto_unit_test.hpp>
-#include <boost/test/execution_monitor.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include "Memory.hpp"
 #include "ecore/EAttribute.hpp"
@@ -208,8 +207,7 @@ BOOST_AUTO_TEST_CASE( Performance, *boost::unit_test::disabled() )
 
 BOOST_AUTO_TEST_CASE( Performance_Complex, *boost::unit_test::disabled() )
 {
-    auto& instance = SaxParserPool::getInstance();
-    auto parser = instance.getParser();
+    SaxParserPool::getInstance();
     auto currentSize = getCurrentRSS();
     auto start = std::chrono::steady_clock::now();
     for( int i = 0; i < NB_ITERATIONS; ++i )

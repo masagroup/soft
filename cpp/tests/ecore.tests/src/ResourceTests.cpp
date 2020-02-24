@@ -1,5 +1,4 @@
-#include <boost/test/auto_unit_test.hpp>
-#include <boost/test/execution_monitor.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include "ecore/Any.hpp"
 #include "ecore/Stream.hpp"
@@ -9,6 +8,7 @@
 #include "ecore/impl/AbstractResource.hpp"
 #include "ecore/tests/MockAdapter.hpp"
 #include "ecore/tests/MockObject.hpp"
+#include "ecore/tests/MockObjectInternal.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -95,7 +95,9 @@ BOOST_AUTO_TEST_CASE( Contents )
     resource->setThisPtr( resource );
 
     auto mockObject = std::make_shared<MockObject>();
-    MOCK_EXPECT( mockObject->eSetResource ).once().with( resource, std::shared_ptr<ENotificationChain>() ).returns( std::shared_ptr<ENotificationChain>() );
+    auto mockInternal = std::make_shared<MockObjectInternal>();
+    MOCK_EXPECT(mockObject->getInternal).returns(*mockInternal);
+    MOCK_EXPECT(mockInternal->eSetResource ).once().with( resource, std::shared_ptr<ENotificationChain>() ).returns( std::shared_ptr<ENotificationChain>() );
 
     auto contents = resource->getContents();
     contents->add( mockObject );

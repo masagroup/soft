@@ -16,20 +16,44 @@
 #define ECORE_EOBJECTINTERNAL_HPP
 
 #include "ecore/Exports.hpp"
-#include "ecore/EObject.hpp"
+
+namespace ecore
+{
+    class EObject;
+}
 
 namespace ecore::impl
 {
-    class ECORE_API EObjectInternal : public virtual EObject
+    class ECORE_API EObjectInternal 
     {
     public:
         virtual ~EObjectInternal() = default;
 
+        // Resource
         virtual std::shared_ptr<EResource> eDirectResource() const = 0;
 
+        virtual std::shared_ptr<ENotificationChain> eSetResource(const std::shared_ptr < EResource>& resource
+            , const std::shared_ptr<ENotificationChain>& notifications) = 0;
+
+
+        // URI Fragment
         virtual std::shared_ptr<EObject> eObjectForFragmentSegment( const std::string& uriSegment) const= 0;
         
         virtual std::string eURIFragmentSegment(const std::shared_ptr<EStructuralFeature>& feature, const std::shared_ptr<EObject>& eObject) const = 0;
+
+        // Inverse
+        virtual std::shared_ptr<ENotificationChain> eInverseAdd(const std::shared_ptr<EObject>& otherEnd
+            , int featureID
+            , const std::shared_ptr<ENotificationChain>& notifications) = 0;
+        virtual std::shared_ptr<ENotificationChain> eInverseRemove(const std::shared_ptr<EObject>& otherEnd
+            , int featureID
+            , const std::shared_ptr<ENotificationChain>& notifications) = 0;
+
+        // Proxy
+        virtual URI eProxyURI() const = 0;
+        virtual void eSetProxyURI(const URI& uri) = 0;
+        virtual std::shared_ptr<EObject> eResolveProxy(const std::shared_ptr<EObject>& proxy) const = 0;
+
 
     };
 }

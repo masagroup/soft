@@ -215,9 +215,10 @@ virtual [generateDataInitializationMethodReturnType()/] [methodName/]();
 [/template]
 
 [template public generateDataInitializationMethodDefinition(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'function' )]
-[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let className : String = aStructuralFeature.eContainingClass.getBaseName()]
 [let methodName : String = aStructuralFeature.getMethodInitializationName()]
-[generateDataInitializationMethodReturnType()/] [className/]::[methodName/]()
+template <typename... I>
+[generateDataInitializationMethodReturnType()/] [className/]<I...>::[methodName/]()
 {
     // [protected (className + '::' + methodName)]
 [if isListType()]
@@ -242,9 +243,10 @@ virtual [generateDataInitializationMethodReturnType()/] [methodName/]();
 [/template]
 
 [template public generateDataInitializationMethodDefinition(aStructuralFeature : EStructuralFeature) ? ( aStructuralFeature.getLazy() = 'action' )]
-[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let className : String = aStructuralFeature.eContainingClass.getBaseName()]
 [let methodName : String = aStructuralFeature.getMethodInitializationName()]
-void [className/]::[methodName/]()
+template <typename... I>
+void [className/]<I...>::[methodName/]()
 {
     // [protected (className + '::' + methodName)]
 [if isListType()]
@@ -266,7 +268,7 @@ void [className/]::[methodName/]()
 [/template]
 
 [template public generateBasicGetDeclaration(aStructuralFeature : EStructuralFeature)]
-[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let className : String = aStructuralFeature.eContainingClass.getBaseName()]
 [let methodName : String = aStructuralFeature.getGetterName().toUpperFirst()]
 virtual [aStructuralFeature.generateReturnType()/] basic[methodName/]() const; 
 [/let]
@@ -274,16 +276,17 @@ virtual [aStructuralFeature.generateReturnType()/] basic[methodName/]() const;
 [/template]
 
 [template public generateBasicGetDefinition(aStructuralFeature : EStructuralFeature)]
-[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let className : String = aStructuralFeature.eContainingClass.getBaseName()]
 [let methodName : String = 'basic' + aStructuralFeature.getGetterName().toUpperFirst()]
-[aStructuralFeature.generateReturnType()/] [className/]::[methodName/]() const 
+template <typename... I>
+[aStructuralFeature.generateReturnType()/] [className/]<I...>::[methodName/]() const 
 {
     // [protected (className + '::' + methodName)]
 [if isContainer()]
     if ( eContainerFeatureID() != [aStructuralFeature.getQualifiedFeatureIDName()/] )
         return [aStructuralFeature.generateEffectiveType()/]();
     else
-        return std::dynamic_pointer_cast<[aStructuralFeature.generateElementType()/]>(eContainer());
+        return std::static_pointer_cast<[aStructuralFeature.generateElementType()/]>(eContainer());
 [elseif not isVolatile()]
     return [aStructuralFeature.name/]_[if aStructuralFeature.isProxy() and not aStructuralFeature.isListType() ].value()[elseif aStructuralFeature.isLazy()].value()[elseif aStructuralFeature.isBackReference()].lock()[/if];
 [elseif (hasKey('getterBody'))]
@@ -305,15 +308,16 @@ virtual [aStructuralFeature.generateReturnType()/] [aStructuralFeature.getGetter
 [/template]
 
 [template public generateGetDefinition(aStructuralFeature : EStructuralFeature)]
-[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
-[aStructuralFeature.generateReturnType()/] [className/]::[aStructuralFeature.getGetterName()/]() const 
+[let className : String = aStructuralFeature.eContainingClass.getBaseName()]
+template <typename... I>
+[aStructuralFeature.generateReturnType()/] [className/]<I...>::[aStructuralFeature.getGetterName()/]() const 
 {
     // [protected (className + '::' + aStructuralFeature.getGetterName()) ]
 [if isContainer()]
     if ( eContainerFeatureID() != [aStructuralFeature.getQualifiedFeatureIDName()/] )
         return [aStructuralFeature.generateEffectiveType()/]();
     else
-        return std::dynamic_pointer_cast<[aStructuralFeature.generateElementType()/]>(eContainer());
+        return std::static_pointer_cast<[aStructuralFeature.generateElementType()/]>(eContainer());
 [elseif not isVolatile()]
     return [aStructuralFeature.name/]_[if aStructuralFeature.isProxy()].get()[elseif aStructuralFeature.isLazy()].get()[elseif aStructuralFeature.isBackReference()].lock()[/if];
 [elseif hasKey('getterBody')]
@@ -340,10 +344,10 @@ MOCK_CONST_METHOD0([aStructuralFeature.getGetterName()/], [aStructuralFeature.ge
 
 
 [template public generateBasicSetDeclaration(aStructuralFeature : EStructuralFeature)]
-[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let className : String = aStructuralFeature.eContainingClass.getBaseName()]
 [let methodName : String = 'basic' +aStructuralFeature.getSetterName().toUpperFirst()]
 [let newVarName : String = 'new' + aStructuralFeature.name.toUpperFirst()]
-std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( [aStructuralFeature.generateParameterType()/] [newVarName/] , const std::shared_ptr<ecore::ENotificationChain>& msgs ); 
+std::shared_ptr<ecore::ENotificationChain> [className/]<I...>::[methodName/]( [aStructuralFeature.generateParameterType()/] [newVarName/] , const std::shared_ptr<ecore::ENotificationChain>& msgs ); 
 [/let]
 [/let]
 [/let]
@@ -351,10 +355,11 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( [aStruct
 
 
 [template public generateBasicSetDefinition(aStructuralFeature : EStructuralFeature)]
-[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let className : String = aStructuralFeature.eContainingClass.getBaseName()]
 [let methodName : String = 'basic' +aStructuralFeature.getSetterName().toUpperFirst()]
 [let newVarName : String = 'new' + aStructuralFeature.name.toUpperFirst()]
-std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( [aStructuralFeature.generateParameterType()/] [newVarName/] , const std::shared_ptr<ecore::ENotificationChain>& msgs) 
+template <typename... I>
+std::shared_ptr<ecore::ENotificationChain> [className/]<I...>::[methodName/]( [aStructuralFeature.generateParameterType()/] [newVarName/] , const std::shared_ptr<ecore::ENotificationChain>& msgs) 
 {
     // [protected (className + '::' + methodName)]
 [if isContainer()]
@@ -394,10 +399,11 @@ virtual void [aStructuralFeature.getSetterName()/]([aStructuralFeature.generateP
 [/template]
 
 [template public generateSetDefinition(aStructuralFeature : EStructuralFeature)]
-[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let className : String = aStructuralFeature.eContainingClass.getBaseName()]
 [let methodName : String = aStructuralFeature.getSetterName()]
 [let newVarName : String = 'new' + aStructuralFeature.name.toUpperFirst()]
-void [className/]::[methodName/]([aStructuralFeature.generateParameterType()/] [newVarName/])
+template <typename... I>
+void [className/]<I...>::[methodName/]([aStructuralFeature.generateParameterType()/] [newVarName/])
 {
     // [protected (className + '::' + methodName)]
 [if not isVolatile()]
@@ -408,7 +414,7 @@ void [className/]::[methodName/]([aStructuralFeature.generateParameterType()/] [
         if ( eContainer() )
             notifications = eBasicRemoveFromContainer(notifications);
         if ( [newVarName/] )
-            notifications = [newVarName/]->eInverseAdd( getThisPtr() , [aStructuralFeature.getQualifiedFeatureIDName()/], notifications );
+            notifications = [newVarName/]->getInternal().eInverseAdd( getThisPtr() , [aStructuralFeature.getQualifiedFeatureIDName()/], notifications );
         notifications = basic[methodName.toUpperFirst()/]( [newVarName/], notifications );
         if ( notifications )
             notifications->dispatch();
@@ -425,14 +431,14 @@ void [className/]::[methodName/]([aStructuralFeature.generateParameterType()/] [
         std::shared_ptr<ENotificationChain> notifications;
         if ( [currentVarName/] )
         [if not isBidirectional()]
-            notifications = [currentVarName/]->eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aStructuralFeature.getQualifiedFeatureIDName()/] , notifications );
+            notifications = [currentVarName/]->getInternal().eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aStructuralFeature.getQualifiedFeatureIDName()/] , notifications );
         if ( [newVarName/] )
-            notifications = [newVarName/]->eInverseAdd( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aStructuralFeature.getQualifiedFeatureIDName()/] , notifications );
+            notifications = [newVarName/]->getInternal().eInverseAdd( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aStructuralFeature.getQualifiedFeatureIDName()/] , notifications );
         [else]
             [let reverseFeature : EStructuralFeature = aStructuralFeature.oclAsType(EReference).eOpposite]
-            notifications = [currentVarName/]->eInverseRemove( getThisPtr(), [reverseFeature.getQualifiedFeatureIDName()/] , notifications );
+            notifications = [currentVarName/]->getInternal().eInverseRemove( getThisPtr(), [reverseFeature.getQualifiedFeatureIDName()/] , notifications );
         if ( [newVarName/] )
-            notifications = [newVarName/]->eInverseAdd( getThisPtr(), [reverseFeature.getQualifiedFeatureIDName()/] , notifications );
+            notifications = [newVarName/]->getInternal().eInverseAdd( getThisPtr(), [reverseFeature.getQualifiedFeatureIDName()/] , notifications );
             [/let]
         [/if]
         notifications = basic[methodName.toUpperFirst()/]([newVarName/],notifications);
@@ -511,10 +517,10 @@ MOCK_METHOD1([aStructuralFeature.getSetterName()/], void( [aStructuralFeature.ge
 
 
 [template public generateBasicUnSetDeclaration(aStructuralFeature : EStructuralFeature)]
-[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let className : String = aStructuralFeature.eContainingClass.getBaseName()]
 [let methodName : String = 'basic' + aStructuralFeature.getUnSetterName().toUpperFirst()]
 [let newVarName : String = 'new' + aStructuralFeature.name.toUpperFirst()]
-std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( const std::shared_ptr<ecore::ENotificationChain>& msgs ); 
+std::shared_ptr<ecore::ENotificationChain> [className/]<I...>::[methodName/]( const std::shared_ptr<ecore::ENotificationChain>& msgs ); 
 [/let]
 [/let]
 [/let]
@@ -522,11 +528,12 @@ std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( const st
 
 
 [template public generateBasicUnSetDefinition(aStructuralFeature : EStructuralFeature)]
-[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let className : String = aStructuralFeature.eContainingClass.getBaseName()]
 [let methodName : String = 'basic' + aStructuralFeature.getUnSetterName().toUpperFirst()]
 [let oldVarName : String = 'old' + aStructuralFeature.name.toUpperFirst()]
 [let varName : String = aStructuralFeature.name + '_']    
-std::shared_ptr<ecore::ENotificationChain> [className/]::[methodName/]( const std::shared_ptr<ecore::ENotificationChain>& msgs) 
+template <typename... I>
+std::shared_ptr<ecore::ENotificationChain> [className/]<I...>::[methodName/]( const std::shared_ptr<ecore::ENotificationChain>& msgs) 
 {
     // [protected (className + '::' + methodName)]
 [if not isVolatile()]
@@ -561,9 +568,10 @@ virtual void [aStructuralFeature.getUnSetterName()/]() [abstractSufix(impl)/];
 [/template]
 
 [template public generateUnSetDefinition(aStructuralFeature : EStructuralFeature)]
-[let className : String = aStructuralFeature.eContainingClass.getImplementationName()]
+[let className : String = aStructuralFeature.eContainingClass.getBaseName()]
 [let methodName : String = aStructuralFeature.getUnSetterName()]
-void [className/]::[methodName/]()
+template <typename... I>
+void [className/]<I...>::[methodName/]()
 {
     // [protected (className + '::' + methodName)]
 [if not isVolatile()]
@@ -578,10 +586,10 @@ void [className/]::[methodName/]()
     {
         std::shared_ptr<ENotificationChain> notifications;
         [if not isBidirectional()]
-        notifications = [aStructuralFeature.name/]_->eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aStructuralFeature.getQualifiedFeatureIDName()/] , notifications );
+        notifications = [aStructuralFeature.name/]_->getInternal().eInverseRemove( getThisPtr(), EOPPOSITE_FEATURE_BASE - [aStructuralFeature.getQualifiedFeatureIDName()/] , notifications );
         [else]
             [let reverseFeature : EStructuralFeature = aStructuralFeature.oclAsType(EReference).eOpposite]
-        notifications = [aStructuralFeature.name/]_->eInverseRemove( getThisPtr(), [reverseFeature.getQualifiedFeatureIDName()/] , notifications );
+        notifications = [aStructuralFeature.name/]_->getInternal().eInverseRemove( getThisPtr(), [reverseFeature.getQualifiedFeatureIDName()/] , notifications );
             [/let]
         [/if]
         notifications = basic[aStructuralFeature.getUnSetterName().toUpperFirst()/](notifications);

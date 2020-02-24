@@ -2,6 +2,7 @@
 #include "ecore/EAttribute.hpp"
 #include "ecore/EClass.hpp"
 #include "ecore/EDataType.hpp"
+#include "ecore/EList.hpp"
 #include "ecore/EFactory.hpp"
 #include "ecore/EObject.hpp"
 #include "ecore/EPackage.hpp"
@@ -55,7 +56,7 @@ Any EcoreUtils::createFromString( const std::shared_ptr<EDataType>& eDataType, c
 URI EcoreUtils::getURI( const std::shared_ptr<EObject>& eObject )
 {
     if( eObject->eIsProxy() )
-        return eObject->eProxyURI();
+        return eObject->getInternal().eProxyURI();
     else
     {
         std::shared_ptr<EResource> resource = eObject->eResource();
@@ -86,20 +87,18 @@ std::string EcoreUtils::getRelativeURIFragmentPath( const std::shared_ptr<EObjec
 
     std::unordered_set<std::shared_ptr<EObject>> visited;
     std::deque<std::string> fragmentURIPath;
-    auto internalEObject = descendant;
-    for( auto eContainer = internalEObject->eContainer(); eContainer && visited.insert( eContainer ).second;
-         eContainer = internalEObject->eContainer() )
+    auto eObject = descendant;
+    for( auto eContainer = eObject->eContainer(); eContainer && visited.insert( eContainer ).second; eContainer = eObject->eContainer() )
     {
-        auto internalEContainer = std::dynamic_pointer_cast<EObjectInternal>( eContainer );
-        fragmentURIPath.push_front( internalEContainer->eURIFragmentSegment( internalEObject->eContainingFeature(), internalEObject ) );
-        internalEObject = internalEContainer;
-        if( internalEContainer == ancestor )
+        fragmentURIPath.push_front( eContainer->getInternal().eURIFragmentSegment( eObject->eContainingFeature(), eObject ) );
+        eObject = eContainer;
+        if( eContainer == ancestor )
         {
             break;
         }
     }
 
-    if( internalEObject != ancestor && ancestor )
+    if( eObject != ancestor && ancestor )
         throw "The ancestor not found'";
 
     return join( fragmentURIPath, "/" );
@@ -108,9 +107,9 @@ std::string EcoreUtils::getRelativeURIFragmentPath( const std::shared_ptr<EObjec
 std::shared_ptr<EObject> EcoreUtils::getEObject( const std::shared_ptr<EObject>& rootEObject, const std::string& relativeFragmentPath )
 {
     auto segments = split( relativeFragmentPath, "/" );
-    auto eObject = std::dynamic_pointer_cast<EObjectInternal>( rootEObject );
+    auto eObject = rootEObject;
     for( int i = 0; i < segments.size() && eObject; ++i )
-        eObject = std::dynamic_pointer_cast<EObjectInternal>( eObject->eObjectForFragmentSegment( std::string( segments[i] ) ) );
+        eObject = eObject->getInternal().eObjectForFragmentSegment( std::string( segments[i] ) );
     return eObject;
 }
 
@@ -127,7 +126,7 @@ std::shared_ptr<EObject> EcoreUtils::resolve( const std::shared_ptr<EObject>& pr
 
 std::shared_ptr<EObject> EcoreUtils::resolve( const std::shared_ptr<EObject>& proxy, const std::shared_ptr<EResourceSet>& resourceSet )
 {
-    URI proxyURI = proxy->eProxyURI();
+    URI proxyURI = proxy->getInternal().eProxyURI();
     if( !proxyURI.isEmpty() )
     {
         std::shared_ptr<EObject> resolved;
@@ -152,9 +151,40 @@ std::shared_ptr<EObject> EcoreUtils::resolve( const std::shared_ptr<EObject>& pr
                     resolved = eResource->getEObject( proxyURI.getFragment() );
             }
         }
-        if(resolved && resolved != proxy)
-            return resolve(resolved,resourceSet);
+        if( resolved && resolved != proxy )
+            return resolve( resolved, resourceSet );
     }
     return proxy;
+}
 
+bool EcoreUtils::isAncestor( const std::shared_ptr<EObject>& ancestor, const std::shared_ptr<EObject>& object )
+{
+    if( object )
+    {
+        auto current = object;
+        while( current )
+        {
+            if( current == ancestor )
+                return true;
+
+            current = current->eContainer();
+        }
+    }
+    return false;
+}
+
+bool EcoreUtils::isAssignableFrom( const std::shared_ptr<EClass>& eSuper, const std::shared_ptr<EClass>& eClass )
+{
+    if( eClass == eSuper )
+        return true;
+    else if( eClass )
+    {
+        auto supers = eClass->getESuperTypes();
+        for( auto s : *supers )
+        {
+            if( isAssignableFrom( eSuper, s ) )
+                return true;
+        }
+    }
+    return false;
 }

@@ -16,7 +16,8 @@
 
 namespace ecore::tests
 {
-    class MockResource : public virtual MockNotifier, public virtual EResource
+    template <typename... I>
+    class MockResourceBase : public MockNotifierBase<I...>
     {
     public:
         typedef EResource base_type;
@@ -39,6 +40,9 @@ namespace ecore::tests
         MOCK_METHOD( getErrors, 0 )
         MOCK_METHOD( getWarnings, 0 )
     };
+
+    typedef MockResourceBase<EResource> MockResource;
+
 } // namespace ecore::tests
 
 #endif

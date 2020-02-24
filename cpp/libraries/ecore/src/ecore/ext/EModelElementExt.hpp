@@ -7,33 +7,14 @@
 //
 // *****************************************************************************
 
-#ifndef ECORE_EMODELELEMENT_EMODELELEMENTEXT_HPP
-#define ECORE_EMODELELEMENT_EMODELELEMENTEXT_HPP
+#ifndef ECORE_EXT_EMODELELEMENTEXT_HPP
+#define ECORE_EXT_EMODELELEMENTEXT_HPP
 
-#include "ecore/impl/EModelElementImpl.hpp"
+#include "ecore/ext/EModelElementBaseExt.hpp"
 
 namespace ecore::ext
 {
-    class EModelElementExt : public virtual impl::EModelElementImpl
-    {
-    private:
-        EModelElementExt& operator=( EModelElementExt const& ) = delete;
-
-    protected:
-        EModelElementExt();
-
-    public:
-        virtual ~EModelElementExt();
-
-        //*********************************
-        // Operations
-        //*********************************
-        virtual std::shared_ptr<ecore::EAnnotation> getEAnnotation( const std::string& source );
-
-        virtual std::shared_ptr<EObject>eObjectForFragmentSegment(const std::string& uriSegment) const;
-        virtual std::string eURIFragmentSegment(const std::shared_ptr<EStructuralFeature>& feature, const std::shared_ptr<EObject>& eObject) const;
-    
-    };
+    typedef EModelElementBaseExt<EModelElement> EModelElementBase;
 }
 
-#endif // ECORE_EMODELELEMENT_EMODELELEMENTEXT_HPP
+#endif // ECORE_EXT_EMODELELEMENTEXT_HPP

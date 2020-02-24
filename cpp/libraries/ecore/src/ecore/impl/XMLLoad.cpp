@@ -11,6 +11,7 @@
 #include "ecore/EResourceSet.hpp"
 #include "ecore/EStructuralFeature.hpp"
 #include "ecore/impl/Diagnostic.hpp"
+#include "ecore/impl/EObjectInternal.hpp"
 #include "ecore/impl/StringUtils.hpp"
 #include "ecore/impl/XMLResource.hpp"
 
@@ -365,7 +366,7 @@ void XMLLoad::setAttributeValue( const std::shared_ptr<EObject>& eObject, const 
         if( kind == Single || kind == Many )
             setFeatureValue( eObject, eFeature, value, -2 );
         else
-            setValueFromId( eObject, std::dynamic_pointer_cast<EReference>( eFeature ), value );
+            setValueFromId( eObject, std::static_pointer_cast<EReference>( eFeature ), value );
     }
     else
         handleUnknownFeature( localName );
@@ -524,7 +525,7 @@ void XMLLoad::handleReferences()
             auto eOpposite = eReference->getEOpposite();
             if( eOpposite && eOpposite->isChangeable() && eProxy->eIsSet( eReference ) )
             {
-                auto resolvedObject = resource_.getEObject( eProxy->eProxyURI().getFragment() );
+                auto resolvedObject = resource_.getEObject( eProxy->getInternal().eProxyURI().getFragment() );
                 if( resolvedObject )
                 {
                     std::shared_ptr<EObject> proxyHolder;
@@ -608,7 +609,7 @@ const Attributes* XMLLoad::setAttributes( const xercesc::Attributes* attrs )
 void XMLLoad::handleProxy( const std::shared_ptr<EObject>& eProxy, const std::string& id )
 {
     auto uri = URI(id);
-    eProxy->eSetProxyURI( uri );
+    eProxy->getInternal().eSetProxyURI( uri );
     if( uri.trimFragment() == resource_.getURI() )
         sameDocumentProxies_.push_back( eProxy );
 }

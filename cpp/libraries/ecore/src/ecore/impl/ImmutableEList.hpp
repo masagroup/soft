@@ -10,7 +10,7 @@
 #ifndef ECORE_IMMUTABLE_ELIST_HPP_
 #define ECORE_IMMUTABLE_ELIST_HPP_
 
-#include "ecore/EList.hpp"
+#include "ecore/impl/AbstractImmutableEList.hpp"
 
 #include <vector>
 
@@ -18,7 +18,7 @@ namespace ecore::impl
 {
 
     template <typename T>
-    class ImmutableEList : public EList<T>
+    class ImmutableEList : public AbstractImmutableEList<T>
     {
     public:
         ImmutableEList() = default;
@@ -36,66 +36,15 @@ namespace ecore::impl
         virtual ~ImmutableEList()
         {
         }
-
-        virtual bool add( const T& e )
-        {
-            throw "UnsupportedOperationException";
-        }
-
-        virtual bool addAll( const EList<T>& l )
-        {
-            throw "UnsupportedOperationException";
-        }
-
-        virtual void add( std::size_t pos, const T& e )
-        {
-            throw "UnsupportedOperationException";
-        }
-
-        virtual bool addAll( std::size_t pos, const EList<T>& l )
-        {
-            throw "UnsupportedOperationException";
-        }
-
-        virtual void move( std::size_t oldPos, const T& e )
-        {
-            throw "UnsupportedOperationException";
-        }
-
-
-        virtual T move( std::size_t oldPos, std::size_t newPos )
-        {
-            throw "UnsupportedOperationException";
-        }
-
+        
         virtual T get( std::size_t pos ) const
         {
             return v_.at( pos );
         }
 
-        virtual void set( std::size_t pos, const T& e )
-        {
-            throw "UnsupportedOperationException";
-        }
-
-        virtual T remove( std::size_t pos )
-        {
-            throw "UnsupportedOperationException";
-        }
-
-        virtual bool remove( const T& e )
-        {
-            throw "UnsupportedOperationException";
-        }
-
         virtual std::size_t size() const
         {
             return v_.size();
-        }
-
-        virtual void clear()
-        {
-            throw "UnsupportedOperationException";
         }
 
         virtual bool empty() const

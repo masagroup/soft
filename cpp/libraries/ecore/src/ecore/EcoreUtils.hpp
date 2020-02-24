@@ -20,6 +20,7 @@ namespace ecore
 {
     class Any;
     class EObject;
+    class EClass;
     class EDataType;
     class EResource;
     class EResourceSet;
@@ -46,6 +47,11 @@ namespace ecore
 
         static std::shared_ptr<EObject> resolve( const std::shared_ptr<EObject>& proxy, const std::shared_ptr<EResourceSet>& context );
 
+        static bool isAncestor( const std::shared_ptr<EObject>& ancestor, const std::shared_ptr<EObject>& object );
+        
+        // Determines if the class represented by eSuper object is either the same as, or is a superclass of, the class represented by the specified eClass parameter. 
+        // It returns true if so; otherwise it returns false.
+        static bool isAssignableFrom( const std::shared_ptr<EClass>& eSuper, const std::shared_ptr<EClass>& eClass );
 
     private:
 

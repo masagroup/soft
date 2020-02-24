@@ -25,12 +25,13 @@ void XMLResource::doLoad( std::istream& is )
 {
     auto& pool = SaxParserPool::getInstance();
     auto parser = pool.getParser();
+    auto& reader = parser->getReader();
 
     auto xmlLoad = createXMLLoad();
-    parser->setContentHandler( xmlLoad.get() );
-
+    reader.setContentHandler( xmlLoad.get() );
+    
     XMLInputSource source( is );
-    parser->parse( source );
+    reader.parse( source );
 }
 
 void XMLResource::doSave( std::ostream& os )
