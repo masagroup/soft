@@ -504,7 +504,7 @@
     -->
     <target name="ecore.cpp.version">
         <replaceregexp match="project\(([^ ]*) VERSION [^ ]*" replace="project\(\1 VERSION ${version}">
-            <fileset dir="${root.dir}/cpp" includes="**/CMakeLists.txt"/>
+            <fileset dir="${root.dir}/cpp/ecore" includes="**/CMakeLists.txt"/>
         </replaceregexp>
     </target>
     
@@ -515,26 +515,26 @@
     </target>
     
     <target name="ecore.cpp.configure.vs2015">
-        <cmake_exec generator="vs2015" input="${root.dir}/cpp"/>
+        <cmake_exec generator="vs2015" input="${root.dir}/cpp/ecore"/>
     </target>
     
     <target name="ecore.cpp.configure.vs2017">
-        <cmake_exec generator="vs2017" input="${root.dir}/cpp"/>
+        <cmake_exec generator="vs2017" input="${root.dir}/cpp/ecore"/>
     </target>
     
 	<target name="ecore.cpp.configure.vs2019">
-        <cmake_exec generator="vs2019" input="${root.dir}/cpp"/>
+        <cmake_exec generator="vs2019" input="${root.dir}/cpp/ecore"/>
     </target>
     
     <target name="ecore.cpp.configure.ninja.release">
-        <cmake_exec generator="ninja" configuration="release" input="${root.dir}/cpp">
+        <cmake_exec generator="ninja" configuration="release" input="${root.dir}/cpp/ecore">
             <arg value="-DCMAKE_MAKE_PROGRAM=${bin.dir}/ninja/ninja.exe"/>
             <arg value="-DCMAKE_BUILD_TYPE=RelWithDebInfo"/>
         </cmake_exec>
     </target>
     
     <target name="ecore.cpp.configure.ninja.debug">
-        <cmake_exec generator="ninja" configuration="debug" input="${root.dir}/cpp">
+        <cmake_exec generator="ninja" configuration="debug" input="${root.dir}/cpp/ecore">
             <arg value="-DCMAKE_MAKE_PROGRAM=${bin.dir}/ninja/ninja.exe"/>
             <arg value="-DCMAKE_BUILD_TYPE=Debug"/>
         </cmake_exec>
