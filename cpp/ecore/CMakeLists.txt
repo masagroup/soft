@@ -10,17 +10,18 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED VCPKG_ROOT)
 endif()
 
 # soft root dir
-get_filename_component(SOFT_ROOT_DIR ${CMAKE_SOURCE_DIR}/.. ABSOLUTE)
+get_filename_component(SOFT_ROOT_DIR ${CMAKE_SOURCE_DIR}/../.. ABSOLUTE)
 
 # update cmake search path for packages/modules
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${SOFT_ROOT_DIR}/cmake)
 
 #update cmake install path
 set( CMAKE_INSTALL_PREFIX "${SOFT_ROOT_DIR}")
 
-project(soft CXX)
+project(ecore CXX)
 
 enable_testing()
 
 #ecore
-add_subdirectory(ecore)
+add_subdirectory(lib)
+add_subdirectory(tests)

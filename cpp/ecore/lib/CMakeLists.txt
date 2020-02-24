@@ -8,7 +8,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
 
-project(ecore VERSION 0.1.0 LANGUAGES CXX)
+project(ecore.lib VERSION 0.1.0 LANGUAGES CXX)
 
 if(NOT CMAKE_BUILD_TYPE) 
     set(CMAKE_BUILD_TYPE Debug)
@@ -52,36 +52,36 @@ set(PROJECT_SOURCES ${CMAKE_FILES}
                     ${SOURCE_FILES} )
 
 # shared library
-add_library(${PROJECT_NAME} SHARED ${PROJECT_SOURCES})
-add_library(${PROJECT_NAME}::shared ALIAS ${PROJECT_NAME})
-target_include_directories(${PROJECT_NAME}
+add_library(ecore SHARED ${PROJECT_SOURCES})
+add_library(ecore::shared ALIAS ecore)
+target_include_directories(ecore
     PUBLIC
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src-gen>
 )
-target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4250 /wd4251 /bigobj)
-target_compile_definitions( ${PROJECT_NAME} PRIVATE ECORE_EXPORTS)
-target_compile_definitions( ${PROJECT_NAME} PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
-target_link_libraries(${PROJECT_NAME} PUBLIC XercesC::XercesC Boost::regex)
+target_compile_options(ecore PRIVATE /MP /wd4250 /wd4251 /bigobj)
+target_compile_definitions( ecore PRIVATE ECORE_EXPORTS)
+target_compile_definitions( ecore PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
+target_link_libraries(ecore PUBLIC XercesC::XercesC Boost::regex)
 
 # static library
-add_library(${PROJECT_NAME}.static STATIC ${PROJECT_SOURCES})
-add_library(${PROJECT_NAME}::static ALIAS ${PROJECT_NAME}.static)
-target_include_directories(${PROJECT_NAME}.static
+add_library(ecore.static STATIC ${PROJECT_SOURCES})
+add_library(ecore::static ALIAS ecore.static)
+target_include_directories(ecore.static
     PUBLIC
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src-gen>
 )
-target_compile_options(${PROJECT_NAME}.static PRIVATE /MP /wd4250 /bigobj)
-target_compile_definitions(${PROJECT_NAME}.static PUBLIC ECORE_STATIC_LIB)
-target_compile_definitions(${PROJECT_NAME}.static PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
-target_link_libraries(${PROJECT_NAME}.static PRIVATE XercesC::XercesC Boost::regex)
+target_compile_options(ecore.static PRIVATE /MP /wd4250 /bigobj)
+target_compile_definitions(ecore.static PUBLIC ECORE_STATIC_LIB)
+target_compile_definitions(ecore.static PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
+target_link_libraries(ecore.static PRIVATE XercesC::XercesC Boost::regex)
 
 # libraries names
-set_target_properties(${PROJECT_NAME}.static PROPERTIES PREFIX lib)
-set_target_properties(${PROJECT_NAME} ${PROJECT_NAME}.static PROPERTIES OUTPUT_NAME ${PROJECT_NAME}-vc${MSVC_TOOLSET_VERSION}-mt$<$<CONFIG:Debug>:-gd>)
+set_target_properties(ecore.static PROPERTIES PREFIX lib)
+set_target_properties(ecore ecore.static PROPERTIES OUTPUT_NAME ecore-vc${MSVC_TOOLSET_VERSION}-mt$<$<CONFIG:Debug>:-gd>)
 
 # Visual studio specific project layout
 source_group(cmake FILES ${CMAKE_FILES})
@@ -99,8 +99,8 @@ source_group(src-gen\\ecore\\impl FILES ${GENERATED_HEADER_ECORE_IMPL_FILES} ${G
 # Install binaries and header
 #-----------------------------------------------------
 include(GNUInstallDirs)
-install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}.static
-        EXPORT  ${PROJECT_NAME}.targets
+install(TARGETS ecore ecore.static
+        EXPORT  ecore.targets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -110,7 +110,7 @@ install(FILES ${HEADER_ECORE_FILES} ${GENERATED_HEADER_ECORE_FILES} DESTINATION 
 install(FILES ${HEADER_ECORE_EXT_FILES} ${GENERATED_HEADER_ECORE_EXT_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ecore/ext)
 install(FILES ${HEADER_ECORE_IMPL_FILES} ${GENERATED_HEADER_ECORE_IMPL_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ecore/impl)
 
-install(EXPORT ${PROJECT_NAME}.targets 
+install(EXPORT ecore.targets 
         FILE EcoreTargets.cmake 
         NAMESPACE Ecore:: 
         DESTINATION cmake)
@@ -123,7 +123,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/EcoreConfig.cmake DESTINATION cmake)
 # Package binaries and header
 #-----------------------------------------------------
 set(CPACK_GENERATOR "ZIP")
-set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_NAME ecore)
 
 include(CPack)
 
