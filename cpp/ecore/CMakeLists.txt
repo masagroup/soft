@@ -9,12 +9,6 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED VCPKG_ROOT)
     set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
 endif()
 
-# soft root dir
-get_filename_component(CPP_ROOT_DIR ${CMAKE_SOURCE_DIR}/.. ABSOLUTE)
-
-# update cmake search path for packages/modules
-list(APPEND CMAKE_MODULE_PATH ${CPP_ROOT_DIR}/cmake)
-
 project(ecore CXX)
 
 enable_testing()

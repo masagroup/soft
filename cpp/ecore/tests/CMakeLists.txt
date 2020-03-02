@@ -10,6 +10,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
 
 project(ecore.tests CXX)
 
+#cmake module path
+get_filename_component(CMAKE_PATH "cmake" ABSOLUTE)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_PATH})
 
 if(NOT CMAKE_BUILD_TYPE) 
     set(CMAKE_BUILD_TYPE Debug)
