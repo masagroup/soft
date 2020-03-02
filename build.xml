@@ -151,13 +151,13 @@
     <property name= "cmake.generator.vs2017" value = "Visual Studio 15 2017"/>
     <property name= "cmake.generator.vs2019" value = "Visual Studio 16 2019"/>
     <property name= "cmake.generator.ninja"  value = "Ninja"/>
-	<property name= "cmake.architecture"     value ="x64"/>
+    <property name= "cmake.architecture"     value ="x64"/>
     <property name= "cmake.platform.vs2015"  value = "-G '${cmake.generator.vs2015}' -A ${cmake.architecture}"/>
     <property name= "cmake.platform.vs2017"  value = "-G '${cmake.generator.vs2017}' -A ${cmake.architecture}"/>
     <property name= "cmake.platform.vs2019"  value = "-G '${cmake.generator.vs2019}' -A ${cmake.architecture}"/>
     <property name= "cmake.platform.ninja"   value = "-G '${cmake.generator.ninja}'"/>
-	
-	
+    
+    
     <macrodef name="cmake_exec">
         <attribute name="generator"/>
         <attribute name="project" default= "${ant.project.name}"/>
@@ -169,8 +169,8 @@
             <mkdir dir="@{output}"/>
             <exec taskname="cmake" executable="${bin.dir}/cmake/bin/cmake.exe" dir="@{output}" failonerror="true">
                 <arg line="${cmake.platform.@{generator}}"/>
-				<arg value="${cmake.architecture}"/>
-				<arg value="-DCMAKE_INSTALL_PREFIX=${out.dir}/cpp/deps"/>
+                <arg value="${cmake.architecture}"/>
+                <arg value="-DCMAKE_INSTALL_PREFIX=${out.dir}/cpp/deps"/>
                 <arg value="-DVCPKG_ROOT=${vcpkg.dir}"/>
                 <elements/>
                 <arg value="@{input}"/>
@@ -301,14 +301,14 @@
         <copy file="${out.dir}/go/bin/mockery.exe" todir="${bin.dir}/mockery"/>
     </target>
     
-	<property environment="env"/>
-	
+    <property environment="env"/>
+    
     <macrodef name="mockery_exec">
         <attribute name="dir"/>
         <element name="args" implicit="yes" optional="yes"/>
         <sequential>
             <exec executable="${bin.dir}/mockery/mockery.exe" dir="@{dir}" failonerror="true">
-				<env key="PATH" path="${env.PATH}:${bin.dir}/go/bin"/>
+                <env key="PATH" path="${env.PATH}:${bin.dir}/go/bin"/>
                 <args/>
             </exec>
         </sequential>
@@ -320,12 +320,12 @@
       Mock
     ============================================================================
     -->
-	<macrodef name="mock">
+    <macrodef name="mock">
         <attribute name="dir"/>
         <sequential>
             <mockery_exec dir="${root.dir}/go/@{dir}">
-				<arg value="-all"/>
-				<arg value="-inpkg"/>
+                <arg value="-all"/>
+                <arg value="-inpkg"/>
             </mockery_exec>
 
             <move todir="${root.dir}/go/@{dir}">
@@ -348,14 +348,14 @@
         </sequential>
     </macrodef>
 
-	<macrodef name="go_tests">
+    <macrodef name="go_tests">
         <attribute name="dir"/>
         <sequential>
-			<go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage-tmp"/>
-			<exec dir="${out.dir}\go\" executable="cmd" >
-				<arg line="/c type @{dir}-coverage-tmp | Findstr -v mock > @{dir}-coverage"/>
-			</exec>
-			<go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/@{dir}-coverage -o ${out.dir}/go/@{dir}-coverage.html" />
+            <go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage-tmp"/>
+            <exec dir="${out.dir}\go\" executable="cmd" >
+                <arg line="/c type @{dir}-coverage-tmp | Findstr -v mock > @{dir}-coverage"/>
+            </exec>
+            <go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/@{dir}-coverage -o ${out.dir}/go/@{dir}-coverage.html" />
         </sequential>
     </macrodef>
     
@@ -399,7 +399,7 @@
             <arg value="${vcpkg.dir}"/>
             <arg value="install"/>
             <arg value="boost-test"/>
-			<arg value="boost-regex"/>
+            <arg value="boost-regex"/>
             <arg value="turtle"/>
             <arg value="xerces-c"/>
         </exec>
@@ -522,7 +522,7 @@
         <cmake_exec generator="vs2017" project="ecore" input="${root.dir}/cpp/ecore"/>
     </target>
     
-	<target name="ecore.cpp.configure.vs2019">
+    <target name="ecore.cpp.configure.vs2019">
         <cmake_exec generator="vs2019" project="ecore" input="${root.dir}/cpp/ecore"/>
     </target>
     
@@ -577,7 +577,7 @@
     <target name="ecore.cpp.dist">
         <zip destfile="${dist.dir}/ecore-${version}-win64.zip">
             <zipgroupfileset dir="${out.dir}/cpp/ninja/ecore/debug" includes="*.zip"/>
-			<zipgroupfileset dir="${out.dir}/cpp/ninja/ecore/release" includes="*.zip"/>
+            <zipgroupfileset dir="${out.dir}/cpp/ninja/ecore/release" includes="*.zip"/>
         </zip>
     </target>
     
@@ -602,6 +602,35 @@
       Library
     ============================================================================
     -->
+    <target name="library.cpp.generate">
+        <generator langage="cpp" input="models/library.ecore" output="${root.dir}/cpp">
+        </generator>
+    </target>
+    
+    <target name="library.cpp.configure.vs2019">
+        <cmake_exec generator="vs2019" project="library" input="${root.dir}/cpp/library"/>
+    </target>
+    
+    <target name="library.cpp.configure.ninja.release">
+        <cmake_exec generator="ninja" project="library" configuration="release" input="${root.dir}/cpp/library">
+            <arg value="-DCMAKE_MAKE_PROGRAM=${bin.dir}/ninja/ninja.exe"/>
+            <arg value="-DCMAKE_BUILD_TYPE=RelWithDebInfo"/>
+        </cmake_exec>
+    </target>
+    
+    <target name="library.cpp.configure.ninja.debug">
+        <cmake_exec generator="ninja" project="library" configuration="debug" input="${root.dir}/cpp/library">
+            <arg value="-DCMAKE_MAKE_PROGRAM=${bin.dir}/ninja/ninja.exe"/>
+            <arg value="-DCMAKE_BUILD_TYPE=Debug"/>
+        </cmake_exec>
+    </target>
+    
+    <target name="library.cpp.configure.ninja" depends="library.cpp.configure.ninja.release,library.cpp.configure.ninja.debug"/>
+    
+    <target name="library.cpp.configure" depends="library.cpp.configure.vs2019,library.cpp.configure.ninja"/>
+    
+    
+    
     <target name="library.go.generate">
         <generator langage="go" input="models/library.ecore" output="${root.dir}/go"/>
         <mock dir="library"/>
@@ -624,17 +653,17 @@
     <target name="library" depends="library.go"/>
     
     <target name="all" depends="configure,generators,ecore,library"/>
-	
-	<target name="clean">
-		<attrib readonly="false" type="both" verbose="true">
-			<dirset dir="out/go">
-				<include name="**/*"/>
-			</dirset>
-		</attrib>
-		<exec executable="git" failonerror="true">
+    
+    <target name="clean">
+        <attrib readonly="false" type="both" verbose="true">
+            <dirset dir="out/go">
+                <include name="**/*"/>
+            </dirset>
+        </attrib>
+        <exec executable="git" failonerror="true">
             <arg line="clean -xfd" />
         </exec>
-	</target>
+    </target>
 
 
 
