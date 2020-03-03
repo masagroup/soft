@@ -13,6 +13,9 @@ project(library CXX)
 
 enable_testing()
 
+get_filename_component(CMAKE_DEPS_PATH "${CMAKE_INSTALL_PREFIX}/cmake" ABSOLUTE)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_DEPS_PATH})
+
 #ecore
 add_subdirectory(lib)
 add_subdirectory(tests)
