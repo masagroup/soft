@@ -16,10 +16,12 @@
 #define ECORE_EOBJECTINTERNAL_HPP
 
 #include "ecore/Exports.hpp"
+#include "ecore/Uri.hpp"
 
 namespace ecore
 {
     class EObject;
+    class ENotificationChain;
 }
 
 namespace ecore::impl

@@ -35,8 +35,8 @@ namespace ecore::tests
         MOCK_METHOD(eContents ,0); 
         MOCK_METHOD(eAllContents ,0); 
         MOCK_METHOD(eCrossReferences ,0); 
-        MOCK_METHOD_EXT(eGet ,1, ecore::Any(const std::shared_ptr<ecore::EStructuralFeature>&), eGet_EStructuralFeature); 
-        MOCK_METHOD_EXT(eGet ,2, ecore::Any(const std::shared_ptr<ecore::EStructuralFeature>&,bool), eGet_EStructuralFeature_EBoolean); 
+        MOCK_METHOD_EXT(eGet ,1, Any(const std::shared_ptr<EStructuralFeature>&), eGet_EStructuralFeature); 
+        MOCK_METHOD_EXT(eGet ,2, Any(const std::shared_ptr<EStructuralFeature>&,bool), eGet_EStructuralFeature_EBoolean); 
         MOCK_METHOD(eSet ,2); 
         MOCK_METHOD(eIsSet ,1); 
         MOCK_METHOD(eUnset ,1); 

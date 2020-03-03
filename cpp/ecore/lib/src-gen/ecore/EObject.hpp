@@ -56,13 +56,6 @@ namespace ecore
 }
 
 // Start of user code forward declarations for EObject
-#include "ecore/URI.hpp"
-
-namespace ecore
-{
-    class ENotificationChain;    
-}    
-
 namespace ecore::impl
 {
     class EObjectInternal;
@@ -79,35 +72,35 @@ namespace ecore
         //*********************************
         // Operations
         //*********************************
-        virtual std::shared_ptr<ecore::EClass> eClass() const = 0;
+        virtual std::shared_ptr<EClass> eClass() const = 0;
         
         virtual bool eIsProxy() const = 0;
         
         virtual std::shared_ptr<ecore::EResource> eResource() const = 0;
         
-        virtual std::shared_ptr<ecore::EObject> eContainer() const = 0;
+        virtual std::shared_ptr<EObject> eContainer() const = 0;
         
-        virtual std::shared_ptr<ecore::EStructuralFeature> eContainingFeature() const = 0;
+        virtual std::shared_ptr<EStructuralFeature> eContainingFeature() const = 0;
         
-        virtual std::shared_ptr<ecore::EReference> eContainmentFeature() const = 0;
+        virtual std::shared_ptr<EReference> eContainmentFeature() const = 0;
         
-        virtual std::shared_ptr<const ecore::EList<std::shared_ptr<ecore::EObject>>> eContents() const = 0;
+        virtual std::shared_ptr<const EList<std::shared_ptr<EObject>>> eContents() const = 0;
         
-        virtual std::shared_ptr<const ecore::ECollectionView<std::shared_ptr<ecore::EObject>>> eAllContents() const = 0;
+        virtual std::shared_ptr<const ECollectionView<std::shared_ptr<EObject>>> eAllContents() const = 0;
         
-        virtual std::shared_ptr<const ecore::EList<std::shared_ptr<ecore::EObject>>> eCrossReferences() const = 0;
+        virtual std::shared_ptr<const EList<std::shared_ptr<EObject>>> eCrossReferences() const = 0;
         
-        virtual ecore::Any eGet(const std::shared_ptr<ecore::EStructuralFeature>& feature) const = 0;
+        virtual Any eGet(const std::shared_ptr<EStructuralFeature>& feature) const = 0;
         
-        virtual ecore::Any eGet(const std::shared_ptr<ecore::EStructuralFeature>& feature,bool resolve) const = 0;
+        virtual Any eGet(const std::shared_ptr<EStructuralFeature>& feature,bool resolve) const = 0;
         
-        virtual void eSet(const std::shared_ptr<ecore::EStructuralFeature>& feature,const ecore::Any& newValue) = 0;
+        virtual void eSet(const std::shared_ptr<EStructuralFeature>& feature,const Any& newValue) = 0;
         
-        virtual bool eIsSet(const std::shared_ptr<ecore::EStructuralFeature>& feature) const = 0;
+        virtual bool eIsSet(const std::shared_ptr<EStructuralFeature>& feature) const = 0;
         
-        virtual void eUnset(const std::shared_ptr<ecore::EStructuralFeature>& feature) = 0;
+        virtual void eUnset(const std::shared_ptr<EStructuralFeature>& feature) = 0;
         
-        virtual ecore::Any eInvoke(const std::shared_ptr<ecore::EOperation>& operation,const std::shared_ptr<ecore::EList<ecore::Any>>& arguments) = 0;
+        virtual Any eInvoke(const std::shared_ptr<EOperation>& operation,const std::shared_ptr<EList<Any>>& arguments) = 0;
         
         
         // Start of user code EObject
