@@ -11,23 +11,18 @@
 #define ECORE_PACKAGERESOURCECEREGISTRY_HPP_
 
 #include "ecore/Exports.hpp"
+#include "ecore/EPackageResourceRegistry.hpp"
 #include <memory>
 #include <unordered_map>
 
-namespace ecore
-{
-    class EResource;
-    class EPackage;
-}
-
 namespace ecore::impl
 {
-    class ECORE_API PackageResourceRegistry
+    class ECORE_API PackageResourceRegistry : public EPackageResourceRegistry
     {
     public:
-        static std::shared_ptr<PackageResourceRegistry> getInstance();
+        virtual ~PackageResourceRegistry() = default;
 
-        std::shared_ptr<EResource> getResource( const std::shared_ptr<EPackage>& ePackage);
+        virtual std::shared_ptr<EResource> getResource( const std::shared_ptr<EPackage>& ePackage);
 
     private:
         std::unordered_map < std::shared_ptr<EPackage>, std::shared_ptr<EResource>> packageToResources_;

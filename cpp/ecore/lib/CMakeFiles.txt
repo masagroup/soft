@@ -2,7 +2,8 @@
 # Sources
 set(SOURCE_ECORE_FILES
     src/ecore/EPackageRegistry.cpp
-    src/ecore/EResourceFactoryRegistry.cpp 
+    src/ecore/EPackageResourceRegistry.cpp
+    src/ecore/EResourceFactoryRegistry.cpp
     src/ecore/URI.cpp
     src/ecore/EcoreUtils.cpp
 )
@@ -23,6 +24,7 @@ set(HEADER_ECORE_FILES
     src/ecore/ENotifier.hpp
     src/ecore/ENotifyingList.hpp
     src/ecore/EPackageRegistry.hpp
+    src/ecore/EPackageResourceRegistry.hpp
     src/ecore/EResource.hpp
     src/ecore/EResourceFactory.hpp 
     src/ecore/EResourceFactoryRegistry.hpp 
