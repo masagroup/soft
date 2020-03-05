@@ -317,13 +317,13 @@ namespace ecore::impl
     {
         auto notifications = n;
         auto oldResource = eResource_.lock();
-        auto thisPtr = thisPtr_.lock();
+        auto thisPtr = getThisPtr();
         if( oldResource && newResource )
         {
             auto list = std::static_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
             notifications = list->remove( thisPtr, notifications );
 
-            oldResource->detached( getThisPtr() );
+            oldResource->detached( thisPtr );
         }
 
         auto eContainer = eContainer_.lock();
@@ -532,9 +532,9 @@ namespace ecore::impl
                                                                                    const std::shared_ptr<ENotificationChain>& n )
     {
         auto notifications = n;
-        auto thisPtr = thisPtr_.lock();
         auto oldContainer = eContainer_.lock();
         auto oldResource = eDirectResource();
+        auto thisPtr = getThisPtr();
 
         // resource
         std::shared_ptr<EResource> newResource;
@@ -576,7 +576,7 @@ namespace ecore::impl
             if( oldContainer && oldContainerFeatureID >= 0 && oldContainerFeatureID != newContainerFeatureID )
             {
                 auto notification = std::make_shared<Notification>(
-                    getThisPtr(), ENotification::SET, oldContainerFeatureID, oldContainer, std::shared_ptr<EObject>() );
+                    thisPtr, ENotification::SET, oldContainerFeatureID, oldContainer, std::shared_ptr<EObject>() );
                 if( notifications )
                     notifications->add( notification );
                 else
@@ -585,7 +585,7 @@ namespace ecore::impl
             if( newContainerFeatureID >= 0 )
             {
                 auto notification = std::make_shared<Notification>(
-                    getThisPtr(),
+                    thisPtr,
                     ENotification::SET,
                     newContainerFeatureID,
                     oldContainerFeatureID == newContainerFeatureID ? oldContainer : std::shared_ptr<EObject>(),
