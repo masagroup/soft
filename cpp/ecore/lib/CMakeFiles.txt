@@ -19,6 +19,7 @@ set(HEADER_ECORE_FILES
     src/ecore/EcoreUtils.hpp
     src/ecore/ECollectionView.hpp
     src/ecore/EDiagnostic.hpp
+    src/ecore/EFeatureMap.hpp
     src/ecore/ENotification.hpp
     src/ecore/ENotificationChain.hpp
     src/ecore/ENotifier.hpp
