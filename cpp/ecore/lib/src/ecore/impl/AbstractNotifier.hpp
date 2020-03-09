@@ -49,12 +49,12 @@ namespace ecore::impl
             return eDeliver_ && eAdapters_->size() > 0;
         }
 
-        void setThisPtr( const std::shared_ptr<AbstractNotifier>& thisPtr )
+        inline void setThisPtr( const std::shared_ptr<AbstractNotifier>& thisPtr )
         {
             thisPtr_ = thisPtr;
         }
         
-        std::shared_ptr<AbstractNotifier> getThisPtr() const
+        inline std::shared_ptr<AbstractNotifier> getThisPtr() const
         {
             return thisPtr_.lock();
         }
