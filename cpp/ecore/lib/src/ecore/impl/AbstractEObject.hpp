@@ -79,6 +79,8 @@ namespace ecore::impl
                                                  const std::shared_ptr<EObject>& eObject ) const;
 
     protected:
+        std::shared_ptr<EObject> getThisAsEObject() const;
+
         template <typename U>
         class EObjectInternalAdapter;
 

@@ -154,6 +154,16 @@ namespace ecore::impl
             return !operator ==( o );
         }
 
+        bool operator==( const T& value ) const
+        {
+            return value_ == value;
+        }
+
+        bool operator!=( const T& value ) const
+        {
+            return !operator==( value );
+        }
+
     private:
         
         template <typename T, typename U>

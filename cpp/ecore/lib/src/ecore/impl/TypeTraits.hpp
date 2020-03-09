@@ -11,7 +11,7 @@
 #define ECORE_TYPETRAITS_HPP_
 
 #include <memory>
-
+#include <type_traits>
 
 namespace ecore::impl
 {

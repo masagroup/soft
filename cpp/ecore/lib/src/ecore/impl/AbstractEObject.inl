@@ -229,6 +229,12 @@ namespace ecore::impl
     }
 
     template <typename... I>
+    inline std::shared_ptr<EObject> AbstractEObject<I...>::getThisAsEObject() const
+    {
+        return std::static_pointer_cast<EObject>( getThisPtr() );
+    }
+
+    template <typename... I>
     std::shared_ptr<EStructuralFeature> AbstractEObject<I...>::eStructuralFeature( const std::string& name ) const
     {
         auto eFeature = eClass()->getEStructuralFeature( name );
