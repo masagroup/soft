@@ -259,7 +259,7 @@ namespace ecore::impl
     template <typename... I>
     std::shared_ptr<ecore::EReference> AbstractEObject<I...>::eContainmentFeature() const
     {
-        return eContainmentFeature( getThisPtr(), eContainer_.lock(), eContainerFeatureID_ );
+        return eContainmentFeature( getThisAsEObject(), eContainer_.lock(), eContainerFeatureID_ );
     }
 
     template <typename... I>
@@ -323,13 +323,13 @@ namespace ecore::impl
     {
         auto notifications = n;
         auto oldResource = eResource_.lock();
-        auto thisPtr = getThisPtr();
+        auto thisObject = getThisAsEObject();
         if( oldResource && newResource )
         {
             auto list = std::static_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
-            notifications = list->remove( thisPtr, notifications );
+            notifications = list->remove( thisObject, notifications );
 
-            oldResource->detached( thisPtr );
+            oldResource->detached( thisObject );
         }
 
         auto eContainer = eContainer_.lock();
@@ -342,10 +342,10 @@ namespace ecore::impl
                 {
                     // If we're not setting a new resource, attach it to the old container's resource.
                     if( !newResource )
-                        oldContainerResource->attached( thisPtr );
+                        oldContainerResource->attached( thisObject );
                     // If we didn't detach it from an old resource already, detach it from the old container's resource.
                     else if( !oldResource )
-                        oldContainerResource->detached( thisPtr );
+                        oldContainerResource->detached( thisObject );
                 }
             }
             else
@@ -529,7 +529,7 @@ namespace ecore::impl
     template <typename... I>
     std::shared_ptr<EObject> AbstractEObject<I...>::eResolveProxy( const std::shared_ptr<EObject>& proxy ) const
     {
-        return EcoreUtils::resolve( proxy, getThisPtr() );
+        return EcoreUtils::resolve( proxy, getThisAsEObject() );
     }
 
     template <typename... I>
@@ -540,16 +540,16 @@ namespace ecore::impl
         auto notifications = n;
         auto oldContainer = eContainer_.lock();
         auto oldResource = eDirectResource();
-        auto thisPtr = getThisPtr();
+        auto thisObject = getThisAsEObject();
 
         // resource
         std::shared_ptr<EResource> newResource;
         if( oldResource )
         {
-            if( newContainer && !eContainmentFeature( thisPtr, newContainer, newContainerFeatureID ) )
+            if( newContainer && !eContainmentFeature( thisObject, newContainer, newContainerFeatureID ) )
             {
                 auto list = std::static_pointer_cast<ENotifyingList<std::shared_ptr<EObject>>>( oldResource->getContents() );
-                notifications = list->remove( thisPtr, notifications );
+                notifications = list->remove( thisObject, notifications );
                 eSetDirectResource( nullptr );
                 newResource = newContainer->eResource();
             }
@@ -566,10 +566,10 @@ namespace ecore::impl
         }
 
         if( oldResource && oldResource != newResource )
-            oldResource->detached( thisPtr );
+            oldResource->detached( thisObject );
 
         if( newResource && newResource != oldResource )
-            newResource->attached( thisPtr );
+            newResource->attached( thisObject );
 
         // basic set
         int oldContainerFeatureID = eContainerFeatureID_;
@@ -582,7 +582,7 @@ namespace ecore::impl
             if( oldContainer && oldContainerFeatureID >= 0 && oldContainerFeatureID != newContainerFeatureID )
             {
                 auto notification = std::make_shared<Notification>(
-                    thisPtr, ENotification::SET, oldContainerFeatureID, oldContainer, std::shared_ptr<EObject>() );
+                    thisObject, ENotification::SET, oldContainerFeatureID, oldContainer, std::shared_ptr<EObject>() );
                 if( notifications )
                     notifications->add( notification );
                 else
@@ -591,7 +591,7 @@ namespace ecore::impl
             if( newContainerFeatureID >= 0 )
             {
                 auto notification = std::make_shared<Notification>(
-                    thisPtr,
+                    thisObject,
                     ENotification::SET,
                     newContainerFeatureID,
                     oldContainerFeatureID == newContainerFeatureID ? oldContainer : std::shared_ptr<EObject>(),
@@ -616,7 +616,7 @@ namespace ecore::impl
             auto eContainer = eContainer_.lock();
             if( eContainer )
                 return eContainer->getInternal().eInverseRemove(
-                    getThisPtr(), EOPPOSITE_FEATURE_BASE - eContainerFeatureID_, notifications );
+                    getThisAsEObject(), EOPPOSITE_FEATURE_BASE - eContainerFeatureID_, notifications );
         }
         return notifications;
     }
@@ -631,7 +631,7 @@ namespace ecore::impl
             auto inverseFeature = reference->getEOpposite();
             auto container = eContainer_.lock();
             if( container && inverseFeature )
-                return container->getInternal().eInverseRemove( getThisPtr(), inverseFeature->getFeatureID(), notifications );
+                return container->getInternal().eInverseRemove( getThisAsEObject(), inverseFeature->getFeatureID(), notifications );
         }
         return notifications;
     }
