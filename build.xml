@@ -209,7 +209,7 @@
     </target>
     
     <target name="maven.install" depends="aria2.install,maven.checksum" unless="maven.installed">
-        <install name="maven" url="https://archive.apache.org/dist/maven/maven-3/3.6.2/binaries/apache-maven-3.6.2-bin.zip"/>
+        <install name="maven" url="https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.zip"/>
     </target>
     
     <macrodef name="maven_exec">
