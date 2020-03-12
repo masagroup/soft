@@ -16,6 +16,7 @@
 #include "ecore/impl/TypeTraits.hpp"
 #include "ecore/impl/WeakPtr.hpp"
 #include <memory>
+#include <boost/type_traits/is_virtual_base_of.hpp>
 
 namespace ecore
 {
@@ -77,7 +78,8 @@ namespace ecore::impl
                     auto owner = owner_.lock();
                     if( owner )
                     {
-                        auto resolved = std::static_pointer_cast<typename T::element_type>( owner->getInternal().eResolveProxy( value_ ) );
+                        auto resolved = derived_pointer_cast<typename T::element_type, ecore::EObject>(
+                            owner->getInternal().eResolveProxy( value_ ) );
                         if( resolved && resolved != value_ )
                         {
                             resolved_ = resolved;
@@ -166,18 +168,34 @@ namespace ecore::impl
 
     private:
         
-        template <typename T, typename U>
-        inline bool equals( const std::weak_ptr<T>& t, const std::weak_ptr<U>& u ) const
-        {
-            return ( is_uninitialized( t ) && is_uninitialized( u ) ) || ( !is_uninitialized( t ) && t.lock() == u.lock() );
-        }
-
         bool isNotificationRequired() const
         {
             auto owner = owner_.lock();
             return owner ? ( owner->eDeliver() && !owner->eAdapters().empty() ) : false;
         }
 
+        template <typename T, typename U>
+        inline static bool equals( const std::weak_ptr<T>& t, const std::weak_ptr<U>& u )
+        {
+            return ( is_uninitialized( t ) && is_uninitialized( u ) ) || ( !is_uninitialized( t ) && t.lock() == u.lock() );
+        }
+
+        template <typename T, typename U>
+        inline static std::shared_ptr<T> derived_pointer_cast( const std::shared_ptr<U>& p )
+        {
+            if constexpr( boost::is_virtual_base_of<U, T>::value )
+                return std::dynamic_pointer_cast<T>( p );
+            else
+                return std::static_pointer_cast<T>( p );
+        }
+
+        template <typename T>
+        inline static std::shared_ptr<T> derived_pointer_cast( const std::shared_ptr<T>& p )
+        {
+            return p;
+        }
+
+    
     private:
         std::weak_ptr<EObject> owner_;
         int featureID_;

@@ -14,6 +14,8 @@
 #include "ecore/EList.hpp"
 #include "ecore/Any.hpp"
 
+#include <boost/type_traits/is_virtual_base_of.hpp>
+
 namespace ecore
 {
     template <typename T>
@@ -119,7 +121,10 @@ namespace ecore
             {
                 static inline B do_cast( const A& a )
                 {
-                    return std::static_pointer_cast<typename B::element_type>( a );
+                    if constexpr( boost::is_virtual_base_of<typename A::element_type, typename B::element_type>::value )
+                        return std::dynamic_pointer_cast<typename B::element_type>( a );
+                    else
+                        return std::static_pointer_cast<typename B::element_type>( a );
                 }
             };
 
