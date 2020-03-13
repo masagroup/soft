@@ -13,7 +13,7 @@
 #include "ecore/Any.hpp"
 #include "ecore/EObject.hpp"
 #include "ecore/EList.hpp"
-
+#include "ecore/TypeTraits.hpp"
 
 namespace ecore
 {
@@ -42,8 +42,13 @@ namespace ecore
         }
         else if( id == &typeid( std::shared_ptr<EList<std::shared_ptr<EObject>>> ) )
         {
-            auto l = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( any );
-            return l->asEListOf<T>();
+            if constexpr( ecore::is_shared_ptr<T>::value && std::is_base_of<ecore::EObject, typename T::element_type>::value )
+            {
+                auto l = anyCast<std::shared_ptr<EList<std::shared_ptr<EObject>>>>( any );
+                return l->asEListOf<T>();
+            }
+            else
+                return nullptr;
         }
         else if( id == &typeid( std::shared_ptr<EList<T>> ) )
             return anyCast<std::shared_ptr<EList<T>>>( any );
