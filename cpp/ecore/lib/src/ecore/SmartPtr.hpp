@@ -11,6 +11,7 @@
 #define ECORE_SMARTPTR_HPP_
 
 #include "ecore/TypeTraits.hpp"
+#include <memory>
 
 namespace ecore
 {
@@ -21,13 +22,19 @@ namespace ecore
         return std::static_pointer_cast<T>( r.lock() );
     }
 
+    template <class T>
+    std::shared_ptr<T> derived_pointer_cast( const std::shared_ptr<T>& s )
+    {
+        return s;
+    }
+
     template <class T, class U>
     std::shared_ptr<U> derived_pointer_cast( const std::shared_ptr<T>& s )
     {
         if constexpr( is_virtual_base_of<T, U>::value )
             return std::dynamic_pointer_cast<U>( s );
         else
-            return std::static_pointer_cast<T>( s );
+            return std::static_pointer_cast<U>( s );
     }
 
 } // namespace ecore
