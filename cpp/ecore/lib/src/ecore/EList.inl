@@ -120,7 +120,7 @@ namespace ecore
             {
                 static inline B do_cast( const A& a )
                 {
-                    return derived_pointer_cast<typename A::element_type, typename B::element_type>( a );
+                    return derived_pointer_cast<typename B::element_type, typename A::element_type>( a );
                 }
             };
 

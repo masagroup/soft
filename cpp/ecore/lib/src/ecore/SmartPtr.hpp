@@ -22,19 +22,15 @@ namespace ecore
         return std::static_pointer_cast<T>( r.lock() );
     }
 
-    template <class T>
-    std::shared_ptr<T> derived_pointer_cast( const std::shared_ptr<T>& s )
-    {
-        return s;
-    }
-
     template <class T, class U>
-    std::shared_ptr<U> derived_pointer_cast( const std::shared_ptr<T>& s )
+    std::shared_ptr<T> derived_pointer_cast( const std::shared_ptr<U>& s )
     {
-        if constexpr( is_virtual_base_of<T, U>::value )
-            return std::dynamic_pointer_cast<U>( s );
+        if constexpr( std::is_same<T, U>::value )
+            return s;
+        if constexpr( ecore::is_virtual_base_of<U, T>::value )
+            return std::dynamic_pointer_cast<T>( s );
         else
-            return std::static_pointer_cast<U>( s );
+            return std::static_pointer_cast<T>( s );
     }
 
 } // namespace ecore
