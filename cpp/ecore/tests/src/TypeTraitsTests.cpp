@@ -40,9 +40,9 @@ BOOST_AUTO_TEST_CASE( IsUnitialized )
 
 BOOST_AUTO_TEST_CASE( IsVirtualBase )
 {
-    BOOST_CHECK( static_cast<bool>( is_virtual_base_of<A, A>::value ) );
     BOOST_CHECK( static_cast<bool>(is_virtual_base_of<A, C>::value) );
     BOOST_CHECK( !static_cast<bool>(is_virtual_base_of<A, B>::value) );
+    BOOST_CHECK( !static_cast<bool>( is_virtual_base_of<A, A>::value ) );
 }
 
 
