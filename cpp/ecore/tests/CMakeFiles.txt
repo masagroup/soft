@@ -27,6 +27,7 @@ set(SOURCE_FILES
     src/ResourceTests.cpp
     src/ResourceSetTests.cpp
     src/StringUtilsTests.cpp
+    src/TypeTraitsTests.cpp
     src/URITests.cpp
     src/XMLNamespacesTests.cpp
     src/XMIResourceTests.cpp

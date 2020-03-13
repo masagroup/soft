@@ -32,6 +32,12 @@ namespace ecore
 
     namespace detail
     {
+        template <class...>
+        struct make_void
+        {
+            typedef void type;
+        };
+
         // Implementation based on the standard's rules of explicit type conversions.
         // A pointer to an object of *derived* class type may be explicitly converted to a pointer to an *unambiguous* *base* class type.
         // A pointer to an object of an *unambiguous* *non-virtual* *base* class type may be explicitly converted to a pointer of a
@@ -51,7 +57,7 @@ namespace ecore
         // C-style casts have the power to ignore inheritance visibility while still act as a static_cast.
         // They can also fall back to the behaviour of reinterpret_cast, which allows is_virtual_base_of to work on non-class types too.
         // Note that because we are casting pointers there can be no user-defined operators to interfere.
-        template <class T, class U, typename std::void_t<decltype( (U*)( std::declval<T*>() ) )>* = nullptr>
+        template <class T, class U, typename make_void<decltype( (U*)( std::declval<T*>() ) )>::type* = nullptr>
         constexpr bool is_virtual_base_impl( int )
         {
             return false;
