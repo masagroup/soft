@@ -26,6 +26,7 @@ set(SOURCE_FILES
     src/ProxyTests.cpp
     src/ResourceTests.cpp
     src/ResourceSetTests.cpp
+    src/SmartPtrTests.cpp
     src/StringUtilsTests.cpp
     src/TypeTraitsTests.cpp
     src/URITests.cpp
