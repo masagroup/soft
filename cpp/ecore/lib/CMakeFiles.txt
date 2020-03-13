@@ -32,7 +32,9 @@ set(HEADER_ECORE_FILES
     src/ecore/EResourceSet.hpp
     src/ecore/ETreeIterator.hpp
     src/ecore/EUnsettableList.hpp
+    src/ecore/SmartPtr.hpp
     src/ecore/Stream.hpp
+    src/ecore/TypeTraits.hpp
     src/ecore/URI.hpp
     src/ecore/URI.inl
     src/ecore/URIHandler.hpp
@@ -71,8 +73,6 @@ set(HEADER_ECORE_IMPL_FILES
     src/ecore/impl/ResourceURIConverter.hpp
     src/ecore/impl/SaxParserPool.hpp
     src/ecore/impl/StringUtils.hpp
-    src/ecore/impl/TypeTraits.hpp
-    src/ecore/impl/WeakPtr.hpp
     src/ecore/impl/XMILoad.hpp
     src/ecore/impl/XMIResource.hpp
     src/ecore/impl/XMIResourceFactory.hpp

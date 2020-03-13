@@ -12,9 +12,10 @@
 
 #include "ecore/EList.hpp"
 #include "ecore/EObject.hpp"
+#include "ecore/SmartPtr.hpp"
+#include "ecore/TypeTraits.hpp"
 #include "ecore/impl/Notification.hpp"
-#include "ecore/impl/TypeTraits.hpp"
-#include "ecore/impl/WeakPtr.hpp"
+
 #include <memory>
 #include <boost/type_traits/is_virtual_base_of.hpp>
 

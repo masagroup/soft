@@ -24,7 +24,6 @@
 #include "ecore/impl/ArrayEList.hpp"
 #include "ecore/impl/EObjectEList.hpp"
 #include "ecore/impl/Proxy.hpp"
-#include "ecore/impl/WeakPtr.hpp"
 
 #include <string>
 #include <sstream>
