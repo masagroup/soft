@@ -47,11 +47,11 @@ namespace ecore
         // 2 = pass through in PATH mode
         // 3 = space, replace with '+' in QUERY mode
         // 4 = percent-encode
-        extern const std::array<unsigned char, 256> uriEscapeTable;
+        extern ECORE_API const std::array<unsigned char, 256> uriEscapeTable;
 
 
         // Map from the character code to the hex value, or 16 if invalid hex char.
-        extern const std::array<unsigned char, 256> hexTable;
+        extern ECORE_API const std::array<unsigned char, 256> hexTable;
 
     } // namespace detail
 
