@@ -16,8 +16,6 @@
 #include "ecore/TypeTraits.hpp"
 #include "ecore/impl/Notification.hpp"
 
-#include <memory>
-#include <boost/type_traits/is_virtual_base_of.hpp>
 
 namespace ecore
 {
@@ -180,22 +178,6 @@ namespace ecore::impl
         {
             return ( is_uninitialized( t ) && is_uninitialized( u ) ) || ( !is_uninitialized( t ) && t.lock() == u.lock() );
         }
-
-        template <typename T, typename U>
-        inline static std::shared_ptr<T> derived_pointer_cast( const std::shared_ptr<U>& p )
-        {
-            if constexpr( boost::is_virtual_base_of<U, T>::value )
-                return std::dynamic_pointer_cast<T>( p );
-            else
-                return std::static_pointer_cast<T>( p );
-        }
-
-        template <typename T>
-        inline static std::shared_ptr<T> derived_pointer_cast( const std::shared_ptr<T>& p )
-        {
-            return p;
-        }
-
     
     private:
         std::weak_ptr<EObject> owner_;
