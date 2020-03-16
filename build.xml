@@ -599,7 +599,7 @@
     
     <!--
     ============================================================================
-      Library
+      Library CPP
     ============================================================================
     -->
     <target name="library.cpp.generate">
@@ -629,8 +629,33 @@
     
     <target name="library.cpp.configure" depends="library.cpp.configure.vs2019,library.cpp.configure.ninja"/>
     
+    <target name="library.cpp.build.debug">
+        <ninja_exec dir="${out.dir}/cpp/ninja/library/debug"/>
+    </target>
     
+    <target name="library.cpp.build.release">
+        <ninja_exec dir="${out.dir}/cpp/ninja/library/release"/>
+    </target>
     
+    <target name="library.cpp.build" depends="library.cpp.build.debug,library.cpp.build.release"/>
+    
+    <target name="library.cpp.tests.debug">
+        <ctest_exec dir="${out.dir}/cpp/ninja/library/debug"/>
+    </target>
+    
+    <target name="library.cpp.tests.release">
+        <ctest_exec dir="${out.dir}/cpp/ninja/library/release"/>
+    </target>
+    
+    <target name="library.cpp.tests" depends="library.cpp.tests.debug,library.cpp.tests.release"/>
+    
+    <target name="library.cpp" depends="library.cpp.generate,library.cpp.configure,library.cpp.build,library.cpp.tests"/>
+    
+    <!--
+    ============================================================================
+      Library GO
+    ============================================================================
+    -->
     <target name="library.go.generate">
         <generator langage="go" input="models/library.ecore" output="${root.dir}/go"/>
         <mock dir="library"/>
@@ -650,7 +675,18 @@
    
     <target name="library.go" depends="library.go.generate,library.go.format,library.go.build,library.go.tests"/>
     
-    <target name="library" depends="library.go"/>
+    <!--
+    ============================================================================
+      Library
+    ============================================================================
+    -->
+    <target name="library" depends="library.cpp,library.go"/>
+    
+    <target name="library.clean">
+        <exec executable="git" dir="library" failonerror="true">
+            <arg line="clean -xfd" />
+        </exec>
+    </target>
     
     <target name="all" depends="configure,generators,ecore,library"/>
     
