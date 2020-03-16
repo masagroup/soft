@@ -23,10 +23,10 @@
 #endif
 
 [let includes : OrderedSet(String) = Set{ aPackage.getMetaMetaModelClasses()->selectByKind(EClass)->collect( c | c.getQualifiedInterfaceName())->asSet()
-                                        , aPackage.metaModelIncludes()->collect( p | p.getQualifiedInterfaceName())->asSet()
                                         , Set {
+													aPackage.getFactoryQualifiedInterfaceName(),
                                                     'ecore::EList',
-                                                    'ecore::impl::PackageResourceRegistry'
+                                                    'ecore::EPackageResourceRegistry'
                                               }
                                         }->flatten()->asOrderedSet()->sortedBy( s | s)]
 [for ( include : String | includes )]
@@ -65,7 +65,7 @@ namespace [namespaceName/]
 	{
 	    auto resource = [getShortQualifiedName('ecore::ext::EPackageBaseExt<I...>' ,aPackage.getImplementationNamespaceName())/]::eResource();
 	    if (!resource)
-	        resource = PackageResourceRegistry::getInstance()->getResource(getThisPtr());    
+	        resource = [getShortQualifiedName('ecore::EPackageResourceRegistry' ,aPackage.getImplementationNamespaceName())/]::getInstance()->getResource(getThisPtr());    
 	    return resource;
 	}
 	
@@ -109,7 +109,7 @@ namespace [namespaceName/]
 
 	[for (aClass : EClass | aPackage.eAllContents(EClass)->asOrderedSet()->sortedBy(name)) separator ('\r\n')]
 	template <typename... I>
-	void [className/]<I...>::create[aClass.name.toUpperFirst()/]Content(const std::shared_ptr<EPackage>& package, const std::shared_ptr<EcoreFactory>& factory)
+	void [className/]<I...>::create[aClass.name.toUpperFirst()/]Content(const std::shared_ptr<[getShortQualifiedName('ecore::EPackage', aPackage.name)/]>& package, const std::shared_ptr<[getShortQualifiedName('ecore::EcoreFactory', aPackage.name)/]>& factory)
 	{
 	    [aClass.generateClassCreation()/]
 	    [aClass.eStructuralFeatures.generateCreation()/]
@@ -118,7 +118,7 @@ namespace [namespaceName/]
 	[/for]
 
 	template <typename... I>
-	void [className/]<I...>::createPackageEDataTypes(const std::shared_ptr<EPackage>& package, const std::shared_ptr<EcoreFactory>& factory)
+	void [className/]<I...>::createPackageEDataTypes(const std::shared_ptr<[getShortQualifiedName('ecore::EPackage', aPackage.name)/]>& package, const std::shared_ptr<[getShortQualifiedName('ecore::EcoreFactory', aPackage.name)/]>& factory)
 	{
 	    [aPackage.eAllContents(EDataType)->sortedBy(name).generateEDatatypeCreation()/]
 	}
