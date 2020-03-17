@@ -1,6 +1,7 @@
 # Sources
 
 set(SOURCE_FILES
-    src/main.cpp    
+    src/main.cpp
+    src/SerializationTests.cpp
 )
 
