@@ -7,10 +7,16 @@
 #include "library/Writer.hpp"
 #include <boost/test/unit_test.hpp>
 
+#include "ecore/EResource.hpp"
+#include "ecore/EResourceFactory.hpp"
+#include "ecore/EResourceFactoryRegistry.hpp"
+#include "ecore/URI.hpp"
+
 #include <chrono>
 #include <random>
 #include <stack>
 
+using namespace ecore;
 using namespace library;
 
 namespace
@@ -73,7 +79,7 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
 
         if( !employees->empty() )
         {
-            std::uniform_int_distribution<int> d( 0, static_cast<int>(employees->size()) - 1 );
+            std::uniform_int_distribution<int> d( 0, static_cast<int>( employees->size() ) - 1 );
             auto ndx = d( generator );
             e->setManager( employees->get( ndx ) );
         }
@@ -94,7 +100,7 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
     }
 
     // books
-    std::uniform_int_distribution<int> book_author_distibution( 0, static_cast<int>(l->getWriters()->size() - 1) );
+    std::uniform_int_distribution<int> book_author_distibution( 0, static_cast<int>( l->getWriters()->size() - 1 ) );
     std::uniform_int_distribution<int> book_category_distibution( 0, 2 );
     std::uniform_int_distribution<int> book_copies_distibution( 1, 5 );
     std::uniform_int_distribution<int> book_pages_distibution( 1, 500 );
@@ -106,8 +112,8 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
         b->setCategory( BookCategory( book_category_distibution( generator ) ) );
         b->setCopies( book_copies_distibution( generator ) );
         b->setPages( book_pages_distibution( generator ) );
-        b->setPublicationDate( std::chrono::system_clock::to_time_t( randomTime( start_date , end_date) ) );
-        b->setTitle( "Title " + std::to_string(i) );
+        b->setPublicationDate( std::chrono::system_clock::to_time_t( randomTime( start_date, end_date ) ) );
+        b->setTitle( "Title " + std::to_string( i ) );
 
         auto authorNdx = book_author_distibution( generator );
         auto a = l->getWriters()->get( authorNdx );
@@ -117,7 +123,7 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
     }
 
     // borrowers
-    std::uniform_int_distribution<int> borrower_book_distibution( 0, static_cast<int>(l->getBooks()->size()) - 1);
+    std::uniform_int_distribution<int> borrower_book_distibution( 0, static_cast<int>( l->getBooks()->size() ) - 1 );
     for( int i = 0; i < 100; ++i )
     {
         auto b = lf->createBorrower();
@@ -130,6 +136,15 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
         auto book = l->getBooks()->get( bookNdx );
         b->getBorrowed()->add( book );
     }
+
+    auto fileURI = URI("file://D:/dev/mylib.xml");
+    auto resourceFactory = EResourceFactoryRegistry::getInstance()->getFactory( fileURI );
+    BOOST_CHECK( resourceFactory );
+    auto resource = resourceFactory->createResource( fileURI );
+    BOOST_CHECK( resource );
+    resource->getContents()->add( l );
+    resource->save();
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()
