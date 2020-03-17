@@ -34,7 +34,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="stock" ordered="false"
         upperBound="-1" eType="#//Item" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="books" ordered="false"
-        upperBound="-1" eType="#//Book" transient="true" derived="true"/>
+        upperBound="-1" eType="#//Book" transient="true" derived="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="branches" upperBound="-1"
         eType="#//Library" containment="true" eOpposite="#//Library/parentBranch"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="parentBranch" eType="#//Library"
