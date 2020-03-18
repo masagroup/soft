@@ -66,6 +66,8 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
     auto lp = LibraryPackage::eInstance();
 
     auto l = lf->createLibrary();
+    l->setName( "My Library" );
+    l->setAddress( "My Library Adress" );
 
     std::default_random_engine generator;
 
@@ -73,10 +75,11 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
     auto employees = l->getEmployees();
     for( int i = 0; i < 10; ++i )
     {
+        auto ndx = std::to_string( i );
         auto e = lf->createEmployee();
-        e->setAddress( "Adress " + i );
-        e->setFirstName( "First Name " + i );
-        e->setLastName( "Last Name " + i );
+        e->setAddress( "Adress " + ndx );
+        e->setFirstName( "First Name " + ndx );
+        e->setLastName( "Last Name " + ndx );
 
         if( !employees->empty() )
         {
