@@ -14,33 +14,34 @@
   <eClassifiers xsi:type="ecore:EClass" name="Library" eSuperTypes="#//Addressable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="writers" upperBound="-1"
-        eType="#//Writer" transient="true" derived="true" containment="true" resolveProxies="false">
+        eType="#//Writer" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="group" value="#people"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="employees" upperBound="-1"
-        eType="#//Employee" transient="true" derived="true" containment="true" resolveProxies="false">
+        eType="#//Employee" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="group" value="#people"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="borrowers" upperBound="-1"
-        eType="#//Borrower" transient="true" derived="true" containment="true" resolveProxies="false">
+        eType="#//Borrower" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="group" value="#people"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="stock" ordered="false"
-        upperBound="-1" eType="#//Item" containment="true" resolveProxies="false"/>
+        upperBound="-1" eType="#//Item" transient="true" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="books" ordered="false"
-        upperBound="-1" eType="#//Book" transient="true" derived="true" resolveProxies="false"/>
+        upperBound="-1" eType="#//Book" derived="true" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="branches" upperBound="-1"
         eType="#//Library" containment="true" eOpposite="#//Library/parentBranch"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="parentBranch" eType="#//Library"
         eOpposite="#//Library/branches"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="people" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry"
+        transient="true">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="group"/>
       </eAnnotations>
