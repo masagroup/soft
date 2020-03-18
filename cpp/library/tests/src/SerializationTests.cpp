@@ -20,13 +20,13 @@
 using namespace ecore;
 using namespace library;
 
-#define NB_EMPLOYEES 10
-#define NB_WRITERS 100
-#define NB_BOOKS 1000
-#define NB_BORROWERS 100
-
 namespace
 {
+    constexpr int nb_employees = 10;
+    constexpr int nb_writers = 100;
+    constexpr int nb_books = 1000;
+    constexpr int nb_borrowers = 100;
+
     template <class TimePoint>
     class uniform_time_distribution
     {
@@ -78,7 +78,7 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
 
     // employees
     auto employees = l->getEmployees();
-    for( int i = 0; i < NB_EMPLOYEES; ++i )
+    for( int i = 0; i < nb_employees; ++i )
     {
         auto ndx = std::to_string( i );
         auto e = lf->createEmployee();
@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
     }
 
     // writers
-    for( int i = 0; i < NB_WRITERS; ++i )
+    for( int i = 0; i < nb_writers; ++i )
     {
         auto w = lf->createWriter();
         auto ndx = std::to_string( i );
@@ -109,13 +109,13 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
     }
 
     // books
-    std::uniform_int_distribution<int> book_author_distibution( 0, static_cast<int>( l->getWriters()->size() - 1 ) );
+    std::uniform_int_distribution<int> book_author_distibution( 0, nb_writers > 0 ? nb_writers - 1 : 0 );
     std::uniform_int_distribution<int> book_category_distibution( 0, 2 );
     std::uniform_int_distribution<int> book_copies_distibution( 1, 5 );
     std::uniform_int_distribution<int> book_pages_distibution( 1, 500 );
     auto start_date = std::chrono::system_clock::from_time_t( std::time_t( 0 ) );
     auto end_date = std::chrono::system_clock::now();
-    for( int i = 0; i < NB_BOOKS; ++i )
+    for( int i = 0; i < nb_books; ++i )
     {
         auto b = lf->createBook();
         b->setCategory( BookCategory( book_category_distibution( generator ) ) );
@@ -124,16 +124,19 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
         b->setPublicationDate( std::chrono::system_clock::to_time_t( randomTime( start_date, end_date ) ) );
         b->setTitle( "Title " + std::to_string( i ) );
 
-        auto authorNdx = book_author_distibution( generator );
-        auto a = l->getWriters()->get( authorNdx );
-        b->setAuthor( a );
-
+        if constexpr( nb_writers > 0 )
+        {
+            auto authorNdx = book_author_distibution( generator );
+            auto a = l->getWriters()->get( authorNdx );
+            b->setAuthor( a );
+        }
+        
         l->getBooks()->add( b );
     }
 
     // borrowers
-    std::uniform_int_distribution<int> borrower_book_distibution( 0, static_cast<int>( l->getBooks()->size() ) - 1 );
-    for( int i = 0; i < NB_BORROWERS; ++i )
+    std::uniform_int_distribution<int> borrower_book_distibution( 0, nb_borrowers > 0 ? nb_borrowers - 1 : 0 );
+    for( int i = 0; i < nb_borrowers; ++i )
     {
         auto b = lf->createBorrower();
         auto ndx = std::to_string( i );
@@ -141,9 +144,12 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
         b->setFirstName( "First Name " + ndx );
         b->setLastName( "Last Name " + ndx );
 
-        auto bookNdx = borrower_book_distibution( generator );
-        auto book = l->getBooks()->get( bookNdx );
-        b->getBorrowed()->add( book );
+        if constexpr ( nb_books > 0 )
+        {
+            auto bookNdx = borrower_book_distibution( generator );
+            auto book = l->getBooks()->get( bookNdx );
+            b->getBorrowed()->add( book );
+        }
     }
 
     auto fileURI = URI("file:D:/dev/mylib.xml");
