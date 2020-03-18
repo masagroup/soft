@@ -14,7 +14,7 @@ XMIResourceFactory::~XMIResourceFactory()
 
 std::shared_ptr<EResource> XMIResourceFactory::createResource( const URI& uri ) const
 {
-    auto resource = std::make_shared<XMIResource>();
+    auto resource = std::make_shared<XMIResource>( uri );
     resource->setThisPtr( resource );
     return resource;
 }

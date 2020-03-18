@@ -15,6 +15,7 @@
 #include <chrono>
 #include <random>
 #include <stack>
+#include <fstream>
 
 using namespace ecore;
 using namespace library;
@@ -137,14 +138,13 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
         b->getBorrowed()->add( book );
     }
 
-    auto fileURI = URI("file://D:/dev/mylib.xml");
+    auto fileURI = URI("file:D:/dev/mylib.xml");
     auto resourceFactory = EResourceFactoryRegistry::getInstance()->getFactory( fileURI );
     BOOST_CHECK( resourceFactory );
     auto resource = resourceFactory->createResource( fileURI );
     BOOST_CHECK( resource );
     resource->getContents()->add( l );
     resource->save();
-
 }
 
 BOOST_AUTO_TEST_SUITE_END()

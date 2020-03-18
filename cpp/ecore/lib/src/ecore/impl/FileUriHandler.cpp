@@ -26,17 +26,16 @@ bool FileURIHandler::canHandle( const URI& uri ) const
 
 std::unique_ptr<std::istream> FileURIHandler::createInputStream( const URI& uri ) const
 {
-    auto is = std::make_unique<std::ifstream>( uri.getPath() );
-    if( is->fail() || is->bad() )
-    {
-        char buff[256];
-        strerror_s( buff, 256, errno );
-        throw std::runtime_error( buff );
-    }
+    auto is = std::make_unique<std::ifstream>();
+    is->exceptions( std::ios_base::failbit | std::ios_base::badbit );
+    is->open( uri.getPath() );
     return std::move( is );
 }
 
 std::unique_ptr<std::ostream> FileURIHandler::createOutputStream( const URI& uri ) const
 {
-    return std::move( std::make_unique<std::ofstream>( uri.getPath() ) );
+    auto os = std::make_unique<std::ofstream>();
+    os->exceptions( std::ios_base::failbit | std::ios_base::badbit );
+    os->open( uri.getPath() );
+    return std::move( os );
 }

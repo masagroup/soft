@@ -2,7 +2,7 @@
 
 #include "ecore/URI.hpp"
 #include "ecore/impl/FileURIHandler.hpp"
-#include <iostream>
+#include <fstream>
 
 using namespace ecore;
 using namespace ecore::impl;
@@ -20,9 +20,9 @@ BOOST_AUTO_TEST_CASE( canHandle )
 BOOST_AUTO_TEST_CASE( InputStream_Read )
 {
     FileURIHandler handler;
-    std::unique_ptr<std::istream> is = handler.createInputStream( URI("data/stream.read.txt") );
+    std::unique_ptr<std::istream> is = handler.createInputStream( URI( "data/stream.read.txt" ) );
     char buff[256];
-    is->read( buff, 256 );
+    BOOST_CHECK_EXCEPTION( is->read( buff, 256 ), std::ifstream::failure, []( const std::ifstream::failure& f ) { return true; } );
     BOOST_REQUIRE_EQUAL( is->gcount(), 6 );
     buff[6] = 0;
     BOOST_CHECK_EQUAL( buff, "mytest" );
