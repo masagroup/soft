@@ -20,6 +20,11 @@
 using namespace ecore;
 using namespace library;
 
+#define NB_EMPLOYEES 10
+#define NB_WRITERS 100
+#define NB_BOOKS 1000
+#define NB_BORROWERS 100
+
 namespace
 {
     template <class TimePoint>
@@ -73,7 +78,7 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
 
     // employees
     auto employees = l->getEmployees();
-    for( int i = 0; i < 10; ++i )
+    for( int i = 0; i < NB_EMPLOYEES; ++i )
     {
         auto ndx = std::to_string( i );
         auto e = lf->createEmployee();
@@ -92,7 +97,7 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
     }
 
     // writers
-    for( int i = 0; i < 10; ++i )
+    for( int i = 0; i < NB_WRITERS; ++i )
     {
         auto w = lf->createWriter();
         auto ndx = std::to_string( i );
@@ -110,7 +115,7 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
     std::uniform_int_distribution<int> book_pages_distibution( 1, 500 );
     auto start_date = std::chrono::system_clock::from_time_t( std::time_t( 0 ) );
     auto end_date = std::chrono::system_clock::now();
-    for( int i = 0; i < 100; ++i )
+    for( int i = 0; i < NB_BOOKS; ++i )
     {
         auto b = lf->createBook();
         b->setCategory( BookCategory( book_category_distibution( generator ) ) );
@@ -128,7 +133,7 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
 
     // borrowers
     std::uniform_int_distribution<int> borrower_book_distibution( 0, static_cast<int>( l->getBooks()->size() ) - 1 );
-    for( int i = 0; i < 100; ++i )
+    for( int i = 0; i < NB_BORROWERS; ++i )
     {
         auto b = lf->createBorrower();
         auto ndx = std::to_string( i );
