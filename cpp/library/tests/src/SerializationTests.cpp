@@ -66,7 +66,7 @@ namespace
 
 BOOST_AUTO_TEST_SUITE( SerializationTests )
 
-BOOST_AUTO_TEST_CASE( GenerateModel )
+BOOST_AUTO_TEST_CASE( GenerateModel, *boost::unit_test::disabled() )
 {
     auto lf = LibraryFactory::eInstance();
     auto lp = LibraryPackage::eInstance();
@@ -160,6 +160,42 @@ BOOST_AUTO_TEST_CASE( GenerateModel )
     BOOST_CHECK( resource );
     resource->getContents()->add( l );
     resource->save();
+}
+
+namespace
+{
+    std::string replaceAll( std::string str, const std::string& from, const std::string& to )
+    {
+        size_t start_pos = 0;
+        while( ( start_pos = str.find( from, start_pos ) ) != std::string::npos )
+        {
+            str.replace( start_pos, from.length(), to );
+            start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+        }
+        return str;
+    }
+} // namespace
+
+BOOST_AUTO_TEST_CASE( LoadSave )
+{
+    auto fileURI = URI( "data/library.xml" );
+    auto resourceFactory = EResourceFactoryRegistry::getInstance()->getFactory( fileURI );
+    BOOST_CHECK( resourceFactory );
+    auto resource = resourceFactory->createResource( fileURI );
+    BOOST_CHECK( resource );
+    resource->load();
+
+    BOOST_CHECK( resource->isLoaded() );
+    BOOST_CHECK( resource->getWarnings()->empty() );
+    BOOST_CHECK( resource->getErrors()->empty() );
+
+    std::ifstream ifs( "data/library.ecore" );
+    std::string expected( ( std::istreambuf_iterator<char>( ifs ) ), std::istreambuf_iterator<char>() );
+
+    std::stringstream ss;
+    resource->save( ss );
+
+    BOOST_CHECK_EQUAL( replaceAll( ss.str(), "\r\n", "\n" ), replaceAll( expected, "\r\n", "\n" ) );
 }
 
 BOOST_AUTO_TEST_SUITE_END()
