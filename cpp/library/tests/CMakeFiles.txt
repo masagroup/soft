@@ -3,5 +3,6 @@
 set(SOURCE_FILES
     src/main.cpp
     src/SerializationTests.cpp
+    src/MetaModelTests.cpp
 )
 
