@@ -1,3 +1,5 @@
+#include <boost/test/unit_test.hpp>
+
 #include "library/Book.hpp"
 #include "library/Borrower.hpp"
 #include "library/Employee.hpp"
@@ -5,7 +7,6 @@
 #include "library/LibraryFactory.hpp"
 #include "library/LibraryPackage.hpp"
 #include "library/Writer.hpp"
-#include <boost/test/unit_test.hpp>
 
 #include "ecore/EResource.hpp"
 #include "ecore/EResourceFactory.hpp"
