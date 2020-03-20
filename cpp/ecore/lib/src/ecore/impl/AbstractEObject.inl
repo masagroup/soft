@@ -371,27 +371,39 @@ namespace ecore::impl
     }
 
     template <typename... I>
-    int AbstractEObject<I...>::eDerivedStructuralFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
+    int AbstractEObject<I...>::eStructuralFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const
     {
         VERIFYN( eClass()->getEAllStructuralFeatures()->contains( eStructuralFeature ),
                  "The feature '%s' is not a valid feature",
                  eStructuralFeature->getName().c_str() );
-        return eStructuralFeature->getFeatureID();
+        return eStructuralFeatureID( eStructuralFeature->eContainer(), eStructuralFeature->getFeatureID() );
     }
 
     template <typename... I>
-    int AbstractEObject<I...>::eDerivedOperationID( const std::shared_ptr<EOperation>& eOperation ) const
+    int AbstractEObject<I...>::eStructuralFeatureID( const std::shared_ptr<EObject>& eContainer, int featureID ) const
+    {
+        return featureID;
+    }
+
+    template <typename... I>
+    int AbstractEObject<I...>::eOperationID( const std::shared_ptr<EOperation>& eOperation ) const
     {
         VERIFYN( eClass()->getEAllOperations()->contains( eOperation ),
                  "The operation '%s' is not a valid operation",
                  eOperation->getName().c_str() );
-        return eOperation->getOperationID();
+        return eOperationID( eOperation->eContainer() , eOperation->getOperationID() );
+    }
+
+    template <typename... I>
+    int AbstractEObject<I...>::eOperationID( const std::shared_ptr<EObject>& eContainer, int operationID ) const
+    {
+        return operationID;
     }
 
     template <typename... I>
     Any AbstractEObject<I...>::eGet( const std::shared_ptr<EStructuralFeature>& eFeature, bool resolve, bool coreType ) const
     {
-        int featureID = eDerivedStructuralFeatureID( eFeature );
+        int featureID = eStructuralFeatureID( eFeature );
         if( featureID >= 0 )
             return eGet( featureID, resolve, coreType );
         throw "The feature '" + eFeature->getName() + "' is not a valid feature";
@@ -408,7 +420,7 @@ namespace ecore::impl
     template <typename... I>
     bool AbstractEObject<I...>::eIsSet( const std::shared_ptr<EStructuralFeature>& eFeature ) const
     {
-        int featureID = eDerivedStructuralFeatureID( eFeature );
+        int featureID = eStructuralFeatureID( eFeature );
         if( featureID >= 0 )
             return eIsSet( featureID );
         throw "The feature '" + eFeature->getName() + "' is not a valid feature";
@@ -425,7 +437,7 @@ namespace ecore::impl
     template <typename... I>
     void AbstractEObject<I...>::eSet( const std::shared_ptr<EStructuralFeature>& eFeature, const Any& newValue )
     {
-        int featureID = eDerivedStructuralFeatureID( eFeature );
+        int featureID = eStructuralFeatureID( eFeature );
         if( featureID >= 0 )
             eSet( featureID, newValue );
         else
@@ -442,7 +454,7 @@ namespace ecore::impl
     template <typename... I>
     void AbstractEObject<I...>::eUnset( const std::shared_ptr<EStructuralFeature>& eFeature )
     {
-        int featureID = eDerivedStructuralFeatureID( eFeature );
+        int featureID = eStructuralFeatureID( eFeature );
         if( featureID >= 0 )
             eUnset( featureID );
         else
@@ -459,7 +471,7 @@ namespace ecore::impl
     template <typename... I>
     Any AbstractEObject<I...>::eInvoke( const std::shared_ptr<EOperation>& eOperation, const std::shared_ptr<EList<Any>>& arguments )
     {
-        int operationID = eDerivedOperationID( eOperation );
+        int operationID = eOperationID( eOperation );
         if( operationID >= 0 )
             return eInvoke( operationID, arguments );
         throw "The operation '" + eOperation->getName() + "' is not a valid operation";
