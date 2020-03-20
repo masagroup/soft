@@ -192,7 +192,7 @@ BOOST_AUTO_TEST_CASE( LoadSave )
     BOOST_CHECK( resource->getWarnings()->empty() );
     BOOST_CHECK( resource->getErrors()->empty() );
 
-    std::ifstream ifs( "data/library.ecore" );
+    std::ifstream ifs( "data/library.xml" );
     std::string expected( ( std::istreambuf_iterator<char>( ifs ) ), std::istreambuf_iterator<char>() );
 
     std::stringstream ss;
