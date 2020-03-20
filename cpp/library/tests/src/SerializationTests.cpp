@@ -11,6 +11,7 @@
 #include "ecore/EResource.hpp"
 #include "ecore/EResourceFactory.hpp"
 #include "ecore/EResourceFactoryRegistry.hpp"
+#include "ecore/EPackageRegistry.hpp"
 #include "ecore/URI.hpp"
 
 #include <chrono>
@@ -178,6 +179,8 @@ namespace
 
 BOOST_AUTO_TEST_CASE( LoadSave )
 {
+    EPackageRegistry::getInstance()->registerPackage( LibraryPackage::eInstance() );
+
     auto fileURI = URI( "data/library.xml" );
     auto resourceFactory = EResourceFactoryRegistry::getInstance()->getFactory( fileURI );
     BOOST_CHECK( resourceFactory );
