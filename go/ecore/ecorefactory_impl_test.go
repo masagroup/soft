@@ -100,7 +100,7 @@ func TestFactoryCreate(t *testing.T) {
 	}
 }
 
-func TestFactoryPanics(t *testing.T) {
+func TestFactoryConvert(t *testing.T) {
 	factory := newEcoreFactoryImpl()
 	{
 		mockEDataType := &MockEDataType{}
@@ -109,227 +109,227 @@ func TestFactoryPanics(t *testing.T) {
 	}
 	{
 		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EBIG_INTEGER)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EBOOLEAN)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EBOOLEAN_OBJECT)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EBYTE)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EBYTE_ARRAY)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EBYTE_OBJECT)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(ECHAR)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(ECHARACTER_OBJECT)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EDATE)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EDOUBLE)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EDOUBLE_OBJECT)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EFLOAT)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EFLOAT_OBJECT)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EINT)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EINTEGER_OBJECT)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EJAVA_CLASS)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(EJAVA_OBJECT)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(ELONG)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(ELONG_OBJECT)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(ESHORT)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(ESHORT_OBJECT)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
-		mockEDataType.On("GetClassifierID").Return(ESTRING)
-		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
-	}
-	{
-		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EBIG_DECIMAL)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EBIG_INTEGER)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EBIG_INTEGER)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EBOOLEAN)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EBOOLEAN)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EBOOLEAN_OBJECT)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EBOOLEAN_OBJECT)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EBYTE)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EBYTE)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EBYTE_ARRAY)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EBYTE_ARRAY)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EBYTE_OBJECT)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EBYTE_OBJECT)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(ECHAR)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(ECHAR)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(ECHARACTER_OBJECT)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(ECHARACTER_OBJECT)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EDATE)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EDATE)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EDOUBLE)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EDOUBLE)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EDOUBLE_OBJECT)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EDOUBLE_OBJECT)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EFLOAT)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EFLOAT)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EFLOAT_OBJECT)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EFLOAT_OBJECT)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EINT)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EINT)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EINTEGER_OBJECT)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EINTEGER_OBJECT)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EJAVA_CLASS)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EJAVA_CLASS)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(EJAVA_OBJECT)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(EJAVA_OBJECT)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(ELONG)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(ELONG)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(ELONG_OBJECT)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(ELONG_OBJECT)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(ESHORT)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(ESHORT)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(ESHORT_OBJECT)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(ESHORT_OBJECT)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 	{
 		mockEDataType := &MockEDataType{}
 		mockEDataType.On("GetClassifierID").Return(ESTRING)
-		assert.Panics(t, func() { factory.ConvertToString(mockEDataType, "") })
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
+	}
+	{
+		mockEDataType := &MockEDataType{}
+		mockEDataType.On("GetClassifierID").Return(ESTRING)
+		assert.Panics(t, func() { factory.CreateFromString(mockEDataType, "") })
 	}
 }
