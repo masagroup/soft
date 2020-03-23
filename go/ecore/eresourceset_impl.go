@@ -52,7 +52,7 @@ func NewEResourceSetImpl() *EResourceSetImpl {
 	rs.Notifier = NewNotifier()
 	rs.resources = newResourcesList(rs)
 	rs.uriConverter = NewEURIConverterImpl()
-	rs.resourceFactoryRegistry = NewEResourceFactoryRegistryImpl()
+	rs.resourceFactoryRegistry = GetResourceFactoryRegistry()
 	rs.packageRegistry = NewEPackageRegistryImplWithDelegate(GetPackageRegistry())
 	rs.SetInterfaces(rs)
 	return rs

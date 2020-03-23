@@ -42,14 +42,14 @@ func (eEnum *eEnumImpl) EStaticClass() EClass {
 	return GetPackage().GetEEnum()
 }
 
-// GetEEnumLiteralByName default implementation
-func (eEnum *eEnumImpl) GetEEnumLiteralByName(string) EEnumLiteral {
-	panic("GetEEnumLiteralByName not implemented")
-}
-
 // GetEEnumLiteralByValue default implementation
 func (eEnum *eEnumImpl) GetEEnumLiteralByValue(int) EEnumLiteral {
 	panic("GetEEnumLiteralByValue not implemented")
+}
+
+// GetEEnumLiteralByName default implementation
+func (eEnum *eEnumImpl) GetEEnumLiteralByName(string) EEnumLiteral {
+	panic("GetEEnumLiteralByName not implemented")
 }
 
 // GetEEnumLiteralByLiteral default implementation
@@ -109,10 +109,10 @@ func (eEnum *eEnumImpl) EIsSetFromID(featureID int) bool {
 
 func (eEnum *eEnumImpl) EInvokeFromID(operationID int, arguments EList) interface{} {
 	switch operationID {
-	case EENUM__GET_EENUM_LITERAL_ESTRING:
-		return eEnum.GetEEnumLiteralByName(arguments.Get(0).(string))
 	case EENUM__GET_EENUM_LITERAL_EINT:
 		return eEnum.GetEEnumLiteralByValue(arguments.Get(0).(int))
+	case EENUM__GET_EENUM_LITERAL_ESTRING:
+		return eEnum.GetEEnumLiteralByName(arguments.Get(0).(string))
 	case EENUM__GET_EENUM_LITERAL_BY_LITERAL_ESTRING:
 		return eEnum.GetEEnumLiteralByLiteral(arguments.Get(0).(string))
 	default:

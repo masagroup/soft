@@ -12,3 +12,12 @@ type EResourceFactoryRegistry interface {
 	GetProtocolToFactoryMap() map[string]EResourceFactory
 	GetExtensionToFactoryMap() map[string]EResourceFactory
 }
+
+var resourceFactoryRegistryInstance EResourceFactoryRegistry
+
+func GetResourceFactoryRegistry() EResourceFactoryRegistry {
+	if resourceFactoryRegistryInstance == nil {
+		resourceFactoryRegistryInstance = NewEResourceFactoryRegistryImpl()
+	}
+	return resourceFactoryRegistryInstance
+}

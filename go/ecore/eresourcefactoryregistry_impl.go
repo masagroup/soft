@@ -15,6 +15,8 @@ func NewEResourceFactoryRegistryImpl() *EResourceFactoryRegistryImpl {
 	r := new(EResourceFactoryRegistryImpl)
 	r.protocolToFactory = make(map[string]EResourceFactory)
 	r.extensionToFactory = make(map[string]EResourceFactory)
+	r.extensionToFactory["ecore"] = &XMIResourceFactory{}
+	r.extensionToFactory["xml"] = &XMLResourceFactory{}
 	return r
 }
 
