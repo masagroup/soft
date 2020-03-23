@@ -1,2 +1,3 @@
 *.go
 go.sum
+!serialization_test.go
