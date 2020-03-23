@@ -187,6 +187,34 @@ func (_m *MockEObjectInternal) EDeliver() bool {
 	return r0
 }
 
+// EDerivedFeatureID provides a mock function with given fields: container, featureID
+func (_m *MockEObjectInternal) EDerivedFeatureID(container EObject, featureID int) int {
+	ret := _m.Called(container, featureID)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(EObject, int) int); ok {
+		r0 = rf(container, featureID)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	return r0
+}
+
+// EDerivedOperationID provides a mock function with given fields: container, operationID
+func (_m *MockEObjectInternal) EDerivedOperationID(container EObject, operationID int) int {
+	ret := _m.Called(container, operationID)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(EObject, int) int); ok {
+		r0 = rf(container, operationID)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	return r0
+}
+
 // EDirectResource provides a mock function with given fields:
 func (_m *MockEObjectInternal) EDirectResource() EResource {
 	ret := _m.Called()
