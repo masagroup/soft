@@ -14,7 +14,7 @@ XMLResourceFactory::~XMLResourceFactory()
 
 std::shared_ptr<EResource> XMLResourceFactory::createResource( const URI& uri ) const
 {
-    auto resource = std::make_shared<XMLResource>();
+    auto resource = std::make_shared<XMLResource>( uri );
     resource->setThisPtr(resource);
     return resource;
 }

@@ -1,12 +1,16 @@
 #include "ecore/impl/ResourceFactoryRegistry.hpp"
 #include "ecore/EResourceFactory.hpp"
 #include "ecore/URI.hpp"
+#include "ecore/impl/XMIResourceFactory.hpp"
+#include "ecore/impl/XMLResourceFactory.hpp"
 
 using namespace ecore;
 using namespace ecore::impl;
 
 ResourceFactoryRegistry::ResourceFactoryRegistry()
 {
+    extensionToFactory_["ecore"] = std::make_shared<XMIResourceFactory>();
+    extensionToFactory_["xml"] = std::make_shared<XMLResourceFactory>();
 }
 
 ResourceFactoryRegistry::~ResourceFactoryRegistry()

@@ -21,7 +21,7 @@
 namespace ecore::tests
 {
 
-	template <typename I>
+    template <typename I>
     class MockObjectBase : public MockNotifierBase<I> 
     {
     public:
@@ -49,7 +49,7 @@ namespace ecore::tests
         // End of user code
     };
 
-	typedef MockObjectBase<EObject> MockObject;
+    typedef MockObjectBase<EObject> MockObject;
 } 
 
 #endif /* ECORE_EOBJECT_MOCKOBJECT_HPP */

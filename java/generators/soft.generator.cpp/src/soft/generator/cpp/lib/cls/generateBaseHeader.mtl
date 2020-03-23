@@ -49,7 +49,7 @@ namespace [namespaceName/]
     protected:
         template<typename... I> friend class [aClass.ePackage.getFactoryBaseName()/];
         [className/]();
-[if features->exists( not isLazy() and isDataInitializationDefered() )]
+[if features->exists( isNotLazy() and isDataInitializationDefered() )]
 
         std::shared_ptr<[className/]> [getThisPtrGetterName()/]() const;
         void [getThisPtrSetterName()/](const std::shared_ptr<[className/]>& [getThisPtrName()/]);
@@ -112,7 +112,7 @@ namespace [namespaceName/]
 [let dataDeclarationFeatures : OrderedSet(EAttribute) = features->select( isField() )]
 [if dataDeclarationFeatures->notEmpty()]
     protected:
-        [dataDeclarationFeatures.generateDataDeclaration()/]
+        [dataDeclarationFeatures.generateDataDeclaration(aClass)/]
 [/if]
 [/let]
         // [protected (className + ' [declaration-methods]')]

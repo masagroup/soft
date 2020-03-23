@@ -87,8 +87,10 @@ namespace ecore::impl
         virtual std::unique_ptr<EObjectInternal> createInternal();
 
         virtual std::shared_ptr<EClass> eStaticClass() const;
-        virtual int eDerivedStructuralFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;
-        virtual int eDerivedOperationID( const std::shared_ptr<EOperation>& eOperation ) const;
+        virtual int eStructuralFeatureID( const std::shared_ptr<EStructuralFeature>& eStructuralFeature ) const;
+        virtual int eStructuralFeatureID( const std::shared_ptr<EObject>& eContainer, int featureID ) const;
+        virtual int eOperationID( const std::shared_ptr<EOperation>& eOperation ) const;
+        virtual int eOperationID( const std::shared_ptr<EObject>& eContainer, int operationID ) const;
 
         virtual Any eGet( int featureID, bool resolve, bool coreType ) const;
         virtual bool eIsSet( int featureID ) const;

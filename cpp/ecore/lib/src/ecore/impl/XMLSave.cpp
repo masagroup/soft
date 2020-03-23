@@ -96,10 +96,7 @@ bool XMLSave::saveFeatures( const std::shared_ptr<EObject>& eObject, bool attrib
     {
         // current feature
         auto eFeature = *it;
-        
-        /*if( eFeature->getName() == "eType" )
-            __debugbreak();*/
-
+      
         FeatureKind kind;
         auto itFound = featureKinds_.find( eFeature );
         if( itFound == featureKinds_.end() )
