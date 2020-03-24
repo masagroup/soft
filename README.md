@@ -21,3 +21,24 @@ git clone https://github.com/masagroup/soft.git
 cd soft
 ant
 ```
+
+### Details
+Installation process:
+* install all dependencies
+  * aria2
+  * maven
+  * cmake
+  * ninja
+  * vcpkg
+    * boost
+    * turtle
+    * xercesc
+* generators
+  * build
+  * distribute 
+* cpp
+  * generate, build, test and distribute ecore library
+  * generate, build and test user library
+* go
+  * generate, build and test ecore library
+  * generate, build and test user library
