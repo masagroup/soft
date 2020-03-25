@@ -8,12 +8,24 @@ The current release allows to generate code from Ecore metamodels, and to parse 
 Soft consits of 2 parts for each langage :  a generator from Ecore metamodels, and the ecore library. The generators are currently implemented using Acceleo and Java.
 
 # Features #
+## C++ and Go features ##
+* Multiple Inheritance - A class can be defined with many interfaces
+* Handling of containment and opposite relations - Setting one side of a relation automatically sets the other side.
+* XMI/XML serialization and deserialization of metamodel/model instances - Resource framework allows splitting of serializations, including cross-resource containment.
+* Reflection - MetaModel structure is available at runtime
+* Notification - Events are raised when the model is changed
+* Extension - Generated code can be overriden by the user
+
+## C++ features ##
+* C++17
+* Memory Management with shared pointers
 
 # Installation #
 ## Requirements ##
 * JDK 8 https://www.oracle.com/java/ 
 * Ant https://ant.apache.org/
   * AntContrib Tasks http://ant-contrib.sourceforge.net/
+* VS2019 
   
 ## Installation from source distribution ##
 ```
