@@ -413,25 +413,25 @@
     ============================================================================
     -->
     <target name="acceleo.build">
-        <maven_exec dir="${java.dir}/acceleo">
+        <maven_exec dir="${java.dir}/soft.acceleo">
             <arg line="clean install" />
         </maven_exec>
     </target>
     
     <target name="generators.version">
-        <maven_exec dir="${java.dir}/generators">
+        <maven_exec dir="${java.dir}/soft.generators">
             <arg line="versions:set -DnewVersion=${version} -DgenerateBackupPoms=false" />
         </maven_exec>
     </target>
     
     <target name="generators.build" depends="acceleo.build">
-        <maven_exec dir="${java.dir}/generators">
+        <maven_exec dir="${java.dir}/soft.generators">
             <arg line="-Pant clean verify" />
         </maven_exec>
     </target>
     
     <target name="generators.clean">
-        <maven_exec dir="${java.dir}/generators">
+        <maven_exec dir="${java.dir}/soft.generators">
             <arg line="-Pant clean" />
         </maven_exec>
     </target>
