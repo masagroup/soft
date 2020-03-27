@@ -4,3 +4,6 @@
 [submodule "cpp"]
 	path = cpp
 	url = https://github.com/masagroup/soft.cpp.git
+[submodule "go"]
+	path = go
+	url = https://github.com/masagroup/soft.go.git
