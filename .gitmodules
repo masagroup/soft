@@ -7,3 +7,6 @@
 [submodule "go"]
 	path = go
 	url = https://github.com/masagroup/soft.go.git
+[submodule "models"]
+	path = models
+	url = https://github.com/masagroup/soft.models.git
