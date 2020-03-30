@@ -10,3 +10,6 @@
 [submodule "models"]
 	path = models
 	url = https://github.com/masagroup/soft.models.git
+[submodule "js"]
+	path = js
+	url = https://github.com/masagroup/soft.js.git
