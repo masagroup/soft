@@ -289,6 +289,24 @@
         </sequential>
     </macrodef>
 
+    <macrodef name="go_tests">
+        <attribute name="dir"/>
+        <sequential>
+            <go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage-tmp"/>
+            <exec dir="${out.dir}\go\" executable="cmd" >
+                <arg line="/c type @{dir}-coverage-tmp | Findstr -v mock > @{dir}-coverage"/>
+            </exec>
+            <go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/@{dir}-coverage -o ${out.dir}/go/@{dir}-coverage.html" />
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="go_bench">
+        <attribute name="dir"/>
+        <sequential>
+            <go_exec dir="${root.dir}/go/@{dir}" command="test -bench=."/>
+        </sequential>
+    </macrodef>
+
     <!--
     ============================================================================
       Mockery
@@ -348,23 +366,7 @@
         </sequential>
     </macrodef>
 
-    <macrodef name="go_tests">
-        <attribute name="dir"/>
-        <sequential>
-            <go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage-tmp"/>
-            <exec dir="${out.dir}\go\" executable="cmd" >
-                <arg line="/c type @{dir}-coverage-tmp | Findstr -v mock > @{dir}-coverage"/>
-            </exec>
-            <go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/@{dir}-coverage -o ${out.dir}/go/@{dir}-coverage.html" />
-        </sequential>
-    </macrodef>
     
-    <macrodef name="go_bench">
-        <attribute name="dir"/>
-        <sequential>
-            <go_exec dir="${root.dir}/go/@{dir}" command="test -bench=."/>
-        </sequential>
-    </macrodef>
 
     
     <target name="tools.install" depends="aria2.install
