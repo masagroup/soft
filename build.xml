@@ -384,23 +384,29 @@
         <install name="nodejs" url="https://nodejs.org/dist/v12.16.1/node-v12.16.1-win-x64.zip"/>
     </target>
     
-    <!--
-    ============================================================================
-      TypeScript
-    ============================================================================
-    -->
-    
-    
-    
-    <target name="tools.install" depends="aria2.install
-                                         ,cmake.install
-                                         ,maven.install
-                                         ,ninja.install
-                                         ,go.install
-                                         ,nodejs.install
-                                         ,mockery.install"/>
-    
-    
+    <macrodef name="npm">
+        <attribute name="cmd"/>
+        <attribute name="sub-cmd" default=""/>
+        <attribute name="dir" default=""/>
+        <element name="elements" optional="true" implicit="true"/>
+        <sequential>
+            <exec taskname="@{cmd}" failonerror="true" dir="@{dir}"
+                executable="${bin.dir}/nodejs/npm.cmd">
+                <env key="PATH" value="PATH;${bin.dir}/nodejs"/>
+                <arg value="@{cmd}"/>
+                <arg value="@{sub-cmd}"/>
+                <elements/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="npm-run">
+        <attribute name="cmd"/>
+        <attribute name="dir" default=""/>
+        <sequential>
+            <npm sub-cmd="@{cmd}" cmd="run" dir="@{dir}"/>
+        </sequential>
+    </macrodef>
     <!--
     ============================================================================
       VcPkg
@@ -430,6 +436,14 @@
             <arg value="xerces-c"/>
         </exec>
     </target>
+    
+    <target name="tools.install" depends="aria2.install
+                                         ,cmake.install
+                                         ,maven.install
+                                         ,ninja.install
+                                         ,go.install
+                                         ,nodejs.install
+                                         ,mockery.install"/>
     
     <target name="configure" depends="tools.install,vcpkg.install"/>
     
@@ -608,6 +622,22 @@
     </target>
     
     <target name="ecore.cpp" depends="ecore.cpp.version,ecore.cpp.generate,ecore.cpp.configure,ecore.cpp.build,ecore.cpp.tests,ecore.cpp.install,ecore.cpp.package,ecore.cpp.dist"/>
+    
+     <!--
+    ============================================================================
+      Ecore TS
+    ============================================================================
+    -->
+    <target name="ecore.ts.build">
+        <npm-run cmd="build" dir="${root.dir}/ts/ecore"/>
+    </target>
+    
+    <target name="ecore.ts.test">
+        <npm-run cmd="test" dir="${root.dir}/ts/ecore"/>
+    </target>
+    
+    
+    <target name="ecore.ts" depends="ecore.ts.build,ecore.ts.test"/>
     
     <!--
     ============================================================================
