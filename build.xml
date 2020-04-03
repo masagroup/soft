@@ -10,6 +10,7 @@
     <property name="maven.SHA-512" value="afd6549f3e50c105022baae7951ed6b052e748be4b5c57b2136c5635cb0773495766455ea4b70a633f5e4936f26be16efa1f44b3745fddb28121a0842923ef9f"/>
     <property name="ninja.SHA-512" value="56f3b94ed7f9e36446bb6fe2a786156befdde6b279ee6d9d7ebd8b6e5d6664cdfe1d526e158f68bfc5cf947bcf9360df8d1e1a8939b6db1b2f0658256a17d66b"/>
     <property name="go.SHA-512" value="56a46b38adf1194b5297872a19a34fb43c3f28e273a22629b69d114495fa02d6c330f13dd095a91862ab6e63775288ec6d50b4d6a92b2cca2241ebf98bac4d64"/>
+    <property name="nodejs.SHA-512" value="711f1ac4205100963c93c0600b408c403030f7babcc466d3f6555e3ab68ff1bdbba6b04016d07a17cbc8125d120b6d671521fd2facf80e651d18fe9cfc50017d"/>
     <property name="version" value="1.0.0"/>
     
     
@@ -289,6 +290,24 @@
         </sequential>
     </macrodef>
 
+    <macrodef name="go_tests">
+        <attribute name="dir"/>
+        <sequential>
+            <go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage-tmp"/>
+            <exec dir="${out.dir}\go\" executable="cmd" >
+                <arg line="/c type @{dir}-coverage-tmp | Findstr -v mock > @{dir}-coverage"/>
+            </exec>
+            <go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/@{dir}-coverage -o ${out.dir}/go/@{dir}-coverage.html" />
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="go_bench">
+        <attribute name="dir"/>
+        <sequential>
+            <go_exec dir="${root.dir}/go/@{dir}" command="test -bench=."/>
+        </sequential>
+    </macrodef>
+
     <!--
     ============================================================================
       Mockery
@@ -348,33 +367,46 @@
         </sequential>
     </macrodef>
 
-    <macrodef name="go_tests">
-        <attribute name="dir"/>
-        <sequential>
-            <go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage-tmp"/>
-            <exec dir="${out.dir}\go\" executable="cmd" >
-                <arg line="/c type @{dir}-coverage-tmp | Findstr -v mock > @{dir}-coverage"/>
-            </exec>
-            <go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/@{dir}-coverage -o ${out.dir}/go/@{dir}-coverage.html" />
-        </sequential>
-    </macrodef>
+    <!--
+    ============================================================================
+      NodeJS
+    ============================================================================
+    -->
+    <target name="nodejs.available">
+        <available file="${bin.dir}/nodejs/node.exe" property="nodejs.available"/>
+    </target>
     
-    <macrodef name="go_bench">
-        <attribute name="dir"/>
+    <target name="nodejs.checksum" depends="nodejs.available" if="nodejs.available">
+        <checksum file="${bin.dir}/nodejs/node.exe" algorithm="SHA-512" property="${nodejs.SHA-512}" verifyProperty="nodejs.installed"/> 
+    </target>
+    
+    <target name="nodejs.install" depends="aria2.install,nodejs.checksum" unless="nodejs.installed">
+        <install name="nodejs" url="https://nodejs.org/dist/v12.16.1/node-v12.16.1-win-x64.zip"/>
+    </target>
+    
+    <macrodef name="npm">
+        <attribute name="cmd"/>
+        <attribute name="sub-cmd" default=""/>
+        <attribute name="dir" default=""/>
+        <element name="elements" optional="true" implicit="true"/>
         <sequential>
-            <go_exec dir="${root.dir}/go/@{dir}" command="test -bench=."/>
+            <exec taskname="@{cmd}" failonerror="true" dir="@{dir}"
+                executable="${bin.dir}/nodejs/npm.cmd">
+                <env key="PATH" value="PATH;${bin.dir}/nodejs"/>
+                <arg value="@{cmd}"/>
+                <arg value="@{sub-cmd}"/>
+                <elements/>
+            </exec>
         </sequential>
     </macrodef>
 
-    
-    <target name="tools.install" depends="aria2.install
-                                         ,cmake.install
-                                         ,maven.install
-                                         ,ninja.install
-                                         ,go.install
-                                         ,mockery.install"/>
-    
-    
+    <macrodef name="npm-run">
+        <attribute name="cmd"/>
+        <attribute name="dir" default=""/>
+        <sequential>
+            <npm sub-cmd="@{cmd}" cmd="run" dir="@{dir}"/>
+        </sequential>
+    </macrodef>
     <!--
     ============================================================================
       VcPkg
@@ -404,6 +436,14 @@
             <arg value="xerces-c"/>
         </exec>
     </target>
+    
+    <target name="tools.install" depends="aria2.install
+                                         ,cmake.install
+                                         ,maven.install
+                                         ,ninja.install
+                                         ,go.install
+                                         ,nodejs.install
+                                         ,mockery.install"/>
     
     <target name="configure" depends="tools.install,vcpkg.install"/>
     
@@ -582,6 +622,22 @@
     </target>
     
     <target name="ecore.cpp" depends="ecore.cpp.version,ecore.cpp.generate,ecore.cpp.configure,ecore.cpp.build,ecore.cpp.tests,ecore.cpp.install,ecore.cpp.package,ecore.cpp.dist"/>
+    
+     <!--
+    ============================================================================
+      Ecore TS
+    ============================================================================
+    -->
+    <target name="ecore.ts.build">
+        <npm-run cmd="build" dir="${root.dir}/ts/ecore"/>
+    </target>
+    
+    <target name="ecore.ts.test">
+        <npm-run cmd="test" dir="${root.dir}/ts/ecore"/>
+    </target>
+    
+    
+    <target name="ecore.ts" depends="ecore.ts.build,ecore.ts.test"/>
     
     <!--
     ============================================================================
