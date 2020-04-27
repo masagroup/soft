@@ -432,6 +432,7 @@
             <arg value="install"/>
             <arg value="boost-test"/>
             <arg value="boost-regex"/>
+            <arg value="date"/>
             <arg value="turtle"/>
             <arg value="xerces-c"/>
         </exec>
