@@ -1,6 +1,6 @@
 [submodule "java"]
-	path = java
-	url = https://github.com/masagroup/soft.java.git
+	path = gen
+	url = https://github.com/masagroup/soft.gen.git
 [submodule "cpp"]
 	path = cpp
 	url = https://github.com/masagroup/soft.cpp.git
