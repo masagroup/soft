@@ -293,10 +293,7 @@
     <macrodef name="go_tests">
         <attribute name="dir"/>
         <sequential>
-            <go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage-tmp"/>
-            <exec dir="${out.dir}\go\" executable="cmd" >
-                <arg line="/c type @{dir}-coverage-tmp | Findstr -v mock > @{dir}-coverage"/>
-            </exec>
+            <go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage"/>
             <go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/@{dir}-coverage -o ${out.dir}/go/@{dir}-coverage.html" />
         </sequential>
     </macrodef>
@@ -341,9 +338,21 @@
     -->
     <macrodef name="mock">
         <attribute name="dir"/>
+        <attribute name="name" default=""/>
         <sequential>
+            <local name="options"/>
+            <if>
+                <equals arg1="@{name}" arg2=""/>
+                <then>
+                    <property name="options" value="-all"/>
+                </then>
+                <else>
+                    <property name="options" value="-name @{name}"/>
+                </else>
+            </if>
+            
             <mockery_exec dir="${root.dir}/go/@{dir}">
-                <arg value="-all"/>
+                <arg line="${options}"/>
                 <arg value="-inpkg"/>
             </mockery_exec>
 
@@ -515,9 +524,10 @@
       Ecore GO
     ============================================================================
     -->
+    
     <target name="ecore.go.generate">
         <generator langage="go" input="models/ecore.ecore" output="${root.dir}/go"/>
-        <mock dir="ecore"/>
+        <mock dir="ecore" name="^EAdapter|^EDiagnostic|^EIterator|^EList|^ENotifier|^ENotification"/>
     </target>
     
     <target name="ecore.go.build">
@@ -660,8 +670,7 @@
     ============================================================================
     -->
     <target name="library.cpp.generate">
-        <generator langage="cpp" input="models/library.ecore" output="${root.dir}/cpp">
-        </generator>
+        <generator langage="cpp" input="models/library.ecore" output="${root.dir}/cpp"/>
     </target>
     
     <target name="library.cpp.configure.vs2019">
@@ -715,7 +724,6 @@
     -->
     <target name="library.go.generate">
         <generator langage="go" input="models/library.ecore" output="${root.dir}/go"/>
-        <mock dir="library"/>
     </target>
     
     <target name="library.go.build">
