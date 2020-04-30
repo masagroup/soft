@@ -527,7 +527,7 @@
     
     <target name="ecore.go.generate">
         <generator langage="go" input="models/ecore.ecore" output="${root.dir}/go"/>
-        <mock dir="ecore" name="^EAdapter|^EDiagnostic|^EIterator|^EList|^ENotifier|^ENotification|^ENotifyingList|^EObjectInternal|^EResource|^EURIHandler|^EURIConverter"/>
+        <mock dir="ecore" name="^EAdapter|^EDiagnostic|^EIterator|^EList|^ENotifier|^ENotification|^EObjectInternal|^EURIHandler|^EURIConverter"/>
     </target>
     
     <target name="ecore.go.build">
@@ -670,8 +670,7 @@
     ============================================================================
     -->
     <target name="library.cpp.generate">
-        <generator langage="cpp" input="models/library.ecore" output="${root.dir}/cpp">
-        </generator>
+        <generator langage="cpp" input="models/library.ecore" output="${root.dir}/cpp"/>
     </target>
     
     <target name="library.cpp.configure.vs2019">
