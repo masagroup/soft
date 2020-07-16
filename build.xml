@@ -145,7 +145,7 @@
     </target>
     
     <target name="cmake.install" depends="aria2.install,cmake.checksum" unless="cmake.installed">
-        <install name="cmake" url="https://github.com/Kitware/CMake/releases/download/v3.16.3/cmake-3.16.3-win64-x64.zip"/>
+        <install name="cmake" url="https://github.com/Kitware/CMake/releases/download/v3.18.0/cmake-3.18.0-win64-x64.zip"/>
     </target>
     
     <property name= "cmake.generator.vs2015" value = "Visual Studio 14 2015"/>
