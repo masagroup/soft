@@ -344,16 +344,16 @@
             <if>
                 <equals arg1="@{name}" arg2=""/>
                 <then>
-                    <property name="options" value="-all"/>
+                    <property name="options" value="--all"/>
                 </then>
                 <else>
-                    <property name="options" value="-name @{name}"/>
+                    <property name="options" value="--name @{name}"/>
                 </else>
             </if>
             
             <mockery_exec dir="${root.dir}/go/@{dir}">
                 <arg line="${options}"/>
-                <arg value="-inpkg"/>
+                <arg value="--inpackage"/>
             </mockery_exec>
 
             <move todir="${root.dir}/go/@{dir}">
