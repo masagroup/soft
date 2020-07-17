@@ -145,7 +145,7 @@
     </target>
     
     <target name="cmake.install" depends="aria2.install,cmake.checksum" unless="cmake.installed">
-        <install name="cmake" url="https://github.com/Kitware/CMake/releases/download/v3.16.3/cmake-3.16.3-win64-x64.zip"/>
+        <install name="cmake" url="https://github.com/Kitware/CMake/releases/download/v3.18.0/cmake-3.18.0-win64-x64.zip"/>
     </target>
     
     <property name= "cmake.generator.vs2015" value = "Visual Studio 14 2015"/>
@@ -344,16 +344,16 @@
             <if>
                 <equals arg1="@{name}" arg2=""/>
                 <then>
-                    <property name="options" value="-all"/>
+                    <property name="options" value="--all"/>
                 </then>
                 <else>
-                    <property name="options" value="-name @{name}"/>
+                    <property name="options" value="--name @{name}"/>
                 </else>
             </if>
             
             <mockery_exec dir="${root.dir}/go/@{dir}">
                 <arg line="${options}"/>
-                <arg value="-inpkg"/>
+                <arg value="--inpackage"/>
             </mockery_exec>
 
             <move todir="${root.dir}/go/@{dir}">
