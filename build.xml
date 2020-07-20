@@ -639,6 +639,15 @@
       Ecore TS
     ============================================================================
     -->
+    <target name="ecore.ts.install">
+        <npm cmd="install" dir="${root.dir}/ts/ecore"/>
+    </target>
+    
+    <target name="ecore.ts.generate">
+        <generator langage="ts" input="models/ecore.ecore" output="${root.dir}/ts"/>
+    </target>
+    
+    
     <target name="ecore.ts.build">
         <npm-run cmd="build" dir="${root.dir}/ts/ecore"/>
     </target>
@@ -648,7 +657,7 @@
     </target>
     
     
-    <target name="ecore.ts" depends="ecore.ts.build,ecore.ts.test"/>
+    <target name="ecore.ts" depends="ecore.ts.install,ecore.ts.generate,ecore.ts.build,ecore.ts.test"/>
     
     <!--
     ============================================================================
