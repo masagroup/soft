@@ -274,18 +274,21 @@
     </target>
 
     <target name="go.install" depends="aria2.install,go.checksum" unless="go.installed">
-        <install name="go" url="https://dl.google.com/go/go1.13.1.windows-amd64.zip"/>
+        <install name="go" url="https://dl.google.com/go/go1.14.6.windows-amd64.zip"/>
     </target>
     
     <macrodef name="go_exec">
         <attribute name="command"/>
         <attribute name="dir" default="${basedir}"/>
+        <element name="args" implicit="yes" optional="yes"/>
         <sequential>
             <exec executable="${bin.dir}/go/bin/go.exe"  dir="@{dir}" failonerror="true">
                 <arg line="@{command}"/>
                 <env key="GOROOT" value="${bin.dir}/go/"/>
                 <env key="GOPATH" value="${out.dir}/go/"/>
-                <env key="GOTOOLDIR" value="${bin.dir}/go/pkg/tool/windows_amd64/"/> 
+                <env key="GOTOOLDIR" value="${bin.dir}/go/pkg/tool/windows_amd64/"/>
+                <env key="GO111MODULE" value="on"/>
+                <args/>
             </exec>
         </sequential>
     </macrodef>
@@ -311,8 +314,7 @@
     ============================================================================
     -->
     <target name="mockery.install" depends="go.install">
-        <go_exec command="get github.com/vektra/mockery/.../"/>
-        
+        <go_exec command="get github.com/vektra/mockery/v2@v2.1.0"/>
         <mkdir dir="${bin.dir}/mockery"/>
         <copy file="${out.dir}/go/bin/mockery.exe" todir="${bin.dir}/mockery"/>
     </target>
