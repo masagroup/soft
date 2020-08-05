@@ -645,6 +645,10 @@
         <npm cmd="install" dir="${root.dir}/ts/ecore"/>
     </target>
     
+    <target name="ecore.ts.format">
+        <npm-run cmd="pretty" dir="${root.dir}/ts/ecore"/>
+    </target>
+    
     <target name="ecore.ts.generate">
         <generator langage="ts" input="models/ecore.ecore" output="${root.dir}/ts"/>
     </target>
@@ -666,7 +670,7 @@
       Ecore
     ============================================================================
     -->
-    <target name="ecore" depends="ecore.cpp,ecore.go"/>
+    <target name="ecore" depends="ecore.cpp,ecore.go,ecore.ts"/>
     
     <target name="ecore.clean">
         <exec executable="git" dir="ecore" failonerror="true">
