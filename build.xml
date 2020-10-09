@@ -754,6 +754,28 @@
     </target>
    
     <target name="library.go" depends="library.go.generate,library.go.format,library.go.build,library.go.tests"/>
+	<!--
+    ============================================================================
+      Library TypeScript
+    ============================================================================
+    -->
+    <target name="library.ts.install">
+        <npm cmd="install" dir="${root.dir}/ts/library"/>
+    </target>
+    
+    <target name="library.ts.generate">
+        <generator langage="ts" input="models/library.ecore" output="${root.dir}/ts"/>
+    </target>
+    
+    <target name="library.ts.build">
+        <npm-run cmd="build" dir="${root.dir}/ts/library"/>
+    </target>
+    
+    <target name="library.ts.test">
+        <npm-run cmd="test" dir="${root.dir}/ts/library"/>
+    </target>
+    
+    <target name="library.ts" depends="library.ts.generate,library.ts.install,library.ts.build,library.ts.test"/>
     
     <!--
     ============================================================================
