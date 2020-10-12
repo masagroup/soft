@@ -650,7 +650,9 @@
     </target>
     
     <target name="ecore.ts.generate">
-        <generator langage="ts" input="models/ecore.ecore" output="${root.dir}/ts"/>
+        <generator langage="ts" input="models/ecore.ecore" output="${root.dir}/ts">
+            <arg line="-t !generateModule"/>
+        </generator>
     </target>
     
     
