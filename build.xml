@@ -777,7 +777,7 @@
         <npm-run cmd="test" dir="${root.dir}/ts/library"/>
     </target>
     
-    <target name="library.ts" depends="library.ts.generate,library.ts.install,library.ts.build,library.ts.test"/>
+    <target name="library.ts" depends="library.ts.install,library.ts.generate,library.ts.build,library.ts.test"/>
     
     <!--
     ============================================================================
