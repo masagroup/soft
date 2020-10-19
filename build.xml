@@ -784,7 +784,7 @@
       Library
     ============================================================================
     -->
-    <target name="library" depends="library.cpp,library.go"/>
+    <target name="library" depends="library.cpp,library.go,library.ts"/>
     
     <target name="library.clean">
         <exec executable="git" dir="library" failonerror="true">
