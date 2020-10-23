@@ -13,7 +13,7 @@
         </xsl:copy>
     </xsl:template>
     
-    <xsl:template match="/pom:project/pom:parent/pom:version/text()">
+    <xsl:template match="pom:version/text()">
         <xsl:choose>
             <xsl:when test="../../pom:artifactId/text() = $artifactId">
                 <xsl:value-of select="$version"/>
