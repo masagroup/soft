@@ -12,14 +12,14 @@
     <property name="go.SHA-512"     value="56a46b38adf1194b5297872a19a34fb43c3f28e273a22629b69d114495fa02d6c330f13dd095a91862ab6e63775288ec6d50b4d6a92b2cca2241ebf98bac4d64"/>
     <property name="nodejs.SHA-512" value="711f1ac4205100963c93c0600b408c403030f7babcc466d3f6555e3ab68ff1bdbba6b04016d07a17cbc8125d120b6d671521fd2facf80e651d18fe9cfc50017d"/>
     
-    <property name="soft.generators.version"        value="1.2.0"/>
-    <property name="soft.generator.common.version"  value="1.2.0"/>
-    <property name="soft.generator.cpp.version"     value="1.2.0"/>
-    <property name="soft.generator.go.version"      value="1.2.0"/>
+    <property name="soft.generators.version"        value="1.1.0"/>
+    <property name="soft.generator.common.version"  value="1.1.0"/>
+    <property name="soft.generator.cpp.version"     value="1.1.0"/>
+    <property name="soft.generator.go.version"      value="1.1.0"/>
     <property name="soft.generator.ts.version"      value="1.0.0"/>
     
-    <property name="ecore.cpp.version"              value="1.2.0"/>
-    <property name="ecore.go.version"               value="1.2.0"/>
+    <property name="ecore.cpp.version"              value="1.1.0"/>
+    <property name="ecore.go.version"               value="1.1.0"/>
     <property name="ecore.ts.version"               value="1.0.0"/>
     
     
