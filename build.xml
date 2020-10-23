@@ -479,6 +479,30 @@
         </maven_exec>
     </target>
     
+    <target name="generators.version">
+        <!-- mvn version:set doesn't work : we go to do it manually -->
+        <propertyselector property="generators.artifacts"
+                          match="(soft.generator.*).version"
+                          select="\1"/>
+        <for list="${generators.artifacts}" param="artifact">
+            <sequential>
+                <echo message="Setting version for artifact:'@{artifact}' to '${@{artifact}.version}'"/>
+                <xslt style="pom.version.xsl" 
+                      basedir="${generators.dir}/soft.generators" 
+                      destdir="${out.dir}/version/soft.generators" 
+                      includes="**/pom.xml" 
+                      extension=".xml"
+                      force="true">
+                      <param name="artifactId" expression="@{artifact}"/>
+                      <param name="version" expression="${@{artifact}.version}"/>
+                </xslt>
+            </sequential>
+        </for>
+        <copy todir="${generators.dir}/soft.generators" >  
+            <fileset dir="${out.dir}/version/soft.generators" includes="**/pom.xml"/>  
+        </copy> 
+    </target>
+    
     <target name="generators.build" depends="acceleo.build">
         <maven_exec dir="${generators.dir}/soft.generators">
             <arg line="-Pant clean verify" />
