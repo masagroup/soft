@@ -15,14 +15,13 @@
     
     <xsl:template match="pom:version/text()">
         <xsl:choose>
-            <xsl:when test="../../pom:artifactId/text() = $artifactId">
+            <xsl:when test="../../pom:artifactId = $artifactId">
                 <xsl:value-of select="$version"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:copy-of select="."/>
             </xsl:otherwise>
         </xsl:choose>
-    </xsl:template>    
-    
+    </xsl:template>
     
 </xsl:stylesheet>
