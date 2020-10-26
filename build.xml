@@ -497,11 +497,12 @@
                       <param name="artifactId" expression="@{artifact}"/>
                       <param name="version" expression="${@{artifact}.version}"/>
                 </xslt>
+                <copy todir="${generators.dir}/soft.generators" >  
+                    <fileset dir="${out.dir}/version/soft.generators" includes="**/pom.xml"/>  
+                </copy> 
             </sequential>
         </for>
-        <copy todir="${generators.dir}/soft.generators" >  
-            <fileset dir="${out.dir}/version/soft.generators" includes="**/pom.xml"/>  
-        </copy> 
+        
         <!-- manifest.mf files -->
         <fileset  id="generators.manifests.id" dir="${generators.dir}" includes="**/MANIFEST.MF"/> 
         <pathconvert targetos="unix" pathsep="," property="generators.manifests" refid="generators.manifests.id"/>
@@ -546,7 +547,7 @@
         </copy>
     </target>
     
-    <target name="generators" depends="generators.build,generators.dist,generators.install"/>
+    <target name="generators" depends="generators.version,generators.build,generators.dist,generators.install"/>
     
     <macrodef name="generator">
         <attribute name="langage"/>
