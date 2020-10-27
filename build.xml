@@ -5,13 +5,22 @@
 
     <property file="${user.home}/build.properties"/>
     <property file="build.properties"/>
-    <property name="aria2.SHA-512" value="af965693edafe504595d2fd24f9b18ccdbbda53c1a8e9e454b12e01db26644097ee76dc27760c8c5dae100af2240eb37bffedfda0d6d9d3bc1373189cec40899"/>
-    <property name="cmake.SHA-512" value="466fa8fd6bfaea0e338627beb0d6583bd900f2720dcb2a5bc8099a465fbca9b44ec3350549d09128c582d0527ef461ba86cb6e8e47943056ac6f97d6fc605898"/>
-    <property name="maven.SHA-512" value="afd6549f3e50c105022baae7951ed6b052e748be4b5c57b2136c5635cb0773495766455ea4b70a633f5e4936f26be16efa1f44b3745fddb28121a0842923ef9f"/>
-    <property name="ninja.SHA-512" value="56f3b94ed7f9e36446bb6fe2a786156befdde6b279ee6d9d7ebd8b6e5d6664cdfe1d526e158f68bfc5cf947bcf9360df8d1e1a8939b6db1b2f0658256a17d66b"/>
-    <property name="go.SHA-512" value="56a46b38adf1194b5297872a19a34fb43c3f28e273a22629b69d114495fa02d6c330f13dd095a91862ab6e63775288ec6d50b4d6a92b2cca2241ebf98bac4d64"/>
+    <property name="aria2.SHA-512"  value="af965693edafe504595d2fd24f9b18ccdbbda53c1a8e9e454b12e01db26644097ee76dc27760c8c5dae100af2240eb37bffedfda0d6d9d3bc1373189cec40899"/>
+    <property name="cmake.SHA-512"  value="466fa8fd6bfaea0e338627beb0d6583bd900f2720dcb2a5bc8099a465fbca9b44ec3350549d09128c582d0527ef461ba86cb6e8e47943056ac6f97d6fc605898"/>
+    <property name="maven.SHA-512"  value="afd6549f3e50c105022baae7951ed6b052e748be4b5c57b2136c5635cb0773495766455ea4b70a633f5e4936f26be16efa1f44b3745fddb28121a0842923ef9f"/>
+    <property name="ninja.SHA-512"  value="56f3b94ed7f9e36446bb6fe2a786156befdde6b279ee6d9d7ebd8b6e5d6664cdfe1d526e158f68bfc5cf947bcf9360df8d1e1a8939b6db1b2f0658256a17d66b"/>
+    <property name="go.SHA-512"     value="56a46b38adf1194b5297872a19a34fb43c3f28e273a22629b69d114495fa02d6c330f13dd095a91862ab6e63775288ec6d50b4d6a92b2cca2241ebf98bac4d64"/>
     <property name="nodejs.SHA-512" value="711f1ac4205100963c93c0600b408c403030f7babcc466d3f6555e3ab68ff1bdbba6b04016d07a17cbc8125d120b6d671521fd2facf80e651d18fe9cfc50017d"/>
-    <property name="version" value="1.1.0"/>
+    
+    <property name="soft.generators.version"        value="1.2.0"/>
+    <property name="soft.generator.common.version"  value="1.2.0"/>
+    <property name="soft.generator.cpp.version"     value="1.2.0"/>
+    <property name="soft.generator.go.version"      value="1.2.0"/>
+    <property name="soft.generator.ts.version"      value="1.0.0"/>
+    
+    <property name="ecore.cpp.version"              value="1.2.0"/>
+    <property name="ecore.go.version"               value="1.2.0"/>
+    <property name="ecore.ts.version"               value="1.0.0"/>
     
     
     <macrodef name="property-to-location">
@@ -471,9 +480,47 @@
     </target>
     
     <target name="generators.version">
-        <maven_exec dir="${generators.dir}/soft.generators">
-            <arg line="versions:set -DnewVersion=${version} -DgenerateBackupPoms=false" />
-        </maven_exec>
+        <!-- pom.xml files -->
+        <!-- mvn version:set doesn't work : we go to do it manually -->
+        <propertyselector property="generators.artifacts"
+                          match="(soft.generator.*).version"
+                          select="\1"/>
+        <for list="${generators.artifacts}" param="artifact">
+            <sequential>
+                <echo message="Setting pom version for artifact:'@{artifact}' to '${@{artifact}.version}'"/>
+                <xslt style="pom.version.xsl" 
+                      basedir="${generators.dir}/soft.generators" 
+                      destdir="${out.dir}/version/soft.generators" 
+                      includes="**/pom.xml" 
+                      extension=".xml"
+                      force="true">
+                      <param name="artifactId" expression="@{artifact}"/>
+                      <param name="version" expression="${@{artifact}.version}"/>
+                </xslt>
+                <copy todir="${generators.dir}/soft.generators" >  
+                    <fileset dir="${out.dir}/version/soft.generators" includes="**/pom.xml"/>  
+                </copy> 
+            </sequential>
+        </for>
+        
+        <!-- manifest.mf files -->
+        <fileset  id="generators.manifests.id" dir="${generators.dir}" includes="**/MANIFEST.MF"/> 
+        <pathconvert targetos="unix" pathsep="," property="generators.manifests" refid="generators.manifests.id"/>
+        <for list="${generators.manifests}" param="manifest">
+            <sequential>
+                <local name="artifact"/>
+                <local name="artifact.version"/>
+                <propertyregex property="artifact"
+                               input="@{manifest}"
+                               regexp=".*/soft.generators/([^/]*)/META-INF/MANIFEST.MF"
+                               select="\1"/>
+                <propertycopy name="artifact.version" from="${artifact}.version"/>
+                <echo message="Setting manifest version for artifact:'${artifact}' to '${artifact.version}'"/>
+                <manifest file="@{manifest}" mode="update">
+                    <attribute name="Bundle-Version" value="${artifact.version}"/>
+                </manifest>
+            </sequential>
+        </for>
     </target>
     
     <target name="generators.build" depends="acceleo.build">
@@ -506,9 +553,10 @@
         <attribute name="langage"/>
         <attribute name="input"/>
         <attribute name="output"/>
+        <attribute name="version" default="${soft.generator.@{langage}.version}"/>
         <element name="args" implicit="yes" optional="yes"/>
         <sequential>
-            <java jar="${bin.dir}/soft.generators/soft.generator.@{langage}-${version}.jar"
+            <java jar="${bin.dir}/soft.generators/soft.generator.@{langage}-@{version}.jar"
                   fork="true"
                   failonerror="true"
                   maxmemory="128m">
@@ -556,7 +604,7 @@
     ============================================================================
     -->
     <target name="ecore.cpp.version">
-        <replaceregexp match="project\(([^ ]*) VERSION [^ ]*" replace="project\(\1 VERSION ${version}">
+        <replaceregexp match="project\(([^ ]*) VERSION [^ ]*" replace="project\(\1 VERSION ${ecore.cpp.version}">
             <fileset dir="${root.dir}/cpp/ecore" includes="**/CMakeLists.txt"/>
         </replaceregexp>
     </target>
@@ -628,7 +676,7 @@
     </target>
     
     <target name="ecore.cpp.dist">
-        <zip destfile="${dist.dir}/ecore-${version}-win64.zip">
+        <zip destfile="${dist.dir}/ecore-${ecore.cpp.version}-win64.zip">
             <zipgroupfileset dir="${out.dir}/cpp/ninja/ecore/debug" includes="*.zip"/>
             <zipgroupfileset dir="${out.dir}/cpp/ninja/ecore/release" includes="*.zip"/>
         </zip>
@@ -650,7 +698,9 @@
     </target>
     
     <target name="ecore.ts.generate">
-        <generator langage="ts" input="models/ecore.ecore" output="${root.dir}/ts"/>
+        <generator langage="ts" input="models/ecore.ecore" output="${root.dir}/ts">
+            <arg line="-t !generateModule"/>
+        </generator>
     </target>
     
     
@@ -737,6 +787,10 @@
       Library GO
     ============================================================================
     -->
+    <target name="library.go.version">
+        <go_exec command="get github.com/masagroup/soft.go/ecore" dir="${root.dir}/go/library"/>
+    </target>
+    
     <target name="library.go.generate">
         <generator langage="go" input="models/library.ecore" output="${root.dir}/go"/>
     </target>
@@ -754,13 +808,35 @@
     </target>
    
     <target name="library.go" depends="library.go.generate,library.go.format,library.go.build,library.go.tests"/>
+	<!--
+    ============================================================================
+      Library TypeScript
+    ============================================================================
+    -->
+    <target name="library.ts.install">
+        <npm cmd="install" dir="${root.dir}/ts/library"/>
+    </target>
+    
+    <target name="library.ts.generate">
+        <generator langage="ts" input="models/library.ecore" output="${root.dir}/ts"/>
+    </target>
+    
+    <target name="library.ts.build">
+        <npm-run cmd="build" dir="${root.dir}/ts/library"/>
+    </target>
+    
+    <target name="library.ts.test">
+        <npm-run cmd="test" dir="${root.dir}/ts/library"/>
+    </target>
+    
+    <target name="library.ts" depends="library.ts.install,library.ts.generate,library.ts.build,library.ts.test"/>
     
     <!--
     ============================================================================
       Library
     ============================================================================
     -->
-    <target name="library" depends="library.cpp,library.go"/>
+    <target name="library" depends="library.cpp,library.go,library.ts"/>
     
     <target name="library.clean">
         <exec executable="git" dir="library" failonerror="true">
