@@ -577,7 +577,6 @@
     
     <target name="ecore.go.generate">
         <generator langage="go" input="models/ecore.ecore" output="${root.dir}/go"/>
-        <mock dir="ecore" name="^EAdapter|^EDiagnostic|^EIterator|^EList|^ENotifier|^ENotification"/>
     </target>
     
     <target name="ecore.go.build">
