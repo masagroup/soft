@@ -842,6 +842,41 @@
             <arg line="clean -xfd" />
         </exec>
     </target>
+   
+   
+    <!--
+    ============================================================================
+      Tournament Go
+    ============================================================================
+    -->
+    <target name="tournament.go.version">
+        <go_exec command="get github.com/masagroup/soft.go/ecore" dir="${root.dir}/go/tournament"/>
+    </target>
+    
+    <target name="tournament.go.generate">
+        <generator langage="go" input="models/tournament.ecore" output="${root.dir}/go"/>
+    </target>
+    
+    <target name="tournament.go.build">
+        <go_exec command="build" dir="${root.dir}/go/tournament"/>
+    </target>
+    
+    <target name="tournament.go.format">
+        <go_exec command="fmt" dir="${root.dir}/go/tournament"/>
+    </target>
+
+    <target name="tournament.go.tests">
+        <go_tests dir="tournament"/>
+    </target>
+    
+    <target name="tournament.go" depends="tournament.go.generate,tournament.go.format,tournament.go.build,tournament.go.tests"/>
+    
+    <!--
+    ============================================================================
+      Tournament
+    ============================================================================
+    -->
+    <target name="tournament" depends="tournament.go"/>
     
     <target name="all" depends="configure,generators,ecore,library"/>
     
