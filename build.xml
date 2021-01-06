@@ -12,15 +12,15 @@
     <property name="go.SHA-512"     value="bd26b3e21b4c7ba5ed6ed13e884ffaea92d13e14f10aa738185390f5047d145d0010e4787584f8fef235d78cc261b356a188b965c09996a43fb542e4bfa341a5"/>
     <property name="nodejs.SHA-512" value="711f1ac4205100963c93c0600b408c403030f7babcc466d3f6555e3ab68ff1bdbba6b04016d07a17cbc8125d120b6d671521fd2facf80e651d18fe9cfc50017d"/>
     
-    <property name="soft.generators.version"        value="1.2.0"/>
-    <property name="soft.generator.common.version"  value="1.2.0"/>
-    <property name="soft.generator.cpp.version"     value="1.2.0"/>
+    <property name="soft.generators.version"        value="1.3.0"/>
+    <property name="soft.generator.common.version"  value="1.2.1"/>
+    <property name="soft.generator.cpp.version"     value="1.2.1"/>
     <property name="soft.generator.go.version"      value="1.3.0"/>
-    <property name="soft.generator.ts.version"      value="1.0.0"/>
+    <property name="soft.generator.ts.version"      value="1.0.1"/>
     
-    <property name="ecore.cpp.version"              value="1.2.0"/>
+    <property name="ecore.cpp.version"              value="1.2.1"/>
     <property name="ecore.go.version"               value="1.3.0"/>
-    <property name="ecore.ts.version"               value="1.0.0"/>
+    <property name="ecore.ts.version"               value="1.0.1"/>
     
     
     <macrodef name="property-to-location">
