@@ -878,7 +878,7 @@
     -->
     <target name="tournament" depends="tournament.go"/>
     
-    <target name="all" depends="configure,generators,ecore,library"/>
+    <target name="all" depends="configure,generators,ecore,library,tournament"/>
     
     <target name="clean">
         <attrib readonly="false" type="both" verbose="true">
