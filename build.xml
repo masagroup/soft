@@ -9,7 +9,7 @@
     <property name="cmake.SHA-512"  value="466fa8fd6bfaea0e338627beb0d6583bd900f2720dcb2a5bc8099a465fbca9b44ec3350549d09128c582d0527ef461ba86cb6e8e47943056ac6f97d6fc605898"/>
     <property name="maven.SHA-512"  value="afd6549f3e50c105022baae7951ed6b052e748be4b5c57b2136c5635cb0773495766455ea4b70a633f5e4936f26be16efa1f44b3745fddb28121a0842923ef9f"/>
     <property name="ninja.SHA-512"  value="56f3b94ed7f9e36446bb6fe2a786156befdde6b279ee6d9d7ebd8b6e5d6664cdfe1d526e158f68bfc5cf947bcf9360df8d1e1a8939b6db1b2f0658256a17d66b"/>
-    <property name="go.SHA-512"     value="56a46b38adf1194b5297872a19a34fb43c3f28e273a22629b69d114495fa02d6c330f13dd095a91862ab6e63775288ec6d50b4d6a92b2cca2241ebf98bac4d64"/>
+    <property name="go.SHA-512"     value="bd26b3e21b4c7ba5ed6ed13e884ffaea92d13e14f10aa738185390f5047d145d0010e4787584f8fef235d78cc261b356a188b965c09996a43fb542e4bfa341a5"/>
     <property name="nodejs.SHA-512" value="711f1ac4205100963c93c0600b408c403030f7babcc466d3f6555e3ab68ff1bdbba6b04016d07a17cbc8125d120b6d671521fd2facf80e651d18fe9cfc50017d"/>
     
     <property name="soft.generators.version"        value="1.2.0"/>
@@ -117,6 +117,7 @@
         <checksum file="${bin.dir}/cmake/bin/cmake.exe" algorithm="SHA-512"/> 
         <checksum file="${bin.dir}/maven/bin/mvn.cmd" algorithm="SHA-512"/>
         <checksum file="${bin.dir}/ninja/ninja.exe" algorithm="SHA-512"/>
+        <checksum file="${bin.dir}/go/bin/go.exe" algorithm="SHA-512"/>
     </target>
     
     <!--
@@ -283,7 +284,7 @@
     </target>
 
     <target name="go.install" depends="aria2.install,go.checksum" unless="go.installed">
-        <install name="go" url="https://dl.google.com/go/go1.14.6.windows-amd64.zip"/>
+        <install name="go" url="https://golang.org/dl/go1.15.6.windows-amd64.zip"/>
     </target>
     
     <macrodef name="go_exec">
