@@ -693,6 +693,12 @@
         <npm cmd="install" dir="${root.dir}/ts/ecore"/>
     </target>
     
+    <target name="ecore.ts.version">
+        <replaceregexp match='"version": "[^ ]*"' replace='"version": "${ecore.ts.version}"'>
+            <fileset dir="${root.dir}/ts/ecore" includes="**/package.json"/>
+        </replaceregexp>
+    </target>
+    
     <target name="ecore.ts.format">
         <npm-run cmd="pretty" dir="${root.dir}/ts/ecore"/>
     </target>
@@ -713,7 +719,7 @@
     </target>
     
     
-    <target name="ecore.ts" depends="ecore.ts.install,ecore.ts.generate,ecore.ts.build,ecore.ts.test"/>
+    <target name="ecore.ts" depends="ecore.ts.version,ecore.ts.install,ecore.ts.generate,ecore.ts.build,ecore.ts.test"/>
     
     <!--
     ============================================================================
