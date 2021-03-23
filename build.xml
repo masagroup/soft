@@ -306,8 +306,11 @@
     <macrodef name="go_tests">
         <attribute name="dir"/>
         <sequential>
-            <go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage"/>
-            <go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/@{dir}-coverage -o ${out.dir}/go/@{dir}-coverage.html" />
+            <local name="name"/>
+            <basename property="name" file="@{dir}"/>
+            <mkdir dir="${out.dir}/go/coverage"/>
+            <go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/coverage/${name}-coverage"/>
+            <go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/coverage/${name}-coverage -o ${out.dir}/go/coverage/${name}-coverage.html" />
         </sequential>
     </macrodef>
     
