@@ -797,26 +797,26 @@
     ============================================================================
     -->
     <target name="library.go.version">
-        <go_exec command="get github.com/masagroup/soft.go/ecore" dir="${root.dir}/go/library"/>
+        <go_exec command="mod tidy" dir="${root.dir}/go/test/library"/>
     </target>
     
     <target name="library.go.generate">
-        <generator langage="go" input="models/library.ecore" output="${root.dir}/go"/>
+        <generator langage="go" input="models/library.ecore" output="${root.dir}/go/test"/>
     </target>
     
     <target name="library.go.build">
-        <go_exec command="build" dir="${root.dir}/go/library"/>
+        <go_exec command="build" dir="${root.dir}/go/test/library"/>
     </target>
     
     <target name="library.go.format">
-        <go_exec command="fmt" dir="${root.dir}/go/library"/>
+        <go_exec command="fmt" dir="${root.dir}/go/test/library"/>
     </target>
 
     <target name="library.go.tests">
-        <go_tests dir="library"/>
+        <go_tests dir="test/library"/>
     </target>
    
-    <target name="library.go" depends="library.go.generate,library.go.format,library.go.build,library.go.tests"/>
+    <target name="library.go" depends="library.go.generate,library.go.version,library.go.format,library.go.build,library.go.tests"/>
 	<!--
     ============================================================================
       Library TypeScript
@@ -860,26 +860,26 @@
     ============================================================================
     -->
     <target name="tournament.go.version">
-        <go_exec command="get github.com/masagroup/soft.go/ecore" dir="${root.dir}/go/tournament"/>
+        <go_exec command="mod tidy" dir="${root.dir}/go/test/tournament"/>
     </target>
     
     <target name="tournament.go.generate">
-        <generator langage="go" input="models/tournament.ecore" output="${root.dir}/go"/>
+        <generator langage="go" input="models/tournament.ecore" output="${root.dir}/go/test"/>
     </target>
     
     <target name="tournament.go.build">
-        <go_exec command="build" dir="${root.dir}/go/tournament"/>
+        <go_exec command="build" dir="${root.dir}/go/test/tournament"/>
     </target>
     
     <target name="tournament.go.format">
-        <go_exec command="fmt" dir="${root.dir}/go/tournament"/>
+        <go_exec command="fmt" dir="${root.dir}/go/test/tournament"/>
     </target>
 
     <target name="tournament.go.tests">
-        <go_tests dir="tournament"/>
+        <go_tests dir="test/tournament"/>
     </target>
     
-    <target name="tournament.go" depends="tournament.go.generate,tournament.go.format,tournament.go.build,tournament.go.tests"/>
+    <target name="tournament.go" depends="tournament.go.generate,tournament.go.version,tournament.go.format,tournament.go.build,tournament.go.tests"/>
     
     <!--
     ============================================================================
