@@ -323,76 +323,6 @@
 
     <!--
     ============================================================================
-      Mockery
-    ============================================================================
-    -->
-    <target name="mockery.install" depends="go.install">
-        <go_exec command="get github.com/vektra/mockery/v2@v2.5.1"/>
-        <mkdir dir="${bin.dir}/mockery"/>
-        <copy file="${out.dir}/go/bin/mockery.exe" todir="${bin.dir}/mockery"/>
-    </target>
-    
-    <property environment="env"/>
-    
-    <macrodef name="mockery_exec">
-        <attribute name="dir"/>
-        <element name="args" implicit="yes" optional="yes"/>
-        <sequential>
-            <exec executable="${bin.dir}/mockery/mockery.exe" dir="@{dir}" failonerror="true">
-                <env key="PATH" path="${env.PATH}:${bin.dir}/go/bin"/>
-                <args/>
-            </exec>
-        </sequential>
-    </macrodef>
-
-
-    <!--
-    ============================================================================
-      Mock
-    ============================================================================
-    -->
-    <macrodef name="mock">
-        <attribute name="dir"/>
-        <attribute name="name" default=""/>
-        <sequential>
-            <local name="options"/>
-            <if>
-                <equals arg1="@{name}" arg2=""/>
-                <then>
-                    <property name="options" value="--all"/>
-                </then>
-                <else>
-                    <property name="options" value="--name @{name}"/>
-                </else>
-            </if>
-            
-            <mockery_exec dir="${root.dir}/go/@{dir}">
-                <arg line="${options}"/>
-                <arg value="--inpackage"/>
-            </mockery_exec>
-
-            <move todir="${root.dir}/go/@{dir}">
-                <fileset dir="${root.dir}/go/@{dir}" includes="*.go">
-                    <filename regex="^mock_[A-Z].*\.go$"/>
-                </fileset>
-                <chainedmapper>
-                    <regexpmapper from="^mock_(.*)\.go$" to="\1_mock.go"/>
-                    <scriptmapper language="javascript">
-                    self.addMappedName(source.toLowerCase());
-                    </scriptmapper>
-                </chainedmapper>
-            </move>
-
-            <delete >
-                <fileset dir="${root.dir}/go/@{dir}" includes="*.go">
-                    <filename regex="^mock_[a-z].*\.go$"/>
-                </fileset>
-            </delete>
-        </sequential>
-    </macrodef>
-
-    <!--
-    ============================================================================
       NodeJS
     ============================================================================
     -->
@@ -467,8 +397,7 @@
                                          ,maven.install
                                          ,ninja.install
                                          ,go.install
-                                         ,nodejs.install
-                                         ,mockery.install"/>
+                                         ,nodejs.install"/>
     
     <target name="configure" depends="tools.install,vcpkg.install"/>
     
