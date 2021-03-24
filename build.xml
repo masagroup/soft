@@ -9,7 +9,7 @@
     <property name="cmake.SHA-512"  value="466fa8fd6bfaea0e338627beb0d6583bd900f2720dcb2a5bc8099a465fbca9b44ec3350549d09128c582d0527ef461ba86cb6e8e47943056ac6f97d6fc605898"/>
     <property name="maven.SHA-512"  value="afd6549f3e50c105022baae7951ed6b052e748be4b5c57b2136c5635cb0773495766455ea4b70a633f5e4936f26be16efa1f44b3745fddb28121a0842923ef9f"/>
     <property name="ninja.SHA-512"  value="56f3b94ed7f9e36446bb6fe2a786156befdde6b279ee6d9d7ebd8b6e5d6664cdfe1d526e158f68bfc5cf947bcf9360df8d1e1a8939b6db1b2f0658256a17d66b"/>
-    <property name="go.SHA-512"     value="bd26b3e21b4c7ba5ed6ed13e884ffaea92d13e14f10aa738185390f5047d145d0010e4787584f8fef235d78cc261b356a188b965c09996a43fb542e4bfa341a5"/>
+    <property name="go.SHA-512"     value="255b12a69747aa204d31c845519c607d18e266340e0e655493eaa21acac4908b0cda616de99df65c7496b10d715291b411ce4209482364af9e6de0b938a497a2"/>
     <property name="nodejs.SHA-512" value="711f1ac4205100963c93c0600b408c403030f7babcc466d3f6555e3ab68ff1bdbba6b04016d07a17cbc8125d120b6d671521fd2facf80e651d18fe9cfc50017d"/>
     
     <property name="soft.generators.version"        value="1.3.0"/>
@@ -284,7 +284,7 @@
     </target>
 
     <target name="go.install" depends="aria2.install,go.checksum" unless="go.installed">
-        <install name="go" url="https://golang.org/dl/go1.15.6.windows-amd64.zip"/>
+        <install name="go" url="https://golang.org/dl/go1.16.windows-amd64.zip"/>
     </target>
     
     <macrodef name="go_exec">
@@ -306,8 +306,11 @@
     <macrodef name="go_tests">
         <attribute name="dir"/>
         <sequential>
-            <go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/@{dir}-coverage"/>
-            <go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/@{dir}-coverage -o ${out.dir}/go/@{dir}-coverage.html" />
+            <local name="name"/>
+            <basename property="name" file="@{dir}"/>
+            <mkdir dir="${out.dir}/go/coverage"/>
+            <go_exec dir="${root.dir}/go/@{dir}" command="test -coverprofile ${out.dir}/go/coverage/${name}-coverage"/>
+            <go_exec dir="${root.dir}/go/@{dir}" command="tool cover -html=${out.dir}/go/coverage/${name}-coverage -o ${out.dir}/go/coverage/${name}-coverage.html" />
         </sequential>
     </macrodef>
     
@@ -315,76 +318,6 @@
         <attribute name="dir"/>
         <sequential>
             <go_exec dir="${root.dir}/go/@{dir}" command="test -bench=."/>
-        </sequential>
-    </macrodef>
-
-    <!--
-    ============================================================================
-      Mockery
-    ============================================================================
-    -->
-    <target name="mockery.install" depends="go.install">
-        <go_exec command="get github.com/vektra/mockery/v2@v2.5.1"/>
-        <mkdir dir="${bin.dir}/mockery"/>
-        <copy file="${out.dir}/go/bin/mockery.exe" todir="${bin.dir}/mockery"/>
-    </target>
-    
-    <property environment="env"/>
-    
-    <macrodef name="mockery_exec">
-        <attribute name="dir"/>
-        <element name="args" implicit="yes" optional="yes"/>
-        <sequential>
-            <exec executable="${bin.dir}/mockery/mockery.exe" dir="@{dir}" failonerror="true">
-                <env key="PATH" path="${env.PATH}:${bin.dir}/go/bin"/>
-                <args/>
-            </exec>
-        </sequential>
-    </macrodef>
-
-
-    <!--
-    ============================================================================
-      Mock
-    ============================================================================
-    -->
-    <macrodef name="mock">
-        <attribute name="dir"/>
-        <attribute name="name" default=""/>
-        <sequential>
-            <local name="options"/>
-            <if>
-                <equals arg1="@{name}" arg2=""/>
-                <then>
-                    <property name="options" value="--all"/>
-                </then>
-                <else>
-                    <property name="options" value="--name @{name}"/>
-                </else>
-            </if>
-            
-            <mockery_exec dir="${root.dir}/go/@{dir}">
-                <arg line="${options}"/>
-                <arg value="--inpackage"/>
-            </mockery_exec>
-
-            <move todir="${root.dir}/go/@{dir}">
-                <fileset dir="${root.dir}/go/@{dir}" includes="*.go">
-                    <filename regex="^mock_[A-Z].*\.go$"/>
-                </fileset>
-                <chainedmapper>
-                    <regexpmapper from="^mock_(.*)\.go$" to="\1_mock.go"/>
-                    <scriptmapper language="javascript">
-                    self.addMappedName(source.toLowerCase());
-                    </scriptmapper>
-                </chainedmapper>
-            </move>
-
-            <delete >
-                <fileset dir="${root.dir}/go/@{dir}" includes="*.go">
-                    <filename regex="^mock_[a-z].*\.go$"/>
-                </fileset>
-            </delete>
         </sequential>
     </macrodef>
 
@@ -464,8 +397,7 @@
                                          ,maven.install
                                          ,ninja.install
                                          ,go.install
-                                         ,nodejs.install
-                                         ,mockery.install"/>
+                                         ,nodejs.install"/>
     
     <target name="configure" depends="tools.install,vcpkg.install"/>
     
@@ -794,26 +726,26 @@
     ============================================================================
     -->
     <target name="library.go.version">
-        <go_exec command="get github.com/masagroup/soft.go/ecore" dir="${root.dir}/go/library"/>
+        <go_exec command="mod tidy" dir="${root.dir}/go/test/library"/>
     </target>
     
     <target name="library.go.generate">
-        <generator langage="go" input="models/library.ecore" output="${root.dir}/go"/>
+        <generator langage="go" input="models/library.ecore" output="${root.dir}/go/test"/>
     </target>
     
     <target name="library.go.build">
-        <go_exec command="build" dir="${root.dir}/go/library"/>
+        <go_exec command="build" dir="${root.dir}/go/test/library"/>
     </target>
     
     <target name="library.go.format">
-        <go_exec command="fmt" dir="${root.dir}/go/library"/>
+        <go_exec command="fmt" dir="${root.dir}/go/test/library"/>
     </target>
 
     <target name="library.go.tests">
-        <go_tests dir="library"/>
+        <go_tests dir="test/library"/>
     </target>
    
-    <target name="library.go" depends="library.go.generate,library.go.format,library.go.build,library.go.tests"/>
+    <target name="library.go" depends="library.go.generate,library.go.version,library.go.format,library.go.build,library.go.tests"/>
 	<!--
     ============================================================================
       Library TypeScript
@@ -857,26 +789,26 @@
     ============================================================================
     -->
     <target name="tournament.go.version">
-        <go_exec command="get github.com/masagroup/soft.go/ecore" dir="${root.dir}/go/tournament"/>
+        <go_exec command="mod tidy" dir="${root.dir}/go/test/tournament"/>
     </target>
     
     <target name="tournament.go.generate">
-        <generator langage="go" input="models/tournament.ecore" output="${root.dir}/go"/>
+        <generator langage="go" input="models/tournament.ecore" output="${root.dir}/go/test"/>
     </target>
     
     <target name="tournament.go.build">
-        <go_exec command="build" dir="${root.dir}/go/tournament"/>
+        <go_exec command="build" dir="${root.dir}/go/test/tournament"/>
     </target>
     
     <target name="tournament.go.format">
-        <go_exec command="fmt" dir="${root.dir}/go/tournament"/>
+        <go_exec command="fmt" dir="${root.dir}/go/test/tournament"/>
     </target>
 
     <target name="tournament.go.tests">
-        <go_tests dir="tournament"/>
+        <go_tests dir="test/tournament"/>
     </target>
     
-    <target name="tournament.go" depends="tournament.go.generate,tournament.go.format,tournament.go.build,tournament.go.tests"/>
+    <target name="tournament.go" depends="tournament.go.generate,tournament.go.version,tournament.go.format,tournament.go.build,tournament.go.tests"/>
     
     <!--
     ============================================================================
