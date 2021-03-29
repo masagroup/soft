@@ -1,3 +1,5 @@
+[![License](https://img.shields.io/github/license/masagroup/soft.svg)](https://github.com/masagroup/soft/blob/master/LICENSE)
+
 # What is SOFT ? #
 SOFT is the acronym of Sword Object Facilities.
  
