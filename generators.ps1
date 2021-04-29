@@ -1,1 +1,0 @@
-ant -D"dist.dir"="\\file1\MASA\common\dev\delivery\internal\soft.generators\current" generators
