@@ -13,7 +13,7 @@
 
 ## Overview
 
-The repository in its ecosystem (the text is in the [README](README.md#overview)):
+The repository in its ecosystem (the submodules are listed in the [README](README.md#submodules)):
 
 ```mermaid
 flowchart TB
