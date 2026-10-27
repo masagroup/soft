@@ -13,3 +13,6 @@
 [submodule "ts"]
 	path = ts
 	url = https://github.com/masagroup/soft.ts.git
+[submodule "vscode"]
+	path = vscode
+	url = git@github.com:masagroup/soft.vscode.git
