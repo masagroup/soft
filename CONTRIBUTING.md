@@ -11,6 +11,7 @@ The build of the repository is described in the [README](README.md#build); the t
 - Go: the version of `go.mod`, `GOPRIVATE=github.com/masagroup/*` with `gh auth setup-git` or an SSH `insteadOf` rewrite for the private modules; `staticcheck` installed by the build.
 - Node and yarn: the Node version of the Dockerfile or of `package.json` (`engines`), yarn with the lockfile of the repository, a `%USERPROFILE%\.npmrc` with a `read:packages` PAT for `npm.pkg.github.com` (`@masagroup` scope).
 - C++: the Windows toolset above, or the development container of the repository on Linux (`docker compose --profile dev up -d`, then `cmake` and `ninja` inside it).
+- Submodules of `soft`: Docker (the generator image `masagroup/soft.gen`, golangci-lint, and `go` in a `golang` container when Go is missing), GNU make (Git Bash on Windows) for `gen`, `go` and `ts`, Go 1.27, Node >= 20.16 for `ts` and `vscode`; no JDK, Maven or Eclipse is needed since soft.gen v2, except for the v1 image `masagroup/soft.generator.cpp` that `cpp` pulls.
 - Editor rules for Claude Code: the shared `claude/` folder of [cicd](https://github.com/masagroup/cicd) installs the same `CLAUDE.md` for every developer (rules, roles, build pages, conventions).
 
 ## Git and Jira workflow
@@ -29,20 +30,22 @@ The build of the repository is described in the [README](README.md#build); the t
 - Go: the version of `go.mod` and of the Docker image, `GOPRIVATE=github.com/masagroup/*`; `go vet`, `staticcheck`, `gofmt` and `go test -race ./...` green before a commit; wrapped errors (`fmt.Errorf("...: %w", err)`), no `log.Fatal` outside `main`, clean stop on `SIGINT` and `SIGTERM`, timeouts on every network I/O; REST APIs from an OpenAPI contract (`oapi-codegen`).
 - TypeScript: Angular with Nx, the `sw.design-system` components before custom ones, yarn with a frozen lockfile, the lint and the tests of the repository, no new `any`, no dependency added without a reason.
 - Shared contracts (`.proto`, `.ecore`, OpenAPI, exported Go modules, file formats) are changed with the consumers in mind: grep the workspace, state the compatibility strategy, update the dependants.
+- Submodule bumps: point a submodule at a merged commit of the `master` of its masagroup repository (`git -C <submodule> checkout --detach masa/master`), one commit per submodule, and say the new commit in the message. A new soft.gen version reaches soft.go and soft.ts through their `SOFT_GEN_VERSION`, not through this umbrella.
 - Documentation: this README set (README, ARCHITECTURE, CONTRIBUTING, README.LEGACY) is the source of the [SWORD wiki](https://github.com/masagroup/wiki/wiki/soft); keep the metadata block at the top of the README up to date (the `apps` list feeds the Interfaces section).
 
 ## CI/CD
 
-The umbrella has no `.github/` directory. Each submodule has its own self-contained workflow (old-style actions: `actions/checkout@v2`, `setup-go@v2`, `setup-node@v2`); none uses a reusable workflow from `masagroup/cicd` and none reads repository/organization variables. `cpp` and `models` have no `.github` directory at the pinned commit. See [cicd](https://github.com/masagroup/cicd) and the ecosystem wiki page [CI/CD pipelines](https://github.com/masagroup/wiki/wiki/cicd-pipelines) for the shared workflows used by other repositories.
+The umbrella has no `.github/` directory. Each submodule has its own self-contained workflow (`actions/checkout@v4`, `setup-go@v5`, `setup-node@v4`); none uses a reusable workflow from `masagroup/cicd`. `cpp` and `models` have no workflow at the pinned commit. See [cicd](https://github.com/masagroup/cicd) and the ecosystem wiki page [CI/CD pipelines](https://github.com/masagroup/wiki/wiki/cicd-pipelines) for the shared workflows used by other repositories.
 
 | Submodule | Workflow file | Triggers | Steps | Artifacts |
 |---|---|---|---|---|
-| gen | `gen/.github/workflows/build_and_test.yml` | PR (opened/synchronize/reopened/ready_for_review) to master, push master, manual | ubuntu-latest: `make generators`, `make tests` | none from the workflow (images / dist exports come from local `make publish` / `make dist`) |
-| go | `go/.github/workflows/build_and_test.yaml` | same | Go 1.20.x; checkout `go` and `masagroup/soft.models@a6b7a0c1` as siblings; `make generate build test` in `go/` | none |
-| ts | `ts/.github/workflows/build_and_test.yaml` | same | Node 17.2.0; checkout `ts` and `masagroup/soft.models@f487e7c8`; `sudo make ci` in `ts/` | none |
+| gen | `gen/.github/workflows/build_and_test.yml` | any PR, push master, manual | ubuntu-latest, Go from `go.mod`: `go vet`, `go test`, `go build ./cmd/soft.gen`; then `make image`, `make image.test` | none (the image is pushed by a human `make publish`) |
+| go | `go/.github/workflows/build_and_test.yaml` | PR to master, push master | Go 1.27.x; checkout `go` and `masagroup/soft.models@90286c34` as siblings; `make generate build test` in `go/` | none |
+| ts | `ts/.github/workflows/build_and_test.yaml` | PR to master, push master | Node 24.21.0; checkout `ts` and `masagroup/soft.models@f0dd72e4`; `sudo make ci` in `ts/` | none |
+| vscode | `vscode/.github/workflows/build_and_test.yaml`, `release.yaml` | PR to master, push master; `vX.Y.Z` tags | Node 22: `npm ci`, typecheck, test, build, `vsce package` | `ecorium-<version>.vsix` (workflow artifact; GitHub release on tags) |
 | cpp | none | | `ant` is run manually on Windows | `dist/ecore-<ver>-win64.zip` from `ecore.dist` |
 
-Release artifacts mentioned by the READMEs but not produced by any workflow in this tree: generator jars as GitHub release assets (`soft.generator.<lang>-<version>.jar`), Docker Hub images `masagroup/soft.generator.{cpp,go,ts}`, npm package `@masagroup/ecore`, Go module via `go get github.com/masagroup/soft.go`, C++ VC 2019 binaries on the GitHub releases page. How they are really published is UNVERIFIED.
+Release artifacts: the Docker Hub image `masagroup/soft.gen:<version>` (human `make publish` in `gen`), the Go modules `github.com/masagroup/soft.go` and `soft.go/codec/*` (Git tags), the npm package `@masagroup/ecore` (GitHub Packages), the Ecorium VSIX (release workflow of `vscode`). The v1 images `masagroup/soft.generator.{cpp,go,ts}` are no longer built; only `cpp` still uses `masagroup/soft.generator.cpp`.
 
 ## Known issues and open questions
 
