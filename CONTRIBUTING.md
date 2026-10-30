@@ -46,7 +46,3 @@ The umbrella has no `.github/` directory. Each submodule has its own self-contai
 | cpp | none | | `ant` is run manually on Windows | `dist/ecore-<ver>-win64.zip` from `ecore.dist` |
 
 Release artifacts: the Docker Hub image `masagroup/soft.gen:<version>` (human `make publish` in `gen`), the Go modules `github.com/masagroup/soft.go` and `soft.go/codec/*` (Git tags), the npm package `@masagroup/ecore` (GitHub Packages), the Ecorium VSIX (release workflow of `vscode`). The v1 images `masagroup/soft.generator.{cpp,go,ts}` are no longer built; only `cpp` still uses `masagroup/soft.generator.cpp`.
-
-## Known issues and open questions
-
-They are not kept in the repository: see the [private artifact](https://claude.ai/artifact/UfvKmky7e8LwEXf192hQjQ#soft) that holds them for every page of the wiki.
