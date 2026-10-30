@@ -14,13 +14,15 @@ sword:
 
 # soft
 
-SOFT ("Sword Object Facilities") is MASA's implementation of the Eclipse Modeling Framework (EMF) core: the Ecore metamodel runtime in Go, TypeScript and C++, the code generator that turns `.ecore` models into typed code for these runtimes, and an `.ecore` editor for VS Code.
+> SOFT ("Sword Object Facilities") is MASA's implementation of the Eclipse Modeling Framework (EMF) core: the Ecore metamodel runtime in Go, TypeScript and C++, the code generator that turns `.ecore` models into typed code for these runtimes, and an `.ecore` editor for VS Code.
+
+**[Architecture](ARCHITECTURE.md)** · [Contributing](CONTRIBUTING.md) · [known issues and open questions](https://github.com/masagroup/wiki/wiki/known-issues#soft) · [repository on GitHub](https://github.com/masagroup/soft)
+
+## Overview
 
 This repository only aggregates the projects as git submodules. Each one has its own README, build and releases.
 
-**[Architecture](ARCHITECTURE.md)** · [Contributing](CONTRIBUTING.md) · [repository on GitHub](https://github.com/masagroup/soft)
-
-## Submodules
+### Submodules
 
 | Path | Repository | What it is |
 |---|---|---|
@@ -31,6 +33,10 @@ This repository only aggregates the projects as git submodules. Each one has its
 | `models` | [soft.models](https://github.com/masagroup/soft.models) | The `.ecore` metamodels: `ecore.ecore`, from which each runtime generates its own Ecore classes, and the test models `library`, `tournament`, `empty` |
 | `vscode` | [soft.vscode](https://github.com/masagroup/soft.vscode) | Ecorium, a tree and properties editor for `.ecore` files in VS Code, built on soft.ts |
 
+## Build
+
+There is no build at the umbrella level: each submodule has its own build, described in its README. Clone the repository with its submodules:
+
 ```
 git clone --recurse-submodules git@github.com:masagroup/soft.git
 # or, in an existing clone
@@ -39,7 +45,9 @@ git submodule update --init
 
 The libraries expect `models` as a sibling folder (`../models`), which this layout provides: `make generate` in `go`, or `make` in `ts`, regenerates their sources from it.
 
-## Code generator
+## Quickstart
+
+### Code generator
 
 The generator runs from its Docker image, with the language as first argument:
 
@@ -56,6 +64,14 @@ go install github.com/masagroup/soft.gen/v2/cmd/soft.gen@latest
 
 Options, properties, configuration files and the generated manifests are described in the [soft.gen README](https://github.com/masagroup/soft.gen/blob/master/README.md).
 
-## License
+## Interfaces and access methods
 
-[Mozilla Public License 2.0](LICENSE).
+The libraries do no network I/O and expose no ports. The only runnable programs are the code generator, the VS Code extension and the test executables.
+
+## Documentation and guides
+
+- [Architecture](ARCHITECTURE.md): position in the ecosystem, repository layout, internal structure, how it works (diagrams), dependencies.
+- [Contributing](CONTRIBUTING.md): development environment, Git and Jira workflow, conventions, CI/CD.
+- The README of each submodule, linked from the [Submodules](#submodules) table; the options of the generator in the [soft.gen README](https://github.com/masagroup/soft.gen/blob/master/README.md).
+- The same documentation in the SWORD wiki: [soft](https://github.com/masagroup/wiki/wiki/soft), [architecture](https://github.com/masagroup/wiki/wiki/soft-architecture), [contributing](https://github.com/masagroup/wiki/wiki/soft-contributing).
+- License: [Mozilla Public License 2.0](LICENSE).
